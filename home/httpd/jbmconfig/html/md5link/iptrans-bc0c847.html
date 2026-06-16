@@ -1,0 +1,82 @@
+<!--ko template: {name:'title-template',data:'IP Transparency'}--><!--/ko-->
+<!-- ko if: isAssigned -->
+	<!--ko template: {name:'h4-template',data:'Assigned Network Information'}--><!--/ko-->
+	<table style="width: 100%;">
+		<tr>
+			<td style="text-align: center; vertical-align: middle;"><strong>Assigned IP Address: </strong><span data-bind="text: TransIP"></span></td>
+		</tr>
+		<tr>
+			<td style="text-align: center; vertical-align: middle;"><strong>Assigned Netmask: </strong><span data-bind="text: TransNetmask"></span></td>
+		</tr>
+		<tr>
+			<td style="text-align: center; vertical-align: middle;"><strong>Assigned Gateway: </strong><span data-bind="text: TransGateway"></span></td>
+		</tr>
+	</table>
+	<hr />
+<!-- /ko -->
+<!--ko template: {name: 'full-savable-bool-template', data: enable}--><!--/ko-->
+<!-- ko if: enable.value() === 'y'-->
+	<!--ko template: {name: 'full-savable-select-template', data: internalintf}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: spddplx}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: dhcpsenable}--><!--/ko-->
+	<!-- ko if: dhcpsenable.value() === 'y'-->
+		 <!--ko template: {name: 'full-savable-select-template', data: dhcpsubnet}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: dhcpleasetime}--><!--/ko-->
+	<!-- /ko -->
+	<!--ko template: {name: 'full-savable-bool-template', data: privateip}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: telnet}--><!--/ko-->
+	<!-- ko if: telnet.value() === 'y'-->
+		<!--ko template: {name: 'full-savable-input-template', data: telnetport}--><!--/ko-->
+	<!-- /ko -->
+	<!--ko template: {name: 'full-savable-bool-template', data: ssh}--><!--/ko-->
+	<!-- ko if: ssh.value() === 'y'-->
+		<!--ko template: {name: 'full-savable-input-template', data: sshport}--><!--/ko-->
+	<!-- /ko -->
+	<!--ko template: {name: 'full-savable-bool-template', data: snmp}--><!--/ko-->
+	<!-- ko if: snmp.value() === 'y'-->
+		<!--ko template: {name: 'full-savable-input-template', data: snmpport}--><!--/ko-->
+	<!-- /ko -->
+	<!--ko template: {name: 'full-savable-bool-template', data: gau}--><!--/ko-->
+	<!-- ko if: gau.value() === 'y'-->
+		<!--ko template: {name: 'full-savable-input-template', data: gauport}--><!--/ko-->
+	<!-- /ko -->
+	<!--ko template: {name: 'full-savable-bool-template', data: gmu}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: macfilter}--><!--/ko-->
+	<!-- ko if: isRouteMode -->
+		<!--ko template: {name: 'full-savable-bool-template', data: routermode}--><!--/ko-->
+	<!-- /ko -->
+	<!--ko template: {name: 'full-savable-bool-template', data: oobenable}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: prenable}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: rtenable}--><!--/ko-->
+	<!-- ko if: prenable.value() === 'y'-->
+		<!--ko template: {name:'h4-template',data:'Port Re-directs'}--><!--/ko-->
+		<!--ko template: {name: 'table-template', data: portReDirectionTable}--><!--/ko-->
+	<!-- /ko -->
+	<!-- ko if: rtenable.value() === 'y'-->
+		<!--ko template: {name:'h4-template',data:'Traffic Restrictions'}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: rtmode}--><!--/ko-->
+		<!--ko template: {name: 'table-template', data: trafficRestrictionTable}--><!--/ko-->
+	<!-- /ko -->
+<!-- /ko -->
+<div id="pr-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Port Re-direction Settings</h3>
+	</div>
+	<div class="gw-modal-body-long">
+		<!--ko template: {name: 'full-savable-input-template', data: extport}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: intport}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: proto}--><!--/ko-->
+		<a class="btn btn-primary pull-right" data-bind="click: prsWizardFinish">Finish</a>
+	</div>
+</div>
+<div id="rt-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Traffic Restriction Settings</h3>
+	</div>
+	<div class="gw-modal-body-long">
+		<!--ko template: {name: 'full-savable-input-template', data: subnet}--><!--/ko-->
+		<a class="btn btn-primary pull-right" data-bind="click: rtsWizardFinish">Finish</a>
+	</div>
+</div>

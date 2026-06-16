@@ -1,0 +1,48 @@
+<form id="binarcounter-form" class="form-horizontal">
+	<!--ko template: {name:'title-template',data:'Object 20 - Binary Counters'}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Define Highest Register Address'}--><!--/ko-->
+    <!--ko template: {name: 'select-template-bool', data: nodnp}--><!--/ko-->
+	<!-- ko if: isNoDNPChecked -->
+        <!--ko template: {name: 'text-template', data: highestreg}--><!--/ko-->
+	<!-- /ko -->
+	<!--ko template: {name:'h4-template',data:'Default DeadBand'}--><!--/ko-->
+	<!--ko template: {name: 'text-template', data: deadband}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Default Class Assignment'}--><!--/ko-->
+    <!--ko template: {name: 'select-template', data: defobj21class}--><!--/ko-->
+    <!--ko template: {name: 'select-template', data: defobj22class}--><!--/ko-->
+    <!--ko template: {name: 'select-template', data: defobj23class}--><!--/ko-->
+	<!-- ko if: isNoDNPChecked -->
+        <hr />
+        <table align="center" style="text-align: center; vertical-align: middle;">
+            <tr>
+                <td align="left" nowrap="nowrap"><h4><u>Exception Class Assignment Table</u></h4></td>
+                <td>&#160;</td>
+                <td align="left" nowrap="nowrap"><a tabindex="-1" data-bind="help: {'title': 'Exception Table Overview', 'link': '/h_dnp3_binarycounterhelp.html'}" class="btn"><i class="icon-question-sign"></i></a></td>
+            </tr>
+        </table>
+        <!--ko template: {name:'table-template',data: binarycountersTable}--><!--/ko-->
+	<!-- /ko -->
+    <hr />
+    <div style="text-align: center">
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_object')">Object Mapping</a>
+    </div>
+</form>
+
+<div id="cntexception-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Exception Class Assignment Settings</h3>
+    </div>
+    <div class="gw-modal-body-long">
+        <form>
+            <!--ko template: {name: 'text-template', data: startreg}--><!--/ko-->
+            <!--ko template: {name: 'text-template', data: endreg}--><!--/ko-->
+            <!--ko template: {name: 'text-template', data: exdeadband}--><!--/ko-->
+            <!--ko template: {name: 'select-template', data: obj21class}--><!--/ko-->
+            <!--ko template: {name: 'select-template', data: obj22class}--><!--/ko-->
+            <!--ko template: {name: 'select-template', data: obj23class}--><!--/ko-->
+            <a class="btn btn-primary pull-right" data-bind="click: binarycountersWizardFinish">Finish</a>
+        </form>
+    </div>
+</div>
+

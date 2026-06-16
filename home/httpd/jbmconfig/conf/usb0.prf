@@ -1,0 +1,108 @@
+
+<profile>
+ <subsystems>
+
+<!--
+                Networking -> Ethernet Interfaces -> USB Settings Section
+
+  V2.20 behaviors:
+
+  +==========+=====================================================+============+
+  |  ACTION  |                           STEP                      | ON FAILURE |
+  +==========+=====================================================+============+
+  |     Save | Try to get value of /GAUCfg/usb0/options            | Abort      |
+  +----------+-----------------------------------------------------+------------+
+  |    Apply | Try to perform SAVE action operations               | Abort      |
+  +==========+=====================================================+============+ 
+
+-->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/usb0.prf" name="usb0">
+
+   <validation>
+    <vstep errmsg="Invalid Enable Flag value. Must be 'y' or 'n'."
+             name="enable"
+             test="isyorn(/input/enable/text())" />
+
+    <vstep errmsg="Invalid IP Address. Must be a valid IPv4 address."
+             name="address"
+             test="isipaddr(/input/address/text())" />
+
+    <vstep errmsg="Invalid Subnet Mask. Must be a valid IPv4 netmask."
+             name="netmask"
+             test="isnetmask(/input/netmask/text())" />
+
+   </validation>
+
+   <configuration>
+
+    <cstep errmsg="Unable to save Enable Flag to system configuration file."
+             name="enable"
+             path="/GAUCfg/usb0/enable" />
+
+    <cstep errmsg="Unable to save USB IP Address to system configuration file."
+             name="address"
+             path="/GAUCfg/usb0/address" />
+
+    <cstep errmsg="Unable to save USB netmask to system configuration file."
+             name="netmask"
+             path="/GAUCfg/usb0/netmask" />
+
+   </configuration>
+
+
+   <action name="Apply" successmsg="USB Configuration Saved And Applied.">
+
+<!--Moved to prfhandler_usb0
+    <pre subsystem="usb0" action="Save" />
+
+    <astep errmsg="Failed to bring up interface." name="SystemCommand">
+     <arg abort="n" expr="ifdown usb0" />
+    </astep>
+
+    <astep dependency="/GAUCfg/usb0/enable/text() = 'y'" errmsg="Failed to bring up interface." name="SystemCommand">
+     <arg abort="y" expr="ifdown usb0;ifup usb0" />
+    </astep>
+Moved to prfhandler_usb0-->
+
+    <astep abort="y" errmsg="Failed to Apply the usb0 configuration" name="SystemCommand">
+     <arg expr="'prfhandler_usb0 Apply'" source="config" />
+    </astep>
+   </action>
+
+   <action name="Save" successmsg="USB Configuration Saved.">
+
+<!--Moved to prfhandler_usb0
+    <astep errmsg="Failed to write usb.conf file, since the interface is disabled." name="WriteFile" abort="y" >
+
+     <arg expr="'/tmp/usb.conf'" source="config" />
+
+     <arg dependency="/GAUCfg/usb0/enable/text() = 'n'"
+          expr="'ONBOOT=no'" source="config" />
+
+     <arg dependency="/GAUCfg/usb0/enable/text() = 'y'"
+          expr="'ONBOOT=yes'" source="config" />
+
+     <arg expr="DEVICE=usb0" />
+     <arg expr="BOOTPROTO=static" />
+
+     <arg expr="concat('IPADDR=',/GAUCfg/usb0/address/text())" source="config" />
+     <arg expr="concat('NETMASK=',/GAUCfg/usb0/netmask/text())" source="config" />
+
+    </astep>
+
+
+    <astep abort="y" errmsg="Failed To Copy usb.conf File To Destination Directory." name="SystemCommand">
+     <arg expr="mv -f /tmp/usb.conf /etc/sysconfig/network-scripts/ifcfg-usb0" />
+    </astep>
+Moved to prfhandler_usb0-->
+
+    <astep abort="y" errmsg="Failed to save usb0 configuration file" name="SystemCommand">
+     <arg expr="'prfhandler_usb0 Save'" source="config" />
+    </astep>
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

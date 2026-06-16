@@ -1,0 +1,217 @@
+
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/datalogs.prf" name="datalogs">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Datalogs to system configuration file."
+              name="datalogs" path="/GAUCfg/datalogs/datalogs"
+              type="node" />
+   </configuration>
+
+   <action name="Save" successmsg="Operation Succeeded.">
+
+    <!-- Remove all existing datalog configuration files. -->
+    <astep abort="n" name="SystemCommand">
+     <arg expr="rm -f /etc/datalogd/datalog_*.conf" />
+    </astep>
+
+    <!-- Begin writing datalogs to file -->
+    <astep      abort="y"
+               errmsg="Failed to write datalogs configuration file"
+               repeat="/GAUCfg/datalogs/datalogs/datalog"
+           rptNdxName="RPT_NDX"
+                 name="WriteFormattedFile"
+           dependency="/GAUCfg/datalogs/datalogs/NumberOfdatalogs/text() != '0'">
+
+
+     <arg       expr="concat('/tmp/datalog_', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/datalogname/text(), '.conf')"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg expr="#datalogEnabled: y/n" />
+     <arg expr="\n" />
+     <arg expr="concat('datalogEnabled=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/datalogenable/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#outputFilename: is 30 characters max" />
+     <arg expr="\n" />
+     <arg expr="concat('outputFilename=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/datalogname/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#writeConditions: supports WriteRegardless and WriteEarlyOnChange" />
+     <arg expr="\n" />
+     <arg expr="concat('writeConditions=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/writecondition/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#writeFrequency: is in ms units, example in 1s" />
+     <arg expr="\n" />
+     <arg expr="concat('writeFrequency=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/writefrequency/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#IODBEnable: None, DO, DI, AO, AI, LO, LI, FO, FI" />
+     <arg expr="\n" />
+     <arg expr="concat('IODBEnable=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/iodbenable/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#IODBAddress: is the register location, zero based; Contents != zero, then datalogging is enabled" />
+     <arg expr="\n" />
+     <arg expr="concat('IODBAddress=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/iodbaddr/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#timestampFormat TBD, not for Phase 1" />
+     <arg expr="\n" />
+     <arg expr="concat('timestampFormat=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/timeformat/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#sizeOfLogfile: in KiB" />
+     <arg expr="\n" />
+     <arg expr="concat('sizeOfLogfile=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/logsize/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#numbRolloverFiles: Number of rollover files, 1-10" />
+     <arg expr="\n" />
+     <arg expr="concat('numbRolloverFiles=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/rolloverlog/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#savePath: The directory to store files in" />
+     <arg expr="\n" />
+     <arg dependency="/GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/savepath/text() = 'sdcard'"
+                expr="'savePath=/media/sdcard/datalog'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="/GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/savepath/text() = 'internal'"
+                expr="'savePath=/datalog'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#zipCompressFiles: y/n, to .zip files after rotating" />
+     <arg expr="\n" />
+     <arg expr="concat('zipCompressFiles=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/zipcompfile/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#zipPassword: None or 'Password' which will add this when creating the .zip file" />
+     <arg expr="\n" />
+     <arg expr="concat('zipPassword=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/zippassword/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#addChecksum: y/n Each line of the .csv output has a checksum character as the final field based on TBD" />
+     <arg expr="\n" />
+     <arg expr="concat('addChecksum=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/addchecksum/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#IODBPoints to log" />
+     <arg expr="\n" />
+     <arg expr="concat('ioPointList=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/iodbpoints/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#deliveryMethod= none, FTP, email, both" />
+     <arg expr="\n" />
+     <arg expr="concat('deliveryMethod=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/delmethod/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#ftpMode= passive, active" />
+     <arg expr="\n" />
+     <arg expr="concat('ftpMode=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/ftpmode/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#securityMode= non-SSL, implicit-SSL, explicit-SSL" />
+     <arg expr="\n" />
+     <arg expr="concat('securityMode=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/secmode/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#ftpDes= Domain or IP address" />
+     <arg expr="\n" />
+     <arg expr="concat('ftpDes=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/ftpserver/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#ftpPort= 1 - 65535" />
+     <arg expr="\n" />
+     <arg expr="concat('ftpPort=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/ftpport/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#ftpPath= /path" />
+     <arg expr="\n" />
+     <arg expr="concat('ftpPath=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/ftppath/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#ftpUsrName" />
+     <arg expr="\n" />
+     <arg expr="concat('ftpUsrName=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/uname/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#ftpPassword" />
+     <arg expr="\n" />
+     <arg expr="concat('ftpPassword=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/pword/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#emailRecipient" />
+     <arg expr="\n" />
+     <arg expr="concat('emailRecipient=', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/recipient/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+    </astep>
+
+    <astep     abort="y"
+              errmsg="Failed to write datalogs configuration file"
+                 name="SystemCommand"
+               repeat="/GAUCfg/datalogs/datalogs/datalog"
+           rptNdxName="RPT_NDX"
+           dependency="/GAUCfg/datalogs/datalogs/NumberOfdatalogs/text() != '0'">
+
+     <arg       expr="concat('mv -f /tmp/datalog_', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/datalogname/text(), '.conf')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+
+     <arg       expr="concat(' /etc/datalogd/datalog_', /GAUCfg/datalogs/datalogs/datalog[RPT_NDX]/datalogname/text(), '.conf')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+    </astep>
+
+    <astep       abort="n"
+            dependency="/GAUCfg/datalogs/datalogs/NumberOfdatalogs/text() = '0'"
+                  name="SystemCommand">
+     <arg expr="chkconfig datalogd off" />
+    </astep>
+
+    <astep       abort="y"
+            dependency="/GAUCfg/datalogs/datalogs/NumberOfdatalogs/text() != '0'"
+                errmsg="Failed to enable Data Logger Service."
+                  name="SystemCommand">
+     <arg expr="chkconfig datalogd on" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+    <pre subsystem="datalogs" action="Save" />
+
+    <astep      abort="y"
+           dependency="/GAUCfg/datalogs/datalogs/NumberOfdatalogs/text() != '0'"
+               errmsg="Failed to start Data Logger Service."
+                 name="SystemCommand">
+     <arg expr="service datalogd restart" />
+    </astep>
+
+    <astep      abort="y"
+               errmsg="Failed to start Data Logger Service."
+                 name="SystemCommand">
+     <arg expr="service ftpsupload restart" />
+    </astep>
+
+    <astep      abort="n"
+           dependency="/GAUCfg/datalogs/datalogs/NumberOfdatalogs/text() = '0'"
+               errmsg="Failed to stop Data Logger Service."
+                 name="SystemCommand">
+     <arg expr="service datalogd stop" />
+    </astep>
+
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

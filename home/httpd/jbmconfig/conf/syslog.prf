@@ -1,0 +1,180 @@
+
+<profile>
+ <subsystems>
+                                                                                                                              <!--
+                Services -> Syslog Settings Section
+
+  V2.20 behaviors (taken from cfg_svc.cpp - ApplySyslogSettings() & SaveSyslogSettings()):
+
+  +==========+=============================================================================+============+
+  |  ACTION  |                           STEP                                              | ON FAILURE |
+  +==========+=============================================================================+============+
+  |     Save | Try to read /GAUCfg/syslog/rmtlog from Master Configuration file            | Abort      |
+  |          +-----------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/syslog/rmtlog = "no" or "yes                                 | Abort      |
+  |          +-----------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/syslog/rmthost from Master Configuration file           | Abort      |
+  |          +-----------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/syslog/rmthost != ""                                         | Abort      |
+  |          +-----------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/syslog/rmthost == valid IP Address                           | Abort      |
+  |          +-----------------------------------------------------------------------------+------------+
+  |          | Try to open and read file '/etc/sysconfig/syslog'                           | Abort      |
+  |          +-----------------------------------------------------------------------------+------------+
+  |          | if (exists(uncommented("SYSLOGD_OPTIONS")                                   |            |
+  |          |   {                                                                         |            |
+  |          |    Get option string                                                        |            |
+  |          |                                                                             |            |
+  |          |    Remove "-L " from option string, if it exists                            |            |
+  |          |                                                                             |            |
+  |          |    Remove "-R" from option string (and its parameters), if it exists        |            |
+  |          |                                                                             |            |
+  |          |    if ("" != /GAUCfg/syslog/rmthost)                                        |            |
+  |          |      {                                                                      |            |
+  |          |       append " -L -R " + /GAUCfg/syslog/rmthost + '"\n" to option string    |            |
+  |          |      }                                                                      |            |
+  |          |     else                                                                    |            |
+  |          |         {                                                                   |            |
+  |          |          append '"\n' to option string                                      |            |
+  |          |         }                                                                   |            |
+  |          |   }                                                                         |            |
+  |          |  else                                                                       |            |
+  |          |      {                                                                      |            |
+  |          |       option string = 'SYSLOGD_OPTIONS="-S -m 0 -s 256 -b 1'                |            |
+  |          |                                                                             |            |
+  |          |       if ("" != /GAUCfg/syslog/rmthost)                                     |            |
+  |          |         {                                                                   |            |
+  |          |          append " -L -R " + /GAUCfg/syslog/rmthost + '"\n" to option string |            |
+  |          |         }                                                                   |            |
+  |          |        else                                                                 |            |
+  |          |            {                                                                |            |
+  |          |             append '"\n' to option string                                   |            |
+  |          |            }                                                                |            |
+  |          |      }                                                                      |            |
+  |          +-----------------------------------------------------------------------------+------------+
+  |          | Append "#\n" to file contents                                               |            |
+  |          +-----------------------------------------------------------------------------+------------+
+  |          | Try to write contents to file '/etc/sysconfig/syslog'                       | Abort      |
+  +----------+-----------------------------------------------------------------------------+------------+
+  |    Apply | Try to perform all SAVE action operations                                   | Abort      |
+  |          +-----------------------------------------------------------------------------+------------+
+  |          | Try to stop syslog                                                          | Abort      |
+  |          +-----------------------------------------------------------------------------+------------+
+  |          | Try to start syslog                                                         | Abort      |
+  |          +-----------------------------------------------------------------------------+------------+
+  |          | Verify syslog is running                                                    | Abort      |
+  +==========+=============================================================================+============+                     -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/syslog.prf" name="syslog">
+   <validation>
+    <vstep errmsg="Invalid Enable Remoe Loginng Flag value. Must be 'y' or 'n'."
+               id="strp1"
+             name="rmtlog"
+             test="isyorn(/input/rmtlog/text())" />
+
+    <vstep     id="step2"
+             name="rmthost"
+           skipto="step4"
+             test="/input/rmtlog/text() = 'n'" />
+
+    <vstep errmsg="Invalid Server Address. Must be IP Address of Fully qualified domain name."
+               id="step3"
+             name="rmthost"
+             test="isipaddr(/input/rmthost/text()) or isfqdn(/input/rmthost/text())" />
+
+    <vstep errmsg="Invalid Maximum Lines to Display value. Must be a number."
+               id="step4"
+             name="maxlines"
+             test="isnumber(/input/maxlines/text())" />
+   </validation>
+
+
+   <configuration>
+    <cstep errmsg="Cannot save Remote Log Enable to configuration file" name="rmtlog"   path="/GAUCfg/syslog/rmtlog"   />
+    <cstep errmsg="Cannot save Remote Host to configuration file"       name="rmthost"  path="/GAUCfg/syslog/rmthost"  />
+    <cstep errmsg="Cannot save Maximum Lines to configuration file"     name="maxlines" path="/GAUCfg/syslog/maxlines" />
+    <cstep errmsg="Cannot save Blacklist to configuration file"         name="blacklists" path="/GAUCfg/syslog/blacklists" type="node" />
+    <cstep errmsg="Cannot save Whitelist to configuration file"         name="whitelists" path="/GAUCfg/syslog/whitelists" type="node" />
+   </configuration>
+
+
+   <action name="Save" successmsg="Syslog settings saved.">
+    <astep  abort="y" errmsg="Failed to write Syslog settings to syslog configuration file" name="WriteFormattedFile">
+
+     <arg expr="/tmp/syslog" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg expr="#CONFIG_REMOTE_HOST" />
+     <arg expr="\n" />
+     <arg expr="#Format IP, Hostname, IP:Port, or Hostname:Port" />
+     <arg expr="\n" />
+     <arg expr="CONFIG_REMOTE_HOST=" />
+     <arg expr="quote()" source="config" />
+
+     <arg dependency="/GAUCfg/syslog/rmtlog/text() = 'y'"
+                expr="concat('', /GAUCfg/syslog/rmthost/text())"
+              source="config" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move syslog" name="SystemCommand">
+     <arg expr="mv -f /tmp/syslog /etc/sysconfig/syslog" />
+    </astep>
+
+    <astep  abort="y" errmsg="Failed to write remote syslog filter settings to rsyslog_filter.conf configuration file" name="WriteFormattedFile">
+     <arg expr="/tmp/rsyslog_filter.conf" />
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep      abort="y"
+           dependency="/GAUCfg/sysog/whitelists/NumberOfwhitelists/text() != '0'"
+               errmsg="Failed to append whitelist configuration file"
+                 name="AppendFormatted2File"
+               repeat="/GAUCfg/syslog/whitelists/whitelist"
+           rptNdxName="RPT_NDX">
+
+     <arg expr="/tmp/rsyslog_filter.conf" />
+
+     <arg expr="concat('whitelist=', /GAUCfg/syslog/whitelists/whitelist[RPT_NDX]/whiteliststr/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep      abort="y"
+           dependency="/GAUCfg/sysog/blacklists/NumberOfblacklists/text() != '0'"
+               errmsg="Failed to append blacklist configuration file"
+                 name="AppendFormatted2File"
+               repeat="/GAUCfg/syslog/blacklists/blacklist"
+           rptNdxName="RPT_NDX">
+
+     <arg expr="/tmp/rsyslog_filter.conf" />
+
+     <arg expr="concat('blacklist=', /GAUCfg/syslog/blacklists/blacklist[RPT_NDX]/blackliststr/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move syslog" name="SystemCommand">
+     <arg expr="mv -f /tmp/rsyslog_filter.conf /etc/sysconfig/rsyslog_filter.conf" />
+    </astep>
+   </action>
+
+   <action name="Apply" successmsg="Syslog settings applied.">
+    <pre subsystem="syslog" action="Save" />
+
+    <astep  abort="n"
+           errmsg="Failed to start syslog"
+             name="SystemCommand">
+
+     <arg expr="service syslog restart" />
+    </astep>
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

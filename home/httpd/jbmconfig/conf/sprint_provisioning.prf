@@ -1,0 +1,330 @@
+
+<profile>
+ <subsystems>
+
+<!--
+   Networking -> Cellular -> Provisioning Settings Section (Sprint)
+-->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/sprint_provisioning.prf" name="sprint_provisioning">
+   <validation>
+
+    <vstep errmsg="ESN cannot be blank"
+             name="esn"
+             test="string-length(/input/esn/text()) > 0 or /input/provisiontype/text() = 'oma'" />
+
+    <vstep     id="step001"
+             name="mipmode"
+           skipto="step009"
+             test="/input/mipmode/text() = 'pref'" />
+
+    <vstep     id="step002"
+             name="mipmode"
+           skipto="step009"
+             test="/input/mipmode/text() = 'only'" />
+
+    <vstep     id="step003"
+             name="mipmode"
+           skipto="step009"
+             test="/input/mipmode/text() = 'sip'" />
+
+    <vstep   errmsg="MIP Mode must be 'pref', 'only', or 'sip'."
+             id="step004"
+             name="mipmode"
+           skipto="step009"
+             test="0 = 1" />
+
+    <vstep errmsg="SPC Unlock code must be numeric."
+             id="step009"
+             name="spcunlock"
+             test="isnumber(/input/spcunlock/text()) or /input/provisiontype/text() = 'oma' or string-length(/input/spcunlock/text()) = 0" />
+
+    <vstep errmsg="Invalid Provisioning Type."
+             id="step010"
+             name="provisiontype"
+             test="string-length(/input/provisiontype/text()) > 0" />
+
+    <vstep     id="step0"
+             name="conntype"
+           skipto="step19"
+             test="/input/provisiontype/text() = 'oma'" />
+
+    <vstep     id="step1"
+             name="conntype"
+           skipto="step19"
+             test="/input/provisiontype/text() = 'vision'" />
+
+    <vstep     id="step2"
+             name="conntype"
+           skipto="step19"
+             test="/input/provisiontype/text() = 'static'" />
+
+    <vstep     id="step3"
+             name="conntype"
+           skipto="step19"
+             test="/input/provisiontype/text() = 'datalink2vision'" />
+
+    <vstep     id="step4"
+             name="conntype"
+           skipto="step17"
+             test="/input/provisiontype/text() = 'static2vision'" />
+
+    <vstep errmsg="In-Vision time is required and must be numeric."
+               id="step5"
+             name="timeinvision"
+             test="string-length(/input/timeinvision/text()) > 0 and isnumber(/input/timeinvision/text())" />
+
+    <vstep errmsg="PPP Error Threshold time is required and must be numeric."
+               id="step6"
+             name="ppperrthreshold"
+             test="string-length(/input/ppperrthreshold/text()) > 0 and isnumber(/input/ppperrthreshold/text())" />
+
+    <vstep   id="step6a"
+             skipto="step9"
+             name="step6a"
+             test="string-length(/input/mdn/text()) = 0 and
+                   string-length(/input/min/text()) = 0 and
+                   string-length(/input/spc/text()) = 0 "/>
+
+    <vstep   id="step7"
+             skipto="step8"
+             name="mdn"
+             test="string-length(/input/mdn/text()) = 0" />
+
+    <vstep errmsg="MDN # must be numeric."
+               id="step7a"
+             name="mdn"
+             test="string-length(/input/mdn/text()) > 0 and isnumber(/input/mdn/text())" />
+
+    <vstep   id="step8"
+             skipto="step9"
+             name="min"
+             test="string-length(/input/min/text())= 0" />
+
+    <vstep errmsg="MIN # must be numeric."
+               id="step8a"
+             name="min"
+             test="string-length(/input/min/text()) > 0 and isnumber(/input/min/text())" />
+
+    <vstep errmsg="NAI User # is required."
+               id="step9"
+             name="nai"
+             test="string-length(/input/nai/text()) > 0)" />
+
+    <vstep errmsg="AAA password is required."
+               id="step10"
+             name="aaapass"
+             test="string-length(/input/aaapass/text()) > 0)" />
+
+    <vstep errmsg="HA password is required."
+               id="step11"
+             name="hapass"
+             test="string-length(/input/hapass/text()) > 0)" />
+
+    <vstep errmsg="Home IP must be a valid IP address."
+               id="step12"
+             name="homeip"
+             test="isipaddr(/input/homeip/text())" />
+
+    <vstep errmsg="Primary HA IP must be a valid IP address."
+               id="step13"
+             name="prihaip"
+             test="isipaddr(/input/prihaip/text())" />
+
+    <vstep errmsg="Secondary HA IP must be a valid IP address."
+               id="step14"
+             name="sechaip"
+             test="isipaddr(/input/sechaip/text())" />
+
+    <vstep errmsg="HA SPI must be a number."
+               id="step15"
+             name="haspi"
+             test="isnumber(/input/haspi/text())" />
+
+    <vstep errmsg="AAA SPI must be a number."
+               id="step16"
+             name="aaaspi"
+             test="isnumber(/input/aaaspi/text())" />
+
+    <vstep errmsg="PPP Error Threshold time is required and must be numeric."
+               id="step17"
+             name="ppperrthreshold"
+             test="string-length(/input/ppperrthreshold/text()) > 0 and isnumber(/input/ppperrthreshold/text())" />
+
+    <vstep errmsg="MDN # is required and must be numeric."
+               id="step18"
+             name="mdn"
+             test="string-length(/input/mdn/text()) > 0 and isnumber(/input/mdn/text())" />
+
+    <vstep     id="step19"
+             name="step19"
+             test="0 = 0" />
+
+    <vstep errmsg="Invalid Roaming/Band preference value."
+             name="rbp"
+             test="/input/rbp/text() = '' or
+                   /input/rbp/text() = 'automatic' or
+                   /input/rbp/text() = 'aonly' or
+                   /input/rbp/text() = 'bonly' or
+                   /input/rbp/text() = 'home'" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save ESN to system configuration file."
+             name="esn"
+             path="/GAUCfg/provisioning/sprint/esn" />
+
+    <cstep errmsg="Unable to save Time Sync to system configuration file."
+             name="synctime"
+             path="/GAUCfg/provisioning/common/synctime" />
+
+    <cstep errmsg="Unable to save Mobile IP Mode to system configuration file."
+             name="mipmode"
+             path="/GAUCfg/provisioning/common/mipmode" />
+
+    <cstep errmsg="Unable to save SPC Unlock Code to system configuration file."
+             name="spcunlock"
+             path="/GAUCfg/provisioning/sprint/spcunlock" />
+
+    <cstep errmsg="Unable to save Provisioning Type to system configuration file."
+             name="provisiontype"
+             path="/GAUCfg/provisioning/sprint/provisiontype" />
+
+    <cstep errmsg="Unable to save In-Vision time to system configuration file."
+             name="timeinvision"
+             path="/GAUCfg/provisioning/sprint/timeinvision" />
+
+    <cstep errmsg="Unable to save PPP Error Threshold to system configuration file."
+             name="ppperrthreshold"
+             path="/GAUCfg/provisioning/sprint/ppperrthreshold" />
+
+    <cstep errmsg="Unable to save MDN # to system configuration file."
+             name="mdn"
+             path="/GAUCfg/provisioning/sprint/mdn" />
+
+    <cstep errmsg="Unable to save MIN # to system configuration file."
+             name="min"
+             path="/GAUCfg/provisioning/sprint/min" />
+
+    <cstep errmsg="Unable to save NAI User Number to system configuration file."
+             name="nai"
+             path="/GAUCfg/provisioning/sprint/nai" />
+
+    <cstep errmsg="Unable to save AAA Password to system configuration file."
+             name="aaapass"
+             path="/GAUCfg/provisioning/sprint/aaapass" />
+
+    <cstep errmsg="Unable to save HA Password to system configuration file."
+             name="hapass"
+             path="/GAUCfg/provisioning/sprint/hapass" />
+
+    <cstep errmsg="Unable to save Home IP Address to system configuration file."
+             name="homeip"
+             path="/GAUCfg/provisioning/sprint/homeip" />
+
+    <cstep errmsg="Unable to save Primary HA IP Address to system configuration file."
+             name="prihaip"
+             path="/GAUCfg/provisioning/sprint/prihaip" />
+
+    <cstep errmsg="Unable to save Secondary HA IP Address to system configuration file."
+             name="sechaip"
+             path="/GAUCfg/provisioning/sprint/sechaip" />
+
+    <cstep errmsg="Unable to save HA SPI to system configuration file."
+             name="haspi"
+             path="/GAUCfg/provisioning/sprint/haspi" />
+
+    <cstep errmsg="Unable to save AAA SPI to system configuration file."
+             name="aaaspi"
+             path="/GAUCfg/provisioning/sprint/aaaspi" />
+
+    <cstep errmsg="Unable to save Roaming/Band preference to system configuration file."
+             name="rbp"
+             path="/GAUCfg/provisioning/common/rbp" />
+
+   </configuration>
+
+   <action name="Apply" successmsg="Provisioning settings saved and applied.">
+    <astep abort="y" errmsg="Failed to write Provisioning configuration file." name="WriteFormattedFile" >
+     <arg expr="'/tmp/cellmodem_provision_data.conf'" source="config" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/provisioning/common/synctime/text() = 'n'"
+                expr="'SYNC_TIME=no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/provisioning/common/synctime/text() = 'y'"
+                expr="'SYNC_TIME=yes'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg expr="concat('MIP_MODE=', /GAUCfg/provisioning/common/mipmode/text())"                   source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('ESN=', /GAUCfg/provisioning/sprint/esn/text())"                            source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('SPC_UNLOCK=', /GAUCfg/provisioning/sprint/spcunlock/text())"               source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('PROVISION_TYPE=', /GAUCfg/provisioning/sprint/provisiontype/text())"       source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('PPP_ERROR_THRESOLD=', /GAUCfg/provisioning/sprint/ppperrthreshold/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TIME_IN_VISION=', /GAUCfg/provisioning/sprint/timeinvision/text())"        source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('MDN=', /GAUCfg/provisioning/sprint/mdn/text())"                            source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('MIN=', /GAUCfg/provisioning/sprint/min/text())"                            source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('NAI_USER=', /GAUCfg/provisioning/sprint/nai/text())"                       source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('AAA_PASS=', /GAUCfg/provisioning/sprint/aaapass/text())"                   source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('HA_PASS=', /GAUCfg/provisioning/sprint/hapass/text())"                     source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('HOME_IP=', /GAUCfg/provisioning/sprint/homeip/text())"                     source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('PRIMARY_HA_IP=', /GAUCfg/provisioning/sprint/prihaip/text())"              source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('SECONDARY_HA_IP=', /GAUCfg/provisioning/sprint/sechaip/text())"            source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('HA_SPI=', /GAUCfg/provisioning/sprint/haspi/text())"                       source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('AAA_SPI=', /GAUCfg/provisioning/sprint/aaaspi/text())"                     source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move Provisioning configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/cellmodem_provision_data.conf /etc/jbm/wireless/cellmodem_provision_data.conf " />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to Roaming/Band preference configuration file." name="WriteFormattedFile" >
+     <arg expr="'/tmp/cellmodem_roampref'" source="config" />
+
+     <arg expr="/GAUCfg/provisioning/common/rbp/text())" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move Roaming/Band preference configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/cellmodem_roampref /etc/jbm/wireless/cellmodem_roampref " />
+    </astep>
+   </action>
+
+   <action name="Force" successmsg="Forced (Sprint) provisioning initiated and in progress">
+    <astep abort="y" errmsg="Failed to write Provisioning trigger file." name="SystemCommand" >
+     <arg expr="touch /etc/jbm/wireless/FORCE_PROVISIONING" />
+    </astep>
+   </action>
+
+   <action name="Save" successmsg="">
+    <pre subsystem="sprint_provisioning" action="Apply" />
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>
+
+

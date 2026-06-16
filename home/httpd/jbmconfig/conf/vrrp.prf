@@ -1,0 +1,373 @@
+
+<profile>
+ <subsystems>
+                                                                                                                              
+                <!-- Advanced -> VRRP Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/vrrp.prf" name="vrrp">
+   <validation>
+    <vstep errmsg="Invalid VRRP Record Set. Must be a well-formed XML document."
+             name="vrrps"
+             test="string-length(/input/vrrps/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save VRRP to system configuration file."
+             name="vrrps" path="/GAUCfg/vrrp/vrrps"
+             type="node" />
+   </configuration>
+
+
+   <action name="Save" successmsg="Operation Succeeded.">
+
+    <astep           abort="y"                                                                                                     
+             cfgdependency="/GAUCfg/vrrp/vrrps/NumberOfvrrps/text() = '0'"                                            
+                    errmsg="No vrrps to be configured, no action taken."                                                         
+                      name="SystemCommand" >                                                                                       
+                                                                                                                                                                                      
+           <arg       expr="'/home/httpd/jbmconfig/bin/DelOrphVrrpIntfs ; test 0 -eq 1'"                                                
+                    source="config" />                                                                                                 
+    </astep>                                                                                                           
+                                                                                                                                                                                                             
+    <astep         abort="y"
+                  errmsg="Failed to write one of the vrrp configuration file"
+                    name="WriteFormattedFile"
+                  repeat="/GAUCfg/vrrp/vrrps/vrrp"
+              rptNdxName="RPT_NDX">
+
+     <arg dependency="RPT_NDX = '1'"   
+                expr="concat('/tmp/vrrpd', '.conf')"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="RPT_NDX = '1'" expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX = '1'" expr="#vrrpd bash startup scriptconfig file" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+     <arg dependency="RPT_NDX = '1'" expr="#no spaces allowed" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+     <arg dependency="RPT_NDX = '1'" expr="#Set to " />
+     <arg dependency="RPT_NDX = '1'" expr="quote()" source="config" />
+     <arg dependency="RPT_NDX = '1'" expr="n" />
+     <arg dependency="RPT_NDX = '1'" expr="quote()" source="config" />
+     <arg dependency="RPT_NDX = '1'" expr=" to tell the vrrpd daemon" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+     <arg dependency="RPT_NDX = '1'" expr="# not to handle virtual MACS" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX = '1'" expr="concat('VIRT_MAC=', /GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/mac/text())" 
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+     <arg dependency="RPT_NDX = '1'" expr="#the ID of the Virtual Server" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX = '1'" expr="concat('VIRT_ID=', /GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/gid/text())" 
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX = '1'" expr="#The interface to run/listen on" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX = '1'" expr="concat('INTERFACE=', /GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/intf/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX = '1'" expr="#the IP address(s) of the virtual servers" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+     <arg dependency="RPT_NDX = '1'" expr="#Leave encased in " />
+     <arg dependency="RPT_NDX = '1'" expr="quote()" source="config" />
+     <arg dependency="RPT_NDX = '1'" expr=" to list multiple IPs" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX = '1'" expr="concat('VIRT_IP=', /GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/ipaddr/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX = '1'" expr="# If this is the " />
+     <arg dependency="RPT_NDX = '1'" expr="quote()" source="config" />
+     <arg dependency="RPT_NDX = '1'" expr="Master" />
+     <arg dependency="RPT_NDX = '1'" expr="quote()" source="config" />
+     <arg dependency="RPT_NDX = '1'" expr=" device the priority" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+     <arg dependency="RPT_NDX = '1'" expr="# should be set higher than the " />
+     <arg dependency="RPT_NDX = '1'" expr="quote()" source="config" />
+     <arg dependency="RPT_NDX = '1'" expr="Backup" />
+     <arg dependency="RPT_NDX = '1'" expr="quote()" source="config" />
+     <arg dependency="RPT_NDX = '1'" expr=" device" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+     <arg dependency="RPT_NDX = '1'" expr="# Valid values are 1-255" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX = '1'" expr="concat('VRRP_PRIORITY=', /GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/priority/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX = '1'" expr="# Set to a number of seconds between notification" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+     <arg dependency="RPT_NDX = '1'" expr="# packets sent to other VRRP hosts. Default is 1." />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX = '1'" expr="concat('VRRP_INTERVAL=', /GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/ninterval/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="RPT_NDX = '1'" expr="\n" />
+    </astep>
+
+    <astep         abort="y"
+                  errmsg="Failed to write one of the vrrp configuration file"
+                    name="WriteFormattedFile"
+                  repeat="/GAUCfg/vrrp/vrrps/vrrp"
+              rptNdxName="RPT_NDX">
+
+     <arg dependency="RPT_NDX != '1'"   
+                expr="concat('/tmp/vrrpd', RPT_NDX, '.conf')"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="RPT_NDX != '1'" expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX != '1'" expr="#vrrpd bash startup scriptconfig file" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+     <arg dependency="RPT_NDX != '1'" expr="#no spaces allowed" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+     <arg dependency="RPT_NDX != '1'" expr="#Set to " />
+     <arg dependency="RPT_NDX != '1'" expr="quote()" source="config" />
+     <arg dependency="RPT_NDX != '1'" expr="n" />
+     <arg dependency="RPT_NDX != '1'" expr="quote()" source="config" />
+     <arg dependency="RPT_NDX != '1'" expr=" to tell the vrrpd daemon" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+     <arg dependency="RPT_NDX != '1'" expr="# not to handle virtual MACS" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX != '1'" expr="concat('VIRT_MAC=', /GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/mac/text())" 
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+     <arg dependency="RPT_NDX != '1'" expr="#the ID of the Virtual Server" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX != '1'" expr="concat('VIRT_ID=', /GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/gid/text())" 
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX != '1'" expr="#The interface to run/listen on" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX != '1'" expr="concat('INTERFACE=', /GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/intf/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX != '1'" expr="#the IP address(s) of the virtual servers" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+     <arg dependency="RPT_NDX != '1'" expr="#Leave encased in " />
+     <arg dependency="RPT_NDX != '1'" expr="quote()" source="config" />
+     <arg dependency="RPT_NDX != '1'" expr=" to list multiple IPs" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX != '1'" expr="concat('VIRT_IP=', /GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/ipaddr/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX != '1'" expr="# If this is the " />
+     <arg dependency="RPT_NDX != '1'" expr="quote()" source="config" />
+     <arg dependency="RPT_NDX != '1'" expr="Master" />
+     <arg dependency="RPT_NDX != '1'" expr="quote()" source="config" />
+     <arg dependency="RPT_NDX != '1'" expr=" device the priority" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+     <arg dependency="RPT_NDX != '1'" expr="# should be set higher than the " />
+     <arg dependency="RPT_NDX != '1'" expr="quote()" source="config" />
+     <arg dependency="RPT_NDX != '1'" expr="Backup" />
+     <arg dependency="RPT_NDX != '1'" expr="quote()" source="config" />
+     <arg dependency="RPT_NDX != '1'" expr=" device" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+     <arg dependency="RPT_NDX != '1'" expr="# Valid values are 1-255" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX != '1'" expr="concat('VRRP_PRIORITY=', /GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/priority/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX != '1'" expr="# Set to a number of seconds between notification" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+     <arg dependency="RPT_NDX != '1'" expr="# packets sent to other VRRP hosts. Default is 1." />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+
+     <arg dependency="RPT_NDX != '1'" expr="concat('VRRP_INTERVAL=', /GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/ninterval/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="RPT_NDX != '1'" expr="\n" />
+    </astep>
+
+    <astep     abort="y"
+              errmsg="Failed to move one of the vrrp configuration file"
+                 name="SystemCommand"
+               repeat="/GAUCfg/vrrp/vrrps/vrrp"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="RPT_NDX = '1'"      
+                expr="concat('mv -f /tmp/vrrpd', '.conf')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+
+     <arg dependency="RPT_NDX = '1'"     
+                expr="concat(' /etc/vrrpd/vrrpd', '.conf')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+    </astep>
+
+    <astep     abort="y"
+              errmsg="Failed to move one of the vrrp configuration file"
+                 name="SystemCommand"
+               repeat="/GAUCfg/vrrp/vrrps/vrrp"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="RPT_NDX != '1'"      
+                expr="concat('mv -f /tmp/vrrpd', RPT_NDX, '.conf')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+
+     <arg dependency="RPT_NDX != '1'"      
+                expr="concat(' /etc/vrrpd/vrrpd', RPT_NDX, '.conf')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+    </astep>
+
+    <astep     abort="n"
+                 name="SystemCommand"
+               repeat="/GAUCfg/vrrp/vrrps/vrrp"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="/GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/enable/text() = 'No' and RPT_NDX = '1'"    
+                expr="concat('chkconfig vrrpd', ' off')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+
+    </astep>
+
+    <astep     abort="n"
+                 name="SystemCommand"
+               repeat="/GAUCfg/vrrp/vrrps/vrrp"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="/GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/enable/text() = 'No' and RPT_NDX != '1'"    
+                expr="concat('chkconfig vrrpd', RPT_NDX, ' off')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+
+    </astep>
+
+    <astep     abort="n"
+               errmsg="Failed to enable one of the vrrp services."
+                 name="SystemCommand"
+               repeat="/GAUCfg/vrrp/vrrps/vrrp"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="/GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/enable/text() = 'Yes' and RPT_NDX = '1'"    
+                expr="concat('chkconfig vrrpd', ' on')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+
+    </astep>
+
+    <astep     abort="n"
+               errmsg="Failed to enable one of the vrrp services."
+                 name="SystemCommand"
+               repeat="/GAUCfg/vrrp/vrrps/vrrp"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="/GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/enable/text() = 'Yes' and RPT_NDX != '1'"    
+                expr="concat('chkconfig vrrpd', RPT_NDX, ' on')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+    <pre subsystem="vrrp" action="Save" />
+
+    <astep   abort="y"
+            errmsg="Failed to remove orphaned vrrp interface config files."
+              name="SystemCommand">
+
+     <arg abort="y" expr="/home/httpd/jbmconfig/bin/DelOrphVrrpIntfs" />
+    </astep>
+
+    <astep         abort="y"
+           cfgdependency="/GAUCfg/vrrp/vrrps/NumberOfvrrps/text() = '0'"
+                  errmsg="No vrrp to be configured, no action taken."
+                    name="SystemCommand" >
+
+     <arg       expr="'test 0 -eq 1'"
+              source="config" />
+
+    </astep>
+
+    <astep     abort="n"
+              errmsg="Settings applied, but one or more vrrps could not be disabled."
+                 name="SystemCommand"
+               repeat="/GAUCfg/vrrp/vrrps/vrrp"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="/GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/enable/text() = 'No' and RPT_NDX = '1'"
+                expr="concat('service vrrpd', ' stop')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+    </astep>
+
+    <astep     abort="n"
+              errmsg="Settings applied, but one or more vrrps could not be disabled."
+                 name="SystemCommand"
+               repeat="/GAUCfg/vrrp/vrrps/vrrp"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="/GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/enable/text() = 'No' and RPT_NDX != '1'"
+                expr="concat('service vrrpd', RPD_NDX, ' stop')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+    </astep>
+
+    <astep     abort="y"
+              errmsg="Settings applied, but one or more vrrps could not be enabled."
+                 name="SystemCommand"
+               repeat="/GAUCfg/vrrp/vrrps/vrrp"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="/GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/enable/text() = 'Yes' and RPT_NDX = '1'"
+                expr="concat('service vrrpd', ' restart')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+    </astep>
+
+    <astep     abort="y"
+              errmsg="Settings applied, but one or more vrrps could not be enabled."
+                 name="SystemCommand"
+               repeat="/GAUCfg/vrrp/vrrps/vrrp"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="/GAUCfg/vrrp/vrrps/vrrp[RPT_NDX]/enable/text() = 'Yes' and RPT_NDX != '1'"
+                expr="concat('service vrrpd', RPT_NDX, ' restart')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+    </astep>
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

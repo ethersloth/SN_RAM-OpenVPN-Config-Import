@@ -1,0 +1,9 @@
+Select a subsystem configuration to edit from the drop-down list provided above.
+
+
+WARNING:  Subsystem configuration files managed by the Gateway Administration
+          Utility (GAU) are subject to being overwritten WITHOUT NOTICE at any
+          time when using the GAU to configure a supported subsystem. Changes
+          made to GAU generated files via this expert mode facility will not be
+          retained if the GAU is subsequently used to configure the subsystem.
+

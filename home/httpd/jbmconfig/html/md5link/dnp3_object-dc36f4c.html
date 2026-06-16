@@ -1,0 +1,81 @@
+<form id="object-form" class="form-horizontal">
+<!-- ko ifnot: isram -->
+	<!--ko template: {name:'title-template',data:'Upgrade to RAM is required in order to load this page'}--><!--/ko-->
+	<div style="text-align: center">
+		<a class="btn btn-primary" href="#!/ram_unlock">Upgrade to RAM</a>
+	</div>
+	<br />
+	<h5><p class="gw-auto-margin" style="width: 600px; text-align: center">Please contact <span data-bind="text: manufacturer"></span> support at <span><font color="red" data-bind="text: contactemail"></font></span> or <span><font color="red" data-bind="text: contactphone"></font></span></h5>
+<!-- /ko -->
+<!-- ko if: isram -->
+	<!--ko template: {name:'title-template',data:'DNP3 Object Mapping Configuration'}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Define DNP3 Object Mapping'}--><!--/ko-->
+	<table border="1" align="center" style="text-align: center; vertical-align: middle;">
+		<thead>
+			<tr>
+				<th>&nbsp;&nbsp;I/O Type&nbsp;&nbsp;</td>
+				<th>&nbsp;&nbsp;Description&nbsp;&nbsp;</th>
+				<th>&nbsp;&nbsp;Map I/O Buttons&nbsp;&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Input/Output Mapping I/O', 'link': '/h_dnp3_mapio.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>D&nbsp;IN&nbsp;(X)</td>
+				<td>Binary Inputs</td>
+				<td><a class="btn btn-link" href="#!/binaryinput">Binary Inputs Map I/O</a></td>
+			</tr>
+			<tr>
+				<td>D&nbsp;OUT&nbsp;(Y)</td>
+				<td>Binary Outputs</td>
+				<td><a class="btn btn-link" href="#!/binaryoutput">Binary Outputs Map I/O</a></td>
+			</tr>
+			<tr>
+				<td>A&nbsp;IN&nbsp;(AX)</td>
+				<td>Analog Inputs</td>
+				<td><a class="btn btn-link" href="#!/analoginput">Analog Inputs Map I/O</a></td>
+			</tr>
+			<tr>
+				<td>A&nbsp;OUT&nbsp;(AY)</td>
+				<td>Analog Outputs</td>
+				<td><a class="btn btn-link" href="#!/analogoutput">Analog Outputs Map I/O</a></td>
+			</tr>
+			<tr>
+				<td>F&nbsp;IN&nbsp;(FX)</td>
+				<td>Float Inputs</td>
+				<td><a class="btn btn-link" href="#!/floatinput">Floating Inputs Map I/O</a></td>
+			</tr>
+			<tr>
+				<td>F&nbsp;OUT&nbsp;(FY)</td>
+				<td>Float Outputs</td>
+				<td><a class="btn btn-link" href="#!/floatoutput">Floating Outputs Map I/O</a></td>
+			</tr>
+			<tr>
+				<td>L&nbsp;IN&nbsp;(LX)</td>
+				<td>Long Inputs</td>
+				<td><a class="btn btn-link" href="#!/longinput">Long Inputs Map I/O</a></td>
+			</tr>
+			<tr>
+				<td>L&nbsp;OUT&nbsp;(LY)</td>
+				<td>Long Outputs</td>
+				<td><a class="btn btn-link" href="#!/longoutput">Long Outputs Map I/O</a></td>
+			</tr>
+			<tr>
+				<td>&nbsp;COUNTERS&nbsp;(LX)&nbsp;</td>
+				<td>&nbsp;Binary Counters&nbsp;</td>
+				<td><a class="btn btn-link" href="#!/binarycounter">Binary Counters Map I/O</a></td>
+			</tr>
+		</tbody>
+	</table>
+	<hr />
+	<div style="text-align: center">
+		<a class="btn btn-small" data-bind="click: switchPage('#!/localstation')">Local Station</a>
+		<a class="btn btn-small" data-bind="click: switchPage('#!/serial')">Serial Ports</a>
+		<a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_general')">General</a>
+		<a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_physicallink')">Physical Link Layer</a>
+		<a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_datalink')">Data Link and Application Layer</a>
+		<a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_default')">Default Variation</a>
+		<a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_config')">Display Config File</a>
+	</div>
+<!-- /ko -->
+</form>
+

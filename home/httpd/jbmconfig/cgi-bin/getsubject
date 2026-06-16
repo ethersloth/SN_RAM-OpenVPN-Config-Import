@@ -1,0 +1,58 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+###############################################################################################################################
+#                                                                                                                             #
+# getgwlnxpid - Get list of gwlnx process ID                                                                                  #
+#                                                                                                                             #
+# For the record . .                                                                                                          #
+#                                                                                                                             #
+# All rights reserved.  No part of this program may be reproduced, stored in a retrieval system or transmitted, in any form   #
+# or by any means, including but not limited to electronic, mechanical, photocopying, recording, or otherwise, without the    #
+# express prior written consent of Sixnet, 4645 LaGuardia, St. Louis, MO 63134.  (314) 426-7781, fx: (314) 426-0007.          #
+# Contact support@sixnet.com                                                                                                  #
+#                                                                                                                             #
+###############################################################################################################################
+
+# Get the version and all the specific platform information:
+
+print "Expires: Mon, 26 Jul 1997 05:00:00 GMT\n";
+print "Last-Modified: " . gmtime(time()) . " GMT\n";
+print "Cache-Control: no-store, no-cache, must-revalidate\n";
+print "Cache-Control: post-check=0, pre-check=0\n";
+print "Pragma: no-cache\n";
+print "Content-type: text/html; charset=utf8\n\n";
+
+$FAMILY = `/home/httpd/jbmconfig/bin/format_modemno.pl 2>/dev/null`;
+$SERIAL = `cat /proc/feature_codes/serialno 2>/dev/null`;
+$FIRMWARE = ""; 
+$RAMSIZE = "";
+$Subject = "";
+
+if (open(FILE, "free -b | grep Mem | awk '{print \$2}' 2>&1 |"))
+  {
+    $RAMSIZE = <FILE>;
+    close(FILE);
+  }
+
+#version looks like this:
+#Redlion Version 4.14rc10 098b1741 --  Mon Apr 8 17:41:32 CDT 2013
+$FIRMWARE = "Verision unknown\n";
+if ( -e "/etc/version" )
+{
+	#give only 1 match, the top one. new file has more info in it
+	#but still contains original format at the top commented
+	my $tmp = `grep "Version" /etc/version -m 1`;
+	#read everything between 'Version' and '--'
+	if ( $tmp =~ /^.*s*Version\s+(.*)\s+--.*$/ )
+	{
+		$FIRMWARE= "Version $1\n";
+	}
+}
+
+$Subject .= "Family = " . $FAMILY . " SerialNo = " . $SERIAL . " Firmware = " . $FIRMWARE . " RamSize = " . $RAMSIZE;
+
+print "$Subject\n";
+
+exit;
+

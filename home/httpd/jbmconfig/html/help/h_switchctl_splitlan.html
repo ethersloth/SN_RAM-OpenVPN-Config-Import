@@ -1,0 +1,10 @@
+<h4>Description</h4>
+<p>
+<b>Split Lan:</b> This will alter the switch port allocations. When disabled, all switch ports 1-5 will be treated as a single LAN. This will be configurable as <b>eth0</b> and will default to being a firewall trusted/internal interface.
+</p>
+<p>
+When enabled, port 5 will be divided out as a WAN port, eth0 (firewalled as external/untrusted). Ports 1-4 will be an internally trusted LAN, eth1.
+</p>
+<p>
+<b>WARNING:</b> Configured software VLANs will become unavailable.  When switching modes, your firewall interface tables will be rebuilt and may need any custom changes reapplied. In addition, a USER INITIATED reboot is required to complete the mode switch.
+</p>

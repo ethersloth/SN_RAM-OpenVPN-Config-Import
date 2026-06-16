@@ -1,0 +1,902 @@
+
+<profile>
+ <subsystems>
+
+          <!-- Services -> DHCP Server Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dhcpserver.prf" name="dhcpserver">
+   <validation>
+
+    <vstep     id="step1"
+             name="dns1"
+           skipto="step4"
+             test="string-length(/input/dns1/text()) = 0" />
+
+    <vstep     id="step2"
+             name="dns1"
+             test="isipaddr(/input/dns1/text())" />
+
+    <vstep errmsg="Invalid Primary DNS Server Address. Must be a valid IP Address."
+               id="step3"
+             name="dns1"
+             test="isipaddr(/input/dns1/text())" />
+
+    <vstep     id="step4"
+             name="dns2"
+           skipto="step7"
+             test="string-length(/input/dns2/text()) = 0" />
+
+    <vstep     id="step4"
+             name="dns1"
+           skipto="step6"
+             test="string-length(/input/dns1/text()) > 0" />
+
+    <vstep  errmsg="Primary DNS cannot be empty"
+                id="step5"
+             name="dns1"
+             test="false()" />
+
+    <vstep errmsg="Invalid Secondary DNS Server Address. Must be a valid IP Address."
+               id="step6"
+             name="dns2"
+             test="isipaddr(/input/dns2/text())" />
+
+    <vstep errmsg="Invalid Default Lease Time. Must be a number."
+               id="step7"
+             name="deflease"
+             test="isnumber(/input/deflease/text())" />
+
+    <vstep errmsg="Invalid Maximum Lease Time. Must be a number."
+             name="maxlease"
+             test="isnumber(/input/maxlease/text())" />
+
+    <vstep errmsg="Invalid Minimum Lease Time. Must be a number."
+             name="minlease"
+             test="isnumber(/input/minlease/text())" />
+
+    <vstep errmsg="Invalid Maximum Lease Time must be > Minimum Lease Time."
+             name="minlease"
+             test="/input/maxlease/text() > /input/minlease/text()" />
+
+    <vstep errmsg="Invalid Distribute DHCP Leases Table Record Set."
+             name="macs"
+             test="string-length(/input/macs/text()) > 0" />
+
+   </validation>
+
+
+   <configuration>
+    <cstep errmsg="Unable to save Domain Name to system configuration file."
+             name="domainname"
+             path="/GAUCfg/dhcp/domainname" />
+
+    <cstep errmsg="Unable to save We is DNS to system configuration file."
+             name="weisdns"
+             path="/GAUCfg/dhcp/weisdns" />
+
+    <cstep errmsg="Unable to save Primary DNS Address to system configuration file."
+             name="dns1"
+             path="/GAUCfg/dhcp/dns1" />
+
+    <cstep errmsg="Unable to save Secondary DNS Address to system configuration file."
+             name="dns2"
+             path="/GAUCfg/dhcp/dns2" />
+
+    <cstep errmsg="Unable to save Default Lease Time to system configuration file."
+             name="deflease"
+             path="/GAUCfg/dhcp/deflease" />
+
+    <cstep errmsg="Unable to save Maximum Lease Time to system configuration file."
+             name="maxlease"
+             path="/GAUCfg/dhcp/maxlease" />
+
+    <cstep errmsg="Unable to save Minimum Lease Time to system configuration file."
+             name="minlease"
+             path="/GAUCfg/dhcp/minlease" />
+
+    <cstep errmsg="Unable to save eth0 DHCP Server enable to system configuration file."
+             name="eth0_enable"
+             path="/GAUCfg/dhcp/dhcpservers/eth0/enable" />
+
+    <cstep errmsg="Unable to save eth0 default gateway to system configuration file."
+             name="eth0_defaultgateway"
+             path="/GAUCfg/dhcp/dhcpservers/eth0/eth0defaultgateway" />
+
+    <cstep errmsg="Unable to save eth0 DHCP begin address to system configuration file."
+             name="eth0_saddr"
+             path="/GAUCfg/dhcp/dhcpservers/eth0/saddr" />
+
+    <cstep errmsg="Unable to save eth0 DHCP end address to system configuration file."
+             name="eth0_eaddr"
+             path="/GAUCfg/dhcp/dhcpservers/eth0/eaddr" />
+
+    <cstep errmsg="Unable to save eth0 Broadcast to system configuration file."
+             name="eth0_broadcast"
+             path="/GAUCfg/dhcp/dhcpservers/eth0/broadcast" />
+
+    <cstep errmsg="Unable to save eth0 Subnet address to system configuration file."
+             name="eth0_subnet"
+             path="/GAUCfg/dhcp/dhcpservers/eth0/subnet" />
+
+
+    <cstep errmsg="Unable to save eth1 DHCP Server enable to system configuration file."
+             name="eth1_enable"
+             path="/GAUCfg/dhcp/dhcpservers/eth1/enable" />
+
+    <cstep errmsg="Unable to save eth1 default gateway to system configuration file."
+             name="eth1_defaultgateway"
+             path="/GAUCfg/dhcp/dhcpservers/eth1/eth1defaultgateway" />
+
+    <cstep errmsg="Unable to save eth1 DHCP begin address to system configuration file."
+             name="eth1_saddr"
+             path="/GAUCfg/dhcp/dhcpservers/eth1/saddr" />
+
+    <cstep errmsg="Unable to save eth1 DHCP end address to system configuration file."
+             name="eth1_eaddr"
+             path="/GAUCfg/dhcp/dhcpservers/eth1/eaddr" />
+
+    <cstep errmsg="Unable to save eth1 Broadcast to system configuration file."
+             name="eth1_broadcast"
+             path="/GAUCfg/dhcp/dhcpservers/eth1/broadcast" />
+
+    <cstep errmsg="Unable to save eth1 Subnet address to system configuration file."
+             name="eth1_subnet"
+             path="/GAUCfg/dhcp/dhcpservers/eth1/subnet" />
+	     
+
+    <cstep errmsg="Unable to save Wi-Fi DHCP Server enable to system configuration file."
+             name="wifi_enable"
+             path="/GAUCfg/dhcp/dhcpservers/wifi/enable" />
+
+    <cstep errmsg="Unable to save Wi-Fi default gateway to system configuration file."
+             name="wifi_defaultgateway"
+             path="/GAUCfg/dhcp/dhcpservers/wifi/wifidefaultgateway" />
+
+    <cstep errmsg="Unable to save Wi-Fi DHCP begin address to system configuration file."
+             name="wifi_saddr"
+             path="/GAUCfg/dhcp/dhcpservers/wifi/saddr" />
+
+    <cstep errmsg="Unable to save Wi-Fi DHCP end address to system configuration file."
+             name="wifi_eaddr"
+             path="/GAUCfg/dhcp/dhcpservers/wifi/eaddr" />
+
+    <cstep errmsg="Unable to save Wi-Fi Broadcast to system configuration file."
+             name="wifi_broadcast"
+             path="/GAUCfg/dhcp/dhcpservers/wifi/broadcast" />
+
+    <cstep errmsg="Unable to save Wi-Fi Subnet address to system configuration file."
+             name="wifi_subnet"
+             path="/GAUCfg/dhcp/dhcpservers/wifi/subnet" />
+
+
+    <cstep errmsg="Unable to save usb0 DHCP Server enable to system configuration file."
+             name="usb0_enable"
+             path="/GAUCfg/dhcp/dhcpservers/usb0/enable" />
+
+    <cstep errmsg="Unable to save usb0 default gateway to system configuration file."
+             name="usb0_defaultgateway"
+             path="/GAUCfg/dhcp/dhcpservers/usb0/usb0defaultgateway" />
+
+    <cstep errmsg="Unable to save usb0 DHCP begin address to system configuration file."
+             name="usb0_saddr"
+             path="/GAUCfg/dhcp/dhcpservers/usb0/saddr" />
+
+    <cstep errmsg="Unable to save usb0 DHCP end address to system configuration file."
+             name="usb0_eaddr"
+             path="/GAUCfg/dhcp/dhcpservers/usb0/eaddr" />
+
+    <cstep errmsg="Unable to save usb0 Broadcast to system configuration file."
+             name="usb0_broadcast"
+             path="/GAUCfg/dhcp/dhcpservers/usb0/broadcast" />
+
+    <cstep errmsg="Unable to save usb0 Subnet address to system configuration file."
+             name="usb0_subnet"
+             path="/GAUCfg/dhcp/dhcpservers/usb0/subnet" />
+
+    <cstep errmsg="Unable to save Distribute DHCP Leases to system configuration file."
+             name="macs"
+             path="/GAUCfg/dhcp/macs"
+             type="node" />
+
+   </configuration>
+
+
+   <action name="Save" successmsg="DHCP Server settings saved.">
+
+    <astep abort="y" errmsg="Failed to save dhcpserver configuration" name="SystemCommand">
+     <arg expr="'prfhandler_dhcpserver Save'" source="config" />
+    </astep>
+
+<!--Moved to prfhandler_dhcpserver
+    <astep  abort="y"
+           errmsg="Failed to write DHCPD configuration file"
+             name="WriteFormattedFile">
+
+     <arg expr="/tmp/dhcpd.conf" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#  dhcpd.conf" />
+     <arg expr="\n" />
+     <arg expr="#"  />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#This line is needed for ISC DHCPD 3.0 and up" />
+     <arg expr="\n" />
+     <arg expr="ddns-update-style ad-hoc;" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#so the server doesn't complain about not being authoritive" />
+     <arg expr="\n" />
+     <arg expr="authoritative;" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#uncomment and enter your domain name if needed" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/domainname/text()) = 0)" expr="'#option domain-name '" source="config" />
+     <arg dependency="(string-length(/GAUCfg/dhcp/domainname/text()) = 0)" expr="quote()"                source="config" />
+     <arg dependency="(string-length(/GAUCfg/dhcp/domainname/text()) = 0)" expr="'yourdomain.com'"       source="config" />
+     <arg dependency="(string-length(/GAUCfg/dhcp/domainname/text()) = 0)" expr="quote()"                source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/domainname/text()) > 0)" expr="'option domain-name '" source="config" />
+     <arg dependency="(string-length(/GAUCfg/dhcp/domainname/text()) > 0)" expr="quote()"               source="config" />
+     <arg dependency="(string-length(/GAUCfg/dhcp/domainname/text()) > 0)"
+                expr="/GAUCfg/dhcp/domainname/text()"
+              source="config" />
+     <arg dependency="(string-length(/GAUCfg/dhcp/domainname/text()) > 0)" expr="quote()"               source="config" />
+     <arg dependency="(string-length(/GAUCfg/dhcp/domainname/text()) > 0)" expr="';'"                   source="config" />
+
+
+     <arg expr="\n" />
+
+
+     <arg expr="#uncomment and enter your domain name server if needed" />
+     <arg expr="\n" />
+
+     <arg dependency="(/GAUCfg/dhcp/weisdns/text() = 'n' and string-length(/GAUCfg/dhcp/dns1/text()) = 0)" expr="'#option domain-name-servers '" source="config" />
+     <arg dependency="(/GAUCfg/dhcp/weisdns/text() = 'n' and string-length(/GAUCfg/dhcp/dns1/text()) = 0)" expr="quote()"                        source="config" />
+     <arg dependency="(/GAUCfg/dhcp/weisdns/text() = 'n' and string-length(/GAUCfg/dhcp/dns1/text()) = 0)" expr="'yourdnsip(, ...)'"             source="config" />
+     <arg dependency="(/GAUCfg/dhcp/weisdns/text() = 'n' and string-length(/GAUCfg/dhcp/dns1/text()) = 0)" expr="quote()"                        source="config" />
+
+     <arg dependency="(/GAUCfg/dhcp/weisdns/text() = 'n' and string-length(/GAUCfg/dhcp/dns1/text()) > 0)" expr="'option domain-name-servers '"  source="config" />
+     <arg dependency="(/GAUCfg/dhcp/weisdns/text() = 'n' and string-length(/GAUCfg/dhcp/dns1/text()) > 0)" expr="/GAUCfg/dhcp/dns1/text()"       source="config" />
+     <arg dependency="(/GAUCfg/dhcp/weisdns/text() = 'n' and string-length(/GAUCfg/dhcp/dns2/text()) > 0)" expr="', '"                           source="config" />
+     <arg dependency="(/GAUCfg/dhcp/weisdns/text() = 'n' and string-length(/GAUCfg/dhcp/dns2/text()) > 0)" expr="/GAUCfg/dhcp/dns2/text()"       source="config" />
+     <arg dependency="(/GAUCfg/dhcp/weisdns/text() = 'n' and string-length(/GAUCfg/dhcp/dns1/text()) > 0)" expr="';'"                            source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/deflease/text()) > 0)"
+                expr="'#optional default lease time (in seconds)'"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/deflease/text()) > 0)"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/deflease/text()) > 0)"
+                expr="'default-lease-time '"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/deflease/text()) > 0)"
+                expr="/GAUCfg/dhcp/deflease/text()"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/deflease/text()) > 0)"
+                expr="';'"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/deflease/text()) > 0)"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/deflease/text()) > 0)"
+                expr="'\n'"
+              source="config" />
+
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/maxlease/text()) > 0)"
+                expr="'#optional maximum lease time (in seconds)'"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/maxlease/text()) > 0)"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/maxlease/text()) > 0)"
+                expr="'max-lease-time '"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/maxlease/text()) > 0)"
+                expr="/GAUCfg/dhcp/maxlease/text()"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/maxlease/text()) > 0)"
+                expr="';'"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/maxlease/text()) > 0)"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/maxlease/text()) > 0)"
+                expr="'\n'"
+              source="config" />
+
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/minlease/text()) > 0)"
+                expr="'#optional minimum lease time (in seconds)'"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/minlease/text()) > 0)"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/minlease/text()) > 0)"
+                expr="'min-lease-time '"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/minlease/text()) > 0)"
+                expr="/GAUCfg/dhcp/minlease/text()"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/minlease/text()) > 0)"
+                expr="';'"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/minlease/text()) > 0)"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dhcp/minlease/text()) > 0)"
+                expr="'\n'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg expr="# subnet and mask must match those of the interface to which the server corresponds" />
+     <arg expr="\n" />
+
+     <arg expr="\n" />
+    </astep>
+
+    <astep  abort="y"
+           errmsg="Failed to append per/server config info to DHCP configuration file"
+             name="AppendFormatted2File">
+
+     <arg expr="/tmp/dhcpd.conf" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="concat('subnet ', /GAUCfg/dhcp/dhcpservers/eth0/subnet/text(), ' netmask ', /GAUCfg/eth0/netmask/text(), ' {')"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'# The range of IPs for this server to give out'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="concat('range ', /GAUCfg/dhcp/dhcpservers/eth0/saddr/text(), ' ', /GAUCfg/dhcp/dhcpservers/eth0/eaddr/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'# The broadcast IP of the network'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="concat('option broadcast-address ', /GAUCfg/dhcp/dhcpservers/eth0/broadcast/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/eth0/eth0defaultgateway/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/eth0/eth0defaultgateway/text() = 'Yes'"
+                expr="'# The default gateway address of the network'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/eth0/eth0defaultgateway/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/eth0/eth0defaultgateway/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/eth0/eth0defaultgateway/text() = 'Yes'"
+                expr="concat('option routers ', /GAUCfg/eth0/address/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/eth0/eth0defaultgateway/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/eth0defaultgateway/text() = 'Yes' and /GAUCfg/dhcp/weisdns/text() = 'y'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/eth0defaultgateway/text() = 'Yes' and /GAUCfg/dhcp/weisdns/text() = 'y'"
+                expr="concat('option domain-name-servers ', /GAUCfg/eth0/address/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/eth0defaultgateway/text() = 'Yes' and /GAUCfg/dhcp/weisdns/text() = 'y'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'}'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="concat('subnet ', /GAUCfg/dhcp/dhcpservers/eth1/subnet/text(), ' netmask ', /GAUCfg/eth1/netmask/text(), ' {')"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'# The range of IPs for this server to give out'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="concat('range ', /GAUCfg/dhcp/dhcpservers/eth1/saddr/text(), ' ', /GAUCfg/dhcp/dhcpservers/eth1/eaddr/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'# The broadcast IP of the network'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="concat('option broadcast-address ', /GAUCfg/dhcp/dhcpservers/eth1/broadcast/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/eth1/eth1defaultgateway/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/eth1/eth1defaultgateway/text() = 'Yes'"
+                expr="'# The default gateway address of the network'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/eth1/eth1defaultgateway/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/eth1/eth1defaultgateway/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/eth1/eth1defaultgateway/text() = 'Yes'"
+                expr="concat('option routers ', /GAUCfg/eth1/address/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/eth1/eth1defaultgateway/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/eth1defaultgateway/text() = 'Yes' and /GAUCfg/dhcp/weisdns/text() = 'y'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/eth1defaultgateway/text() = 'Yes' and /GAUCfg/dhcp/weisdns/text() = 'y'"
+                expr="concat('option domain-name-servers ', /GAUCfg/eth1/address/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/eth1defaultgateway/text() = 'Yes' and /GAUCfg/dhcp/weisdns/text() = 'y'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'}'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+	      
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="concat('subnet ', /GAUCfg/dhcp/dhcpservers/wifi/subnet/text(), ' netmask ', /GAUCfg/wifi/netmask/text(), ' {')"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'# The range of IPs for this server to give out'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="concat('range ', /GAUCfg/dhcp/dhcpservers/wifi/saddr/text(), ' ', /GAUCfg/dhcp/dhcpservers/wifi/eaddr/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'# The broadcast IP of the network'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="concat('option broadcast-address ', /GAUCfg/dhcp/dhcpservers/wifi/broadcast/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/wifi/wifidefaultgateway/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/wifi/wifidefaultgateway/text() = 'Yes'"
+                expr="'# The default gateway address of the network'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/wifi/wifidefaultgateway/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/wifi/wifidefaultgateway/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/wifi/wifidefaultgateway/text() = 'Yes'"
+                expr="concat('option routers ', /GAUCfg/wifi/address/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/wifi/wifidefaultgateway/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/wifidefaultgateway/text() = 'Yes' and /GAUCfg/dhcp/weisdns/text() = 'y'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/wifidefaultgateway/text() = 'Yes' and /GAUCfg/dhcp/weisdns/text() = 'y'"
+                expr="concat('option domain-name-servers ', /GAUCfg/wifi/address/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/wifidefaultgateway/text() = 'Yes' and /GAUCfg/dhcp/weisdns/text() = 'y'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'}'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="concat('subnet ', /GAUCfg/dhcp/dhcpservers/usb0/subnet/text(), ' netmask ', /GAUCfg/usb0/netmask/text(), ' {')"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'# The range of IPs for this server to give out'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="concat('range ', /GAUCfg/dhcp/dhcpservers/usb0/saddr/text(), ' ', /GAUCfg/dhcp/dhcpservers/usb0/eaddr/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'# The broadcast IP of the network'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="concat('option broadcast-address ', /GAUCfg/dhcp/dhcpservers/usb0/broadcast/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/usb0/usb0defaultgateway/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/usb0/usb0defaultgateway/text() = 'Yes'"
+                expr="'# The default gateway address of the network'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/usb0/usb0defaultgateway/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/usb0/usb0defaultgateway/text() = 'Yes'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/usb0/usb0defaultgateway/text() = 'Yes'"
+                expr="concat('option routers ', /GAUCfg/usb0/address/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes' and /GAUCfg/dhcp/dhcpservers/usb0/usb0defaultgateway/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/usb0defaultgateway/text() = 'Yes' and /GAUCfg/dhcp/weisdns/text() = 'y'"
+                expr="'\t'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/usb0defaultgateway/text() = 'Yes' and /GAUCfg/dhcp/weisdns/text() = 'y'"
+                expr="concat('option domain-name-servers ', /GAUCfg/usb0/address/text(), ';')"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/usb0defaultgateway/text() = 'Yes' and /GAUCfg/dhcp/weisdns/text() = 'y'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'}'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                expr="'\n'"
+              source="config" />
+
+    </astep>
+
+    <astep  abort="y"
+           errmsg="Failed to append Distributed DHCP Leases info to DHCP configuration file"
+             name="AppendFormatted2File">
+
+     <arg expr="/tmp/dhcpd.conf" />
+
+     <arg dependency="/GAUCfg/dhcp/macs/NumberOfmacs/text() != '0'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/macs/NumberOfmacs/text() != '0'"
+                expr="'# Distribute DHCP Leases Based on MAC Address'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/macs/NumberOfmacs/text() != '0'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/macs/NumberOfmacs/text() != '0'"
+                expr="'\n'"
+              source="config" />
+    </astep>
+
+    <astep      abort="y"                                                                                                        
+               errmsg="Failed to append to dhcpd.conf file."                                                                     
+                 name="AppendFormatted2File"                                                                                     
+               repeat="/GAUCfg/dhcp/macs/mac"                                                               
+           rptNdxName="RPT_NDX">                                                                                                 
+                                                                                                                                 
+     <arg expr="/tmp/dhcpd.conf" />                                                                                              
+
+     <arg dependency="/GAUCfg/dhcp/macs/NumberOfmacs/text() != '0'"
+                expr="concat('host username', RPT_NDX, ' {')"
+          rptNdxName="RPT_NDX"                
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/macs/NumberOfmacs/text() != '0'"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"                
+              source="config" />
+              
+     <arg dependency="/GAUCfg/dhcp/macs/NumberOfmacs/text() != '0'"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"                
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/macs/NumberOfmacs/text() != '0'"
+                expr="concat('hardware ethernet ', /GAUCfg/dhcp/macs/mac[RPT_NDX]/macaddr/text(), ';')"
+          rptNdxName="RPT_NDX"                
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/macs/NumberOfmacs/text() != '0'"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"                
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/macs/NumberOfmacs/text() != '0'"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"                
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/macs/NumberOfmacs/text() != '0'"
+                expr="concat('fixed-address ', /GAUCfg/dhcp/macs/mac[RPT_NDX]/macipaddr/text(), ';')"
+          rptNdxName="RPT_NDX"                
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/macs/NumberOfmacs/text() != '0'"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"                
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/macs/NumberOfmacs/text() != '0'"
+                expr="'}'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/dhcp/macs/NumberOfmacs/text() != '0'"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"                
+              source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move dhcpd.conf" name="SystemCommand">
+     <arg expr="mv -f /tmp/dhcpd.conf /etc/dhcpd/dhcpd.conf" />
+    </astep>
+
+    <astep abort="n" name="SystemCommand">
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'No' and /GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'No' and /GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'No' and /GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'No'"
+                expr="'chkconfig dhcpd off'"
+              source="config" />
+    </astep>
+
+    <astep abort="n" errmsg="DHCP cannot be enabled" name="SystemCommand">
+
+      <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes' or /GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes' or /GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes' or /GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                 expr="'chkconfig dhcpd on'"
+               source="config" />
+    </astep>
+Moved to prfhandler_dhcpserver-->
+
+   </action>
+
+   <action name="Apply" successmsg="DHCP Server settings applied.">
+
+    <astep abort="y" errmsg="Failed to apply dhcpserver configuration" name="SystemCommand">
+     <arg expr="'prfhandler_dhcpserver Apply'" source="config" />
+    </astep>
+
+<!--Moved to prfhandler_dhcpserver
+    <pre subsystem="dhcpserver" action="Save" />
+
+    <astep abort="y" errmsg="DHCP cannot be used when IP Transparency is enabled" name="SystemCommand">
+
+     <arg      abort="y"
+          dependency="(GAUCfg/iptrans/enable/text() = 'n' and (/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes' or /GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes' or /GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes' or /GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'))"
+              source="config" />
+    </astep>
+
+    <astep abort="n" name="SystemCommand"> 
+
+     <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'No' and /GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'No' and /GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'No' and /GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'No'"
+                expr="'service dhcpd stop'"
+              source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="DHCP cannot be started" name="SystemCommand">
+
+      <arg dependency="/GAUCfg/dhcp/dhcpservers/eth0/enable/text() = 'Yes' or /GAUCfg/dhcp/dhcpservers/eth1/enable/text() = 'Yes' or /GAUCfg/dhcp/dhcpservers/wifi/enable/text() = 'Yes' or /GAUCfg/dhcp/dhcpservers/usb0/enable/text() = 'Yes'"
+                 expr="'service dhcpd restart'"
+               source="config" />
+    </astep>
+Moved to prfhandler_dhcpserver-->
+
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

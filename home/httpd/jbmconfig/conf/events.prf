@@ -1,0 +1,409 @@
+
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/events.prf" name="events">
+   <validation>
+    <vstep errmsg="Invalid Event Record Set. Must be a well-formed XML document."
+             name="events"
+             test="string-length(/input/events/text()) > 0" />
+   </validation>
+
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable option to system configuration file."
+              name="enableevents"
+              path="/GAUCfg/events/enableevents" />
+
+    <cstep errmsg="Unable to save sacan time option to system configuration file."
+              name="scantime"
+              path="/GAUCfg/events/scantime" />
+
+    <cstep errmsg="Unable to save Events to system configuration file."
+              name="events" path="/GAUCfg/events/events"
+              type="node" />
+   </configuration>
+
+
+   <action name="Save" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_events
+    <!-- Begin writing events.conf file -->
+    <astep errmsg="Failed to write events configuration file." name="WriteFormattedFile" abort="y">
+     <arg expr="'/tmp/events.conf'" source="config" />
+     <arg expr="concat('NumberOfEvents=', /GAUCfg/events/events/NumberOfevents/text())"
+          source="config" />
+     <arg expr="\n" />
+    </astep>
+    <astep errmsg="Failed to write event's elements description." name="WriteFormattedFile" abort="n">
+     <arg expr="'/tmp/events.conf'" source="config" />
+     <arg expr="# This is a GUI generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# List of possible option values for each event's element." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# scanTime: Global events cycle time in milliseconds (default is 300ms for now)." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# EventName: Unique Alphanumeric value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# eventEnabled: Available options are [Yes/No] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# dataSource: Available options are [IODB/Event] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# localTagName: Text field for Local Tag Name (if Data Source is set to IODB) value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# localType: Available options are [DI/DO/AI/AO/LI/LO/FI/FO] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# localAddr: Available options are [0 based IODB address] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# dataFormat: Available options are [16bit/32bitB/32bitL/64bitB/64bitL] value for each event where [B] and [L] stands for Big Endian and Little Endian." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# dataSigned: Available options are [unsigned/signed] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# eventExpression: String field to be defined later, if the event specified is triggered (i.e. in a true state), then this data source will be 1. Otherwise, this data source returns a zero." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# eventType: Available options are [Data Match/Data Mismatch/Math Function/Absolute High/Absolute Low/Deviation High/Deviation Low/Out of Band/In Band/Rate of Change] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# setpointSource: Available options are [Fixed/IODB] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# setpointTagName: Text field for Set Point Tag Name (if Set Point Source is set to IODB) value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# setpointType: Available options are [AI/AO/LI/LO/FI/FO] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# setpointAddr: Available options are [0 based IODB address] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# setPoint: Limits on the setpoint should be based on the chosen Data Source limits. [Maybe 0/1, Maybe +/-32768, Maybe 0-65535] Numeric value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# mathType: If dataSource is IODB and LocalType is not DI or DO, the available options are [Scaling by Range/Scaling by Factor/Scaling by IO Register/Bit Splitting] and if the localType is DI or DO, the available option is [Bit Packing]." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# scalingTagName: Text field for Scaling Tag Name (if Scaling by IO Register is selected) value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# scalingType: Available options are [AI/AO/LI/LO/FI/FO] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# scalingAddr: Available options are [0 based IODB address] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# mathExpression: expression of math when mathType is Scaling by Factor or Scaling by IO Register for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# scalingRange: If mathType is [Scaling by Range], this field contains the X-Y coordinates. The default value is [Xmin:0,Xmax:0,Ymin:0,Ymax:0]." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# alarmValue: Limits on the Alarm Value should be based on the chosen Data Source limits. [Maybe 0/1, Maybe +/-32768, Maybe 0-65535] Numeric value for each event." />
+     <arg expr="\n" />
+     <arg expr="# alarmValue: If the event type configured as [Rate of Change], this alarmValue would be [Change Limit], the amount of change between the expected amount and the actual usage." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# timeWindow: This is the amount of time the data is being scanned for changes in rate in seconds." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# rateChangeType: Available options are [MinMax/Average] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# activationDelay: Available options are [Range 0 - 100000, Units: Seconds] Numeric value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# clearEvent: Available options are [automatic/manual] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# hysteresis: Limits on the hysteresis Value should be based on the chosen Data Source limits. [Maybe 0/1, Maybe +/-32768, Maybe 0-65535] Numeric value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# deactivationDelay: Available options are [Range 0 - 100000, Units: Seconds, Default: 0 to disable] Numeric value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# actionType: Available options are [None/SMS/EMAIL/IODB/CMD/SVM] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# recipient: This option [can be Group or Individual, This references another data list for a list of contacts. Demo phase: this can be a txt field to allow ONE phone number or MULTIPLE email address to be entered] for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# subject: This option is optional and could be either BLANK or some kind of text field." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# alertLevel: This option is [for the message that will appear in SixView Manager].  These correspond to Syslog levels, where 0 is most critical and 7 is informational." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# messageFormat: Available options are [standard/custom/standard+custom] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# customMsgActive: Text Field when event goes active, size of 160 characters, unless Standard + Custom, then Limit to 60 chars. Default: [Empty] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# customMsgInactive: Text Field when event goes inactive, size of 160 characters, unless Standard + Custom, then Limit to 60 chars. Default: [Empty] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# command: Dropdown field to choose the name of the command script to be executed when the EVENT test fails. Available options are [None/(filename of script found in /etc/eventing/actions/ such as Reboot.sh)]" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# writeTagName: Text field for Write Tag Name (if Action Type is set to IODB) value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# writeType: Available options are [DI/DO/AI/AO/LI/LO/FI/FO] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# writeAddr: Available options are [0 based IODB address] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# writeValue: Available options are [datasource/event/fixed/counter] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# fixedValue: Numeric value [Limited by type of register selection in the Tag/Address register selection. Only visible if (Value to Write) is set to Fixed Value] for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# edgeTriggerMode: Available options are [neither/risingonly/fallingonly/both] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# levelTrigger: Available options are [Yes/No] value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# periodicaction: Available options are [Range 0 - 100000, Units: Seconds, Default: 0] Numeric value for each event." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg dependency="/GAUCfg/events/enableevents/text() = 'y'" expr="'[GLOBAL]'" source="config" />
+     <arg dependency="/GAUCfg/events/enableevents/text() = 'y'" expr="'\n'" source="config" />
+     <arg dependency="/GAUCfg/events/enableevents/text() = 'y'" expr="concat('scanTime=', /GAUCfg/events/scantime/text())" source="config" />
+     <arg dependency="/GAUCfg/events/enableevents/text() = 'y'" expr="'\n'" source="config" />
+     <arg dependency="/GAUCfg/events/enableevents/text() = 'y'" expr="'[/GLOBAL]'" source="config" />
+     <arg dependency="/GAUCfg/events/enableevents/text() = 'y'" expr="'\n'" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <!-- Begin writing events to file -->
+    <astep      abort="y"
+               errmsg="Failed to write events configuration file"
+               repeat="/GAUCfg/events/events/event"
+           rptNdxName="RPT_NDX"
+                 name="AppendFormatted2File"
+           dependency="/GAUCfg/events/events/NumberOfevents/text() != '0' and /GAUCfg/events/enableevents/text() = 'y'">
+
+     <arg expr="/tmp/events.conf" />
+     <arg expr="concat('[EVENT','RPT_NDX',']')" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('eventName=', /GAUCfg/events/events/event[RPT_NDX]/eventname/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('eventEnabled=', /GAUCfg/events/events/event[RPT_NDX]/enable/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('dataSource=', /GAUCfg/events/events/event[RPT_NDX]/datasource/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('localTagName=', /GAUCfg/events/events/event[RPT_NDX]/localtagname/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('localType=', /GAUCfg/events/events/event[RPT_NDX]/localType/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/localAddr/text() = 'NaN'" expr="'localAddr='" rptNdxName="RPT_NDX" source="config" />
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/localAddr/text() != 'NaN'" expr="concat('localAddr=', /GAUCfg/events/events/event[RPT_NDX]/localAddr/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('dataFormat=', /GAUCfg/events/events/event[RPT_NDX]/dataformat/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('dataSigned=', /GAUCfg/events/events/event[RPT_NDX]/datasigned/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('eventExpression=', /GAUCfg/events/events/event[RPT_NDX]/eventexpression/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/eventtype/text() = 'Scaling' or
+                     /GAUCfg/events/events/event[RPT_NDX]/eventtype/text() = 'Bit Operations' or
+                     /GAUCfg/events/events/event[RPT_NDX]/eventtype/text() = 'Calculations'"
+                expr="'eventType=Math Function'" rptNdxName="RPT_NDX" source="config" />
+
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/eventtype/text() != 'Scaling' and
+                     (/GAUCfg/events/events/event[RPT_NDX]/eventtype/text() != 'Bit Operations' and
+                     /GAUCfg/events/events/event[RPT_NDX]/eventtype/text() != 'Calculations')"
+                expr="concat('eventType=', /GAUCfg/events/events/event[RPT_NDX]/eventtype/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('setpointSource=', /GAUCfg/events/events/event[RPT_NDX]/selsetpointsrc/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('setpointTagName=', /GAUCfg/events/events/event[RPT_NDX]/setpointtagname/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('setpointType=', /GAUCfg/events/events/event[RPT_NDX]/setpointType/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/setpointAddr/text() = 'NaN'" expr="'setpointAddr='" rptNdxName="RPT_NDX" source="config" />
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/setpointAddr/text() != 'NaN'" expr="concat('setpointAddr=', /GAUCfg/events/events/event[RPT_NDX]/setpointAddr/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('setPoint=', /GAUCfg/events/events/event[RPT_NDX]/setpoint/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/eventtype/text() = 'Scaling'"
+                expr="'mathType=Scaling by Range'" rptNdxName="RPT_NDX" source="config" />
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/eventtype/text() = 'Bit Operations' and /GAUCfg/events/events/event[RPT_NDX]/mathtype/text() = 'Bit Unpacking'"
+                expr="'mathType=Bit Splitting'" rptNdxName="RPT_NDX" source="config" />
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/eventtype/text() = 'Bit Operations' and /GAUCfg/events/events/event[RPT_NDX]/mathtype/text() = 'Bit Packing'"
+                expr="'mathType=Bit Packing'" rptNdxName="RPT_NDX" source="config" />
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/eventtype/text() = 'Calculations' and /GAUCfg/events/events/event[RPT_NDX]/mathtype/text() = 'Calculation with Constant'"
+                expr="'mathType=Scaling by Factor'" rptNdxName="RPT_NDX" source="config" />
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/eventtype/text() = 'Calculations' and /GAUCfg/events/events/event[RPT_NDX]/mathtype/text() = 'Calculation with IO Registers'"
+                expr="'mathType=Scaling by IO Register'" rptNdxName="RPT_NDX" source="config" />
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/eventtype/text() != 'Scaling' and
+                      (/GAUCfg/events/events/event[RPT_NDX]/eventtype/text() != 'Bit Operations' and
+                      /GAUCfg/events/events/event[RPT_NDX]/eventtype/text() != 'Calculations')"
+                expr="concat('mathType=', /GAUCfg/events/events/event[RPT_NDX]/mathtype/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('scalingTagName=', /GAUCfg/events/events/event[RPT_NDX]/scalingtagname/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('scalingType=', /GAUCfg/events/events/event[RPT_NDX]/scalingType/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/scalingAddr/text() = 'NaN'" expr="'scalingAddr='" rptNdxName="RPT_NDX" source="config" />
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/scalingAddr/text() != 'NaN'" expr="concat('scalingAddr=', /GAUCfg/events/events/event[RPT_NDX]/scalingAddr/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/mathtype/text() = 'Calculation with Constant'" expr="concat('mathExpression=', /GAUCfg/events/events/event[RPT_NDX]/mathoperation/text(), '(', /GAUCfg/events/events/event[RPT_NDX]/sfv/text(), ')')" rptNdxName="RPT_NDX" source="config" />
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/mathtype/text() = 'Calculation with IO Registers'" expr="concat('mathExpression=', /GAUCfg/events/events/event[RPT_NDX]/mathoperation/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/mathtype/text() != 'Calculation with Constant' and /GAUCfg/events/events/event[RPT_NDX]/mathtype/text() != 'Calculation with IO Registers'" expr="'mathExpression='" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('scalingRange=', /GAUCfg/events/events/event[RPT_NDX]/scalingrange/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('alarmValue=', /GAUCfg/events/events/event[RPT_NDX]/alarmvalue/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('timeWindow=', /GAUCfg/events/events/event[RPT_NDX]/timewindow/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('rateChangeType=', /GAUCfg/events/events/event[RPT_NDX]/ratechangetype/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('activationDelay=', /GAUCfg/events/events/event[RPT_NDX]/activationdelay/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('clearEvent=', /GAUCfg/events/events/event[RPT_NDX]/alarmreset/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('hysteresis=', /GAUCfg/events/events/event[RPT_NDX]/hysteresis/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('deactivationDelay=', /GAUCfg/events/events/event[RPT_NDX]/deactivationdelay/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('actionType=', /GAUCfg/events/events/event[RPT_NDX]/actiontype/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('recipient=', /GAUCfg/events/events/event[RPT_NDX]/recipient/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('subject=', /GAUCfg/events/events/event[RPT_NDX]/subject/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('alertLevel=', /GAUCfg/events/events/event[RPT_NDX]/alertlevel/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('messageFormat=', /GAUCfg/events/events/event[RPT_NDX]/messageformat/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('customMsgActive=', quote(), /GAUCfg/events/events/event[RPT_NDX]/customactivemessage/text(), quote())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('customMsgInactive=', quote(), /GAUCfg/events/events/event[RPT_NDX]/custominactivemessage/text(), quote())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('command=', /GAUCfg/events/events/event[RPT_NDX]/command/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('writeTagName=', /GAUCfg/events/events/event[RPT_NDX]/writetagname/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('writeType=', /GAUCfg/events/events/event[RPT_NDX]/writeType/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/writeAddr/text() = 'NaN'" expr="'writeAddr='" rptNdxName="RPT_NDX" source="config" />
+     <arg dependency="/GAUCfg/events/events/event[RPT_NDX]/writeAddr/text() != 'NaN'" expr="concat('writeAddr=',/GAUCfg/events/events/event[RPT_NDX]/writeAddr/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('writeValue=', /GAUCfg/events/events/event[RPT_NDX]/writevalue/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('fixedValue=', /GAUCfg/events/events/event[RPT_NDX]/fixedvalue/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('edgeTriggerMode=', /GAUCfg/events/events/event[RPT_NDX]/edgetriggering/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('levelTrigger=', /GAUCfg/events/events/event[RPT_NDX]/leveltriggering/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('periodicaction=', /GAUCfg/events/events/event[RPT_NDX]/periodicaction/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="[/EVENT]" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to copy events.conf file to it's location." name="SystemCommand">
+     <arg expr="mv -f /tmp/events.conf /etc/eventd/events.conf" />
+    </astep>
+
+    <astep dependency="/GAUCfg/events/enableevents/text() = 'n'" name="SystemCommand">
+     <arg abort="n" expr="chkconfig eventd off" />
+    </astep>
+
+    <astep dependency="/GAUCfg/events/enableevents/text() = 'y'" errmsg="Failed to turn on eventd." name="SystemCommand">
+     <arg abort="n" expr="chkconfig eventd on" />
+    </astep>
+Moved to prfhandler_events-->
+
+    <astep abort="y" errmsg="Failed to save the EVENTS configuration" name="SystemCommand">
+     <arg expr="'prfhandler_events Save'" source="config" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_events
+    <pre subsystem="events" action="Save" />
+
+    <astep dependency="/GAUCfg/events/enableevents/text() = 'n'" name="SystemCommand">
+     <arg abort="n" expr="service eventd stop" />
+    </astep>
+
+    <astep dependency="/GAUCfg/events/enableevents/text() = 'y'" errmsg="Failed to start Eventing."   name="SystemCommand">
+     <arg abort="y" expr="service eventd restart" />
+    </astep>
+Moved to prfhandler_events-->
+
+    <astep abort="y" errmsg="Failed to apply the EVENTS configuration" name="SystemCommand">
+     <arg expr="'prfhandler_events Apply'" source="config" />
+    </astep>
+
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

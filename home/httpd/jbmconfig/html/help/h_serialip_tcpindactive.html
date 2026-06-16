@@ -1,0 +1,10 @@
+<h4>Description</h4>
+<p>This option determines if the TCP/IP port of the device will accept data <b>before</b> the remote side (Serial Port) is active. 
+At least one of the two sides in the configuration must be set for Independent Activation. 
+If neither side is set, then the device will not accept data. This function provides integrity for the device by preventing data from being accepted until it can be delivered successfully.
+A TCP Server set to Yes, will listen even if the serial side is not considered connected.  If set to No, it will not listen for a connection until the serial side is considered connected.
+A TCP Client set to Yes will always attempt to connect to the configured destination IP, even if the serial side is not connected or active.  If set to No, it will attempt a connection only when the serial side is first considered connected.
+</p>
+<h4>Recommended Setting</h4>
+<p> Yes for Servers, No for Clients </p>
+

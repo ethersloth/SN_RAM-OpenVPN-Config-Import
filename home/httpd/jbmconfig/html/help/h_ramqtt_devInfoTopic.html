@@ -1,0 +1,21 @@
+<h4>Description</h4>
+<p>Information about the device will be published to the Device Info topic. The amount of information is based
+on the Device Info Message setting.</p>
+<h5>Topic Macros</h5>
+<p>Topics support macros that can reference unique information about the device to be used
+within the topic itself.<br><br>
+<b>%c or %C</b> - The value of Client ID field<br/>
+<b>%m or %M</b> - MAC Address for the eth0 network interface (alphanumeric, no special characters)<br/>
+<b>%i or %I</b> - IMEI<br/>
+<b>%s or %S</b> - The device's serial number<br/>
+<b>%j or %J</b> - ICCID<br/>
+<b>%p or %P</b> - IP address for the eth0 network interface (includes the '.' characters)<br/>
+</p>
+<p>
+<b>Examples:</b> <br>
+<b>test/topic/%s</b><br>
+test/topic/971X12345678912
+<br><br>
+<b>company/%i/%c</b><br>
+company/123456789123456/test_client
+</p>

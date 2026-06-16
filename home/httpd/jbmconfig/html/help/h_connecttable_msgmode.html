@@ -1,0 +1,10 @@
+<h4>Description</h4>
+<p>
+This will choose between enabling the local Visa protocol engine or allowing Passthru/Transparent mode.
+</P>
+<p><b>Transparent:</b> - Allow raw communication between the Dial port and the TCP Connection.</p>
+<p><b>Visa:</b> - Enable local Visa I engine.  This will process one transaction, and issue an EOT after the transaction response has been sent to the dial device.</P>
+<p><b>Visa2:</b> - Enable local Visa II engine. After a transaction is complete, an ENQ will be issued to query the next transaction in sequence.  If there is no response to the ENQ, then an EOT is issued.</P>
+
+<h4>Recommended Setting</h4>
+<p>Transparent</p>

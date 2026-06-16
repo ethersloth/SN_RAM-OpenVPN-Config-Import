@@ -1,0 +1,73 @@
+<!--ko template: {name: 'title-template', data: 'SNMP Agent'}--><!--/ko-->
+<!--ko template: {name: 'full-savable-bool-template', data: enable}--><!--/ko-->
+<!--ko if: enable.value() === 'y'-->
+	<!--ko template: {name: 'full-savable-select-template', data: version}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: community}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: location}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: contact}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: allowserial}--><!--/ko-->
+<!--/ko-->
+<div style="text-align: center">
+	<button type="button" class="btn btn-primary" data-bind="click: dlmib">Download MIB</button>
+</div>
+<!--ko if: enable.value() === 'y' && version.value() === 'v3'-->
+<hr />
+<!--ko template: {name:'h4-template', data: 'SNMPv3 Configuration'}--><!--/ko-->
+<div data-bind="if: showControlTable">
+	<table border="1" align="center" style="text-align: center">
+		<thead>
+			<tr>
+				<th style="width: 200px; border: none">User Name</th>
+				<th style="width: 200px; border: none">Auth Type</th>
+				<th style="width: 200px; border: none">Privacy Type</th>
+				<th colspan="2" style="border: none">
+					<span class="badge" data-bind="text: numRecords"></span>
+				</th>
+			</tr>
+		</thead>
+		<tbody data-bind="foreach: snmpControlTable">
+			<tr style="height: 35px" data-bind="style: {'background-color': '#eee'}">
+				<td style="text-align: center">
+					<span data-bind="text: username"></span>
+				</td>
+				<td style="text-align: center">
+					<span data-bind="text: authtype"></span>
+				</td>
+				<td style="text-align: center">
+					<span data-bind="text: sectype"></span>
+				</td>
+				<td style="text-align: center">
+					<button type="button" class="btn btn-primary" data-bind="click: $parent.editRecord($index()), attr: {name: 'edit' + $index()}">Edit</button>
+				</td>
+				<td style="text-align: center">
+					<button type="button" class="btn btn-danger" data-bind="click: $parent.deleteRecord($index()), attr: {name: 'delete' + $index()}">Delete</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<br />
+<div style="text-align: center">
+	<button class="btn btn-primary" name="adduser" data-bind="event: {click: addUser}">Add User</button>
+</div>
+<!--/ko-->
+<div id="snmprule-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="snmprule-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>SNMPv3 User Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: username}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: authtype}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-password-template', data: authpassword}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: sectype}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-password-template', data: secpassword}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: snmpFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

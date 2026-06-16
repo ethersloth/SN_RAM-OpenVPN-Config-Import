@@ -1,0 +1,30 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/predefints.prf" name="predefints">
+   <validation>
+    <vstep errmsg="Invalid Host Record Set. Must be a well-formed XML document."
+             name="predefs"
+             test="string-length(/input/predefs/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Predefined Interface Names list to system configuration file."
+             name="predefints" path="/GAUCfg/predefs/predefints"
+             type="node" />
+   </configuration>
+
+   <action name="Save" successmsg="Operation Succeeded.">
+    <!--
+     This action is intentionally left empty because there is no Linux level component tied to this action.
+    -->
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+    <pre subsystem="predefints" action="Save" />
+   </action>
+
+  </subsystem>
+ </subsystems>
+</profile>

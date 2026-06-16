@@ -1,0 +1,167 @@
+<div id="easyconfig-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="easy2config-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: clickExit">&times;</button>
+					<h3>Access Settings</h3>
+				</div>
+				<div class="modal-body">
+					<!-- ko template: {name: 'full-savable-select-template', data: method}--><!-- /ko -->
+					<!-- ko template: {name: 'h4-template', data: "User: admin (Full Access)"} --><!-- /ko -->
+					<!-- ko template: {name: 'full-savable-password-template', data: fap1}--><!-- /ko -->
+					<!-- ko template: {name: 'full-savable-password-template', data: fap2}--><!-- /ko -->
+					<!-- ko template: {name: 'full-savable-password-template', data: curpass}--><!-- /ko -->
+					<button class="btn btn-primary pull-right" data-bind="click: submitGauaccess">Next</button>
+				</div>
+			</div>
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: clickExit">&times;</button>
+					<h3>eth0 (WAN) Settings</h3>
+				</div>
+				<div class="modal-body">
+					<!-- ko template: {name: 'full-savable-bool-template', data: eth0usedhcp}--><!-- /ko -->
+					<!-- ko ifnot: eth0UsingDHCP -->
+					<!-- ko template: {name: 'full-savable-input-template', data: eth0address}--><!-- /ko -->
+					<!-- ko template: {name: 'full-savable-input-template', data: eth0netmask}--><!-- /ko -->
+					<!-- ko template: {name: 'full-savable-input-template', data: eth0gateway}--><!-- /ko -->
+					<!-- /ko -->
+					<button class="btn pull-left" data-bind="click: clickBack">Back</button>
+					<button class="btn btn-primary pull-right" data-bind="click: clickNext">Next</button>
+				</div>
+			</div>
+			<!-- ko if: haveEth1 -->
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: clickExit">&times;</button>
+					<h3>eth1 (LAN) Settings</h3>
+				</div>
+				<div class="modal-body">
+					<!-- ko template: {name: 'full-savable-input-template', data: eth1address}--><!-- /ko -->
+					<!-- ko template: {name: 'full-savable-input-template', data: eth1netmask}--><!-- /ko -->
+					<button class="btn pull-left" data-bind="click: clickBack">Back</button>
+					<button class="btn btn-primary pull-right" data-bind="click: submitEth1">Next</button>
+				</div>
+			</div>
+			<!-- /ko -->
+			<!-- ko if: haveWifi -->
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: clickExit">&times;</button>
+					<h3>Wi-Fi Access Point</h3>
+				</div>
+				<div class="modal-body">
+					<!-- ko template: {name: 'full-savable-bool-template', data: wifienable}--><!-- /ko -->
+					<!-- ko if: usingWifi -->
+						<!-- ko template: {name: 'full-savable-input-template', data: ssid}--><!-- /ko -->
+						<!-- ko if: hideKey -->
+						<!-- ko template: {name: 'full-savable-password-template', data: presharedkey}--><!-- /ko -->
+						<!-- /ko -->
+						<!-- ko ifnot:    hideKey -->
+						<!-- ko template: {name: 'full-savable-input-template', data: presharedkey}--><!-- /ko -->
+						<!-- /ko -->
+						<div class="control-group" style="padding-left: 200px; margin-top: -20px; margin-bottom: 15px"><div class="controls"><label class="checkbox">
+							<input style="vertical-align: center" type="checkbox" data-bind="checked: hideKey">Hide Characters</input>
+						</label></div></div>
+					<!-- /ko -->
+					<button class="btn pull-left" data-bind="click: clickBack">Back</button>
+					<button class="btn btn-primary pull-right" data-bind="click: submitWifi">Next</button>
+				</div>
+			</div>
+			<!-- /ko -->
+			<!-- ko if: showCell -->
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: clickExit">&times;</button>
+					<h3>Cellular Connection</h3>
+				</div>
+				<div class="modal-body">
+					<pre style="text-align: center">Currently Installed Modem is: <span data-bind="text: installedModem"></span></pre>
+					<pre style="text-align: center">APN for context <span data-bind="text: context.value"></span> is <span data-bind="text: apnDisplay"></span></pre>
+					<hr>
+					<!-- ko template: {name: 'full-savable-input-template', data: apn}--><!-- /ko -->
+					<button class="btn pull-left" data-bind="click: clickBack">Back</button>
+					<button class="btn btn-primary pull-right" data-bind="click: submitCellular">Next</button>
+				</div>
+			</div>
+			<!-- /ko -->
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: clickExit">&times;</button>
+					<h3>Apply Configuration</h3>
+				</div>
+				<div class="modal-body gw-modal-body-long">
+					<div style="text-align: center">
+						<h4>Summary</h4>
+					</div>
+					<table class="gw-status-table gw-auto-margin gw-st45" style="width: 400px">
+						<tr>
+							<td>Web Access Method</td>
+							<td data-bind="text: methodDisplay, css: {'gw-highlight': method.changed}"></td>
+						</tr>
+						<!-- ko if:    eth0UsingDHCP -->
+						<tr>
+							<td>eth0</td>
+							<td data-bind="css: {'gw-highlight': eth0usedhcp.changed}">Configured using DHCP</td>
+						</tr>
+						<!-- /ko -->
+						<!-- ko ifnot: eth0UsingDHCP -->
+						<tr>
+							<td>eth0 IP</td>
+							<td data-bind="text: eth0address.value, css: {'gw-highlight': eth0address.changed}"></td>
+						</tr>
+						<tr>
+							<td>eth0 Subnet</td>
+							<td data-bind="text: eth0netmask.value, css: {'gw-highlight': eth0netmask.changed}"></td>
+						</tr>
+						<tr>
+							<td>eth0 Gateway</td>
+							<td data-bind="text: eth0gateway.value, css: {'gw-highlight': eth0gateway.changed}"></td>
+						</tr>
+						<!-- /ko -->
+						<tr>
+							<td>eth1 IP</td>
+							<td data-bind="text: eth1address.value, css: {'gw-highlight': eth1address.changed}"></td>
+						</tr>
+						<tr>
+							<td>eth1 Subnet</td>
+							<td data-bind="text: eth1netmask.value, css: {'gw-highlight': eth1netmask.changed}"></td>
+						</tr>
+						<!-- ko if:    usingWifi -->
+						<tr>
+							<td>Wi-Fi SSID</td>
+							<td data-bind="text: ssid.value, css: {'gw-highlight': ssid.changed}"></td>
+						</tr>
+						<!-- /ko -->
+						<!-- ko ifnot: usingWifi -->
+						<!-- ko if: haveWifi -->
+						<tr>
+							<td>Wi-Fi</td>
+							<td data-bind="css: {'gw-highlight': wifienable.changed}">Disabled</td>
+						</tr>
+						<!-- /ko -->
+						<!-- /ko -->
+						<!-- ko if: showCell -->
+						<tr>
+							<td>Cellular APN</td>
+							<td data-bind="text: apn.value, css: {'gw-highlight': apn.changed}"></td>
+						</tr>
+						<!-- /ko -->
+					</table>
+					<hr>
+					<h4>Recommended Action</h4>
+					<p>Click <b>Apply</b> for the changes above to take immediate effect. If you have reconfigured the IP address for the interface you are currently connected to, you may need to reconnect to the device after a minute.</p>
+					<p>Click <b>Save</b> if there are additional configuration changes you would like to make. A reboot will be required for configuration updates to take effect.</p>
+					<h4>Save</h4>
+					<p>This option will save your current settings and a reboot via this interface page or power off/on is required in order for the current settings to be applied</p>
+					<h4>Apply</h4>
+					<p>This option will save and apply the current settings</p>
+					<button class="btn pull-left" data-bind="click: clickBack">Back</button>
+					<button class="btn btn-primary pull-right" data-bind="click: clickApply">Apply</button>
+					<button class="btn pull-right" style="margin-right: 10px" data-bind="click: clickSave">Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

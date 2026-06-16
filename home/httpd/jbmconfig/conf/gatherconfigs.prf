@@ -1,0 +1,183 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                              <!--
+                Admin -> Gather Configs Section
+
+  V2.20 behaviors (taken from cfg_adm.cpp - GatherConfigs()):
+
+  +==========+==================================================================================+============+
+  |  ACTION  |                           STEP                                                   | ON FAILURE |
+  +==========+==================================================================================+============+
+  |   Gather | Try to get value of GAUCfg/gatherconfigs/network  from Master Configuration file | Abort      |
+  |          +----------------------------------------------------------------------------------+------------+
+  |          | Try to get value of GAUCfg/gatherconfigs/gwlnx    from Master Configuration file | Abort      |
+  |          +----------------------------------------------------------------------------------+------------+
+  |          | Try to get value of GAUCfg/gatherconfigs/jbmfiles from Master Configuration file | Abort      |
+  |          +----------------------------------------------------------------------------------+------------+
+  |          | Try to get value of GAUCfg/gatherconfigs/prefix   from Master Configuration file | Abort      |
+  |          +----------------------------------------------------------------------------------+------------+
+  |          | Try to get value of GAUCfg/gatherconfigs/method   from Master Configuration file | Abort      |
+  |          +----------------------------------------------------------------------------------+------------+
+  |          | Verify GAUCfg/gatherconfigs/network  = "yes" or "no"                             | Abort      |
+  |          +----------------------------------------------------------------------------------+------------+
+  |          | Verify GAUCfg/gatherconfigs/gwlnx    = "yes" or "no"                             | Abort      |
+  |          +----------------------------------------------------------------------------------+------------+
+  |          | Verify GAUCfg/gatherconfigs/jbmfiles = "yes" or "no"                             | Abort      |
+  |          +----------------------------------------------------------------------------------+------------+
+  |          | Verify GAUCfg/gatherconfigs/method   = "ftp" or "download"                       | Abort      |
+  |          +----------------------------------------------------------------------------------+------------+
+  |          | Verify GAUCfg/gatherconfigs/prefix contains no whitespace                        | Abort      |
+  |          +----------------------------------------------------------------------------------+------------+
+  |          | Build command string:                                                            |            |
+  |          |                                                                                  |            |
+  |          | [                                                                                |            |
+  |          |  "/bin/gatherconfigs"                                                            |            |
+  |          | ]                                                                                |            |
+  |          |                                                                                  |            |
+  |          | if ("yes" == GAUCfg/gatherconfigs/network)                                       |            |
+  |          |   {                                                                              |            |
+  |          |    ["..."] += " -n"                                                              |            |
+  |          |   }                                                                              |            |
+  |          |                                                                                  |            |
+  |          | if ("yes" == GAUCfg/gatherconfigs/jbmfiles)                                      |            |
+  |          |   {                                                                              |            |
+  |          |    ["..."] += " -a"                                                              |            |
+  |          |   }                                                                              |            |
+  |          |                                                                                  |            |
+  |          | if ("yes" == GAUCfg/gatherconfigs/gwlnx)                                         |            |
+  |          |   {                                                                              |            |
+  |          |    ["..."] += " -g"                                                              |            |
+  |          |   }                                                                              |            |
+  |          |                                                                                  |            |
+  |          | if ("download" == GAUCfg/gatherconfigs/method)                                   |            |
+  |          |   {                                                                              |            |
+  |          |    ["..."] += " -o gconfigs.zip"                                                 |            |
+  |          |   }                                                                              |            |
+  |          |  else                                                                            |            |
+  |          |      {                                                                           |            |
+  |          |       ["..."] += " -s " + GAUCfg/gatherconfigs/prefix                            |            |
+  |          |      }                                                                           |            |
+  |          +----------------------------------------------------------------------------------+------------+
+  |          | Try to execute command string:                                                   |            |
+  |          |                                                                                  |            |
+  |          | '{command string} &> /dev/null'                                                  | Abort      |
+  |          +----------------------------------------------------------------------------------+------------+
+  |          | if ("download" == GAUCfg/gatherconfigs/method)                                   |            |
+  |          |   {                                                                              |            |
+  |          |    Try to set /GAUcfg/gatherconfigs/current = "/tmp/gconfigs.zip"                | Abort      |
+  |          |   }                                                                              |            |
+  |          |  else                                                                            |            |
+  |          |      {                                                                           |            |
+  |          |       Try to set /GAUcfg/gatherconfigs/current = ""                              | Abort      |
+  |          |      }                                                                           |            |
+  |          +----------------------------------------------------------------------------------+------------+
+  |          | Try to save Master Configuration file                                            | Abort      |
+  +==========+==================================================================================+============+                -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/gatherconfigs.prf" name="gatherconfigs">
+   <validation>
+    <vstep     id="step1"
+             name="method"
+           skipto="all"
+             test="/input/method/text() = 'file'" />
+
+    <vstep     id="step2"
+             name="ftpdest"
+           skipto="step4"
+             test="/input/ftpdest/text() = 'jbm'" />
+
+    <vstep errmsg="FTP Server Address required when FTP method is chosen without WSBU FTP server as destination."
+               id="step3"
+             name="userver"
+           skipto="all"
+             test="string-length(/input/userver/text()) > 0" />
+
+    <vstep errmsg="FTP Project Name required when FTP method is chosen with WSBU FTP server as destination."
+               id="step4"
+             name="project"
+             test="string-length(/input/project/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Method to system configuration file."
+             name="method"
+             path="/GAUCfg/gatherconfigs/method" />
+
+    <cstep errmsg="Unable to save FTP Destination to system configuration file."
+             name="ftpdest"
+             path="/GAUCfg/gatherconfigs/ftpdest" />
+
+    <cstep errmsg="Unable to save FTP Server to system configuration file."
+             name="userver"
+             path="/GAUCfg/gatherconfigs/userver" />
+
+    <cstep errmsg="Unable to save jbmfile to system configuration file."
+             name="jbmfiles"
+             path="/GAUCfg/gatherconfigs/jbmfiles" />
+
+    <cstep errmsg="Unable to save gwlnx to system configuration file."
+             name="gwlnx"
+             path="/GAUCfg/gatherconfigs/gwlnx" />
+
+    <cstep errmsg="Unable to save network to system configuration file."
+             name="network"
+             path="/GAUCfg/gatherconfigs/network" />
+
+    <cstep errmsg="Unable to save project to system configuration file."
+             name="project"
+             path="/GAUCfg/gatherconfigs/project" />
+
+    <cstep errmsg="Unable to dowload file name to system configuration file."
+             name="dlfname"
+             path="/GAUCfg/gatherconfigs/dlfname" />
+
+    <cstep errmsg="Unable to save sd card option to system configuration file."
+             name="csdc"
+             path="/GAUCfg/gatherconfigs/csdc" />
+
+   </configuration>
+
+   <action name="Gather" successmsg="Operation Succeeded.\n\nIf you selected the DOWNLOAD method you may click the link when the page refreshes.\n\nOtherwise the file has been sent via FTP.">
+
+    <astep abort="y" errmsg="Failed to execute Gather Configs." name="SystemCommand" >
+     <arg   expr="'/bin/gatherconfigs -d'"
+          source="config"  />
+
+     <arg cfgdependency="/GAUCfg/gatherconfigs/jbmfiles/text() = 'y'"
+                   expr="' -a'"
+                 source="config" />
+
+     <arg cfgdependency="/GAUCfg/gatherconfigs/gwlnx/text() = 'y'"
+                   expr="' -g'"
+                 source="config" />
+
+     <arg cfgdependency="/GAUCfg/gatherconfigs/network/text() = 'y'"
+                   expr="' -n'"
+                 source="config" />
+
+     <arg cfgdependency="/GAUCfg/gatherconfigs/csdc/text() = 'y'"
+                   expr="' -c'"
+                 source="config" />
+
+     <arg cfgdependency="/GAUCfg/gatherconfigs/method/text() = 'ftp' and /GAUCfg/gatherconfigs/ftpdest/text() = 'other'"
+                   expr="concat(' -f ', /GAUCfg/gatherconfigs/userver/text(), ' -o ', /GAUCfg/gatherconfigs/dlfname/text())"
+                 source="config" />
+
+     <arg cfgdependency="/GAUCfg/gatherconfigs/method/text() = 'ftp' and /GAUCfg/gatherconfigs/ftpdest/text() = 'jbm'"
+                   expr="concat(' -s ', /GAUCfg/gatherconfigs/project/text(), ' -o ', /GAUCfg/gatherconfigs/dlfname/text())"
+                 source="config" />
+
+     <!--<arg cfgdependency="/GAUCfg/gatherconfigs/method/text() = 'file'"
+                   expr="concat(' -o ', /GAUCfg/gatherconfigs/dlfname/text())"
+                 source="config" />-->
+    </astep>
+
+
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

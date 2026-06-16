@@ -1,0 +1,56 @@
+<!-- ko template: {name: 'title-template', data: 'Script Control'}--><!-- /ko -->
+<!-- ko if: haveScripts -->
+<table style="width: 600px; margin: auto; text-align: center" border="1">
+	<tr>
+		<th style="width: 100px">Name</th>
+		<th style="width: 100px">Speed (ms)</th>
+		<th style="width: 100px">Enabled</th>
+		<th style="width: 100px">Status</th>
+	</tr>
+	<!-- ko foreach: sctlstatus -->
+	<tr>
+		<td data-bind="text: name"></td>
+		<td data-bind="text: speed"></td>
+		<td data-bind="text: enable"></td>
+		<td data-bind="text: status"></td>
+		<td width="75px"><button style="width: 100%" class="btn-danger" data-bind="click: $parent.removeScript(name)">Remove</button></td>
+	</tr>
+	<!-- /ko -->
+</table>
+<br />
+<!-- /ko -->
+<br />
+<div class="form-horizontal">
+	<!-- ko template: {name: 'select-template', data: nameselect}--><!-- /ko -->
+	<!-- ko template: {name: 'text-template', data: namedata}--><!-- /ko -->
+	<!-- ko template: {name: 'select-template', data: speeddata}--><!-- /ko -->
+	<!-- ko template: {name: 'select-template', data: enabledata}--><!-- /ko -->
+</div>
+<div class="row"><div class="span9">
+	<!-- ko template: {name: 'h4-template', data: 'Defines'}--><!-- /ko -->
+	<div class="gw-row">
+		<textarea spellcheck="false" data-bind="value: defines, event: {'keydown': insertTab}" rows="5" style="font-family:monospace; width: 600px">
+		</textarea>
+	</div>
+	<!-- ko template: {name: 'h4-template', data: 'Logic'}--><!-- /ko -->
+	<div class="gw-row">
+		<textarea spellcheck="false" data-bind="value: logic, event: {'keydown': insertTab}" rows="10" style="font-family:monospace; width: 600px">
+		</textarea>
+	</div>
+</div><div class="span3">
+	<button class="btn" style="margin-top: 50px" data-bind="click: appendDiRead">Insert DI Read</button>
+	<br />
+	<button class="btn" data-bind="click: appendAiRead">Insert AI Read</button>
+	<br />
+	<button class="btn" data-bind="click: appendDoWrite">Insert DO Write</button>
+	<br />
+	<button class="btn" data-bind="click: appendAoWrite">Insert AO Write</button>
+	<br />
+	<button class="btn" data-bind="click: appendLogMessage">Insert Log Message</button>
+	<br />
+	<button class="btn" data-bind="click: appendSmsSend">Insert SMS Send</button>
+	<br />
+	<button class="btn" data-bind="click: appendSmsRecv">Insert SMS Receive</button>
+</div><div>
+<!-- ko template: {name: 'h4-template', data: 'Output'}--><!-- /ko -->
+<!-- ko template: {name: 'textarea-template-ro', data: output} --><!-- /ko -->

@@ -1,0 +1,40 @@
+<h4>Description</h4>
+<p>
+ The value of the Fixed Lockdown Radius may be entered in this field.
+ <br />
+ <br />
+ GeoFence behavior can be described in the following ways:
+ <ul>
+  <li><b>Flexible radius</b></li>
+  <li><b>Flexible radius with additional fixed buffer</b></li>
+  <li><b>Fixed radius</b></li>
+ </ul>
+ During the establishment of a GeoFence, a set of 200 location points are obtained over a period of 15 - 20 minutes to determine
+ an initial 'minimum radius' possible for the device. The Flexible Radius behavior uses the <u>Calculated Minimum Radius</u> and
+ the configured <b>Lockdown Radius Multiplier</b> values to set the GeoFence boundary</b>. Setting the <b>Fixed Lockdown Radius</b>
+ to a positive offset (+20, for example) has the effect of adding a fixed amount of buffer space to the <u>Calculated Minimum
+ Radius</u>, and the <b>Lockdown Radius Multiplier</b> has no effect.
+ <br /><br />
+ For <b>Fixed Radius</b> behavior, the configured value for the <b>Fixed Lockdown Radius</b> is used to set an absolute minimum radius
+ for the GeoFence, subject to increase by the configured <b>Minimum Accuracy</b> or <u>Calculated Minimum Radius</u> values as needed.
+ <br /><br />
+ To select <b>Flexible Radius</b>, the <b>Fixed Lockdown Radius</b> must be set to <u>0</u>.
+ <br /><br />
+ To select <b>Flexible radius with additional fixed buffer</b>, enter a value, preceeded with '+'.
+ <br /><br>
+ To select <b>Fixed radius</b> behavior, enter any non-zero value.
+ <br /><br />
+ Note that since the calculated minimum radius may change over time depending on acquired GPS location data, this value will never be
+ allowed to become less than the <b>Minimum Accuracy</b> nor the <u>Calculated Minimum Accuracy</u>.
+ <br /><br />
+ The allowable range is 20 - 2000
+ <br />
+ <br />
+ <font color="#FF0000">(Required)</font>
+</p>
+<h4>Recommended Setting</h4>
+<p>
+ 0 = Off.
+</p>
+
+

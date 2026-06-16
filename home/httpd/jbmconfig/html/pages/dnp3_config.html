@@ -1,0 +1,53 @@
+<form id="dnp3-config-form" class="form-horizontal">
+<!-- ko ifnot: isram -->
+    <!--ko template: {name:'title-template',data:'Upgrade to RAM is required in order to load this page'}--><!--/ko-->
+    <div style="text-align: center">
+        <a class="btn btn-primary" href="#!/ram_unlock">Upgrade to RAM</a>
+    </div>
+    <br />
+    <h5><p class="gw-auto-margin" style="width: 600px; text-align: center">Please contact <span data-bind="text: manufacturer"></span> support at <span><font color="red" data-bind="text: contactemail"></font></span> or <span><font color="red" data-bind="text: contactphone"></font></span></h5>
+<!-- /ko -->
+<!-- ko if: isram -->
+	<!--ko template: {name:'title-template',data:'DNP3 Configuration File'}--><!--/ko-->
+	<!--ko template: {name: 'h4-template', data: 'Import Configuration'}--><!--/ko-->
+	<div style="text-align: center">
+		<!--ko template: {name: 'file-input-template', data: cfgfile}--><!--/ko-->
+		<br />
+		<button type="button" class="btn btn-primary" data-bind="click: importf">Import</button>
+	</div>
+	<hr />
+	<!--ko template: {name: 'h4-template', data: 'Download'}--><!--/ko-->
+	<div style="width: 100%">
+		<table class="gw-auto-margin" style="text-align: center"><tr>
+			<td>
+				<a style="width: 100px" class="btn btn-primary" data-bind="click: dlconfig">Configuration</a>
+			</td>
+			<td style="width: 10px"></td>
+			<td>
+				<a style="width: 100px" class="btn btn-primary" data-bind="click: dldebug">Debug</a>
+			</td>
+		</tr></table>
+	</div>
+	<hr />
+	<!--ko template: {name: 'h4-template', data: 'Edit Configuration'}--><!--/ko-->
+	<!--ko template: {name: 'textarea-template', data: dnpcfg}--><!--/ko-->
+	<br />
+	<div style="text-align: center">
+		<a class="btn btn-small" data-bind="click: save">Save</a>
+		<a class="btn btn-small" data-bind="click: stop">Stop</a>
+		<a class="btn btn-small" data-bind="click: start">Start</a>
+		<a class="btn btn-small" data-bind="click: refresh">Refresh</a>
+	</div>
+
+	<hr />
+	<div style="text-align: center">
+		<a class="btn btn-small" href="#!/localstation">Local Station</a>
+		<a class="btn btn-small" href="#!/serial">Serial Ports</a>
+		<a class="btn btn-small" href="#!/dnp3_general">General</a>
+		<a class="btn btn-small" href="#!/dnp3_physicallink">Physical Link Layer</a>
+		<a class="btn btn-small" href="#!/dnp3_datalink">Data Link and Application Layer</a>
+		<a class="btn btn-small" href="#!/dnp3_object">Object Mapping</a>
+		<a class="btn btn-small" href="#!/dnp3_default">Default Variation</a>
+	</div>
+<!-- /ko -->
+</form>

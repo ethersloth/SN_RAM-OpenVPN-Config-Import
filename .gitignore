@@ -1,0 +1,16 @@
+# Ignore everything by default so the repo only captures the OpenVPN work.
+/*
+
+# Keep the repo metadata itself.
+!/.gitignore
+
+# Keep the OpenVPN import source tree.
+!/home/
+!/home/httpd/
+!/home/httpd/jbmconfig/
+!/home/httpd/jbmconfig/**
+
+# Keep the distributable package tree.
+!/SN_RAM_Packages/
+!/SN_RAM_Packages/OpenVPN_Import/
+!/SN_RAM_Packages/OpenVPN_Import/**

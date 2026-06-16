@@ -1,0 +1,659 @@
+#!/usr/bin/perl
+# (C)2017 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+
+#################################################################################################################################
+#                                                                                                                               #
+# applywl - Apply Whitelist(s) to firewall configuration.                                                                       #
+#                                                                                                                               #
+#                                                                                                                               #
+# applwl <-d(=nnn)>  <-h|--help>  <-v|--version>                                                                                #
+#                                                                                                                               #
+# Where: Optional parameters are:                                                                                               #
+#                                                                                                                               #
+#        -d            - Enable debugging, numerical value, when provided, sets debug level (100 if omitted).                   #
+#        -h, --help    - Displays the usage information.                                                                        #
+#        -v, --version - Displays the version number.                                                                           #
+#                                                                                                                               #
+#                                                                                                                               #
+# For the record . . .                                                                                                          #
+#                                                                                                                               #
+# Copyright (c) 2009, 2010 by Sixnet.                                                                                           #
+#                                                                                                                               #
+# All rights reserved.  No part of this program may be reproduced, stored in a retrieval system or transmitted, in any form or  #
+# by any means, including but not limited to electronic, mechanical, photocopying, recording, or otherwise, without the express #
+# prior written consent of Sixnet, 4645 LaGuardia, St. Louis, MO 63134.  (314) 426-7781, fx: (314) 426-0007.                    #
+# Contact support@sixnet.com                                                                                                    #
+#                                                                                                                               #
+#                                                                                                                               #
+# This program was written by Art Surgant.                                                                                      #
+#                                                                                                                               #
+#################################################################################################################################
+
+#----------+-----+----------------------------------------------------------------------#
+# when     | who | what...                                                              #
+#----------+-----+----------------------------------------------------------------------#
+# 06/22/10 | dbk | Added support for SNMP whitelists.                                   #
+#----------+-----+----------------------------------------------------------------------#
+
+# Global variables:
+
+my $DEBUG       = 0,
+   $DEBUG_LEVEL = 0,
+   $JBMLIB_FILE = '/etc/jbm/jbm_lib.pl',
+   $VERSION     = '1.1';
+
+require($JBMLIB_FILE);
+
+
+# Get command line argument(s), if any:
+
+my %argList = ();
+
+foreach my $argNum (0 .. $#ARGV)
+{
+    my $arg = $ARGV[$argNum];
+
+    if ($arg =~ /^-d/i)
+    {
+        $DEBUG       = 1;
+        $DEBUG_LEVEL = 100;
+
+        my @debugArgs = ();
+
+        @debugArgs = split(/=/, $arg);
+
+        if (defined($debugArgs[1]))
+        {
+            $DEBUG_LEVEL = $debugArgs[1];
+        }
+
+        next;
+    }
+
+    if ('-h' eq $arg)
+    {
+        Usage();
+
+        exit(0);
+    }
+
+    if ('--help' eq $arg)
+    {
+        print 'Version: ', $VERSION, "\n\n";
+
+        Usage();
+
+        exit(0);
+    }
+
+    if ('-v' eq $arg)
+    {
+        print $VERSION, "\n";
+
+        exit(0);
+    }
+
+    if ('--version' eq $arg)
+    {
+        print 'Version: ', $VERSION, "\n";
+
+        exit(0);
+    }
+
+    my ($argName, $argVal) = split(/=/, $arg);
+
+    $argList{$argName} = $argVal;
+}
+
+
+# Now the real fun can begin:
+
+WriteDebugMsg(100, 'CALL', 'main', '', '');
+
+
+# Get a list of all the defined whitelists and their subnet lists in the form of an associative array where the whitelist
+# name is the key and the subnet list is the value:
+
+my $getcfgsecCmd = '/home/httpd/jbmconfig/bin/getcfgsec --infile=/home/httpd/jbmconfig/conf/config.xml'
+                 . ' --xpath=/GAUCfg/firewall/whitelistrules';
+
+my $whitelistXml = `$getcfgsecCmd`;
+
+my @elements = split(/</, $whitelistXml);
+
+my %aclGrp = ();
+
+my $elementsSize = @elements;
+
+for (my $elementNdx = 0; $elementNdx < $elementsSize; $elementNdx++)
+{
+    my $aclName   = '',
+       $aclSubnet = '';
+
+    if ($elements[$elementNdx] =~ /^name>/i)
+    {
+        $aclName = substr($elements[$elementNdx], 5);
+
+        if ('subnet>' eq substr($elements[$elementNdx + 2], 0, 7))
+        {
+            $aclSubnet = substr($elements[$elementNdx + 2], 7);
+        }  
+
+        my $aclSubnets = '';
+
+        if (exists($aclGrp{$aclName}))
+        {
+            $aclSubnets = $aclGrp{$aclName};
+
+            if ('' ne $aclSubnets)
+            {
+                $aclSubnets .= '\;';
+            }
+        }
+
+        $aclSubnets .= $aclSubnet;
+
+        $aclGrp{$aclName} = $aclSubnets;
+    }
+}
+
+
+if ($DEBUG_LEVEL >= 200)
+{
+    my @aclNames = ();
+
+    my @acls = sort { lc($a) cmp lc($b) } keys(%aclGrp);
+
+    foreach my $aclName (@acls)
+    {
+        chomp($aclName);
+
+        if ('default' ne substr($aclName, 0, 7))
+        {
+            push(@aclNames, $aclName);
+        }
+    }
+
+    foreach my $aclName (sort(keys(%aclGrp)))
+    {
+        WriteDebugMsg(100, 'INFO', 'main', $aclName . ' ' . $aclGrp{$aclName});
+    }
+}
+
+
+
+# For every major section of the firewall rules in the GAU Master Configuration file, append a new 'osaddr' parameter
+# configuration string to a list which will be passed to the tocfg program to rewrite the firewall rules in the GAU
+# Master Configuration file:
+
+my @tocfgList = ();
+
+## Turn off Delete Event for firewall whitelist subsystem
+#push(@tocfgList, '/GAUCfg/firewall/deleteevent=n');
+
+## PING
+my $cmdOut = `grep pingwlname /home/httpd/jbmconfig/conf/config.xml | sed 's/^ *//'`;
+
+my @elements = split(/</, $cmdOut);
+
+my $element = $elements[1];
+
+if ($element =~ /^pingwlname>/i)
+{
+    my $wlName = substr($element, 11);  # 11 = length of 'pingwlname';
+
+    if ('' ne $wlName && exists($aclGrp{$wlName}))
+    {
+        push(@tocfgList, '/GAUCfg/firewall/pingwhitelist=' . $aclGrp{$wlName});
+    }
+
+    if ('' eq $aclGrp{$wlName})
+    {
+        $wlName = "default";
+        push(@tocfgList, '/GAUCfg/firewall/pingwlname=' . $wlName);
+        push(@tocfgList, '/GAUCfg/firewall/pingwhitelist=' . $aclGrp{$wlName});
+    }
+}
+
+## SSH
+$cmdOut = `grep sshwlname /home/httpd/jbmconfig/conf/config.xml | sed 's/^ *//'`;
+
+@elements = split(/</, $cmdOut);
+
+$element = $elements[1];
+
+if ($element =~ /^sshwlname>/i)
+{
+    my $wlName = substr($element, 10);  # 10 = length of 'sshwlname>;
+
+    if ('' ne $wlName && exists($aclGrp{$wlName}))
+    {
+        push(@tocfgList, '/GAUCfg/firewall/sshwhitelist=' . $aclGrp{$wlName});
+    }
+
+    if ('' eq $aclGrp{$wlName})
+    {
+        $wlName = "default";
+        push(@tocfgList, '/GAUCfg/firewall/sshwlname=' . $wlName);
+        push(@tocfgList, '/GAUCfg/firewall/sshwhitelist=' . $aclGrp{$wlName});
+    }
+}
+
+## TELNET
+$cmdOut = `grep telnetwlname /home/httpd/jbmconfig/conf/config.xml | sed 's/^ *//'`;
+
+@elements = split(/</, $cmdOut);
+
+$element = $elements[1];
+
+if ($element =~ /^telnetwlname>/i)
+{
+    my $wlName = substr($element, 13);  # 13 = length of 'telnetwlname>';
+
+    if ('' ne $wlName && exists($aclGrp{$wlName}))
+    {
+        push(@tocfgList, '/GAUCfg/firewall/telnetwhitelist=' . $aclGrp{$wlName});
+    }
+
+    if ('' eq $aclGrp{$wlName})
+    {
+        $wlName = "default";
+        push(@tocfgList, '/GAUCfg/firewall/telnetwlname=' . $wlName);
+        push(@tocfgList, '/GAUCfg/firewall/telnetwhitelist=' . $aclGrp{$wlName});
+    }
+}
+
+
+## MODBUS
+$cmdOut = `grep modbuswlname /home/httpd/jbmconfig/conf/config.xml | sed 's/^ *//'`;
+
+@elements = split(/</, $cmdOut);
+
+$element = $elements[1];
+
+if ($element =~ /^modbuswlname>/i)
+{
+    my $wlName = substr($element, 13);  # 13 = length of 'modbuswlname>';
+
+    if ('' ne $wlName && exists($aclGrp{$wlName}))
+    {
+        push(@tocfgList, '/GAUCfg/firewall/modbuswhitelist=' . $aclGrp{$wlName});
+    }
+
+    if ('' eq $aclGrp{$wlName})
+    {
+        $wlName = "default";
+        push(@tocfgList, '/GAUCfg/firewall/modbuswlname=' . $wlName);
+        push(@tocfgList, '/GAUCfg/firewall/modbuswhitelist=' . $aclGrp{$wlName});
+    }
+}
+
+## DNP3
+$cmdOut = `grep dnp3wlname /home/httpd/jbmconfig/conf/config.xml | sed 's/^ *//'`;
+
+@elements = split(/</, $cmdOut);
+
+$element = $elements[1];
+
+if ($element =~ /^dnp3wlname>/i)
+{
+    my $wlName = substr($element, 11);  # 11 = length of 'dnp3wlname>';
+
+    if ('' ne $wlName && exists($aclGrp{$wlName}))
+    {
+        push(@tocfgList, '/GAUCfg/firewall/dnp3whitelist=' . $aclGrp{$wlName});
+    }
+
+    if ('' eq $aclGrp{$wlName})
+    {
+        $wlName = "default";
+        push(@tocfgList, '/GAUCfg/firewall/dnp3wlname=' . $wlName);
+        push(@tocfgList, '/GAUCfg/firewall/dnp3whitelist=' . $aclGrp{$wlName});
+    }
+}
+
+## GAU
+$cmdOut = `grep gauwlname /home/httpd/jbmconfig/conf/config.xml | sed 's/^ *//'`;
+
+@elements = split(/</, $cmdOut);
+
+$element = $elements[1];
+
+if ($element =~ /^gauwlname>/i)
+{
+    my $wlName = substr($element, 10);  # 10 = length of 'gauwlname';
+
+    if ('' ne $wlName && exists($aclGrp{$wlName}))
+    {
+        push(@tocfgList, '/GAUCfg/firewall/gauwhitelist=' . $aclGrp{$wlName});
+    }
+
+    if ('' eq $aclGrp{$wlName})
+    {
+        $wlName = "default";
+        push(@tocfgList, '/GAUCfg/firewall/gauwlname=' . $wlName);
+        push(@tocfgList, '/GAUCfg/firewall/gauwhitelist=' . $aclGrp{$wlName});
+    }
+}
+
+## SNMP
+$cmdOut = `grep snmpwlname /home/httpd/jbmconfig/conf/config.xml | sed 's/^ *//'`;
+
+@elements = split(/</, $cmdOut);
+
+$element = $elements[1];
+
+if ($element =~ /^snmpwlname>/i)
+{
+    my $wlName = substr($element, 11);  # 11 = length of 'snmpwlname';
+
+    if ('' ne $wlName && exists($aclGrp{$wlName}))
+    {
+        push(@tocfgList, '/GAUCfg/firewall/snmpwhitelist=' . $aclGrp{$wlName});
+    }
+
+    if ('' eq $aclGrp{$wlName})
+    {
+        $wlName = "default";
+        push(@tocfgList, '/GAUCfg/firewall/snmpwlname=' . $wlName);
+        push(@tocfgList, '/GAUCfg/firewall/snmpwhitelist=' . $aclGrp{$wlName});
+    }
+
+}
+
+## DMZ
+$getcfgsecCmd = '/home/httpd/jbmconfig/bin/getcfgsec --infile=/home/httpd/jbmconfig/conf/config.xml'
+              . ' --xpath=/GAUCfg/firewall/dmzrules';
+
+GetTocfgParms('/GAUCfg/firewall/dmzrules/dmzrule', $getcfgsecCmd, \@tocfgList, \%aclGrp);
+
+## REDIR
+$getcfgsecCmd = '/home/httpd/jbmconfig/bin/getcfgsec --infile=/home/httpd/jbmconfig/conf/config.xml'
+              . ' --xpath=/GAUCfg/firewall/redirrules';
+
+GetTocfgParms('/GAUCfg/firewall/redirrules/redirrule', $getcfgsecCmd, \@tocfgList, \%aclGrp);
+
+## NAT
+$getcfgsecCmd = '/home/httpd/jbmconfig/bin/getcfgsec --infile=/home/httpd/jbmconfig/conf/config.xml'
+              . ' --xpath=/GAUCfg/firewall/natrules';
+
+GetTocfgParms('/GAUCfg/firewall/natrules/natrule', $getcfgsecCmd, \@tocfgList, \%aclGrp);
+
+## FILTER
+$getcfgsecCmd = '/home/httpd/jbmconfig/bin/getcfgsec --infile=/home/httpd/jbmconfig/conf/config.xml'
+              . ' --xpath=/GAUCfg/firewall/filterrules';
+
+GetTocfgParms('/GAUCfg/firewall/filterrules/filterrule', $getcfgsecCmd, \@tocfgList, \%aclGrp);
+
+## ALLOW
+$getcfgsecCmd = '/home/httpd/jbmconfig/bin/getcfgsec --infile=/home/httpd/jbmconfig/conf/config.xml'
+              . ' --xpath=/GAUCfg/firewall/allowrules';
+
+GetTocfgParms('/GAUCfg/firewall/allowrules/allowrule', $getcfgsecCmd, \@tocfgList, \%aclGrp);
+
+# Create the command string to pass to tocfg:
+
+my $tocfgParmsCnt = @tocfgList;
+
+my $tocfgCmdStr = '/home/httpd/jbmconfig/bin/tocfg ';
+
+for (my $parmNdx = 0; $parmNdx < $tocfgParmsCnt; $parmNdx++)
+{
+    $tocfgCmdStr .= '--' . $tocfgList[$parmNdx] . ' ';
+}
+
+WriteDebugMsg(100, 'INFO', 'main', 'Calling ' . $tocfgCmdStr);
+
+
+# Call tocfg with the command string just created:
+
+my $result = `$tocfgCmdStr`;
+
+WriteDebugMsg(100, 'EXIT', 'main', '0');
+
+
+# And that's all she wrote.
+
+exit(0);
+
+###########################################################################################################
+# GetTocfgParms - Get list of parameters for tocfg  (Subroutine).                                         #
+#                                                                                                         #
+# Entry Parameters:  $_[0] = String containing GAU Master Configuration file Firewall Rules section path. #
+#                    $_[1] = String containing getcfgsec command.                                         #
+#                    $_[2] = Reference to array to which tocfg parameters are appended via.               #
+#                    $_[3] = Reference to associative array containing the whitelist name/subnet lists.   #
+#                                                                                                         #
+#          Returns:  None.                                                                                #
+#                                                                                                         #
+#          Globals:  [RO]  DEBUG_LEVEL - must be >= $_[0] for message to be displayed.                    #
+#                                                                                                         #
+# Calls:  Internal:  WriteDebugMsg.                                                                       #
+#                                                                                                         #
+#         External:  None.                                                                                #
+#                                                                                                         #
+#          Library:  push, split, substr.                                                                 #
+###########################################################################################################
+sub GetTocfgParms
+{
+    WriteDebugMsg(100, 'CALL', 'GetTocfgParms', $_[0]);
+
+    my $secPath      = $_[0],
+       $getCfgSecCmd = $_[1],
+       $tocfgParms   = \@{$_[2]},
+       %aclGrp       = %{$_[3]};
+
+    my $slashCnt = ($secPath =~ tr|/||);
+
+    my $rulesXml = `$getCfgSecCmd`;
+
+    my @elements = split(/</, $rulesXml);
+
+    my $elementsSize = @elements;
+
+    my $elementCnt = 0;
+
+    my $wlName = '';
+
+    for (my $elementNdx = 0; $elementNdx < $elementsSize; $elementNdx++)
+    {
+        my $element = $elements[$elementNdx];
+
+        if ($element =~ /^whitelist>/i)
+        {
+            $elementCnt++;
+
+            $wlName = substr($element, 10);
+
+            next;
+        }
+
+        if ($element =~ /^osaddr>/i)
+        {
+            my $osaddr = substr($element, 7);
+            my $tocfgParm = $secPath;
+            my $extraTocfg;
+
+            if ($slashCnt > 3)
+            {
+                $tocfgParm .= '[' . $elementCnt . ']';
+            }
+
+            if (!exists($aclGrp{$wlName}))
+            {
+                $wlName = 'default';
+                $extraTocfg = $tocfgParm . '/whitelist=' . $wlName;
+	        push(@{$tocfgParms}, $extraTocfg);
+            }
+            
+            $tocfgParm .= '/osaddr=' . $aclGrp{$wlName};
+            
+            WriteDebugMsg(100, 'INFO', 'GetTocfgParms', 'tocfgparm = '. $tocfgParm);
+
+            push(@{$tocfgParms}, $tocfgParm);
+
+            next;
+        }
+    }
+
+    WriteDebugMsg(100, 'RETURN', 'GetTocfgParms', '');
+}
+
+############################################################
+# Usage - Display program usage information  (Subroutine). #
+#                                                          #
+# Entry Parameters:  None.                                 #
+#                                                          #
+#          Returns:  None.                                 #
+#                                                          #
+#          Globals:  None.                                 #
+#                                                          #
+# Calls:  Internal:  WriteDebugMsg.                        #
+#                                                          #
+#         External:  None.                                 #
+#                                                          #
+#          Library:  print.                                #
+############################################################
+sub Usage
+{
+
+    WriteDebugMsg(100, 'CALL', 'Usage', '', '');
+
+    #               1         2         3         4         5         6         7         8
+    #      12345678901234567890123456789012345678901234567890123456789012345678901234567890
+
+    print                                                                                  "\n",
+          'Usage:',                                                                        "\n\n",
+
+          'applywl  <-h|--help> <-v|--version>',                                           "\n\n",
+
+          'Apply the current whitelist subnet lists to the current firewall rules.',       "\n\n",
+
+          'Options:',                                                                      "\n\n",
+
+          ' -d(=nnn)   - Enable debugging. The numerical value, when provided, sets the',  "\n",
+          '              message level (100, the default, if omitted).',                   "\n\n",
+
+          ' -h|help    - Displays the usage information summary you are now reading.',     "\n\n",
+
+          ' -v|version - Displays the version number.',                                    "\n\n";
+
+    WriteDebugMsg(100, 'RETURN', 'Usage', '', '');
+}
+
+##################################################################################################
+# WriteDebugMsg - Write message to stdout  (Subroutine).                                         #
+#                                                                                                #
+# Entry Parameters:  $_[0] = Debug message level.                                                #
+#                    $_[1] = String containing Message type (CALL|EXIT|INFO|RETURN).             #
+#                    $_[2] = String containing name of subroutine from which message originates. #
+#                    $_[3] = String containing message text.                                     #
+#                    $_[4] = String containing calling parameter (type = CALL) or return         #
+#                            value (type = EXIT|RETURN), not used if type is 'INFO'.             #
+#          Returns:  None.                                                                       #
+#                                                                                                #
+#          Globals:  [RO]  DEBUG_LEVEL - must be >= $_[0] for message to be displayed.           #
+#                                                                                                #
+# Calls:  Internal:  None.                                                                       #
+#                                                                                                #
+#         External:  syslog.                                                                     #
+#                                                                                                #
+#          Library:  None.                                                                       #
+##################################################################################################
+sub WriteDebugMsg
+{
+    my $msgLevel = $_[0];
+
+    if ($DEBUG_LEVEL >= $msgLevel)
+    {
+        my $debugMsg = '',
+           $msgTxt   = '',
+           $msgType  = '',
+           $subName  = '';
+
+        $msgType = $_[1],
+        $subName = $_[2],
+        $msgTxt  = $_[3];
+
+        for (;;)
+        {
+            if ('CALL' eq $msgType)
+            {
+                my $parms = '';
+
+                $parms = $_[4];
+
+                $debugMsg = '> ' . __FILE__ . ':' . $subName . '(' . $parms . ')';
+
+                if ('' ne $msgTxt)
+                {
+                    $debugMsg .= ':  ' . $msgTxt;
+                }
+
+                last;
+            }
+
+            if ('EXIT' eq $msgType)
+            {
+                $debugMsg = '< ' . __FILE__ . ':' . $subName . '(): ';
+
+                my $rv = '';
+
+                $rv = $_[4];
+
+                $debugMsg = '< ' . __FILE__ . ':' . $subName . '()';
+
+                if ('' ne $rv)
+                {
+                    $debugMsg .= ' {' . $rv . '}';
+                }
+
+                $debugMsg .= ' *** DELIBERATE PROGRAM EXIT ***';
+
+                if ('' ne $msgTxt)
+                {
+                    $debugMsg .= ' - ' . $msgTxt;
+                }
+
+                last;
+            }
+
+            if ('INFO' eq $msgType)
+            {
+                $debugMsg = '  ' . __FILE__ . ':' . $subName . '():  ' . $msgTxt . '.';
+
+                last;
+            }
+
+            if ('RETURN' eq $msgType)
+            {
+                my $rv = '';
+
+                $rv = $_[4];
+
+                $debugMsg = '< ' . __FILE__ . ':' . $subName . '()';
+
+                if ('' ne $rv)
+                {
+                    $debugMsg .= ' {' . $rv . '}';
+                }
+
+                if ('' ne $msgTxt)
+                {
+                    $debugMsg .= ' - ' . $msgTxt;
+                }
+
+                last;
+            }
+
+            last;
+        }
+
+        if ('' ne $debugMsg)
+        {
+            syslog($debugMsg . "\n");
+        }
+    }
+}
+

@@ -1,0 +1,63 @@
+<!--ko template:{name:'title-template',data:'SD Card Manager'}--><!--/ko-->
+<!--ko template:{name:'h4-template', data:'Unmount SD Card'}--><!--/ko-->
+<div class="control-group" style="text-align: center">
+	<div class="controls">
+		<div class="input-append">
+			<button type="button" class="btn btn-primary" style="border-radius: 4px 0px 0px 4px" name="sdcard-unmount" data-bind="click: unmount, attr: {title: 'Unmount the SD card'}">Safe Unmount</button>
+			<a tabindex="-1" data-bind="help: {'title': 'Safe Unmount', 'link': '/h_sdcard_unmount.html'}" class="btn"><i class="icon-question-sign"></i></a>
+		</div>
+	</div>
+</div>
+<hr />
+<!--ko template:{name:'h4-template',data: 'Browse Entire SD Card'}--><!--/ko-->
+<!-- ko if: filesBrowser.root().length > 0 -->
+	<!-- ko template: {name: 'file-browser-template', data: filesBrowser} --><!-- /ko -->
+<!-- /ko -->
+<!-- ko ifnot: filesBrowser.root().length > 0 -->
+	<!-- ko if: listErrorMessage -->
+		<p style="color: red; text-align: center" data-bind="text: listErrorMessage"></p>
+		<p style="text-align: center">
+			The above message indicates that the SD card is not inserted, not formatted, or formatted for different file system<br />
+			Please format the SD card on a PC for FAT32, NTFS, or EXT3/EXT4 before using it on this device
+		</p>
+	<!-- /ko -->
+	<!-- ko ifnot: listErrorMessage -->
+		<p style="color: red; text-align: center">No files found on SD card</p>
+		<p style="text-align: center">
+			The above message indicates that the SD card is empty and the user should click the <b>Apply Directory Structure</b> button to create<br />
+			the standard directory structure in order to store the intended data file(s) on the SD card
+		</p>
+	<!-- /ko -->
+<!-- /ko -->
+<div style="margin-top: 5px" data-bind="visible: filesBrowser.selectedFiles().length > 0">
+	<!--ko template:{name:'h4-template',data:'Selected Files'}--><!--/ko-->
+	<div class="gw-auto-margin gw-border" style="width: 600px; text-align: left" data-bind="foreach: filesBrowser.selectedFiles">
+		<div style="padding-left: 5px; cursor: pointer" title="remove" data-bind="click: $parent.getPathRemove($data)">
+			<span data-bind="text: $data"></span>
+		</div>
+	</div>
+</div>
+<div class="control-group" style="text-align: center; margin-top: 20px">
+	<button type="button" class="btn btn-primary" style="margin-bottom: 10px" name="sdcard-refresh-files" data-bind="click: updateSDCardList, attr: {title: 'Refresh Browser contents with files and Directories from SD card'}">Refresh</button>
+	<div class="input-append" data-bind="visible: filesBrowser.root().length > 0">
+		<button type="button" class="btn" name="sdcard-view-readme" data-bind="click: view, attr: {title: 'View the contents of a README file in each constructed directory'}, css: {'btn-primary': viewprimary}">View README File</button>
+		<a tabindex="-1" data-bind="help: {'title': 'View README File', 'link': '/h_sdcard_view.html'}" class="btn"><i class="icon-question-sign"></i></a>
+	</div>
+	<div class="input-append" data-bind="visible: filesBrowser.root().length > 0">
+		<button type="button" class="btn" name="sdcard-delete-files" data-bind="click: deletefile, attr: {title: 'Select file(s) to delete'}, css: {'btn-primary': showprimary}">Delete File(s)</button>
+		<a tabindex="-1" data-bind="help: {'title': 'Delete File(s)', 'link': '/h_sdcard_delete.html'}" class="btn"><i class="icon-question-sign"></i></a>
+	</div>
+	<div class="input-append">
+		<button type="button" class="btn btn-primary" name="sdcard-applyerase-files" data-bind="visible: ! listErrorMessage(), click: erase, , attr: {title: eraseapply}, text: filesBrowser.root().length !== 0 ? 'Erase All' : 'Apply Directory Structure'"></button>
+		<a tabindex="-1" data-bind="visible: ! listErrorMessage(), help: {'title': 'Erase All / Apply Directory Structure', 'link': '/h_sdcard_erase.html'}" class="btn"><i class="icon-question-sign"></i></a>
+	</div>
+	<div class="input-append" data-bind="visible: filesBrowser.root().length > 0">
+		<button type="button" class="btn" name="sdcard-download-files" data-bind="click: download, attr: {title: 'Select a file to download'}, css: {'btn-primary': showprimary}">Download</button>
+		<a tabindex="-1" data-bind="help: {'title': 'Download Selected File', 'link': '/h_sdcard_download.html'}" class="btn"><i class="icon-question-sign"></i></a>
+	</div>
+</div>
+<!-- ko if: showReadMeFile -->
+	<hr />
+	<!--ko template: {name:'h4-template',data:'View README Result'}--><!--/ko-->
+	<!--ko template: {name: 'textarea-template-ro', data: readmeresult}--><!--/ko-->
+<!-- /ko -->

@@ -1,0 +1,95 @@
+<form id="gps-form" class="form-horizontal">
+	<!--ko template: {name:'title-template',data:'GPS Settings'}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Last Fix Status'}--><!--/ko-->
+	<!-- ko if: GpsUnAvailable -->
+		<p style="color: red; text-align: center">
+			GPS is not available because the cellular modem is powered off
+		</p>
+	<!-- /ko -->
+	<!--ko if: haveFix-->
+	<table class="gw-auto-margin gw-status-table gw-st40" style="width: 500px" name="lastFixStatus">
+		<tr>
+			<td>GPS Source</td>
+			<td data-bind="text: dispgpssource"></td>
+		</tr>
+		<tr>
+			<td>Latitude</td>
+			<td data-bind="text: dispgpslat"></td>
+		</tr>
+		<tr>
+			<td>Longitude</td>
+			<td data-bind="text: dispgpslon"></td>
+		</tr>
+		<tr>
+			<td>Fix</td>
+			<td data-bind="text: dispvalid"></td>
+		</tr>
+		<tr>
+			<td>GMT Time</td>
+			<td data-bind="text: dispgpstime"></td>
+		</tr>
+		<tr>
+			<td>GeoFence Engine State</td>
+			<td>
+				<span data-bind="text: engineState"></span>
+				<a tabindex="-1" data-bind="help: {'title': 'GeoFence Engine State', 'link': '/h_gps_enginestate.html'}" class="btn"><i class="icon-question-sign"></i></a>
+			</td>
+		</tr>
+	</table>
+	<br />
+	<div style="text-align: center">
+		<a class="btn" target="_blank" data-bind="attr:{href: gmaphref}">View in Google Maps</a>
+	</div>
+	<br />
+	<!-- /ko -->
+	<!--ko ifnot: haveFix-->
+	<p style="text-align: center">
+		No location fix available.<br />
+		Please check antenna or GPS source.
+	</p>
+	<!-- /ko -->
+	<div style="text-align: center">
+		<button type="button" class="btn btn-primary" data-bind="click: startLockdown">Start GeoFence Lockdown</button>
+		<button type="button" class="btn btn-primary" data-bind="click: startMonitor">Start Monitor Only Mode</button>
+	</div>
+	<br />
+	<!--ko template: {name:'h4-template',data:'GPS Data Source'}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: datasrcselect}--><!--/ko-->
+	<!--ko if: isTtySource -->
+		<!--ko template: {name: 'full-savable-select-template', data: ttyport}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: sps}--><!--/ko-->
+	<!-- /ko -->
+	<!--ko if: isFixedSource -->
+		<!--ko template: {name: 'full-savable-input-template', data: lat}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: lon}--><!--/ko-->
+	<!-- /ko -->
+	<!--ko ifnot: isFixedSource -->
+		<!--ko template: {name:'h4-template',data:'GeoFence Radius Control'}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: lrm}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: ma}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: flr}--><!--/ko-->
+		<!--ko template: {name:'h4-template',data:'GeoFence Violation Control'}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: nvi}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: vgp}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: mlod}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: va}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-bool-template', data: notifysvm}--><!--/ko-->
+		<!--ko template: {name:'h4-template',data:'Advanced options'}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-bool-template', data: advanced}--><!--/ko-->
+		<!-- ko if: isAdvancedSelected -->
+			<!--ko template: {name: 'full-savable-input-template', data: rve}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: drt}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-bool-template', data: rucv}--><!--/ko-->
+			<!-- ko if: isTtySource -->
+			<!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: mlog}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: ibp}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: si}--><!--/ko-->
+		<!-- /ko -->
+	<!-- /ko -->
+	<!--ko template: {name:'h4-template',data:'Detailed Status'}--><!--/ko-->
+	<div style="text-align: center">
+		<textarea readonly style="width: 600px; font-family: monospace;" data-bind="value: gpsstatus" rows="20" wrap="off">Acquiring GPS Status Log, please standby . . .</textarea>
+	</div>
+	<br/><br/>
+</form>

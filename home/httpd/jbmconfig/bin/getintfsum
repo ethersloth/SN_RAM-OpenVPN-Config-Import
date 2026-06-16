@@ -1,0 +1,76 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+###############################################################################################################################
+#                                                                                                                             #
+# getintfsum - Get Interface(s) Summary.                                                                                      #
+#                                                                                                                             #
+# Display filtered output from ethtool for each 'eth' type interface found in the system.                                     #
+#                                                                                                                             #
+# For the record . .                                                                                                          #
+#                                                                                                                             #
+# Copyright (c) 2009 by Sixnet, LLC.                                                                                          #
+#                                                                                                                             #
+# All rights reserved.  No part of this program may be reproduced, stored in a retrieval system or transmitted, in any form   #
+# or by any means, including but not limited to electronic, mechanical, photocopying, recording, or otherwise, without the    #
+# express prior written consent of Sixnet, 4645 LaGuardia, St. Louis, MO 63134.  (314) 426-7781, fx: (314) 426-0007.          #
+# Contact support@sixnet.com                                                                                                  #
+#                                                                                                                             #
+#                                                                                                                             #
+# This program was written by Art Surgant.                                                                                    #
+#                                                                                                                             #
+###############################################################################################################################
+
+# Get command line argument(s), if any:
+
+foreach my $argnum (0 .. $#ARGV)
+       {
+        if ('-h' eq $ARGV[$argnum])
+          {
+           Usage();
+
+           exit(0);
+          }
+       }
+
+print "\n";
+
+if (open(GETINTFSFILE, '/home/httpd/jbmconfig/bin/getintfs filter=eth raw=y |'))
+  {
+   while (<GETINTFSFILE>)
+        {
+         my $eth = $_;
+
+         chomp($eth);
+
+         if (open(ETHFILE, 'ethtool ' . $eth . ' | grep Link |'))
+           {
+            while (<ETHFILE>)
+                 {
+                  print $eth, ': ', $_;
+                 }
+
+            close(ETHFILE);
+           }
+
+         print "\n";
+        }
+
+   close(GETINTFSFILE);
+
+   exit(0);
+  }
+
+
+sub Usage
+   {
+    print "\nUsage:\n\n",
+
+          "getintfsum\n\n",
+
+          "Obtain link summary information pertaining to all 'eth' type interfaces in the system.\n",
+
+          "The following parameter is supported:\n\n",
+
+          "-h - Displays the usage information summary you are now reading.\n\n";
+   }

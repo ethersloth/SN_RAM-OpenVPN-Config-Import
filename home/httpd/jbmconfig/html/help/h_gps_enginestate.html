@@ -1,0 +1,22 @@
+<h4>Description</h4>
+<p>
+ The GeoFence Engine State options and descriptions are listed here. Eventable register state is listed in parenthesis next to the label
+ <br />
+ <br />
+ <ul>
+  <li><b>Monitor Only (0): </b> Reporting GPS Location only. No GeoFence Lockdown.</li>
+  <li><b>Lockdown - Waiting for Data (1): </b>Waiting on GPS Data to compute lockdown fence.</li>
+  <li><b>Lockdown - Wait for Entries (2): </b>Have Data, but waiting on more entries to compute fence.</li>
+  <li><b>Lockdown - Wait on Satellites (3): </b>Have Entries, but waiting on better Satellites to compute fence.</li>
+  <li><b>Lockdown - Failed (4): </b>Lockdown Failed to build GeoFence (Same Behavior as Monitor Only).</li>
+  <li><b>Lockdown - Good (5): </b>Successful Lockdown. Fence Built, and we are inside the GeoFence.</li>
+  <li><b>Lockdown - Unstable (6): </b>ALERT, We are "ok", but stray data points keep going outside fence, BUT are within satellite.</li>
+  <li><b>Lockdown - Violation Alert (7): </b>ALERT, We are out of lockdown GeoFence. No Action Taken Yet. (stray point?).</li>
+  <li><b>Lockdown - Violation Outside (8): </b>ERROR, We are out of lockdown GeoFence. Violation Action Taken.</li>
+  <li><b>Lockdown - Violation no Data (9): </b>ERROR, We lost GPS data for enough time, that we don't know where we are. Violation Action Taken.</li>
+  <li><b>Lockdown - Unknown State: </b>Undefined action type.</li>
+ </ul>
+</p>
+
+
+

@@ -1,0 +1,35 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                              <!--
+               GWLNX -> GWLNX Running Status Section
+
+  +==========+======================================================+============+
+  |  ACTION  |                           STEP                       | ON FAILURE |
+  +==========+======================================================+============+
+  | Restart  | Verify Process ID exists in Master Configuration file| Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Verify Process ID has been selected.                 | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Restart Selected Process ID.                         | Abort      |
+  +==========+======================================================+============+                                            -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dispgwstat.prf" name="dispgwstat">
+   <validation>
+    <vstep name="dispgwpid" errmsg="No GWLNX Process ID selected." test="/input/dispgwpid/text() != 'none'" />
+   </validation>
+
+   <configuration>
+    <cstep name="dispgwpid" errmsg="Unable To Save GWLNX Process ID." path="/GAUCfg/dispgwstat/dispgwpid" />
+   </configuration>
+
+   <action name="Restart" successmsg="Successfully Restarted Selected GWLNX Process.">
+    <astep errmsg="Failed To Restart GWLNX Process ID." name="SystemCommand" abort="y">
+     <arg source="config" expr="concat('kill ', /GAUCfg/dispgwstat/dispgwpid/text())" />
+    </astep>
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

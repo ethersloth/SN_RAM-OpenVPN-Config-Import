@@ -1,0 +1,253 @@
+
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/eth0.prf" name="eth0">
+   <validation>
+    <vstep errmsg="Invalid Enable Flag value. Must be 'y' or 'n'."
+             name="enable"
+             test="isyorn(/input/enable/text())" />
+
+    <vstep errmsg="Invalid Default Route Flag value. Must be 'y' or 'n'."
+             name="default"
+             test="isyorn(/input/default/text())" />
+
+    <vstep errmsg="Invalid Speed and Duplex. Must be either 'auto', '10h', '100h' or '100f'"
+             name="spddplx"
+             test="/input/spddplx/text() = 'auto'  or
+                   /input/spddplx/text() = '10h'   or
+                   /input/spddplx/text() = '100h'  or
+                   /input/spddplx/text() = '100f'"   />
+
+    <vstep errmsg="Invalid DHCP Flag value. Must be 'y' or 'n'"
+             name="usedhcp"
+             test="isyorn(/input/usedhcp/text())" />
+
+    <vstep errmsg=""
+               id="STEP1"
+             name="address"
+           skipto="STEP6"
+             test="/input/usedhcp/text() = 'y'" />
+
+    <vstep errmsg="Invalid IP Address. Must be a valid IPv4 address."
+               id="STEP2"
+             name="address"
+             test="isipaddr(/input/address/text())" />
+
+    <vstep errmsg="Invalid Subnet Mask. Must be a valid IPv4 netmask."
+               id="STEP3"
+             name="netmask"
+             test="isnetmask(/input/netmask/text())" />
+
+    <vstep errmsg=""
+               id="STEP4"
+             name="gateway"
+           skipto="STEP6"
+             test="string-length(/input/gateway/text()) = 0" />
+
+    <vstep errmsg="Invalid Remote Gateway address, must be a valid IP Address."
+               id="STEP5"
+             name="gateway"
+             test="isipaddr(/input/gateway/text())" />
+
+    <vstep errmsg="Invalid Peer DNS Flag value. Must be 'y' or 'n'"
+               id="STEP6"
+             name="peerdns"
+             test="isyorn(/input/peerdns/text())" />
+
+    <vstep errmsg="Invalid MTU value. Valid range is between 60 to 1500."
+             name="mtu"
+             test="string-length(/input/mtu/text()) > 0" />
+
+    <vstep errmsg="Unable to save Interface Aliases List to system configuration file."
+             name="aliass"
+             test="string-length(/input/aliass/text()) > 0" />
+
+    <vstep errmsg="Unable to save Interface VLANs List to system configuration file."
+             name="vlans"
+             test="string-length(/input/vlans/text()) > 0" />
+
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable Flag to system configuration file."
+             name="enable"
+             path="/GAUCfg/eth0/enable" />
+
+    <cstep errmsg="Unable to save Default Route Flag to system configuration file."
+             name="default"
+             path="/GAUCfg/eth0/default" />
+
+    <cstep errmsg="Unable to save Speed and Duplex to system configuration file."
+             name="spddplx"
+             path="/GAUCfg/eth0/spddplx" />
+
+    <cstep errmsg="Unable to save DHCP Flag to system configuration file."
+             name="usedhcp"
+             path="/GAUCfg/eth0/usedhcp" />
+
+    <cstep errmsg="Unable to save IP Address to system configuration file."
+             name="address"
+             path="/GAUCfg/eth0/address" />
+
+    <cstep errmsg="Unable to save Netmask to system configuration file."
+             name="netmask"
+             path="/GAUCfg/eth0/netmask" />
+
+    <cstep errmsg="Unable to save Default Gateway to system configuration file."
+             name="gateway"
+             path="/GAUCfg/eth0/gateway" />
+
+    <cstep errmsg="Unable to save Peer DNS to system configuration file."
+             name="peerdns"
+             path="/GAUCfg/eth0/peerdns" />
+
+    <cstep errmsg="Unable to save Subnet to system configuration file."
+             name="subnet"
+             path="/GAUCfg/eth0/subnet" />
+
+    <cstep errmsg="Unable to save MTU value to system configuration file."
+             name="mtu"
+             path="/GAUCfg/eth0/mtu" />
+
+    <cstep errmsg="Unable to save Interface Aliases List to system configuration file."
+             name="aliass"
+             path="/GAUCfg/eth0/aliass"
+             type="node" />
+
+    <cstep errmsg="Unable to save Interface VLANs List to system configuration file."
+             name="vlans"
+             path="/GAUCfg/eth0/vlans"
+             type="node" />
+
+   </configuration>
+
+   <action name="Save" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_eth0
+    <astep abort="y" errfile="/tmp/eth0niccfgerr.txt" errmsg="Failed to remove orphaned interface alias config files." name="SystemCommand">
+     <arg abort="y" expr="/home/httpd/jbmconfig/bin/DelOrphEthAliases eth0" />
+    </astep>
+
+    <astep abort="y" errfile="/tmp/eth0niccfgvlanerr.txt" errmsg="Failed to remove orphaned interface VLAN config files." name="SystemCommand">
+     <arg abort="y" expr="/home/httpd/jbmconfig/bin/DelOrphEthVlans eth0" />
+    </astep>
+
+    <astep abort="y" errfile="/tmp/eth0niccfgerr.txt" errmsg="Failed to update eth0 system configuration." name="SystemCommand" >
+     <arg expr="/bin/niccfg " />
+     <arg expr="eth0 " />
+     <arg dependency="/GAUCfg/eth0/usedhcp/text() = 'y'" expr="'dhcp '" source="config" />
+     <arg dependency="/GAUCfg/eth0/usedhcp/text() = 'y' and /GAUCfg/eth0/peerdns/text() = 'y'"
+                 expr="'dns '"
+               source="config" />
+
+     <arg dependency="/GAUCfg/eth0/usedhcp/text() = 'y' and /GAUCfg/eth0/peerdns/text() = 'n'"
+                expr="'nodns '"
+              source="config" />
+
+     <arg dependency="/GAUCfg/eth0/usedhcp/text() = 'n'"
+                expr="concat(/GAUCfg/eth0/address/text(), ' ')"
+              source="config" />
+
+     <arg dependency="/GAUCfg/eth0/usedhcp/text() = 'n'"
+                expr="concat(/GAUCfg/eth0/netmask/text(), ' ')"
+              source="config" />
+
+     <arg dependency="string-length(/GAUCfg/eth0/gateway/text()) > 0"
+                expr="concat(/GAUCfg/eth0/gateway/text(), ' ')"
+              source="config" />
+
+     <arg dependency="/GAUCfg/eth0/mtu/text() > 0"
+                expr="concat('-mtu ', /GAUCfg/eth0/mtu/text(), ' ')"
+              source="config" />
+
+     <arg dependency="/GAUCfg/eth0/spddplx/text() = 'auto'"  expr="'auto '"    source="config" />
+     <arg dependency="/GAUCfg/eth0/spddplx/text() = '10h'"   expr="'10half '"  source="config" />
+     <arg dependency="/GAUCfg/eth0/spddplx/text() = '100h'"  expr="'100half '" source="config" />
+     <arg dependency="/GAUCfg/eth0/spddplx/text() = '100f'"  expr="'100full '" source="config" />
+
+     <arg dependency="/GAUCfg/eth0/default/text() = 'y'"
+                expr="'defaultroute '"
+              source="config" />
+
+     <arg dependency="/GAUCfg/eth0/default/text() = 'n'"
+                expr="'nodefaultroute '"
+              source="config" />
+
+     <arg dependency="/GAUCfg/eth0/enable/text() = 'n'"
+                expr="'noboot '"
+              source="config" />
+
+     <arg expr = "noxml save >/tmp/eth0niccfgerr.txt" />
+    </astep>
+
+    <astep      abort="n"
+               errmsg="Failed to save Interface alias(es) settings"
+                 name="SystemCommand"
+               repeat="/GAUCfg/eth0/aliass/alias"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="/GAUCfg/eth0/aliass/NumberOfaliass/text() != '0'"
+                expr="concat('niccfg eth0:', /GAUCfg/eth0/aliass/alias[RPT_NDX]/subintnum/text(), ' ',
+                                             /GAUCfg/eth0/aliass/alias[RPT_NDX]/ipaddr/text(), ' ' ,
+                                             /GAUCfg/eth0/aliass/alias[RPT_NDX]/netmask/text(), ' ' ,
+                             'save noxml >/tmp/eth0niccfgerr.txt')"
+          rptNdxName="RPT_NDX"
+              source="config"  />
+
+    </astep>
+
+    <astep      abort="n"
+               errmsg="Failed to save Interface VLANs settings"
+                 name="SystemCommand"
+               repeat="/GAUCfg/eth0/vlans/vlan"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="/GAUCfg/eth0/vlans/NumberOfvlans/text() != '0'"
+                expr="concat('niccfg eth0.', /GAUCfg/eth0/vlans/vlan[RPT_NDX]/vlanidnum/text(), ' ',
+                                             /GAUCfg/eth0/vlans/vlan[RPT_NDX]/vlanipaddr/text(), ' ',
+                                             /GAUCfg/eth0/vlans/vlan[RPT_NDX]/vlannetmask/text(), ' ',
+                             '>/tmp/eth0niccfgvlanerr.txt')"
+          rptNdxName="RPT_NDX"
+              source="config"  />
+    </astep>
+Moved to prfhandler_eth0-->
+
+    <astep abort="y" errmsg="Failed to save eth0 configuration" name="SystemCommand">
+     <arg expr="'prfhandler_eth0 Save'" source="config" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_eth0
+    <pre subsystem="eth0" action="Save" />
+
+    <astep dependency="/GAUCfg/eth0/enable/text() = 'y' and /GAUCfg/eth0/usedhcp/text() = 'n'"
+       abort="y" errmsg="Another host is already using the configured IP address on eth0.  Setting saved, but not applied." name="SystemCommand">
+     <arg expr="concat('ifconfig eth0 up; arping -q -c 2 -w 1 -D -I eth0 ', /GAUCfg/eth0/address/text())"
+     source="config"  />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to bring down interface." name="SystemCommand">
+     <arg expr="ifdown eth0" />
+    </astep>
+
+    <astep dependency="/GAUCfg/eth0/enable/text() = 'y'" errmsg="Failed to bring up interface." name="SystemCommand">
+     <arg abort="y" expr="ifup eth0" />
+    </astep>
+
+    <astep dependency="/GAUCfg/eth0/vlans/NumberOfvlans/text() != '0'" errmsg="Failed to bring up all interfaces." name="SystemCommand">
+     <arg abort="y" expr="service network restart" />
+    </astep>
+Moved to prfhandler_eth0-->
+
+    <astep abort="y" errmsg="Failed to apply eth0 configuration" name="SystemCommand">
+     <arg expr="'prfhandler_eth0 Apply'" source="config" />
+    </astep>
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

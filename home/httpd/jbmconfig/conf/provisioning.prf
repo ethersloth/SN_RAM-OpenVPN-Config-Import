@@ -1,0 +1,36 @@
+
+<profile>
+ <subsystems>
+                                                                                                                              <!--
+               Networking -> Cellular -> Provisioning Settings Section                                                         -->
+
+
+  <subsystem dependency="/GAUCfg/cellular/carrier/text() = 'sprint'"
+                   file="/home/httpd/jbmconfig/conf/sprint_provisioning.prf"
+                   name="provisioning" >
+  </subsystem>
+
+  <subsystem dependency="/GAUCfg/cellular/carrier/text() = 'verizon'"
+                   file="/home/httpd/jbmconfig/conf/verizon_provisioning.prf"
+                   name="provisioning" >
+  </subsystem>
+
+  <subsystem dependency="/GAUCfg/cellular/detectedcarrier/text() = 'sprint'"
+                   file="/home/httpd/jbmconfig/conf/sprint_provisioning.prf"
+                   name="provisioning" >
+  </subsystem>
+
+  <subsystem dependency="/GAUCfg/cellular/detectedcarrier/text() = 'verizon'"
+                   file="/home/httpd/jbmconfig/conf/verizon_provisioning.prf"
+                   name="provisioning" >
+  </subsystem>
+
+  <subsystem dependency="contains(/GAUCfg/cellular/modem/text(), 'sierraMC572')"
+                file="/home/httpd/jbmconfig/conf/manual_provisioning.prf"
+                name="provisioning" >
+  </subsystem>
+
+ </subsystems>
+</profile>
+
+

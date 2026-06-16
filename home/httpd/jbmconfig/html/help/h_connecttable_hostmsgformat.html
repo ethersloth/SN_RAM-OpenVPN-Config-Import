@@ -1,0 +1,32 @@
+<h4>Description</h4>
+<p>
+<b>Transparent Mode:</b>  Unused.
+</p>
+<p>
+<b>Visa Mode:</b>  This describes the format expected by the TCP host processor of Visa transactions.
+</p>
+<p>Visa Messages from the ATM/POS device will conform to:</p>
+
+<p>STX - Payload - ETX - LRC</p>
+
+<p>After Visa processing and validation, the format sent to the host will be:</p>
+<p>
+<b>Default:</b>  Use the current settings in the GWLNX configuration.
+</p>
+<p>
+<b>Payload Only:</b>  Strip Visa header/trailers.  Send only the Payload.
+</p>
+<p>
+<b>Payload-ETX:</b>  Strip the Visa header and LRC block check.
+</p>
+<p>
+<b>STX-Payload-ETX:</b>  Strip only the LRC block check.
+</p>
+<p>
+<b>STX-Payload-ETX-LRC:</b>  Send the fully formatted Visa message.
+</P>
+
+<h4>Recommended Setting</h4>
+<p>Default</p>
+
+

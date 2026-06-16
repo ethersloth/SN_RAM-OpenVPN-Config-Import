@@ -1,0 +1,9 @@
+<h4>Description</h4>
+<p>The Recording Method option will determine how changes in data are recorded and
+published.
+<p><b>Latest Changes Only</b> - RAMQTT will only record the latest changes and publish them at
+the publish interval.</p>
+<p><b>All Changes</b> - RAMQTT will record changes in data in between publish intervals and store
+them until RAMQTT is ready to publish changes. This allows messages to contain a
+history of changes instead of only the latest values. This option gives greater detail
+to moving data trends by recording more data points, but will create larger messages for data that changes rapidly, resulting in increased data usage.</p>

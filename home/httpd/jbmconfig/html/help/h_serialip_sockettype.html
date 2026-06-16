@@ -1,0 +1,15 @@
+<h4>Description</h4>
+<p>Select the Socket Type you desire to have for Serial IP communication from the drop-down list.
+</p>
+<p><b>UDP:</b> If this option is selected, the device will act as a UDP (Connectionless) and listening on the configured <b>Listening IP Port</b> for connection from the client.</p>
+<p><b>TCP Client:</b> If this option is selected, the device will act as a TCP Client and connects to the host processor once the serial port becomes active.</p>
+<p><b>TCP Server:</b> If this option is selected, the device will act as a TCP Server and listening on the configured <b>Listening IP Port</b> for connection from the client.</p>
+<p><b>TCP Client/Server 2Way:</b>If this option is selected, the device will listen on configured <b>Listening IP Port</b> for client connection to communicate with serial device and once the client is disconnected, and the serial device connected to the ttyS1 port needs to report it's status, the device will connect to the host destination to report the device's status.</p>
+<p><b>UDP BroadCaster:</b>If this option is selected, the device will support multiple UDP broadcast addresses.</p>
+<p><b>TCP Client BroadCaster:</b>If this option is selected, the device will support up to 20 TCP Client broadcast socket using IP Destination configuration for connectivity. These sockets are persistent connection when the serial port become active.</p>
+<p><b>TCP Client BroadCaster Traffic Activator:</b>If this option is selected, the device will support up to 20 TCP Client broadcast socket using IP Destination configuration for connectivity and would connect only if the serial data is available to broadcast.</p>
+
+<h4>Recommended Setting</h4>
+<p>Socket Type you desire to have for this communication.</p>
+
+

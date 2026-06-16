@@ -1,0 +1,429 @@
+<profile>
+
+ <!-- Global settings used by the GAU at run-time -->
+
+ <settings>
+  <debug>
+   <gau level="0" />
+  </debug>
+ </settings>
+
+ <subsystems>
+  <subsystem access="A"
+               file="/home/httpd/jbmconfig/conf/gauaccess.prf"
+               name="gauaccess" />
+
+  <subsystem access="A"
+               file="/home/httpd/jbmconfig/conf/gauaccess2.prf"
+               name="gauaccess2" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/certmgr.prf"
+               name="certmgr" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/snproxy.prf"
+               name="snproxy" />                              
+                                                                                                            
+  <subsystem access="AC"
+               file="/home/httpd/jbmconfig/conf/factorydefault.prf"
+               name="factorydefault" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/jobctrl.prf"
+               name="jobctrl" />                                                                     
+                                  
+  <subsystem access="AC"
+               file="/home/httpd/jbmconfig/conf/firmware.prf"
+               name="firmware" />
+
+  <subsystem access="ACL"
+               file="/home/httpd/jbmconfig/conf/gatherconfigs.prf"
+               name="gatherconfigs" />
+
+  <subsystem access="ACL"
+               file="/home/httpd/jbmconfig/conf/gatherstats.prf"
+               name="gatherstats" />
+
+  <subsystem access="AC" file="/home/httpd/jbmconfig/conf/cfgmgr.prf"
+              name="cfgmgr" />
+
+  <subsystem access="AC"
+               file="/home/httpd/jbmconfig/conf/package.prf"
+               name="package" />
+
+  <subsystem access="AC"
+               file="/home/httpd/jbmconfig/conf/reboot.prf"
+               name="reboot" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/systime.prf"
+               name="systime" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/cellular.prf"
+               name="cellular" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/provisioning.prf"
+               name="provisioning" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/generic_provisioning.prf"
+               name="generic_provisioning" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/sprint_provisioning.prf"
+               name="sprint_provisioning" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/verizon_provisioning.prf"
+               name="verizon_provisioning" />
+
+  <subsystem access="ACl"
+              file="/home/httpd/jbmconfig/conf/manual_provisioning.prf" 
+              name="manual_provisioning" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dns.prf"
+               name="dns" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/ipv6.prf"
+               name="ipv6" />
+  
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/switchctl.prf"
+               name="switchctl" />
+  
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/eth0.prf"
+               name="eth0" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/eth1.prf"
+               name="eth1" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/wifi.prf"
+               name="wifi" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/usb0.prf"
+               name="usb0" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/pppdialbkup.prf"
+               name="pppdialbkup" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/pppoe.prf"
+               name="pppoe" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/staticroutes.prf"
+               name="staticroutes" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/nemo.prf"
+               name="nemo" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/keepalive.prf"
+               name="keepalive" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/gretunnel.prf"
+               name="gretunnel" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/ipiptunnel.prf"
+               name="ipiptunnel" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/ipsectunnel.prf"
+               name="ipsectunnel" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dhcpserver.prf"
+               name="dhcpserver" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dhcprelay.prf"
+               name="dhcprelay" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dyndns.prf"
+               name="dyndns" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/firewall.prf"
+               name="firewall" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/firewall_gs.prf"
+               name="firewall_gs" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/firewall_dhr.prf"
+               name="firewall_dhr" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/firewall_fr.prf"
+               name="firewall_fr" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/firewall_hrr.prf"
+               name="firewall_hrr" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/firewall_mr.prf"
+               name="firewall_mr" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/firewall_nr.prf"
+               name="firewall_nr" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/firewall_sar.prf"
+               name="firewall_sar" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/firewall_sbr.prf"
+               name="firewall_sbr" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/firewall_acl.prf"
+               name="firewall_acl" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/gmuclient.prf"
+               name="gmuclient" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/gps.prf"
+               name="gps" />
+
+  <subsystem access="ACL"
+               file="/home/httpd/jbmconfig/conf/syslog.prf"
+               name="syslog" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/sslclient.prf"
+               name="sslclient" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/sslserver.prf"
+               name="sslserver" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/sshserver.prf"
+               name="sshserver" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/telnetserver.prf"
+               name="telnetserver" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/pingalive.prf"
+               name="pingalive" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/snmpagent.prf"
+               name="snmpagent" />
+  
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/modbus_unlock.prf"
+               name="modbus_unlock" />
+                                               
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/modbus.prf"
+               name="modbus" />
+                                               
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/modbus_rs232tbl.prf"
+               name="modbus_serial" />                                                                                     
+                                               
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/modbus_remotestation.prf"
+               name="modbus_remoteStation" />                                                                       
+  
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/modbus_localstation.prf"
+               name="modbus_localStation" />
+                                                
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/modbus_iotransfer.prf"
+               name="modbus_xfer" />                                                                       
+  
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/modbus_forward.prf"
+               name="modbus_forward" />                                                                       
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/ioctrl.prf"
+               name="ioctrl" />                                                                       
+                                                                                                      
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3.prf"
+               name="dnp3" />                                                                       
+                                
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/extendedio.prf"
+               name="extendedio" />
+  
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/events.prf"
+               name="events" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/datalogs.prf"
+               name="datalogs" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/tags.prf"
+               name="tags" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/ramqtt.prf"
+               name="ramqtt" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/sms.prf"
+               name="sms" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/autonet.prf"
+               name="autonet" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/iecengine.prf"
+               name="iecengine" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/skkynet.prf"
+               name="skkynet" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/crimson.prf"
+               name="crimson" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/email.prf"
+               name="email" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3_general.prf"
+               name="dnp3_general" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3_physicallink.prf"
+               name="dnp3_physicallink" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3_datalink.prf"
+               name="dnp3_datalink" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3_object.prf"
+               name="dnp3_object" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3_default.prf"
+               name="dnp3_default" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3_binaryinput.prf"
+               name="binaryinput" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3_binaryoutput.prf"
+               name="binaryoutput" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3_analoginput.prf"
+               name="analoginput" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3_analogoutput.prf"
+               name="analogoutput" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3_longinput.prf"
+               name="longinput" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3_longoutput.prf"
+               name="longoutput" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3_floatinput.prf"
+               name="floatinput" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3_floatoutput.prf"
+               name="floatoutput" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dnp3_binarycounter.prf"
+               name="binarycounter" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dmzhost.prf"
+               name="dmzhost" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/ipdest.prf"
+               name="ipdest" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/transniff.prf"
+               name="transnifffilter" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/ipfallback.prf"
+               name="ipfallback" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/iptrans.prf"
+               name="iptrans" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/oob.prf"
+               name="oob" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/vrrp.prf"
+               name="vrrp" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/serialip.prf"
+               name="serialip" />                                                                                     
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/connecttable.prf"
+               name="connecttable" />
+
+  <subsystem access="AC"
+               file="/home/httpd/jbmconfig/conf/installcfg.prf"
+               name="installcfg" />
+
+  <subsystem access="AC"
+               file="/home/httpd/jbmconfig/conf/installapp.prf"
+               name="installapp" />
+
+  <subsystem access="AC"
+               file="/home/httpd/jbmconfig/conf/gwlnxcfgmgr.prf"
+               name="gwlnxcfgmgr" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/dispgwstat.prf"
+               name="dispgwstat" />
+
+  <subsystem access="ACl"
+               file="/home/httpd/jbmconfig/conf/predefints.prf"
+               name="predefints" />
+
+ </subsystems>
+</profile>
+

@@ -1,0 +1,159 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                              <!--
+                Networking -> Static Routes Settings Section
+
+  V2.20 behaviors (taken from cfg_net.cpp - ApplyStaticRouteSettings() & SaveStaticRouteSettings()):
+
+  +==========+==============================================================================================+============+
+  |  ACTION  |                           STEP                                                               | ON FAILURE |
+  +==========+==============================================================================================+============+
+  |     Save | Try to get value of GAUCfg/staticroutes/routes/NumberofRoutes from Master Configuration file | Abort      |
+  |          +----------------------------------------------------------------------------------------------+------------+
+  |          | foreach (static route record)                                                                |            |
+  |          |        {                                                                                     |            |
+  |          |         Try to read /GAUCfg/staticroutes/routes/desttype from Master Configuration file      | Abort      |
+  |          |                                                                                              |            |
+  |          |         Try to read /GAUCfg/staticroutes/routes/destaddr from Master Configuration file      | Abort      |
+  |          |                                                                                              |            |
+  |          |         Verify /GAUCfg/staticroutes/routes/destaddr and is valid IP Address                  | Abort      |
+  |          |                                                                                              |            |
+  |          |         Try to read /GAUCfg/staticroutes/routes/netmask from Master Configuration file       | Abort      |
+  |          |                                                                                              |            |
+  |          |         Verify /GAUCfg/staticroutes/routes/netmask and is valid Net Mask                     | Abort      |
+  |          |                                                                                              |            |
+  |          |         Try to read /GAUCfg/staticroutes/routes/gateway from Master Configuration file       | Abort      |
+  |          |                                                                                              |            |
+  |          |         Verify /GAUCfg/staticroutes/routes/gateway and is valid IP Address                   | Abort      |
+  |          |                                                                                              |            |
+  |          |         Try to read /GAUCfg/staticroutes/routes/intf from Master Configuration file          | Abort      |
+  |          |                                                                                              |            |
+  |          |         if ("network" == /GAUCfg/staticroutes/routes/addrtype)                               |            |
+  |          |           {                                                                                  |            |
+  |          |            Try to append /GAUCfg/staticroutes/routes/intf     + " net "     +                |            |
+  |          |                          /GAUCfg/staticroutes/routes/destaddr + " netmask " +                |            |
+  |          |                          /GAUCfg/staticroutes/routes/netmask  + " gateway " +                |            |
+  |          |                          /GAUCfg/staticroutes/routes/gateway                                 |            |
+  |          |                                                                                              |            |
+  |          |                          to '/etc/sysconfig/static-routes'                                   | Abort      |
+  |          |           }                                                                                  |            |
+  |          |          else                                                                                |            |
+  |          |              {                                                                               |            |
+  |          |               Try to append /GAUCfg/staticroutes/routes/intf     + " host "    +             |            |
+  |          |                             /GAUCfg/staticroutes/routes/netmask  + " gateway " +             |            |
+  |          |                             /GAUCfg/staticroutes/routes/gateway                              |            |
+  |          |                                                                                              |            |
+  |          |                             to '/etc/sysconfig/static-routes'                                | Abort      |
+  |          |              }                                                                               |            |
+  |          |                                                                                              |            |
+  |          |        }                                                                                     |            |
+  |          |                                                                                              |            |
+  |          | Try to append "#\n" to '/etc/sysconfig/static-routes'                                        | Abort      |
+  +----------+----------------------------------------------------------------------------------------------+------------+
+  |    Apply | Try to perfrom all SAVE action operations                                                    | Abort      |
+  |          +----------------------------------------------------------------------------------------------+------------+
+  |          | Try to execute 'service network restart                                                      | Abort      |
+  +==========+==============================================================================================+============+    -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/staticroutes.prf" name="staticroutes">
+   <validation>
+    <vstep errmsg="Invalid Host Record Set. Must be a well-formed XML document."
+             name="sroutes"
+             test="string-length(/input/sroutes/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Routes to system configuration file."
+             name="sroutes" path="/GAUCfg/staticroutes/sroutes"
+             type="node" />
+   </configuration>
+
+   <action name="Save" successmsg="Save operation succeeded.">
+
+<!--Moved to prfhandler_staticroutes
+    <astep abort="y" errmsg="Failed to write Static Routes file" name="WriteFile">
+     <arg expr="/tmp/static-routes" />
+     <arg   expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+    </astep>
+    <astep abort="y" errmsg="Failed to write Static Routes file" name="Append2File">
+     <arg expr="/tmp/static-routes" />
+     <arg expr="#" />
+    </astep>
+    <astep      abort="y" errmsg="Failed to write Static Routes file"
+                 name="Append2File"
+               repeat="/GAUCfg/staticroutes/sroutes/sroute"
+           rptNdxName="RPT_NDX">
+     <arg expr="/tmp/static-routes" />
+
+     <arg dependency="/GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/any/text() = 'Yes'"
+                expr="'any '"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/any/text() = 'No'"
+                expr="concat(/GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/intf/text(), ' ')"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/routetype/text() = 'host'"
+                expr="concat('host ', /GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/targetIP/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/routetype/text() = 'network'"
+                expr="concat('net ', /GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/subnet/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="string-length(/GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/netmask/text()) > 0"
+                expr="concat(' netmask ', /GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/netmask/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="string-length(/GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/gtwy/text()) > 0"
+                expr="concat(' gateway ', /GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/gtwy/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="string-length(/GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/metric/text()) > 0"
+                expr="concat(' metric ', /GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/metric/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/any/text() = 'Yes'"
+                expr="concat(' ', /GAUCfg/staticroutes/sroutes/sroute[RPT_NDX]/intf/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+    </astep>
+    <astep abort="y" errmsg="Failed to move Static Routes file" name="SystemCommand">
+     <arg expr="mv -f /tmp/static-routes /etc/sysconfig/static-routes" />
+    </astep>
+Moved to prfhandler_staticroutes-->
+
+    <astep abort="y" errmsg="Failed to write Static Routes configuration" name="SystemCommand">
+     <arg expr="'prfhandler_staticroutes Save'" source="config" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="Apply operation succeeded.">
+
+<!--Moved to prfhandler_staticroutes
+    <pre subsystem="staticroutes" action="Save" />
+    <astep abort="y" errmsg="Failed to restart network" name="SystemCommand">
+     <arg expr="service network restart" />
+    </astep>
+Moved to prfhandler_staticroutes-->
+
+    <astep abort="y" errmsg="Failed to apply the settings and restart network" name="SystemCommand">
+     <arg expr="'prfhandler_staticroutes Apply'" source="config" />
+    </astep>
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

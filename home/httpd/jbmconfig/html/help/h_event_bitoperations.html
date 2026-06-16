@@ -1,0 +1,53 @@
+<h4>Description</h4>
+<p>
+<b>Bit Unpacking:</b> Using the Analog register specified, write out bit values from least significant bit to the most significant bit. This will write into 16 Digital register locations, beginning at the register specified on the next page <b>Event Action</b>.<br /><br />
+<b>Bit Packing:</b> Starting with the Digital register specified, assemble 16 digital registers into a single Analog value. This will be written into the location specified on the next page <b>Event Action</b>.<br /><br />
+<b>Note:</b> The first digital register specified is the least significant bit, and the last is the most significant bit.<br />
+</p>
+<p><b>Bit Unpacking Example:</b> For Analog value <b>21845</b> and Write Action Address of DO:1, digital outputs DO:1-DO:16 will be populated as follows, with <b>DO:1</b> being the <b>least</b> significant bit:<br>
+	<table class="table" border="1">
+		<tr>
+			<th>Digital Type</th>
+			<th>Digital Value</th>
+		</tr>
+		<tr>
+			<td>DO1</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>DO2</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>DO3</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>DO4</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>...</td>
+			<td>...</td>
+		</tr>
+		<tr>
+			<td>DO13</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>DO14</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>DO15</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>DO16</td>
+			<td>0</td>
+		</tr>
+	</table>
+</p>
+<p>
+For bit packing, the inverse is true: DO:1-DO:16 will be assembled into specified analog register, with <b>DO:1</b> being the <b>least</b> significant bit.
+</p>

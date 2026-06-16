@@ -1,0 +1,9 @@
+<h4>Description</h4>
+<p>
+Subnets can be built three ways:<br /><br />
+<u>Calculated</u> subnet will be based on the actual IP address received from the cellular network and choose the smallest subnet that can encompass the cellular IP. This option is more compatible with a wide variety of routers, but will mask out nearby IP addresses. This may make other IP's within the host network unreachable.<br /><br />
+<u>Point-to-Point</u> uses a /32 subnet, but is not compatible with some routers.<br /><br />
+<u>Wide</u> uses a Class B subnet to move the unroutable network/broadcast addresses away from the IP assigned. This will offer compatibility to reach nearby IP addresses of other cellular units. Private IP setting is required and will be enabled.<br /><br />
+<h4>Recommended setting:</h4>
+Wide if possible, then Calculated.
+</p>

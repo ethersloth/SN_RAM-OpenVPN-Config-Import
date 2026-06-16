@@ -1,0 +1,725 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/cellular.prf" name="cellular">
+   <validation>
+    <vstep errmsg="Invalid Carrier name."
+             name="carrier"
+             test="/input/carrier/text() = 'none'              or
+                   /input/carrier/text() = 'alltel'            or
+                   /input/carrier/text() = 'att'               or
+                   /input/carrier/text() = 'bam'               or
+                   /input/carrier/text() = 'bellmobility_cdma' or
+                   /input/carrier/text() = 'bellmobility_gsm'  or
+                   /input/carrier/text() = 'cellcom'           or
+                   /input/carrier/text() = 'centennial'        or
+                   /input/carrier/text() = 'generic_cdma'      or
+                   /input/carrier/text() = 'generic_gsm'       or
+                   /input/carrier/text() = 'jasper_wireless'   or
+                   /input/carrier/text() = 'openmobile'        or
+                   /input/carrier/text() = 'rogers'            or
+                   /input/carrier/text() = 'sprint'            or
+                   /input/carrier/text() = 'suncom'            or
+                   /input/carrier/text() = 'telcel'             or
+                   /input/carrier/text() = 'telus'             or
+                   /input/carrier/text() = 'tmobile'           or
+                   /input/carrier/text() = 'unicel_cdma'       or
+                   /input/carrier/text() = 'unicel_gsm'        or
+                   /input/carrier/text() = 'uscellular'        or
+                   /input/carrier/text() = 'verizon'           or
+                   /input/carrier/text() = 'verizonglobal'     or
+                   /input/carrier/text() = 'verizongloballte'  or
+                   /input/carrier/text() = 'vodafone'          or
+                   /input/carrier/text() = 'movistar'          or
+                   /input/carrier/text() = 'claro'             or
+                   /input/carrier/text() = 'entelto'           or
+                   /input/carrier/text() = 'custom'" />
+
+    <vstep errmsg="Invalid Auto-detect Flag value. Must be 'y' or 'n'."
+             name="autodetect"
+             test="isyorn(/input/autodetect/text())" />
+
+    <vstep errmsg="Invalid Enable Flag value. Must be 'y' or 'n'."
+             name="enable"
+             test="/input/enable/text() = 'y'    or
+                   /input/enable/text() = 'n'    or
+                   /input/enable/text() = 'off'" />
+
+    <vstep errmsg="Invalid Advanced Enable Flag value. Must be 'y' or 'n'."
+             name="advenable"
+             test="isyorn(/input/advenable/text())" />
+
+    <vstep errmsg="Invalid Card type."
+             name="modem"
+             test="/input/modem/text() = 'none'              or
+                   /input/modem/text() = 'huawei_usb_cdma'   or
+                   /input/modem/text() = 'huawei_usb_gsm'    or
+                   /input/modem/text() = 'huaweiEC168'       or
+                   /input/modem/text() = 'huawei_E182E'      or
+                   /input/modem/text() = 'huawei_K4505'      or
+                   /input/modem/text() = 'kyocera650'        or
+                   /input/modem/text() = 'kyocera680'        or
+                   /input/modem/text() = 'LG_USBconnectTurbo'        or
+                   /input/modem/text() = 'novatelE725'       or
+                   /input/modem/text() = 'novatelEU870D'     or
+                   /input/modem/text() = 'novatelEX720'      or
+                   /input/modem/text() = 'novatelXU870'      or
+                   /input/modem/text() = 'novatelX950D'      or
+                   /input/modem/text() = 'novatel620'        or
+                   /input/modem/text() = 'novatel640'        or
+                   /input/modem/text() = 'novatel720'        or
+                   /input/modem/text() = 'novatelE725'       or
+                   /input/modem/text() = 'novatelE362'       or
+                   /input/modem/text() = 'novatelC777'       or
+                   /input/modem/text() = 'novatelPC770'      or
+                   /input/modem/text() = 'novatelUSB551L'    or
+                   /input/modem/text() = 'novatelUSB760'     or
+                   /input/modem/text() = 'OptionGT_HSDPA'    or
+                   /input/modem/text() = 'OptionGT_HSUPA'    or
+                   /input/modem/text() = 'OptionGT_HSUPA2'    or
+                   /input/modem/text() = 'optionICON452'      or
+                   /input/modem/text() = 'optiongtmax'       or
+                   /input/modem/text() = 'pantechUM175'      or
+                   /input/modem/text() = 'pantechUM175AL'    or
+                   /input/modem/text() = 'pantechUMW190'     or
+                   /input/modem/text() = 'pantechUML290'     or
+                   /input/modem/text() = 'px500'             or
+                   /input/modem/text() = 'aircard5220'       or
+                   /input/modem/text() = 'pc5740'            or
+                   /input/modem/text() = 'AirCard555'        or
+                   /input/modem/text() = 'AC775'             or
+                   /input/modem/text() = 'AC850'             or
+                   /input/modem/text() = 'AC860'             or
+                   /input/modem/text() = 'aircard402'        or
+                   /input/modem/text() = 'aircard503'        or
+                   /input/modem/text() = 'aircard580'        or
+                   /input/modem/text() = 'aircard595'        or
+                   /input/modem/text() = 'aircard875'        or
+                   /input/modem/text() = 'aircard881'        or
+                   /input/modem/text() = 'aircard597compass' or
+                   /input/modem/text() = 'franklin_U600'     or
+                   /input/modem/text() = 'FW2770p'           or
+                   /input/modem/text() = 'cmotech_U301'      or
+                   /input/modem/text() = 'cinterion_mc75i'   or
+                   /input/modem/text() = 'sonyPC300'         or
+                   /input/modem/text() = 'sierra250U'        or
+                   /input/modem/text() = 'sierra598U'        or
+                   /input/modem/text() = 'sierraC885'        or
+                   /input/modem/text() = 'sierra888compass'  or
+                   /input/modem/text() = 'sierraMC5725'      or
+                   /input/modem/text() = 'sierraMC5727'      or
+                   /input/modem/text() = 'sierraMC5728'      or
+                   /input/modem/text() = 'sierraMC73xx'      or
+                   /input/modem/text() = 'sierraMC7700'      or
+                   /input/modem/text() = 'sierraMC7710'      or
+                   /input/modem/text() = 'sierraMC8705'      or
+                   /input/modem/text() = 'sierraMC8790'      or
+                   /input/modem/text() = 'sierraUSB308'      or
+                   /input/modem/text() = 'sierraUSB306'      or
+                   /input/modem/text() = 'sierraUSB305'      or
+                   /input/modem/text() = 'sierraAC310U'      or
+                   /input/modem/text() = 'sierraAC312U'      or
+                   /input/modem/text() = 'sierraAC313U'      or
+                   /input/modem/text() = 'sierraAC320U'      or
+                   /input/modem/text() = 'sierraAC330U'      or
+                   /input/modem/text() = 'GC82PCCard'        or
+                   /input/modem/text() = 'GC83PCCard'        or
+                   /input/modem/text() = 'GC85PCCard'        or
+                   /input/modem/text() = 'wavecom1xrtt_usb2s_cdma' or
+                   /input/modem/text() = 'wavecom1xrtt_cdma' or
+                   /input/modem/text() = 'wavecom1xrtt_gsm'  or
+                   /input/modem/text() = 'zte_MF668'         or
+                   /input/modem/text() = 'zte_MF626'         or
+                   /input/modem/text() = 'zte_MF180'         or
+                   /input/modem/text() = 'zte_ROCKET4G'      or
+                   /input/modem/text() = 'nokia_CS18'        or
+                   /input/modem/text() = 'siemens1xrtt_gsm' "/>
+
+    <vstep errmsg="Invalid Connection type name."
+             name="conntype"
+             test="/input/conntype/text() = 'd' or /input/conntype/text() = 'p'" />
+
+    <vstep errmsg=""
+               id="TEST_ENABLE"
+             name="enable"
+           skipto="STEP_TSTHE"
+             test="/input/enable/text() = 'n'  or
+                   /input/enable/text() = 'off'" />
+
+    <vstep errmsg="Passwords mismached."
+               id="STEP_TSTPSWDS"
+             name="password"
+             test="/input/password/text() = /input/password2/text()" />
+
+    <vstep errmsg="Invalid Holdoff Enable Flag value. Must be 'y' or 'n'."
+               id="STEP_TSTHE"
+             name="holdoff"
+             test="isyorn(/input/holdoff/text())" />
+
+    <vstep errmsg="Invalid Default Route value. Must be 'y' or 'n'."
+             name="dfltrte"
+             test="isyorn(/input/dfltrte/text())" />
+
+    <vstep errmsg="Invalid SNAT Auto rule value. Must be 'y' or 'n'."
+             name="snatAuto"
+             test="isyorn(/input/snatAuto/text())" />
+
+    <vstep errmsg="Invalid DNS value. Must be 'y' or 'n'."
+             name="dns"
+             test="isyorn(/input/dns/text())" />
+
+    <vstep errmsg="Invalid SIM Unlock PIN."
+             name="simunlock"
+             test="string-length(/input/simunlock/text()) = 0 or isnumber(/input/simunlock/text())" />
+
+    <vstep errmsg="Invalid Hold-off time."
+             name="holdofftime"
+             test="/input/holdofftime/text() = '15' or
+                   /input/holdofftime/text() = '30' or
+                   /input/holdofftime/text() = '45' or
+                   /input/holdofftime/text() = '60'    " />
+
+    <vstep errmsg="Invalid Holdoff time."
+             name="holdoftime"
+             test="/input/context/text() = '1' or
+                   /input/context/text() = '2' or
+                   /input/context/text() = '3' or
+                   /input/context/text() = '4'    " />
+
+    <vstep errmsg="Invalid WWAN for LTE value. Must be 'y' or 'n'."
+             name="wwan"
+             test="isyorn(/input/wwan/text())" />
+
+    <vstep errmsg="Invalid Sync-Time Flag value. Must be 'y' or 'n'."
+             name="synctime"
+             test="isyorn(/input/synctime/text())" />
+
+    <vstep errmsg="Invalid IP Family."
+             name="ipfamily"
+             test="/input/ipfamily/text() = 'AUTO' or
+                   /input/ipfamily/text() = 'IPV4' or
+                   /input/ipfamily/text() = 'IPV4V6'" />
+
+    <vstep errmsg="Invalid Authentication Type."
+             name="authtype"
+             test="/input/authtype/text() = 'CHAP' or
+                   /input/authtype/text() = 'PAP' or
+                   /input/authtype/text() = 'AUTO'" />
+
+    <vstep errmsg="Invalid Network Preference."
+             name="network"
+             test="/input/network/text() = 'auto' or
+                   /input/network/text() = 'manual'" />
+
+    <vstep errmsg="Invalid Roaming Type."
+             name="roaming"
+             test="/input/roaming/text() = 'auto' or
+                   /input/roaming/text() = 'home'" />
+
+    <vstep errmsg="Invalid RF Radio Region."
+             name="rfradioregion"
+             test="/input/rfradioregion/text() = '0' or
+                   /input/rfradioregion/text() = '1' or
+                   /input/rfradioregion/text() = '2' or
+                   /input/rfradioregion/text() = '3' or
+                   /input/rfradioregion/text() = '4'    " />
+
+    <vstep errmsg="Invalid RX Idle value. Must be 0, or an integer between 30 and 1000."
+             name="rxidle"
+             test="isnumber(/input/rxidle/text()) and /input/rxidle/text() < 1000 and /input/rxidle/text() >= 30 or /input/rxidle/text() = 0" />
+
+
+    <vstep     id="step1"
+             name="conntype"
+           skipto="step3"
+             test="/input/conntype/text() = 'p'" />
+
+    <vstep errmsg="Invalid MTU value. Must be an integer between 60 and 1500."
+               id="step2"
+             name="cellularmtu"
+             test="isnumber(/input/cellularmtu/text()) and /input/cellularmtu/text() < 1501 and /input/cellularmtu/text() > 59" />
+
+    <vstep errmsg="Invalid Dial-on-demand timeout value. Must be an integer between 0 and 3600."
+               id="step2"
+             name="dodtimeout"
+             test="isnumber(/input/dodtimeout/text()) and /input/dodtimeout/text() < 3600 and /input/dodtimeout/text() > 0" />
+
+    <vstep     id="step3"
+           errmsg="Malformed AT command list rcv'd."
+             name="atcmds"
+             path="/GAUCfg/cellular/atcmds"
+             type="node" />
+
+    <vstep errmsg="Malformed PPP command list rcv'd."
+             name="pppcmds"
+             path="/GAUCfg/cellular/pppcmds"
+             type="node" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Carrier Name to system configuration file."
+             name="carrier"
+            path="/GAUCfg/cellular/carrier" />
+    <cstep errmsg="Unable to save Card Type to system configuration file."
+             name="modem"
+             path="/GAUCfg/cellular/modem" />
+    <cstep errmsg="Unable to save Autodetect to system configuration file."
+             name="autodetect"
+             path="/GAUCfg/cellular/autodetect" />
+    <cstep errmsg="Unable to save Enable Flag to system configuration file."
+             name="enable"
+             path="/GAUCfg/cellular/enable" />
+    <cstep errmsg="Unable to save Advanced Enable Flag to system configuration file."
+             name="advenable"
+             path="/GAUCfg/cellular/advenable" />
+    <cstep errmsg="Unable to save Username to system configuration file."
+             name="username"
+             path="/GAUCfg/cellular/username" />
+    <cstep errmsg="Unable to save Password to system configuration file."
+             name="password"
+             path="/GAUCfg/cellular/password" />
+    <cstep errmsg="Unable to save APN to system configuration file."
+             name="apn"
+             path="/GAUCfg/cellular/apn" />
+    <cstep errmsg="Unable to save Force APN to system configuration file."
+             name="forceapn"
+             path="/GAUCfg/cellular/forceapn" />
+    <cstep errmsg="Unable to save Holdoff Flag to system configuration file."
+             name="holdoff"
+             path="/GAUCfg/cellular/holdoff" />
+    <cstep errmsg="Unable to save Connection Type to system configuration file."
+             name="conntype"
+             path="/GAUCfg/cellular/conntype" />
+    <cstep errmsg="Unable to save Rx Idle to system configuration file."
+             name="rxidle"
+             path="/GAUCfg/cellular/rxidle" />
+    <cstep errmsg="Unable to save Cellular MTU to system configuration file."
+             name="cellularmtu"
+             path="/GAUCfg/cellular/mtu" />
+    <cstep errmsg="Unable to save WWAN for LTE option to system configuration file."
+             name="wwan"
+             path="/GAUCfg/cellular/wwan" />
+    <cstep errmsg="Unable to save Sync Time option to system configuration file."
+             name="synctime"
+             path="/GAUCfg/cellular/synctime" />
+    <cstep errmsg="Unable to save DOD timeout to system configuration file."
+             name="dodtimeout"
+             path="/GAUCfg/cellular/dodtimeout" />
+    <cstep errmsg="Unable to save Holdoff Time to system configuration file."
+             name="holdofftime"
+             path="/GAUCfg/cellular/holdofftime" />
+    <cstep errmsg="Unable to save Default Route to system configuration file."
+             name="dfltrte"
+             path="/GAUCfg/cellular/dfltrte" />
+    <cstep errmsg="Unable to save SNAT Auto option system configuration file."
+             name="snatAuto"
+             path="/GAUCfg/cellular/snatAuto" />
+    <cstep errmsg="Unable to save DNS to system configuration file."
+             name="dns"
+             path="/GAUCfg/cellular/dns" />
+    <cstep errmsg="Unable to save Speed to system configuration file."
+             name="speed"
+             path="/GAUCfg/cellular/speed" />
+    <cstep errmsg="Unable to save CM Ignore Registration to system configuration file."
+             name="cmignorereg"
+             path="/GAUCfg/cellular/cmignorereg" />
+    <cstep errmsg="Unable to save Network Preference to system configuration file."
+             name="network"
+             path="/GAUCfg/cellular/network" />
+    <cstep errmsg="Unable to save Mobile Country Code to system configuration file."
+             name="mcc"
+             path="/GAUCfg/cellular/mcc" />
+    <cstep errmsg="Unable to save Mobile Network Code to system configuration file."
+             name="mnc"
+             path="/GAUCfg/cellular/mnc" />
+    <cstep errmsg="Unable to save IP Family to system configuration file."
+             name="ipfamily"
+             path="/GAUCfg/cellular/ipfamily" />
+    <cstep errmsg="Unable to save Authentication Type to system configuration file."
+             name="authtype"
+             path="/GAUCfg/cellular/authtype" />
+    <cstep errmsg="Unable to save Roaming to system configuration file."
+             name="roaming"
+             path="/GAUCfg/cellular/roaming" />
+    <cstep errmsg="Unable to save RF Radio Region to system configuration file."
+             name="rfradioregion"
+             path="/GAUCfg/cellular/rfradioregion" />
+    <cstep errmsg="Unable to save Dial String to system configuration file."
+             name="dialstring"
+             path="/GAUCfg/cellular/dialstring" />
+    <cstep errmsg="Unable to save Context to system configuration file."
+             name="context"
+             path="/GAUCfg/cellular/context" />
+
+    <cstep errmsg="Unable to save AT Command List to system configuration file."
+             name="atcmds"
+             path="/GAUCfg/cellular/atcmds" type="node" />
+
+    <cstep errmsg="Unable to save PPP Command List to system configuration file."
+             name="pppcmds"
+             path="/GAUCfg/cellular/pppcmds" type="node" />
+   </configuration>
+
+   <action name="Dummy" successmsg="Cellular Connection settings stored in xml.">
+   </action>
+
+   <action name="ProcessInput">
+    <astep abort="y"
+           errmsg="Failed to write SIM Unlock PIN configuration file."
+           inpdependency="string-length(/input/simunlock/text()) > 0"
+           name="WriteFile" >
+     <arg expr="/etc/jbm/wireless/cellmodem_cpin" />
+     <arg expr="/input/simunlock/text()" source="input" />
+    </astep>
+
+    <astep      abort="n"
+           dependency="/GAUCfg/cellular/snatAuto/text() = 'y'"
+               errmsg="Failed to change SNAT script to +x"
+                 name="SystemCommand">
+     <arg expr="touch /etc/ppp/ip-up.d/01Add_ppp_wireless_fw.sh; chmod 755 /etc/ppp/ip-up.d/01Add_ppp_wireless_fw.sh" />
+    </astep>
+
+
+    <astep      abort="n"
+           dependency="/GAUCfg/cellular/snatAuto/text() = 'n'"
+               errmsg="Failed to change SNAT script to -x"
+                 name="SystemCommand">
+     <arg expr="touch /etc/ppp/ip-up.d/01Add_ppp_wireless_fw.sh; chmod 644 /etc/ppp/ip-up.d/01Add_ppp_wireless_fw.sh" />
+    </astep>
+
+
+    <astep inpdependency="/input/cpinaction/text() = 'disable' or /input/cpinaction/text() = 'enable'"
+            abort="y"
+           errmsg="Failed to write the new cellmodem_cpin_new."
+             name="SystemCommand" >
+     <arg    expr="concat('echo ', /input/cpinaction/text(), ' > /etc/jbm/wireless/cellmodem_cpin_new')"
+           source="input" />
+    </astep>
+
+    <astep inpdependency="/input/cpinaction/text() = 'change' or /input/pukcode/text() != ''"
+            abort="y"
+           errmsg="Failed to write the new cellmodem_cpin_new."
+             name="SystemCommand" >
+     <arg    expr="concat('echo ', /input/newpin/text(), ' > /etc/jbm/wireless/cellmodem_cpin_new')"
+           source="input" />
+    </astep>
+
+    <astep inpdependency="string-length(/input/pukcode/text()) > 0"
+            abort="y"
+           errmsg="Failed to write the cellmodem_puk."
+             name="SystemCommand" >
+     <arg    expr="concat('echo ', /input/pukcode/text(), ' > /etc/jbm/wireless/cellmodem_puk')"
+           source="input" />
+    </astep>
+   </action>
+
+   <action name="Save" successmsg="Cellular Connection settings saved.">
+    <pre subsystem="cellular" action="ProcessInput" />
+
+<!--Moved to prfhandler_cellular
+    <astep abort="y" errmsg="Failed to write Connection Settings configuration file." name="WriteFormattedFile" >
+     <arg expr="'/tmp/cellmodem_ppp.conf'" source="config" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg expr="concat('CM_CARDNAME=', /GAUCfg/cellular/modem/text())"  source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('CM_CARRIER=', /GAUCfg/cellular/carrier/text())" source="config" />
+     <arg expr="\n" />
+
+     <arg       expr="concat('CM_DIALSTRING=', /GAUCfg/cellular/dialstring/text())"
+          dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="'\n'"
+              source="config" />
+
+     <arg expr="concat('CM_USERNAME=', /GAUCfg/cellular/username/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('CM_PASSWORD=', /GAUCfg/cellular/password/text())" source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="concat('CM_RXIDLE=', /GAUCfg/cellular/rxidle/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="concat('CM_DOD_TIMEOUT=', /GAUCfg/cellular/dodtimeout/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="concat('CM_MTU=', /GAUCfg/cellular/mtu/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="concat('CM_DATA_SPEED=', /GAUCfg/cellular/speed/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="concat('CM_IGNORE_REGISTRATION=', /GAUCfg/cellular/cmignorereg/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="concat('CM_RF_RADIO_REGION=', /GAUCfg/cellular/rfradioregion/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/ipfamily/text() = ''"
+                expr="'CM_IPFAMILY=AUTO'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/ipfamily/text() = ''"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/ipfamily/text() != ''"
+                expr="concat('CM_IPFAMILY=', /GAUCfg/cellular/ipfamily/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/ipfamily/text() != ''"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/authtype/text() = ''"
+                expr="'CM_AUTH_TYPE=AUTO'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/authtype/text() = ''"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/authtype/text() != ''"
+                expr="concat('CM_AUTH_TYPE=', /GAUCfg/cellular/authtype/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/authtype/text() != ''"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/network/text() != ''"
+                expr="concat('CM_NETREG=', /GAUCfg/cellular/network/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/network/text() != ''"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/mcc/text() != ''"
+                expr="concat('CM_NETREG_MCC=', /GAUCfg/cellular/mcc/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/mcc/text() != ''"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/mnc/text() != ''"
+                expr="concat('CM_NETREG_MNC=', /GAUCfg/cellular/mnc/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/mnc/text() != ''"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/roaming/text() != ''"
+                expr="concat('CM_ROAMING=', /GAUCfg/cellular/roaming/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y' and /GAUCfg/cellular/roaming/text() != ''"
+                expr="'\n'"
+              source="config" />
+
+     <arg expr="concat('CM_CONTEXT=', /GAUCfg/cellular/context/text())" source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="concat('CM_DIAL_HOLDOFF_TIMEOUT=', /GAUCfg/cellular/holdofftime/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/advenable/text() = 'y'"
+                expr="'\n'"
+             source="config" />
+
+     <arg expr="concat('CM_APN=', /GAUCfg/cellular/apn/text())" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('CM_WRITE_APN=', /GAUCfg/cellular/forceapn/text())" source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/cellular/enable/text() = 'n'"
+                expr="'CM_ENABLE_INTERFACE=NO'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/enable/text() = 'off'"
+                expr="'CM_ENABLE_INTERFACE=OFF'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/enable/text() = 'y'"
+                expr="'CM_ENABLE_INTERFACE=YES'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/cellular/autodetect/text() = 'n'"
+                expr="'CM_DETECT_CARD=NO'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/autodetect/text() = 'y'"
+                expr="'CM_DETECT_CARD=YES'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/cellular/dfltrte/text() = 'n'"
+                expr="'CM_DEFAULTROUTE=NO'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/dfltrte/text() = 'y'"
+                expr="'CM_DEFAULTROUTE=YES'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/cellular/dns/text() = 'n'"
+                expr="'CM_USE_DNS=NO'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/dns/text() = 'y'"
+                expr="'CM_USE_DNS=YES'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/cellular/conntype/text() = 'p'"
+                expr="'CM_USE_DOD=NO'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/conntype/text() = 'd'"
+                expr="'CM_USE_DOD=YES'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/cellular/holdoff/text() = 'n'"
+                expr="'CM_DIAL_HOLDOFF_ENABLE=NO'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/holdoff/text() = 'y'"
+                expr="'CM_DIAL_HOLDOFF_ENABLE=YES'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/cellular/synctime/text() = 'n'"
+                expr="'CM_SYNC_TIME=NO'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/synctime/text() = 'y'"
+                expr="'CM_SYNC_TIME=YES'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/cellular/wwan/text() = 'n'"
+                expr="'CM_USE_WWAN_INT=NO'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/cellular/wwan/text() = 'y'"
+                expr="'CM_USE_WWAN_INT=YES'"
+              source="config" />
+
+     <arg expr="\n" />
+    </astep>
+
+    <astep      abort="y"
+           dependency="/GAUCfg/cellular/atcmds/NumberOfatcmds/text() != '0'"
+               errmsg="Failed to append to Cellular Connection configuration file"
+                 name="AppendFormatted2File"
+               repeat="/GAUCfg/cellular/atcmds/atcmd"
+           rptNdxName="RPT_NDX">
+
+     <arg expr="/tmp/cellmodem_ppp.conf" />
+
+     <arg expr="concat('CM_CUSTOM_AT', 'RPT_NDX', '=')"               rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/cellular/atcmds/atcmd[RPT_NDX]/cmdstr/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="'::'"                                                 rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/cellular/atcmds/atcmd[RPT_NDX]/exprsp/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep      abort="y"
+               errmsg="Failed to append to Cellular Connection configuration file"
+                 name="AppendFormatted2File" >
+     <arg expr="/tmp/cellmodem_ppp.conf" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep      abort="y"
+           dependency="/GAUCfg/cellular/pppcmds/NumberOfpppcmds/text() != '0'"
+               errmsg="Failed to append to Cellular Connection configuration file"
+                 name="AppendFormatted2File"
+               repeat="/GAUCfg/cellular/pppcmds/pppcmd"
+           rptNdxName="RPT_NDX">
+
+     <arg expr="/tmp/cellmodem_ppp.conf" />
+
+     <arg expr="concat('CM_CUSTOM_PPP', 'RPT_NDX', '=')"                rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/cellular/pppcmds/pppcmd[RPT_NDX]/cmdstr/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move Cellular Connection configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/cellmodem_ppp.conf /etc/jbm/wireless/cellmodem_ppp.conf" />
+    </astep>
+Moved to prfhandler_cellular-->
+
+    <astep abort="y" errmsg="Failed to save the cellular configuration" name="SystemCommand">
+     <arg expr="'prfhandler_cellular Save'" source="config" />
+    </astep>
+   </action>
+
+   <action name="Apply" successmsg="Cellular Connection settings applied.">
+    <pre subsystem="cellular" action="ProcessInput" />
+
+<!--Moved to prfhandler_cellular
+    <pre subsystem="cellular" action="Save" />
+
+    <astep abort="y" errmsg="Wireless Configuration Manager could not complete wireless device setup, however settings were saved.  This could be caused by an unsupported or undetected card." name="SystemCommand">
+     <arg expr="/home/httpd/jbmconfig/bin/wirelesscfgmgr.pl" />
+    </astep>
+Moved to prfhandler_cellular-->
+
+    <astep abort="y" errmsg="Failed to Apply the cellular configuration" name="SystemCommand">
+     <arg expr="'prfhandler_cellular Apply'" source="config" />
+    </astep>
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

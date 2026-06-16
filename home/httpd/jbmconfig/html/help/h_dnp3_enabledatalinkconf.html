@@ -1,0 +1,14 @@
+<h4>Description</h4>
+<p>
+<b>Enable Data Link Confirmation:</b> The DNP3 Slave Driver can be configured to retry unconfirmed data link primary frames. The number of retries the driver sends and the retry timeout are configurable. This service is disabled unless Data Link Confirmation option is set to <b>Yes</b>.
+</p>
+<p>
+ - The number of <b>Retries</b> is configurable between 0 (Data Link Retries disabled) and 255.
+</p>
+<p>
+ - The <b>Retry Timeout</b> is configurable between 0 (Data Link Retries disabled) and 5000ms
+</p>
+<p>
+<b>Note:</b> The Driver's Data Link Layer will attempt to retry (will resend) an unconfirmed data link primary frame when the confirmation has not been received within the configured timeout. If the confirmation fails to arrive after the configured number of retries, the communications link is considered failed and a reset sequence is required before a new primary frame could be sent.
+</p>
+

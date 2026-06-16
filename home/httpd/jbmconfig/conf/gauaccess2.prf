@@ -1,0 +1,153 @@
+
+<profile>
+ <subsystems>
+                                                                                                                             <!--
+               Admin -> Access Settings Section
+
+  V2.20 behaviors (taken from cfg_adm.cpp - ApplyAccessSettings() & ApplyAccountSettings()):
+
+  +==========+===================================================================================+============+
+  |  ACTION  |                               STEP                                                | ON FAILURE |
+  +==========+===================================================================================+============+
+  |    Apply | Verify current password present in POST data                                      | Abort      |
+  |          +-----------------------------------------------------------------------------------+------------+
+  |          | Verify 1st new password present in POST data                                      | Abort      |
+  |          +-----------------------------------------------------------------------------------+------------+
+  |          | Verify 2nd new password present in POST data                                      | Abort      |
+  |          +-----------------------------------------------------------------------------------+------------+
+  |          | Verify new passwords match                                                        | Abort      |
+  |          +-----------------------------------------------------------------------------------+------------+
+  |          | Verify new password > 5 && < 16 characters in length                              | Abort      |
+  |          +-----------------------------------------------------------------------------------+------------+
+  |          | Verify current password valid                                                     | Abort      |
+  |          +-----------------------------------------------------------------------------------+------------+
+  |          | Attempt to change password:                                                       |            |
+  |          |                                                                                   |            |
+  |          | Try to open/read file '/etc/shadow'                                               | Abort      |
+  |          |                                                                                   |            |
+  |          | Try to locate user 'jbmadmin'                                                     | Abort      |
+  |          |                                                                                   |            |
+  |          | Try to get password for user 'jbmadmin'                                           | Abort      |
+  |          |                                                                                   |            |
+  |          | Verify password for 'jbmadmin' == encrypted /GAU/gauaccount/curpass               | Abort      |
+  |          |                                                                                   |            |
+  |          | Try to execute "echo \"jbmadmin:" + /GAU/gauaccount/newpassword + "\" | chpasswd -m" | Abort      |
+  |          +-----------------------------------------------------------------------------------+------------+
+  |          | Attempt to erase entered passwords from Master Configuration file                 | Abort      |
+  |          +-----------------------------------------------------------------------------------+------------+
+
+  /\/\/\/\/\/\/\  (Access Method & Passwords were separate sections in V2.20)  /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+
+  |          +-----------------------------------------------------------------------------------+------------+
+  |          | Verify Access method present in POST data                                         | Abort      |
+  |          +-----------------------------------------------------------------------------------+------------+
+  |          | Verify Access Method = 'http' || 'https'                                          | Abort      |
+  |          +-----------------------------------------------------------------------------------+------------+
+  |          | Build script '/tmp/webswitch.sh' to change Access Method:                         | Abort      |
+  |          |                                                                                   |            |
+  |          | sleep 10                                                                          |            |
+  |          |                                                                                   |            |
+  |          | if ("https" == GAUCfg/gauaccess/method)                                           |            |
+  |          |   {                                                                               |            |
+  |          |    service   jbmconfig  stop                                                      |            |
+  |          |    chkconfig jbmconfig  off                                                       |            |
+  |          |    service   jbmconfigs start                                                     |            |
+  |          |    chkconfig jbmconfigs on                                                        |            |
+  |          |   }                                                                               |            |
+  |          |  else                                                                             |            |
+  |          |      {                                                                            |            |
+  |          |       service   jbmconfigs stop                                                   |            |
+  |          |       chkconfig jbmconfigs off                                                    |            |
+  |          |       service   jbmconfig  start                                                  |            |
+  |          |       chkconfig jbmconfig  on                                                     |            |
+  |          |      }                                                                            |            |
+  |          | exit                                                                              |            |
+  |          +-----------------------------------------------------------------------------------+------------+
+  |          | chmod u+rx /tmp/fwebswitch.sh                                                     | Abort      |
+  |          +-----------------------------------------------------------------------------------+------------+
+  |          | /tmp/webswitch.sh > /dev/null 2>&1 &                                              | Abort      |
+  +==========+===================================================================================+============+               -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/gauaccess2.conf" name="gauaccess2">
+
+   <configuration>
+    <cstep errmsg="" name="dummy" default="dummy" path="/GAUCfg/gauaccess2/dummy"   />
+   </configuration>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+
+    <astep abort="y" errmsg="Failed to update Controlled Access password."
+           dependency="string-length(/GAUCfg/gauaccess2/cap/text()) > 0"
+           name="SystemCommand" >
+
+     <arg source="config" expr="concat('echo gauser:', /GAUCfg/gauaccess2/cap/text(), ' | chpasswd -m')" />
+    </astep>
+
+
+    <astep abort="y" errmsg="Failed to update Limited Access password."
+           dependency="string-length(/GAUCfg/gauaccess2/lap/text()) > 0"
+           name="SystemCommand" >
+
+     <arg source="config" expr="concat('echo techsup:', /GAUCfg/gauaccess2/lap/text(), ' | chpasswd -m')" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to update Full Access user password."
+           dependency="string-length(/GAUCfg/gauaccess2/fap/text()) > 0"
+           name="SystemCommand" >
+
+     <arg source="config" expr="concat('echo admin:', /GAUCfg/gauaccess2/fap/text(), ' | chpasswd -m')" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to update Full Access user password."
+           dependency="string-length(/GAUCfg/gauaccess2/fap/text()) > 0"
+           name="SystemCommand" >
+
+     <arg source="config" expr="concat('echo root:', /GAUCfg/gauaccess2/fap/text(), ' | chpasswd -m')" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to update Full Access user password."
+           dependency="string-length(/GAUCfg/gauaccess2/fap/text()) > 0"
+           name="SystemCommand" >
+
+     <arg source="config" expr="concat('echo jbmgatew:', /GAUCfg/gauaccess2/fap/text(), ' | chpasswd -m')" />
+    </astep>
+
+    <astep abort="n"
+            errmsg="Failed to add group, already exists"
+            dependency="string-length(/GAUCfg/gauaccess2/fap/text()) > 0"
+            name="SystemCommand">
+     <arg source="input" expr="concat('addgroup rlcuser &>/dev/null; true')" />
+    </astep>
+
+    <astep abort="n"
+           errmsg="Failed to add user, already exists"
+           dependency="string-length(/GAUCfg/gauaccess2/fap/text()) > 0"
+           name="SystemCommand">
+     <arg source="input" expr="concat('adduser -D rlcuser -G rlcuser &>/dev/null; true')" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to update Full Access user password."
+           dependency="string-length(/GAUCfg/gauaccess2/fap/text()) > 0"
+           name="SystemCommand" >
+     <arg source="config" expr="concat('echo rlcuser:', /GAUCfg/gauaccess2/fap/text(), ' | chpasswd -m')" />
+    </astep>
+
+    <astep abort="n" name="SystemCommand" >
+        <arg source="config" expr="'/home/httpd/jbmconfig/bin/xpeval -u --in=/home/httpd/jbmconfig/conf/config.xml --out=/home/httpd/jbmconfig/conf/config.xml --xpath=//cap --value='" />
+    </astep>
+    <astep abort="n" name="SystemCommand" >
+        <arg source="config" expr="'/home/httpd/jbmconfig/bin/xpeval -u --in=/home/httpd/jbmconfig/conf/config.xml --out=/home/httpd/jbmconfig/conf/config.xml --xpath=//fap --value='" />
+    </astep>
+    <astep abort="n" name="SystemCommand" >
+        <arg source="config" expr="'/home/httpd/jbmconfig/bin/xpeval -u --in=/home/httpd/jbmconfig/conf/config.xml --out=/home/httpd/jbmconfig/conf/config.xml --xpath=//lap --value='" />
+    </astep>
+
+   </action>
+
+   <action name="Save" successmsg="Operation Succeeded.">
+    <!-- For compatibility with Migrate -->
+    <pre subsystem="gauaccess2" action="Apply" />
+   </action>
+  </subsystem>
+ </subsystems>
+</profile>

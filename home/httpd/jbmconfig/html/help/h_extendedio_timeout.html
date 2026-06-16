@@ -1,0 +1,9 @@
+<h4>Description</h4>
+<p>
+<b><u>CPU Monitor Timeout:</u></b><br /> 
+Use this option to make the I/O fail safe if the main CPU stops working.  The main CPU controls communication, 
+Modbus and code written in C.  If the main CPU stops working the I/O processor will detect that in the time define in the "CPU Monitor Timeout" field.  
+Suggested timeouts are 10sec to 30sec.  Timeouts faster than 5sec are not recommended.  The maximum allowed timeout value is 65 sec.  
+Setting this value to 0 will disable the feature.  The default value is 0 (Timeout Disabled).  
+Select the "Timeout Actions" field to define what the I/O should do when a CPU timeout occurs.
+</p>

@@ -1,0 +1,103 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                              <!--
+               GWLNX -> GWLNX Configuration Installation Section
+
+  +==========+======================================================+============+
+  |  ACTION  |                           STEP                       | ON FAILURE |
+  +==========+======================================================+============+
+  | Install  | Verify file name exists in Master Configuration file | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Verify file name has been selected.                  | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | installcfg {gwlnxcfgfile}                            | Abort      |
+  +----------+------------------------------------------------------+------------+
+  |  Delete  | Verify file name exists in Master Configuration file | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Verify file name has been selected.                  | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Remove filename from Master Configuration file       | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | rm -f {gwlnxcfgfile}                                 | Abort      |
+  +==========+======================================================+============+                                            -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/gwlnxcfgmgr.prf" name="gwlnxcfgmgr">
+   <validation>
+    <vstep name="gwlnxcfgmgr" errmsg="No configuration file selected." test="/input/gwlnxcfgmgr/text() != 'none'" />
+   </validation>
+
+   <configuration>
+    <cstep name="gwlnxcfgmgr" errmsg="Unable to save Package File to system configuration file." path="/GAUCfg/package/gwlnxcfgfile" />
+   </configuration>
+
+   <action name="Install" successmsg="Configuration file installed.">
+
+    <astep abort="y" errmsg="Failed to install the GWLNX configuration file" name="SystemCommand">
+     <arg expr="'prfhandler_gwlnxcfgmgr'" source="config" />
+    </astep>
+
+<!--Moved to prfhandler_gwlnxcfgmgr
+    <astep abort="n" errmsg="Unable to prepare script." name="WriteFormattedFile" >
+     <arg expr="/tmp/installcfg.sh" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to write the installcfg script file." name="AppendFormatted2File">
+     <arg expr="/tmp/installcfg.sh" />
+     <arg expr="#!/bin/bash" />
+     <arg expr="\n" />
+     <arg expr="concat('extension=`echo ', /GAUCfg/package/gwlnxcfgfile/text(), ' | awk -F . ', tick(), '{print $NF}', tick(), '`')" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('if [ ', tick(), 'xml', tick(), ' = $extension ]; then')" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('sed ', tick(), 's/unit.cfg/unit.xml/g', tick(), ' /home/jbmgatew/jbmcontrol.conf >/tmp/jbmcontrol.conf;')" source="config" />
+     <arg expr="\n" />
+     <arg expr="mv -f /tmp/jbmcontrol.conf /home/jbmgatew/jbmcontrol.conf" />
+     <arg expr="\n" />
+     <arg expr="else" />
+     <arg expr="\n" />
+     <arg expr="concat('if [ ', tick(), 'cfg', tick(), ' = $extension -o ', tick(), 'orig', tick(), ' = $extension ]; then')" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('sed ', tick(), 's/unit.xml/unit.cfg/g', tick(), ' /home/jbmgatew/jbmcontrol.conf >/tmp/jbmcontrol.conf;')" source="config" />
+     <arg expr="\n" />
+     <arg expr="mv -f /tmp/jbmcontrol.conf /home/jbmgatew/jbmcontrol.conf" />
+     <arg expr="\n" />
+     <arg expr="fi" />
+     <arg expr="\n" />
+     <arg expr="fi" />
+     <arg expr="\n" />
+     <arg expr="exit 0" />
+    </astep>
+
+    <astep abort="n" errmsg="Unable to make script executable." name="SystemCommand">
+     <arg expr="chmod a+x /tmp/installcfg.sh" />
+    </astep>
+
+    <astep abort="n" errmsg="Unable to execute script." name="SystemCommand">
+     <arg expr="/tmp/installcfg.sh &" />
+    </astep>
+
+    <astep errmsg="Failed to install config file" name="SystemCommand" abort="y">
+     <arg source="config" expr="concat('/bin/installcfg ', /GAUCfg/package/gwlnxcfgfile/text())" />
+    </astep>
+
+    <astep abort="n" errmsg="jbmcontrol is not running and couldn't start it." name="SystemCommand"
+              sysdependency="pidof /bin/jbmcontrol &amp;>/dev/null; [ $? -ne 0 ]">
+                       <arg expr="/bin/jbmcontrol &amp;>/dev/null" />
+    </astep>
+Moved to prfhandler_gwlnxcfgmgr-->
+
+   </action>
+
+   <action name="Delete" successmsg="Configuration file deleted.">
+    <astep errmsg="Failed to delete configuration file" name="SystemCommand" abort="y">
+     <arg source="config" expr="concat('rm -f ', /GAUCfg/package/gwlnxcfgfile/text())" />
+    </astep>
+   </action>
+  </subsystem>
+
+
+
+ </subsystems>
+</profile>

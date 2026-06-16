@@ -1,0 +1,11 @@
+<h4>Description</h4>
+<p>Enter the number of seconds the connection may be allowed to remain "idle" or "unresponsive" (no data received) before closing the connection. 
+If packets are leaving the interface, but no return packet is received for the specified time, then the connection is reset. 
+This can be useful for detecting an unresponsive situation where the network is down, the modem is in an unknown state, or other low level error may have occurred.
+</p>
+<p>Note: If the normal usage of the device regularly has packets leaving the unit with no expected response, then premature disconnections may result. 
+Outgoing UDP packets with no expected response may be normal operation, yet will trigger this disconnection and reset.
+</p>
+<h4>Recommended Setting</h4>
+<p><b>Default:</b> 0 to turn off.</p>
+<p><b>To enable this option:</b> 150 seconds (2.5 minutes) is a recommended value.</p>

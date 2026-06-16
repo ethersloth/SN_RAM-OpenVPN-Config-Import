@@ -1,0 +1,144 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+my $debugEnable = "";
+
+if (
+    open(
+        FILE,
+        "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/profile.xml " .
+        "--xpath=\"/profile/settings/Debug/GAURuntime/GAUDebugEnable/text()\" |"
+        )
+    )
+{
+    while (<FILE>)
+    {
+        $debugEnable = $_;
+
+        chomp($debugEnable);
+    }
+
+    close(FILE);
+}
+
+
+my $jbm_lib = "/etc/jbm/jbm_lib.pl";
+
+if (! -e $jbm_lib)
+{
+    print "Missing JBM Perl library, cannot run";
+
+    exit(1);
+}
+else
+{
+    require $jbm_lib;
+}
+
+
+if ("y" eq $debugEnable)
+{
+    syslog("DelOrphVrrpIntfs:  Starting");
+}
+
+
+# Get total number of Vrrp interface entries from the Master Configuration file:
+
+my $confVrrpIntfsCnt = 0;
+
+if (
+    open(
+        FILE,
+        "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/config.xml " .
+        "--xpath=\"/GAUCfg/vrrp/vrrps/NumberOfvrrps/text()\" |"
+        )
+    )
+{
+    while (<FILE>)
+    {
+        $confVrrpIntfsCnt = $_;
+        chomp($confVrrpIntfsCnt);
+    }
+
+    close(FILE);
+}
+
+
+# Get a list of vrrp names from the Master Configuration file:
+
+my @cfgVrrpIntfNamesList;
+
+for (my $intfNdx=1; $intfNdx <= $confVrrpIntfsCnt; $intfNdx++)
+{
+    my $intfName = "";
+
+    if (1 == $intfNdx)
+    {
+        $intfName = "vrrpd";
+    }
+    else
+    {
+        $intfName = "vrrpd" . $intfNdx;
+    }
+
+    push(@cfgVrrpIntfNamesList, $intfName);
+}
+
+# Read contents of /etc/vrrpd directory into an array of strings for each:
+
+opendir(DIR, "/etc/vrrpd/");
+
+my @instIntfsList = readdir(DIR);
+closedir(DIR);
+
+
+# Compare the list of existing Vrrp interface configuration files to list of vrrp names obtained from the Master
+# Configuration file and delete any existing file that is not referenced by the Master Configuration file:
+
+foreach my $instIntfName (@instIntfsList)
+{
+    my $searchStr = ".conf";
+
+    if ($instIntfName =~ m/($searchStr)$/i)
+    {
+        my $legitFile = 0;
+
+        foreach my $intfName (@cfgVrrpIntfNamesList)
+            {
+            if ($intfName . ".conf" eq $instIntfName)
+                {
+                    $legitFile = 1;
+
+                    last;
+                }
+            }
+
+        if (0 == $legitFile)
+        {
+            my $intf = substr($instIntfName, 0, -5);
+            my $cmd1 = "service " . $intf . " stop &> /dev/null";
+            my $cmd2 = "chkconfig " . $intf . " off &> /dev/null";
+
+            if ("y" eq $debugEnable)
+            {
+                syslog("DelOrphVrrpIntfs:   Deleting " . $instIntfName);
+                syslog("DelOrphVrrpIntfs:   Execing " . $cmd1);
+                syslog("DelOrphVrrpIntfs:   Execing " . $cmd2);
+            }
+
+            system($cmd1);
+            system($cmd2);
+
+            unlink("/etc/vrrpd/" . $instIntfName);
+        }
+    }
+}
+
+if ("y" eq $debugEnable)
+{
+    syslog("DelOrphVrrpIntfs:  Exit {0}");
+}
+
+
+exit(0);
+

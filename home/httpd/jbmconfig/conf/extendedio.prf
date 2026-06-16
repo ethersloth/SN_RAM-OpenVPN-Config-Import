@@ -1,0 +1,526 @@
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/extendedio.prf" name="extendedio">
+   <validation>
+   </validation>
+   <configuration>
+    <!-- [GLOBAL] -->
+    <cstep errmsg="Cannot save Comm Timeout to configuration file"
+             name="ComTimeout"
+             path="/GAUCfg/extendedio/ComTimeout" />
+    <cstep errmsg="Cannot save Timeout Action to configuration file"
+             name="TimeoutAction"
+             path="/GAUCfg/extendedio/TimeoutAction" />
+    <cstep errmsg="Cannot save Analog Filter to configuration file"
+             name="AI_FilterHz"
+             path="/GAUCfg/extendedio/AI_FilterHz" />
+    <cstep errmsg="Cannot save Temperature Reporting to configuration file"
+             name="TempReport"
+             path="/GAUCfg/extendedio/TempReport" />
+    <cstep errmsg="Cannot save Timer/Counter Time Bases 0 to configuration file"
+             name="TimerBase0"
+             path="/GAUCfg/extendedio/TimerBase0" />
+    <cstep errmsg="Cannot save Timer/Counter Time Bases 1 to configuration file"
+             name="TimerBase1"
+             path="/GAUCfg/extendedio/TimerBase1" />
+    <cstep errmsg="Cannot save Timer/Counter Time Bases 2 to configuration file"
+             name="TimerBase2"
+             path="/GAUCfg/extendedio/TimerBase2" />
+    <cstep errmsg="Cannot save Timer/Counter Time Bases 3 to configuration file"
+             name="TimerBase3"
+             path="/GAUCfg/extendedio/TimerBase3" />
+    <cstep errmsg="Cannot save Timer/Counter Time Bases 4 to configuration file"
+             name="TimerBase4"
+             path="/GAUCfg/extendedio/TimerBase4" />
+    <cstep errmsg="Cannot save Timer/Counter Time Bases 5 to configuration file"
+             name="TimerBase5"
+             path="/GAUCfg/extendedio/TimerBase5" />
+    <cstep errmsg="Cannot save Filter Number Full to configuration file"
+             name="DI_FilterNumberFull"
+             path="/GAUCfg/extendedio/DI_FilterNumberFull" />
+    <cstep errmsg="Cannot save Filter Time Full to configuration file"
+             name="DI_FilterTimeFull"
+             path="/GAUCfg/extendedio/DI_FilterTimeFull" />
+    <cstep errmsg="Cannot save Filter Number Half to configuration file"
+             name="DI_FilterNumberHalf"
+             path="/GAUCfg/extendedio/DI_FilterNumberHalf" />
+    <cstep errmsg="Cannot save Filter Time Half to configuration file"
+             name="DI_FilterTimeHalf"
+             path="/GAUCfg/extendedio/DI_FilterTimeHalf" />
+    <cstep errmsg="Cannot save TPO Number to configuration file"
+             name="TPO_Cycle_Time"
+             path="/GAUCfg/extendedio/TPO_Cycle_Time" />
+    <cstep errmsg="Cannot save TPO Minimum to configuration file"
+             name="TPO_Min_Time"
+             path="/GAUCfg/extendedio/TPO_Min_Time" />
+    <!-- [SYSTEM] -->
+    <cstep errmsg="Cannot save UDR Interval to configuration file"
+             name="UDR_Interval"
+             path="/GAUCfg/extendedio/UDR_Interval" />
+    <cstep errmsg="Cannot save BoardDI_iodbDIbase to configuration file"
+             name="boardDI_iodbDIbase"
+             path="/GAUCfg/extendedio/boardDI_iodbDIbase" />
+    <cstep errmsg="Cannot save BoardAI_iodbAIbase to configuration file"
+             name="boardAI_iodbAIbase"
+             path="/GAUCfg/extendedio/boardAI_iodbAIbase" />
+    <cstep errmsg="Cannot save BoardDO_iodbDObase to configuration file"
+             name="boardDO_iodbDObase"
+             path="/GAUCfg/extendedio/boardDO_iodbDObase" />
+    <cstep errmsg="Cannot save BoardAO_iodbAObase to configuration file"
+             name="boardAO_iodbAObase"
+             path="/GAUCfg/extendedio/boardAO_iodbAObase" />
+    <cstep errmsg="Cannot save boardCNT_iodbAIbase to configuration file"
+             name="boardCNT_iodbAIbase"
+             path="/GAUCfg/extendedio/boardCNT_iodbAIbase" />
+    <cstep errmsg="Cannot save boardTPO_iodbAObase to configuration file"
+             name="boardTPO_iodbAObase"
+             path="/GAUCfg/extendedio/boardTPO_iodbAObase" />
+    <cstep errmsg="Cannot save BoardVAO_iodbLI to configuration file"
+             name="boardVAO_iodbLI"
+             path="/GAUCfg/extendedio/boardVAO_iodbLI" />
+    <!-- [DI0] -->
+    <cstep errmsg="Cannot save DI0 Mode to configuration file"
+             name="DI0_Mode"
+             path="/GAUCfg/extendedio/DI0_Mode" />
+    <cstep errmsg="Cannot save DI0 Counter Size to configuration file"
+             name="DI0_CounterSize"
+             path="/GAUCfg/extendedio/DI0_CounterSize" />
+    <cstep errmsg="Cannot save DI0 Counter Mode to configuration file"
+             name="DI0_CounterMode"
+             path="/GAUCfg/extendedio/DI0_CounterMode" />
+    <cstep errmsg="Cannot save DI0 Polarity to configuration file"
+             name="DI0_Polarity"
+             path="/GAUCfg/extendedio/DI0_Polarity" />
+    <!-- [DI1] -->
+    <cstep errmsg="Cannot save DI1 Mode to configuration file"
+             name="DI1_Mode"
+             path="/GAUCfg/extendedio/DI1_Mode" />
+    <cstep errmsg="Cannot save DI1 Counter Size to configuration file"
+             name="DI1_CounterSize"
+             path="/GAUCfg/extendedio/DI1_CounterSize" />
+    <cstep errmsg="Cannot save DI1 Counter Mode to configuration file"
+             name="DI1_CounterMode"
+             path="/GAUCfg/extendedio/DI1_CounterMode" />
+    <cstep errmsg="Cannot save DI1 Polarity to configuration file"
+             name="DI1_Polarity"
+             path="/GAUCfg/extendedio/DI1_Polarity" />
+    <!-- [DI2] -->
+    <cstep errmsg="Cannot save DI2 Mode to configuration file"
+             name="DI2_Mode"
+             path="/GAUCfg/extendedio/DI2_Mode" />
+    <cstep errmsg="Cannot save DI2 Counter Size to configuration file"
+             name="DI2_CounterSize"
+             path="/GAUCfg/extendedio/DI2_CounterSize" />
+    <cstep errmsg="Cannot save DI2 Counter Mode to configuration file"
+             name="DI2_CounterMode"
+             path="/GAUCfg/extendedio/DI2_CounterMode" />
+    <cstep errmsg="Cannot save DI2 Polarity to configuration file"
+             name="DI2_Polarity"
+             path="/GAUCfg/extendedio/DI2_Polarity" />
+    <!-- [DI3] -->
+    <cstep errmsg="Cannot save DI3 Mode to configuration file"
+             name="DI3_Mode"
+             path="/GAUCfg/extendedio/DI3_Mode" />
+    <cstep errmsg="Cannot save DI3 Counter Size to configuration file"
+             name="DI3_CounterSize"
+             path="/GAUCfg/extendedio/DI3_CounterSize" />
+    <cstep errmsg="Cannot save DI3 Counter Mode to configuration file"
+             name="DI3_CounterMode"
+             path="/GAUCfg/extendedio/DI3_CounterMode" />
+    <cstep errmsg="Cannot save DI3 Polarity to configuration file"
+             name="DI3_Polarity"
+             path="/GAUCfg/extendedio/DI3_Polarity" />
+    <!-- [DI4] -->
+    <cstep errmsg="Cannot save DI4 Mode to configuration file"
+             name="DI4_Mode"
+             path="/GAUCfg/extendedio/DI4_Mode" />
+    <cstep errmsg="Cannot save DI4 Counter Size to configuration file"
+             name="DI4_CounterSize"
+             path="/GAUCfg/extendedio/DI4_CounterSize" />
+    <cstep errmsg="Cannot save DI4 Counter Mode to configuration file"
+             name="DI4_CounterMode"
+             path="/GAUCfg/extendedio/DI4_CounterMode" />
+    <cstep errmsg="Cannot save DI4 Polarity to configuration file"
+             name="DI4_Polarity"
+             path="/GAUCfg/extendedio/DI4_Polarity" />
+    <!-- [DI5] -->
+    <cstep errmsg="Cannot save DI5 Mode to configuration file"
+             name="DI5_Mode"
+             path="/GAUCfg/extendedio/DI5_Mode" />
+    <cstep errmsg="Cannot save DI5 Counter Size to configuration file"
+             name="DI5_CounterSize"
+             path="/GAUCfg/extendedio/DI5_CounterSize" />
+    <cstep errmsg="Cannot save DI5 Counter Mode to configuration file"
+             name="DI5_CounterMode"
+             path="/GAUCfg/extendedio/DI5_CounterMode" />
+    <cstep errmsg="Cannot save DI5 Polarity to configuration file"
+             name="DI5_Polarity"
+             path="/GAUCfg/extendedio/DI5_Polarity" />
+    <!-- [DO0] -->
+    <cstep errmsg="Cannot save DO0 Mode to configuration file"
+             name="DO0_Mode"
+             path="/GAUCfg/extendedio/DO0_Mode" />
+    <cstep errmsg="Cannot save DO0 TPO to configuration file"
+             name="DO0_TPO"
+             path="/GAUCfg/extendedio/DO0_TPO" />
+    <!-- [DO1] -->
+    <cstep errmsg="Cannot save DO1 Mode to configuration file"
+             name="DO1_Mode"
+             path="/GAUCfg/extendedio/DO1_Mode" />
+    <cstep errmsg="Cannot save DO1 TPO to configuration file"
+             name="DO1_TPO"
+             path="/GAUCfg/extendedio/DO1_TPO" />
+    <!-- [DO2] -->
+    <cstep errmsg="Cannot save DO2 Mode to configuration file"
+             name="DO2_Mode"
+             path="/GAUCfg/extendedio/DO2_Mode" />
+    <cstep errmsg="Cannot save DO2 TPO to configuration file"
+             name="DO2_TPO"
+             path="/GAUCfg/extendedio/DO2_TPO" />
+    <!-- [DO3] -->
+    <cstep errmsg="Cannot save DO3 Mode to configuration file"
+             name="DO3_Mode"
+             path="/GAUCfg/extendedio/DO3_Mode" />
+    <cstep errmsg="Cannot save DO3 TPO to configuration file"
+             name="DO3_TPO"
+             path="/GAUCfg/extendedio/DO3_TPO" />
+    <!-- [DO4-RLY1] -->
+    <cstep errmsg="Cannot save DO4 Mode to configuration file"
+             name="DO4_Mode"
+             path="/GAUCfg/extendedio/DO4_Mode" />
+    <cstep errmsg="Cannot save DO4 TPO to configuration file"
+             name="DO4_TPO"
+             path="/GAUCfg/extendedio/DO4_TPO" />
+    <!-- [DO5-RLY2] -->
+    <cstep errmsg="Cannot save DO5 Mode to configuration file"
+             name="DO5_Mode"
+             path="/GAUCfg/extendedio/DO5_Mode" />
+    <cstep errmsg="Cannot save DO5 TPO to configuration file"
+             name="DO5_TPO"
+             path="/GAUCfg/extendedio/DO5_TPO" />
+    <!-- [AI0] -->
+    <cstep errmsg="Cannot save AI0 Type to configuration file"
+             name="AI0_Type"
+             path="/GAUCfg/extendedio/AI0_Type" />
+    <cstep errmsg="Cannot save AI0 Range to configuration file"
+             name="AI0_Range"
+             path="/GAUCfg/extendedio/AI0_Range" />
+    <cstep errmsg="Cannot save AI0 User Calibration Zero Correction to configuration file"
+             name="AI0_UsrCalibZero"
+             path="/GAUCfg/extendedio/AI0_UsrCalibZero" />
+    <cstep errmsg="Cannot save AI0 User Calibration Span Correction to configuration file"
+             name="AI0_UsrCalibSpan"
+             path="/GAUCfg/extendedio/AI0_UsrCalibSpan" />
+    <!-- [AI1] -->
+    <cstep errmsg="Cannot save AI1 Type to configuration file"
+             name="AI1_Type"
+             path="/GAUCfg/extendedio/AI1_Type" />
+    <cstep errmsg="Cannot save AI1 Range to configuration file"
+             name="AI1_Range"
+             path="/GAUCfg/extendedio/AI1_Range" />
+    <cstep errmsg="Cannot save AI1 User Calibration Zero Correction to configuration file"
+             name="AI1_UsrCalibZero"
+             path="/GAUCfg/extendedio/AI1_UsrCalibZero" />
+    <cstep errmsg="Cannot save AI1 User Calibration Span Correction to configuration file"
+             name="AI1_UsrCalibSpan"
+             path="/GAUCfg/extendedio/AI1_UsrCalibSpan" />
+    <!-- [AI2] -->
+    <cstep errmsg="Cannot save AI2 Type to configuration file"
+             name="AI2_Type"
+             path="/GAUCfg/extendedio/AI2_Type" />
+    <cstep errmsg="Cannot save AI2 Range to configuration file"
+             name="AI2_Range"
+             path="/GAUCfg/extendedio/AI2_Range" />
+    <cstep errmsg="Cannot save AI2 User Calibration Zero Correction to configuration file"
+             name="AI2_UsrCalibZero"
+             path="/GAUCfg/extendedio/AI2_UsrCalibZero" />
+    <cstep errmsg="Cannot save AI2 User Calibration Span Correction to configuration file"
+             name="AI2_UsrCalibSpan"
+             path="/GAUCfg/extendedio/AI2_UsrCalibSpan" />
+    <!-- [AI3] -->
+    <cstep errmsg="Cannot save AI3 Type to configuration file"
+             name="AI3_Type"
+             path="/GAUCfg/extendedio/AI3_Type" />
+    <cstep errmsg="Cannot save AI3 Range to configuration file"
+             name="AI3_Range"
+             path="/GAUCfg/extendedio/AI3_Range" />
+    <cstep errmsg="Cannot save AI3 User Calibration Zero Correction to configuration file"
+             name="AI3_UsrCalibZero"
+             path="/GAUCfg/extendedio/AI3_UsrCalibZero" />
+    <cstep errmsg="Cannot save AI3 User Calibration Span Correction to configuration file"
+             name="AI3_UsrCalibSpan"
+             path="/GAUCfg/extendedio/AI3_UsrCalibSpan" />
+    <!-- [AO0] -->
+    <cstep errmsg="Cannot save AO0 Range to configuration file"
+             name="AO0_Range"
+             path="/GAUCfg/extendedio/AO0_Range" />
+    <cstep errmsg="Cannot save AO0 User Calibration Zero Correction to configuration file"
+             name="AO0_UsrCalibZero"
+             path="/GAUCfg/extendedio/AO0_UsrCalibZero" />
+    <cstep errmsg="Cannot save AO0 User Calibration Span Correction to configuration file"
+             name="AO0_UsrCalibSpan"
+             path="/GAUCfg/extendedio/AO0_UsrCalibSpan" />
+    <!-- [AO1] -->
+    <cstep errmsg="Cannot save AO1 Range to configuration file"
+             name="AO1_Range"
+             path="/GAUCfg/extendedio/AO1_Range" />
+    <cstep errmsg="Cannot save AO1 User Calibration Zero Correction to configuration file"
+             name="AO1_UsrCalibZero"
+             path="/GAUCfg/extendedio/AO1_UsrCalibZero" />
+    <cstep errmsg="Cannot save AO1 User Calibration Span Correction to configuration file"
+             name="AO1_UsrCalibSpan"
+             path="/GAUCfg/extendedio/AO1_UsrCalibSpan" />
+   </configuration>
+
+   <action name="Save" successmsg="Extended I/O Control Settings Saved.">
+    <astep  abort="y" errmsg="Failed to write Extended I/O Control Configuration file" name="WriteFormattedFile">
+     <arg expr="/tmp/io.conf" />
+     <arg expr="# Default values are configured up to Maximum Extended I/O" />
+     <arg expr="\n" />
+     <arg expr="# Note: boardONBOARD_iodbAIbase addresses (TMP1, PWR1, PWR2 and VBAT) have been deprecated from io.conf configuration file." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[GLOBAL]" />
+     <arg expr="\n" />
+     <arg expr="ControlAction=0x0110" />
+     <arg expr="\n" />
+     <arg expr="concat('ComTimeout=', /GAUCfg/extendedio/ComTimeout/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TimeoutAction=', /GAUCfg/extendedio/TimeoutAction/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('AI_FilterHz=', '0x', /GAUCfg/extendedio/AI_FilterHz/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TempReport=', '0x', /GAUCfg/extendedio/TempReport/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('DI_FilterNumberFull=', '0x', /GAUCfg/extendedio/DI_FilterNumberFull/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('DI_FilterTimeFull=', '0x', /GAUCfg/extendedio/DI_FilterTimeFull/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('DI_FilterNumberHalf=', '0x', /GAUCfg/extendedio/DI_FilterNumberHalf/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('DI_FilterTimeHalf=', '0x', /GAUCfg/extendedio/DI_FilterTimeHalf/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TPO_Cycle_Time=', /GAUCfg/extendedio/TPO_Cycle_Time/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TPO_Min_Time=', /GAUCfg/extendedio/TPO_Min_Time/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="LED_Force_On=0x0" />
+     <arg expr="\n" />
+     <arg expr="LED_Force_Off=0x0" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[SYSTEM]" />
+     <arg expr="\n" />
+     <arg expr="concat('UDR_Interval=', /GAUCfg/extendedio/UDR_Interval/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('boardDI_iodbDIbase=', /GAUCfg/extendedio/boardDI_iodbDIbase/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('boardAI_iodbAIbase=', /GAUCfg/extendedio/boardAI_iodbAIbase/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('boardDO_iodbDObase=', /GAUCfg/extendedio/boardDO_iodbDObase/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('boardAO_iodbAObase=', /GAUCfg/extendedio/boardAO_iodbAObase/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('boardVAO_iodbLI=', /GAUCfg/extendedio/boardVAO_iodbLI/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('boardCNT_iodbAIbase=', /GAUCfg/extendedio/boardCNT_iodbAIbase/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('boardTPO_iodbAObase=', /GAUCfg/extendedio/boardTPO_iodbAObase/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[DI0]" />
+     <arg expr="\n" />
+     <arg expr="concat('Mode=', '0x', /GAUCfg/extendedio/DI0_Mode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('CounterSize=', /GAUCfg/extendedio/DI0_CounterSize/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('CounterMode=', '0x', /GAUCfg/extendedio/DI0_CounterMode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('Polarity=', /GAUCfg/extendedio/DI0_Polarity/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TimerBase=', /GAUCfg/extendedio/TimerBase0/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[DI1]" />
+     <arg expr="\n" />
+     <arg expr="concat('Mode=', '0x', /GAUCfg/extendedio/DI1_Mode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('CounterSize=', /GAUCfg/extendedio/DI1_CounterSize/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('CounterMode=', '0x', /GAUCfg/extendedio/DI1_CounterMode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('Polarity=', /GAUCfg/extendedio/DI1_Polarity/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TimerBase=', /GAUCfg/extendedio/TimerBase1/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[DI2]" />
+     <arg expr="\n" />
+     <arg expr="concat('Mode=', '0x', /GAUCfg/extendedio/DI2_Mode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('CounterSize=', /GAUCfg/extendedio/DI2_CounterSize/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('CounterMode=', '0x', /GAUCfg/extendedio/DI2_CounterMode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('Polarity=', /GAUCfg/extendedio/DI2_Polarity/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TimerBase=', /GAUCfg/extendedio/TimerBase2/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[DI3]" />
+     <arg expr="\n" />
+     <arg expr="concat('Mode=', '0x', /GAUCfg/extendedio/DI3_Mode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('CounterSize=', /GAUCfg/extendedio/DI3_CounterSize/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('CounterMode=', '0x', /GAUCfg/extendedio/DI3_CounterMode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('Polarity=', /GAUCfg/extendedio/DI3_Polarity/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TimerBase=', /GAUCfg/extendedio/TimerBase3/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[DI4]" />
+     <arg expr="\n" />
+     <arg expr="concat('Mode=', '0x', /GAUCfg/extendedio/DI4_Mode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('CounterSize=', /GAUCfg/extendedio/DI4_CounterSize/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('CounterMode=', '0x', /GAUCfg/extendedio/DI4_CounterMode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('Polarity=', /GAUCfg/extendedio/DI4_Polarity/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TimerBase=', /GAUCfg/extendedio/TimerBase4/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[DI5]" />
+     <arg expr="\n" />
+     <arg expr="concat('Mode=', '0x', /GAUCfg/extendedio/DI5_Mode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('CounterSize=', /GAUCfg/extendedio/DI5_CounterSize/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('CounterMode=', '0x', /GAUCfg/extendedio/DI5_CounterMode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('Polarity=', /GAUCfg/extendedio/DI5_Polarity/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TimerBase=', /GAUCfg/extendedio/TimerBase5/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[DO0]" />
+     <arg expr="\n" />
+     <arg expr="concat('Mode=', /GAUCfg/extendedio/DO0_Mode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TPO=', /GAUCfg/extendedio/DO0_TPO/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[DO1]" />
+     <arg expr="\n" />
+     <arg expr="concat('Mode=', /GAUCfg/extendedio/DO1_Mode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TPO=', /GAUCfg/extendedio/DO1_TPO/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[DO2]" />
+     <arg expr="\n" />
+     <arg expr="concat('Mode=', /GAUCfg/extendedio/DO2_Mode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TPO=', /GAUCfg/extendedio/DO2_TPO/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[DO3]" />
+     <arg expr="\n" />
+     <arg expr="concat('Mode=', /GAUCfg/extendedio/DO3_Mode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TPO=', /GAUCfg/extendedio/DO3_TPO/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[DO4]" />
+     <arg expr="\n" />
+     <arg expr="concat('Mode=', /GAUCfg/extendedio/DO4_Mode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TPO=', /GAUCfg/extendedio/DO4_TPO/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[DO5]" />
+     <arg expr="\n" />
+     <arg expr="concat('Mode=', /GAUCfg/extendedio/DO5_Mode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('TPO=', /GAUCfg/extendedio/DO5_TPO/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[AI0]" />
+     <arg expr="\n" />
+     <arg expr="concat('Type=', '0x', /GAUCfg/extendedio/AI0_Type/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('Range=', '0x', /GAUCfg/extendedio/AI0_Range/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('UsrCalibZero=', /GAUCfg/extendedio/AI0_UsrCalibZero/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('UsrCalibSpan=', /GAUCfg/extendedio/AI0_UsrCalibSpan/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[AI1]" />
+     <arg expr="\n" />
+     <arg expr="concat('Type=', '0x', /GAUCfg/extendedio/AI1_Type/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('Range=', '0x', /GAUCfg/extendedio/AI1_Range/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('UsrCalibZero=', /GAUCfg/extendedio/AI1_UsrCalibZero/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('UsrCalibSpan=', /GAUCfg/extendedio/AI1_UsrCalibSpan/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[AI2]" />
+     <arg expr="\n" />
+     <arg expr="concat('Type=', '0x', /GAUCfg/extendedio/AI2_Type/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('Range=', '0x', /GAUCfg/extendedio/AI2_Range/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('UsrCalibZero=', /GAUCfg/extendedio/AI2_UsrCalibZero/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('UsrCalibSpan=', /GAUCfg/extendedio/AI2_UsrCalibSpan/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[AI3]" />
+     <arg expr="\n" />
+     <arg expr="concat('Type=', '0x', /GAUCfg/extendedio/AI3_Type/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('Range=', '0x', /GAUCfg/extendedio/AI3_Range/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('UsrCalibZero=', /GAUCfg/extendedio/AI3_UsrCalibZero/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('UsrCalibSpan=', /GAUCfg/extendedio/AI3_UsrCalibSpan/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[AO0]" />
+     <arg expr="\n" />
+     <arg expr="concat('Range=', '0x', /GAUCfg/extendedio/AO0_Range/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('UsrCalibZero=', /GAUCfg/extendedio/AO0_UsrCalibZero/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('UsrCalibSpan=', /GAUCfg/extendedio/AO0_UsrCalibSpan/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[AO1]" />
+     <arg expr="\n" />
+     <arg expr="concat('Range=', '0x', /GAUCfg/extendedio/AO1_Range/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('UsrCalibZero=', /GAUCfg/extendedio/AO1_UsrCalibZero/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('UsrCalibSpan=', /GAUCfg/extendedio/AO1_UsrCalibSpan/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move Extended io.conf file to /etc/ioctrl directory." name="SystemCommand">
+     <arg expr="mv -f /tmp/io.conf /etc/ioctrl/io.conf" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="Extended I/O Control Settings Applied.">
+        <pre subsystem="extendedio" action="Save" />
+   </action>
+  </subsystem>
+ </subsystems>
+</profile>

@@ -1,0 +1,47 @@
+<!-- ko template: {name: 'title-template', data: 'SixView Manager'}--><!-- /ko -->
+<!--ko if: haveStatus-->
+	<table class="gw-auto-margin gw-status-table gw-st45" style="width: 475px">
+		<tr>
+			<td>Current Client Status</td>
+			<td data-bind="text: clientstatus"></td>
+		</tr>
+		<tr>
+			<td>Next Check In</td>
+			<td data-bind="text: checkin"></td>
+		</tr>
+		<tr>
+			<td>Reporting To</td>
+			<td data-bind="text: report"></td>
+		</tr>
+		<tr>
+			<td colspan="2" style="text-align: center; padding-top: 10px"><strong><u>Last Check In:</u></strong></td>
+		</tr>
+		<tr>
+			<td colspan="2" style="text-align: center; font-weight: normal" data-bind="text: lastchk1"></td>
+		</tr>
+		<tr>
+			<td colspan="2" style="text-align: center; font-weight: normal" data-bind="text: lastchk2"></td>
+		</tr>
+	</table>
+	<div class="gw-row" style="margin-top: 10px">
+		<button class="btn" data-bind="click: getStatus">Refresh</button>
+		<button class="btn" data-bind="click: checkInNow">Check-In Now</button>
+	</div>
+<!--/ko-->
+<hr />
+<!--ko template: {name: 'full-savable-bool-template', data: enable}--><!--/ko-->
+<div data-bind="visible: isEnabled">
+	<!--ko template: {name: 'full-savable-input-template', data: priservaddr}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: secservaddr}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: useaddr}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: ainterval}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: einterval}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: accessmeth}--><!--/ko-->
+	<div data-bind="visible: isHttpEnabled">
+		<!--ko template: {name: 'full-savable-input-template', data: servport}--><!--/ko-->
+	</div>
+	<div data-bind="visible: !isHttpEnabled()">
+		<!--ko template: {name: 'full-savable-input-template', data: secservport}--><!--/ko-->
+	</div>
+	<!--ko template: {name: 'full-savable-select-template', data: bindintf}--><!--/ko-->
+</div>

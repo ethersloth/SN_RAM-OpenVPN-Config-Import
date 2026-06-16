@@ -1,0 +1,136 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dnp3.prf"
+             name="dnp3" />
+                                                                                                                                                          
+                <!-- Advanced -> DNP3 General Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dnp3_general.prf" name="dnp3_general">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save DNP3 Enable option to system configuration file."
+             name="enable"
+             path="/GAUCfg/dnp3/enable" />
+
+    <cstep errmsg="Unable to save DNP3 Common IP Address to system configuration file."
+             name="commip"
+             path="/GAUCfg/dnp3/commip" />
+  
+    <cstep errmsg="Unable to save DNP3 Common Subnet Address to system configuration file."
+             name="commsubmask"
+             path="/GAUCfg/dnp3/commsubmask" />
+  
+    <cstep errmsg="Unable to save DNP3 Common IP 2 Address to system configuration file."
+             name="commip2"
+             path="/GAUCfg/dnp3/commip2" />
+  
+    <cstep errmsg="Unable to save DNP3 Common Subnet 2 Address to system configuration file."
+             name="commsubmask2"
+             path="/GAUCfg/dnp3/commsubmask2" />
+  
+    <cstep errmsg="Unable to save DNP3 Compatibility Mode to system configuration file."
+             name="level"
+             path="/GAUCfg/dnp3/level" />
+
+    <cstep errmsg="Unable to save DNP3 Compatibility Mode Level1 to system configuration file."
+             name="dnplevel1checked"
+             path="/GAUCfg/dnp3/dnplevel1checked" />
+
+    <cstep errmsg="Unable to save DNP3 Compatibility Mode Level2 to system configuration file."
+             name="dnplevel2checked"
+             path="/GAUCfg/dnp3/dnplevel2checked" />
+
+    <cstep errmsg="Unable to save DNP3 Event Queue Full Oldest condition to system configuration file."
+             name="throwOldestEventOnBufferFull" 
+             path="/GAUCfg/dnp3/throwOldestEventOnBufferFull" />
+
+    <cstep errmsg="Unable to save DNP3 Event Queue Full Newest condition to system configuration file."
+             name="throwNewestEventOnBufferFull" 
+             path="/GAUCfg/dnp3/throwNewestEventOnBufferFull" />
+
+    <cstep errmsg="Unable to save DNP3 Enable Unsolicited Responses to system configuration file."
+             name="enableInitialUnsolResp" 
+             path="/GAUCfg/dnp3/enableInitialUnsolResp" />
+
+    <cstep errmsg="Unable to save DNP3 address to system configuration file."
+             name="dnpaddr" 
+             path="/GAUCfg/dnp3/dnpaddr" />
+
+    <cstep errmsg="Unable to save DNP3 Event Report Queue Timeout to system configuration file."
+             name="eventrptquetimeout" 
+             path="/GAUCfg/dnp3/eventrptquetimeout" />
+
+    <cstep errmsg="Unable to save DNP3 Event Report Queue Threshold to system configuration file."
+             name="eventrptquethreshold" 
+             path="/GAUCfg/dnp3/eventrptquethreshold" />
+
+    <cstep errmsg="Unable to save DNP3 Max. Number of Events to system configuration file."
+             name="maxunsolevents" 
+             path="/GAUCfg/dnp3/maxunsolevents" />
+
+    <cstep errmsg="Unable to save DNP3 Event Detection Rate to system configuration file."
+             name="eventdetrate" 
+             path="/GAUCfg/dnp3/eventdetrate" />
+
+    <cstep errmsg="Unable to save DNP3 Max. Time Events in Queue to system configuration file."
+             name="maxtimeevents" 
+             path="/GAUCfg/dnp3/maxtimeevents" />
+
+    <cstep errmsg="Unable to save DNP3 Device to system configuration file."
+             name="device" 
+             path="/GAUCfg/dnp3/device" />
+
+    <cstep errmsg="Unable to save DNP3 Number of Traces to system configuration file."
+             name="numtraces" 
+             path="/GAUCfg/dnp3/numtraces" />
+
+    <cstep errmsg="Unable to save DNP3 Time Synchronization to system configuration file."
+             name="timesync" 
+             path="/GAUCfg/dnp3/timesync" />
+
+    <cstep errmsg="Unable to save DNP3 Oldest Event to system configuration file."
+             name="oldesteventchecked" 
+             path="/GAUCfg/dnp3/oldesteventchecked" />
+
+    <cstep errmsg="Unable to save DNP3 Newest Event to system configuration file."
+             name="newesteventchecked" 
+             path="/GAUCfg/dnp3/newesteventchecked" />
+
+    <cstep errmsg="Unable to save DNP3 EnableUnResp to system configuration file."
+             name="EnableUnRespchecked" 
+             path="/GAUCfg/dnp3/EnableUnRespchecked" />
+
+    <cstep errmsg="Unable to save DNP3 EnableIniUnResp to system configuration file."
+             name="EnableIniUnRespchecked" 
+             path="/GAUCfg/dnp3/EnableIniUnRespchecked" />
+
+    <cstep errmsg="Unable to save DNP3 Event Rate Auto to system configuration file."
+             name="eventrateautochecked" 
+             path="/GAUCfg/dnp3/eventrateautochecked" />
+
+    <cstep errmsg="Unable to save DNP3 Event Time Enable to system configuration file."
+             name="eventtimeenablechecked" 
+             path="/GAUCfg/dnp3/eventtimeenablechecked" />
+
+    <cstep errmsg="Unable to save DNP3 Enable Real Time to system configuration file."
+             name="enablerealtimechecked" 
+             path="/GAUCfg/dnp3/enablerealtimechecked" />
+
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+    <pre subsystem="dnp3" action="Save" />
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+    <pre subsystem="dnp3" action="Apply" />
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

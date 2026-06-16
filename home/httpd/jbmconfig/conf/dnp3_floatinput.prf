@@ -1,0 +1,55 @@
+
+<profile>
+ <subsystems>
+                                                                                                                                                          
+                <!-- Advanced -> DNP3 Floating Input Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dnp3_floatinput.prf" name="floatinput">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save DNP3 Floating Input Highest Register Address to system configuration file."
+             name="highestreg"
+             path="/GAUCfg/floatinput/highestreg" />
+
+    <cstep errmsg="Unable to save Floating Input Auto Detect State to system configuration file."
+             name="autodetectchecked"
+             path="/GAUCfg/floatinput/autodetectchecked" />
+
+    <cstep errmsg="Unable to save Floating Input No DNP Points State to system configuration file."
+             name="nodnpchecked"
+             path="/GAUCfg/floatinput/nodnpchecked" />
+
+    <cstep errmsg="Unable to save Float Input DeadBand to system configuration file."
+             name="deadband"
+             path="/GAUCfg/floatinput/deadband" />
+             
+    <cstep errmsg="Unable to save Float Input Object 31 Class Assignment to system configuration file."
+             name="defobj31class"
+             path="/GAUCfg/floatinput/defobj31class" />
+                                                                                                  
+    <cstep errmsg="Unable to save Float Input Object 32 Class Assignment to system configuration file."                           
+             name="defobj32class"                                                                                                 
+             path="/GAUCfg/floatinput/defobj32class" />                                                                           
+                                                                                                                   
+    <cstep errmsg="Unable to save Float Input Object 33 Class Assignment to system configuration file."                           
+             name="defobj33class"                                                                                         
+             path="/GAUCfg/floatinput/defobj33class" />                                                                           
+                                    
+    <cstep errmsg="Unable to save DNP3 Float Input Exception Class Assignments Table to system configuration file."
+             name="exceptions" path="/GAUCfg/floatinput/exceptions"
+             type="node" />
+             
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

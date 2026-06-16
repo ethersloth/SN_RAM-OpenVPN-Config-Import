@@ -1,0 +1,427 @@
+<form id="event-form" class="form-horizontal">
+	<div class="gw-rounded-border" style="position: fixed; background-color: lightblue; z-index: 100; left: 10px; top: 55px" data-bind="draggable: true">
+		<table class="gw-status-table gw-st40" style="width: 200px">
+			<tr>
+				<td style="text-align: center"data-bind="text: basedReg() + ' Based Addressing'"></td>
+			</tr>
+		</table>
+	</div>
+	<!--ko template: {name:'title-template',data:'Events'}--><!--/ko-->
+	<!--ko template: {name:'full-savable-bool-template',data: enableevents}--><!--/ko-->
+	<div data-bind="visible: isEnabled">
+		<hr />
+		<div style="text-align: center" data-bind="ifnot: showStatus">
+			<div style="text-align: center; vertical-align: middle;">
+				<span><font color="#FF0000"><b>No Events Configured</b></font></span>
+			</div>
+		</div>
+		<div data-bind="if: showStatus">
+			<!--ko template: {name:'h4-template',data:'Status'}--><!--/ko-->
+			<table border="1" align="center" style="text-align: center">
+				<thead>
+					<tr>
+						<th style="width: 70px">Event</th>
+						<th style="width: 200px;">Name</th>
+						<th style="width: 200px;">Condition</th>
+						<th style="width: 200px;">Last Active</th>
+						<th style="width: 200px;">Duration</th>
+						<th style="width: 65px;">Clear Alarm</th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: eventsStatus">
+					<tr style="height: 35px; background-color: lightgrey">
+						<td style="text-align: center; background-color: white" data-bind="text: ($index() + 1)"></td>
+						<td style="text-align: center">
+							<span data-bind="text: Name"></span>
+						</td>
+						<td style="text-align: center" data-bind="css: {'gw-highlight': Highlight}, attr: {title: Title}, style: {'background-color': Color}">
+							<span data-bind="html: Status, style: {'color': textColor}"></span>
+						</td>
+						<td style="text-align: center">
+							<span data-bind="text: LastActive"></span>
+						</td>
+						<td style="text-align: center">
+							<span data-bind="text: Duration"></span>
+						</td>
+						<td style="text-align: center">
+							<button class="btn btn-primary" data-bind="click: $parent.clearStatus($index()), visible: AlarmReset === 'manual' && Status === 'Active'">Clear</button>
+							<span data-bind="visible: AlarmReset === 'automatic' && Status !== 'Disabled'">Auto</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<br />
+		<div style="text-align: center">
+			<button type="button" class="btn btn-primary" data-bind="click: getupdate">Update Status</button>
+		</div>
+		<hr />
+		<div style="text-align: center">
+			<button type="button" class="btn btn-primary" data-bind="click: easyRebootAlert">Add Reboot Alert</button>
+			<button type="button" class="btn btn-primary" data-bind="click: easyUsageAlert">Add Data Usage Alert</button>
+		</div>
+		<!--ko template: {name:'h4-template',data:'Configuration'}--><!--/ko-->
+		<!--ko template: {name: 'table-template', data: eventTable}--><!--/ko-->
+		<div style="text-align: center; padding-bottom: 10px">
+			<button class="btn btn-primary"><a href="#!/tags" style="color: white; text-decoration: none">View Tags</a></button>
+		</div>
+		<div class="control-group" style="width: 960px; text-align: center">
+			<div class="controls">
+				<div class="input-append">
+					<button type="button" class="btn btn-primary" data-bind="click: geteventslog">View Events Log</button>
+					<a tabindex="-1" data-bind="help: {'title': 'Events Log Format', 'link': '/h_event_logformat.html'}" class="btn"><i class="icon-question-sign"></i></a>
+				</div>
+			</div>
+		</div>
+		<!-- ko if: showEventsLog -->
+			<!--ko template: {name:'h4-template',data:'Events Log Result'}--><!--/ko-->
+			<!--ko template: {name: 'textarea-template-ro', data: eventslog}--><!--/ko-->
+		<!-- /ko -->
+	</div>
+</form>
+<div id="event-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="event-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<div style="width: 100%;">
+						<table style="width: 100%">
+							<tr>
+								<td style="width: 33%">
+									<div class="gw-rounded-border" style="text-align: center; width: 200px; background-color: lightblue;">
+										<b><span data-bind="text: basedReg() + ' Based Addressing'"></span></b>
+									</div>
+								</td>
+								<td style="width: 34%"><h3>Event Source</h3></td>
+								<td><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name:'full-savable-input-template', data: eventname}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: enable}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: datasource}--><!--/ko-->
+					<div data-bind="visible: isSrcDataIodb">
+						<!-- ko with: localTag -->
+						<div class="control-group" style="margin-bottom: 2px" data-bind="visible: visible">
+							<label class="control-label">Tag Name</label>
+							<div class="controls">
+								<input type="text" name="eventsLocalTag" data-bind="value: value, autotag: value, valueUpdate:['blur', 'afterkeydown']" placeholder="Tag Name"></input>
+							</div>
+						</div>
+						<!-- /ko -->
+						<!-- ko with: localType -->
+						<div class="control-group" style="margin-bottom: 2px" data-bind="visible: visible">
+							<label class="control-label" data-bind="text: label"></label>
+							<div class="controls">
+								<select data-bind="
+										value: value,
+										css: {
+											'gw-error': ! valid(),
+											'gw-highlight': changed
+										},
+										options: options, optionsText: optionsText"
+										name="localType">
+								</select>
+							</div>
+						</div>
+						<!-- /ko -->
+						<!-- ko with: localrelAddr -->
+						<div class="control-group" data-bind="visible: visible">
+							<label class="control-label" data-bind="text: label"></label>
+							<div class="controls">
+								<div class="input-append">
+									<input type="text" placeholder="Register Address" data-bind="
+											value: value,
+											valueUpdate: 'afterkeydown',
+											css: {
+												'gw-error': ! valid(),
+												'gw-highlight': changed
+											}
+									" name="localrelAddr"></input>
+									<span class="add-on"><font color="#000000" data-bind="text: note"></font></span>
+								</div>
+							</div>
+						</div>
+						<!-- /ko -->
+					</div>
+					<!-- ko ifnot: isSrcDataIodb -->
+						<!--ko template: {name:'full-savable-expanding-template', data: eventexpression}--><!--/ko-->
+					<!-- /ko -->
+					<!--ko template: {name:'full-savable-select-template', data: dataformat}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: datasigned}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: usageinterface}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: usagetime}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: wizardNextToTwo">Next</a>
+				</div>
+			</div>
+			<div class="item">
+				<div class="modal-header">
+					<div style="width: 100%;">
+						<table style="width: 100%">
+							<tr>
+								<td style="width: 33%">
+									<div class="gw-rounded-border" style="text-align: center; width: 200px; background-color: lightblue;">
+										<b><span data-bind="text: basedReg() + ' Based Addressing'"></span></b>
+									</div>
+								</td>
+								<td  style="width: 34%"><h3>Event Details</h3></td>
+								<td><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name:'full-savable-select-template', data: eventtype}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: selsetpointsrc}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: setpoint}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: mathtype}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: mathoperation}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: soir}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: eoir}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: soor}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: eoor}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: sfv}--><!--/ko-->
+					<div data-bind="visible: isScalineByIodb">
+						<!-- ko with: scalingTag -->
+						<div class="control-group" style="margin-bottom: 2px" data-bind="visible: visible">
+							<label class="control-label">Tag Name</label>
+							<div class="controls">
+								<input type="text" data-bind="value: value, autotag: value, valueUpdate:['blur', 'afterkeydown']" placeholder="Tag Name" name="scalingTag"></input>
+							</div>
+						</div>
+						<!-- /ko -->
+						<div class="control-group" style="margin-bottom: 2px">
+							<!-- ko with: scalingType -->
+							<label class="control-label" data-bind="text: label"></label>
+							<div class="controls">
+								<select data-bind="
+										value: value,
+										css: {
+											'gw-error': ! valid(),
+											'gw-highlight': changed
+										},
+										options: options, optionsText: optionsText"
+										name="scalingType">
+								</select>
+							</div>
+							<!-- /ko -->
+						</div>
+						<div class="control-group">
+							<!-- ko with: scalingrelAddr -->
+							<label class="control-label" data-bind="text: label"></label>
+							<div class="controls">
+								<div class="input-append">
+									<input type="text" placeholder="Register Address" data-bind="
+											value: value,
+											valueUpdate: 'afterkeydown',
+											css: {
+												'gw-error': ! valid(),
+												'gw-highlight': changed
+											}
+									" name="scalingrelAddr"></input>
+									<span class="add-on"><font color="#000000" data-bind="text: note"></font></span>
+								</div>
+							</div>
+							<!-- /ko -->
+						</div>
+					</div>
+					<div data-bind="visible: isSetPointIodb">
+						<!-- ko with: setpointTag -->
+						<div class="control-group" style="margin-bottom: 2px" data-bind="visible: visible">
+							<label class="control-label">Tag Name</label>
+							<div class="controls">
+								<input type="text" data-bind="value: value, autotag: value, valueUpdate:['blur', 'afterkeydown']" placeholder="Tag Name" name="setpointTag"></input>
+							</div>
+						</div>
+						<!-- /ko -->
+						<div class="control-group" style="margin-bottom: 2px">
+							<!-- ko with: setpointType -->
+							<label class="control-label" data-bind="text: label"></label>
+							<div class="controls">
+								<select data-bind="
+										value: value,
+										css: {
+											'gw-error': ! valid(),
+											'gw-highlight': changed
+										},
+										options: options, optionsText: optionsText"
+										name="setpointType">
+								</select>
+							</div>
+							<!-- /ko -->
+						</div>
+						<div class="control-group">
+							<!-- ko with: setpointrelAddr -->
+							<label class="control-label" data-bind="text: label"></label>
+							<div class="controls">
+								<div class="input-append">
+									<input type="text" placeholder="Register Address" data-bind="
+											value: value,
+											valueUpdate: 'afterkeydown',
+											css: {
+												'gw-error': ! valid(),
+												'gw-highlight': changed
+											}
+									" name="setpointrelAddr"></input>
+									<span class="add-on"><font color="#000000" data-bind="text: note"></font></span>
+								</div>
+							</div>
+							<!-- /ko -->
+						</div>
+					</div>
+					<!-- ko with: alarmvalue -->
+					<div class="control-group" data-bind="visible: hasOwnProperty('visible') ? visible : true, css: {'gw-error': ! valid()}">
+						<label class="control-label" data-bind="text: label"></label>
+						<div class="controls">
+							<div class="input-append">
+								<!-- ko ifnot: showSelect -->
+								<input data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': ! valid()}, attr: {name: name}" type="text" />
+								<!-- /ko -->
+								<!-- ko if: showSelect -->
+								<select data-bind="value: value, css: {'gw-highlight': changed}, options: options, optionsText: optionsText, attr: {name: name}"></select>
+								<!-- /ko -->
+								<!-- ko if: $parent.modalMode() === 'usage' -->
+								<!-- ko template: {name: 'note-template'} --><!-- /ko -->
+								<!-- /ko -->
+								<!-- ko ifnot: $parent.modalMode() === 'usage' -->
+								<!-- ko template: {name: 'long-help-template'} --><!-- /ko -->
+								<span class="add-on" data-bind="visible: required"><font color="#FF0000">Required</font></span>
+								<!-- /ko -->
+							</div>
+						</div>
+					</div>
+					<!-- /ko -->
+					<!--ko template: {name: 'full-savable-select-template', data: ratechangetype}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-input-template', data: timewindow}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-input-template', data: changelimit}--><!-- /ko -->
+					<!--ko template: {name:'full-savable-input-template', data: activationdelay}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: alarmreset}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: hysteresis}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: deactivationdelay}--><!--/ko-->
+					<a class="btn pull-left" data-bind="click: wizardPrev, visible: hasPageOne">Back</a>
+					<a class="btn btn-primary pull-right" data-bind="click: wizardNextToThree">Next</a>
+				</div>
+			</div>
+			<div class="item">
+				<div class="modal-header">
+					<div style="width: 100%;">
+						<table style="width: 100%">
+							<tr>
+								<td style="width: 33%">
+									<div class="gw-rounded-border" style="text-align: center; width: 200px; background-color: lightblue;">
+										<b><span data-bind="text: basedReg() + ' Based Addressing'"></span></b>
+									</div>
+								</td>
+								<td  style="width: 34%"><h3>Event Action</h3></td>
+								<td><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button></td>
+							</tr>
+						</table>
+					</div>
+					<!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Event Action</h3>-->
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name:'full-savable-select-template', data: actiontype}--><!--/ko-->
+					<!-- ko if: isRecipientSMSorEMAIL -->
+						<!--ko template: {name:'full-savable-expanding-template', data: recipient}--><!--/ko-->
+					<!-- /ko -->
+					<!-- ko if: isRecipientEMAIL -->
+						<!--ko template: {name:'full-savable-input-template', data: subject}--><!--/ko-->
+					<!-- /ko -->
+					<!-- ko if: isRecipientSVM -->
+						<!--ko template: {name:'full-savable-select-template', data: alertlevel}--><!--/ko-->
+					<!-- /ko -->
+					<!-- ko if: isRecipientSMSorEMAIL() || isRecipientSVM() -->
+						<!--ko template: {name:'full-savable-select-template', data: messageformat}--><!--/ko-->
+						<!--ko template: {name:'full-savable-expanding-template', data: customactivemessage}--><!--/ko-->
+						<!--ko template: {name:'full-savable-expanding-template', data: custominactivemessage}--><!--/ko-->
+					<!-- /ko -->
+					<!-- ko if: isRunCommand -->
+						<!--ko template: {name:'full-savable-select-template', data: command}--><!--/ko-->
+					<!-- /ko -->
+					<div data-bind="visible: isActionWriteIodb">
+						<!-- ko with: writeTag -->
+						<div class="control-group" style="margin-bottom: 2px" data-bind="visible: visible">
+							<label class="control-label">Tag Name</label>
+							<div class="controls">
+								<input type="text" data-bind="value: value, autotag: value, valueUpdate:['blur', 'afterkeydown']" placeholder="Tag Name" name="writeTag"></input>
+							</div>
+						</div>
+						<!-- /ko -->
+						<div class="control-group" style="margin-bottom: 2px">
+							<!-- ko with: writeType -->
+							<label class="control-label" data-bind="text: label"></label>
+							<div class="controls">
+								<select data-bind="
+										value: value,
+										css: {
+											'gw-error': ! valid(),
+											'gw-highlight': changed
+										},
+										options: options, optionsText: optionsText"
+										name="writeType">
+								</select>
+							</div>
+							<!-- /ko -->
+						</div>
+						<div class="control-group">
+							<!-- ko with: writerelAddr -->
+							<label class="control-label" data-bind="text: label"></label>
+							<div class="controls">
+								<div class="input-append">
+									<input type="text" placeholder="Register Address" data-bind="
+											value: value,
+											valueUpdate: 'afterkeydown',
+											css: {
+												'gw-error': ! valid(),
+												'gw-highlight': changed
+											}
+									" name="writerelAddr"></input>
+									<span class="add-on"><font color="#000000" data-bind="text: note"></font></span>
+								</div>
+							</div>
+							<!-- /ko -->
+						</div>
+					</div>
+					<!-- ko if: isActionWriteIodb -->
+						<!--ko template: {name:'full-savable-select-template', data: writevalue}--><!--/ko-->
+					<!-- /ko -->
+					<!-- ko if: isFixedValue() && isActionWriteIodb() -->
+						<!-- ko with: fixedvalue -->
+						<div class="control-group" data-bind="visible: hasOwnProperty('visible') ? visible : true, css: {'gw-error': ! valid()}">
+							<label class="control-label" data-bind="text: label"></label>
+							<div class="controls">
+								<div class="input-append">
+									<input data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': ! valid()}, attr: {name: name}" type="text" />
+									<!-- ko if: $parent.modalMode() === 'usage' -->
+									<!-- ko template: {name: 'note-template'} --><!-- /ko -->
+									<!-- /ko -->
+									<!-- ko ifnot: $parent.modalMode() === 'usage' -->
+									<!-- ko template: {name: 'long-help-template'} --><!-- /ko -->
+									<span class="add-on"><font color="#FF0000">Required</font></span>
+									<!-- /ko -->
+								</div>
+							</div>
+						</div>
+						<!-- /ko -->
+					<!-- /ko -->
+					<!-- ko ifnot: isActionNone -->
+						<!--ko template: {name:'full-savable-select-template', data: edgetriggering}--><!--/ko-->
+						<!--ko template: {name:'full-savable-select-template', data: leveltriggering}--><!--/ko-->
+						<!-- ko if: isPeriodicAction -->
+							<!--ko template: {name:'full-savable-input-template', data: periodicaction}--><!--/ko-->
+						<!-- /ko -->
+					<!-- /ko -->
+					<!-- ko if: showAlarmSeverity -->
+						<!--ko template: {name:'full-savable-select-template', data: alarmseverity}--><!--/ko-->
+						<!--ko template: {name:'full-savable-expanding-template', data: alarmmessage}--><!--/ko-->
+					<!-- /ko -->
+					<a class="btn pull-left" data-bind="click: wizardPrev, visible: hasPageTwo">Back</a>
+					<a class="btn btn-primary pull-right" data-bind="click: wizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

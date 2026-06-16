@@ -1,0 +1,9 @@
+<h4>Description</h4>
+<p>
+ This feature can help detect when a remote end-point is no longer communicating properly.
+ Once an error is detected, the "hold" state will only renegotiate the tunnel after new traffic destined for the tunnel is detected.
+ The "restart" state will attempt to immediately reestablish the connection to the concentrator.
+ For this reason, "restart" may use more bandwidth and may not be the ideal choice for a limited data plan.
+ However, if a host at the central site needs to initiate connections down to a local device through the tunnel,
+ "restart" may be necessary so that the tunnel is always up and waiting for new data from the concentrator.
+</p>

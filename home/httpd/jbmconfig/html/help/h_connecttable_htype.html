@@ -1,0 +1,23 @@
+<h4>Description</h4>
+<p>
+The TCP connection to a host may require length headers.  This will optionally be prepended to the data received from the serial side, for either Transparent or Visa Mode.
+</p>
+<p>
+<b>Default:</b>  Use current GWLNX configuration
+</p>
+<p>
+<b>None:</b>  Use no headers
+</p>
+<p>
+<b>JBM Standard:</b>  Use JBM Standard Headers.  This will prepend a Two Byte Length (2BL) Header to the data, indicating the number of bytes in the message, not including the header bytes.  Messages from the host must also have the 2BL header to be received properly.
+</p>
+<p>
+<b>Example:</b>  With Host Message Format set to STX-Payload-ETX, and JBMSTD Headers used, the TCP message sent to the Host will be:
+<p>
+<p>    XX XX STX Payload ETX</p>
+<p>
+Where XX XX would be the length of the payload data, plus 2 (STX and ETX bytes).  If Payload was 296 bytes, then the 2BL would be 01 2A (in Hex).
+</p>
+<h4>Recommended Setting</h4>
+<p>Default</p>
+

@@ -1,0 +1,38 @@
+<!--ko template:{name:'title-template',data:'DHCP Relay'}--><!--/ko-->
+<div class="gw-row">
+	<span><font color="#FF0000">DHCP relay should not be enabled for any interface(s) which have been configured to act as a DHCP server.</font></span>
+</div>
+<hr />
+<!--ko template: {name:'full-savable-select-template',data: enable}--><!--/ko-->
+<!-- ko if: enable.value() === 'Yes'-->
+	<!--ko template: {name:'full-savable-select-template',data: onboot}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Interface Table'}--><!--/ko-->
+	<!--ko template: {name:'table-template',data: interfacesTable}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Remote Servers'}--><!--/ko-->
+	<!--ko template: {name:'table-template',data: remoteserversTable}--><!--/ko-->
+<!-- /ko -->
+
+<div id="intf-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Interface Settings</h3>
+    </div>
+    <div class="gw-modal-body-long">
+        <form>
+            <!--ko template: {name: 'full-savable-select-template', data: intf}--><!--/ko-->
+            <a class="btn btn-primary pull-right" data-bind="click: interfacesWizardFinish">Finish</a>
+        </form>
+    </div>
+</div>
+<div id="rmtsrvr-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Remote Server Settings</h3>
+    </div>
+    <div class="gw-modal-body-long">
+        <form>
+            <!--ko template: {name: 'full-savable-input-template', data: rmtsrvr}--><!--/ko-->
+            <a class="btn btn-primary pull-right" data-bind="click: remoteserversWizardFinish">Finish</a>
+        </form>
+    </div>
+</div>

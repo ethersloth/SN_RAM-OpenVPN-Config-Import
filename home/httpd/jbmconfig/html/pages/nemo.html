@@ -1,0 +1,115 @@
+<!-- ko template: {name: 'title-template', data: 'DMNR/NEMO'}--><!-- /ko -->
+<!-- ko ifnot: nemoclient -->
+	<p style="color: red; text-align: center">
+		NEMO/DMNR client is not present. Please contact Support for a patch to enable it
+	</p>
+<!-- /ko -->
+<!-- ko if: nemoclient -->
+<!--ko template: {name: 'full-savable-bool-template', data: enable}--><!--/ko-->
+<hr />
+<!-- ko if: isEnabled -->
+	<!--ko template: {name:'h4-template',data:'Connection Status'}--><!--/ko-->
+	<!--ko if: haveStatus-->
+		<div style="text-align: center">
+			<table class="gw-status-table gw-auto-margin gw-st49" style="margin-bottom: 15px; width: 600px">
+				<tr>
+					<td>Connection State</td>
+					<td data-bind="text: connectstate"></td>
+				</tr>
+				<tr data-bind="visible: connectstate() === 'Disconnected'">
+					<td>Disconnect Reason</td>
+					<td data-bind="text: disconnectstate"></td>
+				</tr>
+				<tr>
+					<td>Registration Timer</td>
+					<td data-bind="text: registertimer"></td>
+				</tr>
+			</table>
+		</div>
+		<!--ko if: routeStatus().length > 0 -->
+		<!--ko template: {name:'h4-template',data:'Subnet Route Status'}--><!--/ko-->
+		<div style="text-align: center">
+			<table class="gw-status-table gw-auto-margin gw-st49" style="margin-bottom: 15px; width: 400px" data-bind="foreach: routeStatus">
+				<tr>
+					<td data-bind="text: ciaddr"></td>
+					<td data-bind="text: scodeDisplay, style: {color: color}"></td>
+				</tr>
+			</table>
+		</div>
+		<!-- /ko -->
+		<hr />
+	<!-- /ko -->
+	<!--ko ifnot: haveStatus-->
+		<p style="text-align: center">No Connection Status available.<br /></p>
+		<hr />
+	<!-- /ko -->
+	<!-- ko template: {name: 'h4-template', data: 'DMNR/NEMO Settings'}--><!-- /ko -->
+	<!--ko template: {name: 'full-savable-input-template', data: agentipaddr}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: secretkey}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: spi}--><!--/ko-->
+	<div style="text-align: center; padding-bottom: 10px">
+		<button type="button" class="btn btn-primary" data-bind="click: toggleAdvance, text: advance() ? '&#9650;' : '&#9660;'"></button>
+	</div>
+	<!-- ko if: advance -->
+		<!-- ko template: {name: 'h4-template', data: 'Advanced Settings'}--><!-- /ko -->
+		<!--ko template: {name: 'full-savable-input-template', data: homeipaddr}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: mtu}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: reregisterdelay}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: maxretry}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: retrydelay}--><!--/ko-->
+	<!-- /ko -->
+	<hr />
+	<!--ko template: {name:'h4-template',data:'Selected Interfaces'}--><!--/ko-->
+	<div style="text-align: center">
+		<div style="margin-bottom: 10px">
+			<!-- ko foreach: intfDisplay -->
+				<span style="display: block" data-bind="text: $data"></span>
+			<!-- /ko -->
+			<span style="color: red" data-bind="visible: intfs.value() === ''">You must select at least one interface</span>
+		</div>
+		<div class="control-group" style="text-align: center">
+			<div class="input-append">
+				<button name="ab-modify" class="btn btn-primary" data-bind="click: addInterface">Modify</button>
+				<a data-bind="help: {'title': 'Interface Selection', 'link': '/h_nemo_intfs.html'}" tabindex="-1" class="btn"><i class="icon-question-sign"></i></a>
+			</div>
+		</div>
+	</div>
+	<!--ko template: {name:'h4-template',data:'Additional Routed Subnets'}--><!--/ko-->
+	<!--ko template: {name:'table-template',data:routeSubnetTable}--><!--/ko-->
+	<div class="gw-row">
+		<!-- ko if: haveStatus-->
+			<button type="button" class="btn" data-bind="click: toggleStatus, text: statusbutton"></button>
+			<!-- ko if: showstatus-->
+				<!--ko template: {name:'h4-template',data:'DMNR/NEMO Status'}--><!--/ko-->
+				<!--ko template: {name: 'textarea-template-ro', data: nemostatus}--><!--/ko-->
+				<div style="text-align: center; padding-bottom: 10px">
+					<button type="button" class="btn btn-primary" data-bind="click: refresh">Refresh</button>
+				</div>
+			<!-- /ko -->
+			<br /><br />
+		<!-- /ko -->
+	</div>
+	<div id="routedsubnet-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+		<div id="routedsubnet-carousel" class="carousel slide" data-interval="false" data-pause="false">
+			<div class="carousel-inner">
+				<div class="item active">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h3>Route Subnet</h3>
+					</div>
+					<div class="gw-modal-body-long">
+						<!--ko template: {name: 'full-savable-input-template', data: label}--><!--/ko-->
+						<!--ko template: {name: 'full-savable-input-template', data: subnetslash}--><!--/ko-->
+						<a class="btn btn-primary pull-right" data-bind="click: subnetWizardFinish">Finish</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- /ko -->
+<!-- ko template: {name: 'picker-template', data: $.extend({
+	header: "Select Interface",
+	showFilter: false,
+	wide: 1
+}, intfsPicker)}--><!-- /ko -->
+<!-- /ko -->

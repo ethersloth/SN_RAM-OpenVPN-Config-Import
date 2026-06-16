@@ -1,0 +1,325 @@
+
+<profile>
+ <subsystems>
+
+  <!--
+  Networking -> Cellular -> Provisioning Settings Section (Manual)
+  -->
+  <subsystem file="/home/httpd/jbmconfig/conf/manual_provisioning.prf" name="manual_provisioning">
+
+   <validation>
+    <vstep errmsg="ESN cannot be blank"
+             name="esn"
+             test="string-length(/input/manual_esn/text()) > 0" />
+
+    <vstep errmsg="Invalid Sync Time value. Must be 'y' or 'n'."
+             name="synctime"
+             test="isyorn(/input/synctime/text())" />
+
+    <vstep errmsg="Invalid Mobile IP value."
+             name="mipmode"
+             test="/input/mipmode/text() = 'pref' or
+                   /input/mipmode/text() = 'only' or
+                   /input/mipmode/text() = 'sip'" />
+
+    <vstep errmsg="SPC Unlock code must be numeric."
+             name="manual_spcunlock"
+             test="isnumber(/input/manual_spcunlock/text()) or string-length(/input/manual_spcunlock/text()) = 0" />
+
+    <vstep errmsg="Invalid Provisioning Type."
+             name="manual_provisiontype"
+             test="/input/manual_provisiontype/text() = 'manual'" />
+
+    <vstep errmsg="MDN # is required and must be numeric."
+             id="step7"
+             name="manual_mdn"
+             test="isnumber(/input/manual_mdn/text())" />
+
+    <vstep errmsg="MIN # is required and must be numeric."
+             id="step8"
+             name="manual_min"
+             test="isnumber(/input/manual_min/text())" />
+
+    <vstep errmsg="NAI User name max length is 64 characters."
+               id="step9"
+             name="manual_nai"
+             test="string-length(/input/manual_nai/text()) < 64)" />
+
+    <vstep errmsg="AAA password max length is 64 characters."
+               id="step10"
+             name="manual_aaapass"
+             test="string-length(/input/manual_aaapass/text()) < 64)" />
+
+    <vstep errmsg="HA password max length is 64 characters."
+               id="step11"
+             name="manual_hapass"
+             test="string-length(/input/manual_hapass/text()) < 64)" />
+
+    <vstep   id="step12"
+             name="manual_homeip"
+             skipto="step14"
+             test="string-length(/input/manual_homeip/text() = 0))" />
+
+    <vstep errmsg="Home IP must be a valid IP address."
+             id="step13"
+             name="manual_homeip"
+             test="isipaddr(/input/manual_homeip/text())" />
+
+    <vstep id="step14"
+             name="manual_prihaip"
+             skipto="step16"
+             test="string-length(/input/manual_prihaip/text()) = 0" />
+
+    <vstep errmsg="Primary HA IP must be a valid IP address."
+             id="step15"
+             name="manual_prihaip"
+             test="isipaddr(/input/manual_prihaip/text())" />
+
+    <vstep  id="step16"
+             name="manual_sechaip"
+             skipto="step18"
+             test="string-length(/input/manual_sechaip/text()) = 0" />
+
+    <vstep errmsg="Secondary HA IP must be a valid IP address."
+             id="step17"
+             name="manual_sechaip"
+             test="isipaddr(/input/manual_sechaip/text())" />
+
+    <vstep id="step18"
+             name="manual_haspi"
+             skipto="step20"
+             test="string-length(/input/manual_haspi/text()) = 0" />
+
+    <vstep errmsg="HA SPI must be a number."
+             id="step19"
+             name="manual_haspi"
+             test="isnumber(/input/manual_haspi/text())" />
+
+    <vstep id="step20"
+             name="manual_aaaspi"
+             skipto="step22"
+             test="string-length(/input/manual_haspi/text()) = 0" />
+
+    <vstep errmsg="AAA SPI must be a number."
+             id="step21"
+             name="manual_aaaspi"
+             test="isnumber(/input/manual_aaaspi/text())" />
+
+    <vstep id="step22"
+             name="step22"
+             test="0 = 0" />
+
+    <vstep errmsg="Invalid Roaming/Band preference value."
+             name="rbp"
+             test="/input/rbp/text() = ''          or
+                   /input/rbp/text() = 'automatic' or
+                   /input/rbp/text() = 'aonly' or
+                   /input/rbp/text() = 'bonly' or
+                   /input/rbp/text() = 'home'         " />
+
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save ESN to system configuration file."
+             name="manual_esn"
+             path="/GAUCfg/provisioning/manual/esn" />
+
+    <cstep errmsg="Unable to save Time Sync to system configuration file."
+             name="synctime"
+             path="/GAUCfg/provisioning/common/synctime" />
+
+    <cstep errmsg="Unable to save Mobile IP Mode to system configuration file."
+             name="mipmode"
+             path="/GAUCfg/provisioning/common/mipmode" />
+
+    <cstep errmsg="Unable to save SPC Unlock Code to system configuration file."
+             name="manual_spcunlock"
+             path="/GAUCfg/provisioning/manual/spcunlock" />
+
+    <cstep errmsg="Unable to save Provisioning Type to system configuration file."
+             name="manual_provisiontype"
+             path="/GAUCfg/provisioning/manual/provisiontype" />
+
+    <cstep errmsg="Unable to save MDN # to system configuration file."
+             name="manual_mdn"
+             path="/GAUCfg/provisioning/manual/mdn" />
+
+    <cstep errmsg="Unable to save MIN # to system configuration file."
+             name="manual_min"
+             path="/GAUCfg/provisioning/manual/min" />
+
+    <cstep errmsg="Unable to save NAI User Number to system configuration file."
+             name="manual_nai"
+             path="/GAUCfg/provisioning/manual/nai" />
+
+    <cstep errmsg="Unable to save AAA Password to system configuration file."
+             name="manual_aaapass"
+             path="/GAUCfg/provisioning/manual/aaapass" />
+
+    <cstep errmsg="Unable to save HA Password to system configuration file."
+             name="manual_hapass"
+             path="/GAUCfg/provisioning/manual/hapass" />
+
+    <cstep errmsg="Unable to save Home IP Address to system configuration file."
+             name="manual_homeip"
+             path="/GAUCfg/provisioning/manual/homeip" />
+
+    <cstep errmsg="Unable to save Primary HA IP Address to system configuration file."
+             name="manual_prihaip"
+             path="/GAUCfg/provisioning/manual/prihaip" />
+
+    <cstep errmsg="Unable to save Secondary HA IP Address to system configuration file."
+             name="manual_sechaip"
+             path="/GAUCfg/provisioning/manual/sechaip" />
+
+    <cstep errmsg="Unable to save HA SPI to system configuration file."
+             name="manual_haspi"
+             path="/GAUCfg/provisioning/manual/haspi" />
+
+    <cstep errmsg="Unable to save AAA SPI to system configuration file."
+             name="manual_aaaspi"
+             path="/GAUCfg/provisioning/manual/aaaspi" />
+
+    <cstep errmsg="Unable to save Roaming/Band preference to system configuration file."
+             name="rbp"
+             path="/GAUCfg/provisioning/common/rbp" />
+
+   </configuration>
+
+   <action name="Apply" successmsg="Provisioning settings saved and applied.">
+    <astep abort="y" errmsg="Failed to write Provisioning configuration file." name="WriteFormattedFile" >
+     <arg expr="'/tmp/cellmodem_provision_data.conf'" source="config" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/provisioning/common/synctime/text() = 'n'"
+                expr="'SYNC_TIME=no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/provisioning/common/synctime/text() = 'y'"
+                expr="'SYNC_TIME=yes'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/provisioning/common/mipmode/text()) > 0)"
+        expr="concat('MIP_MODE=', /GAUCfg/provisioning/common/mipmode/text())"            source="config" />
+     <arg dependency="(string-length(/GAUCfg/provisioning/common/mipmode/text()) = 0)"
+        expr="'#MIP_MODE='"                                                                 source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/esn/text()) > 0)"
+        expr="concat('ESN=', /GAUCfg/provisioning/manual/esn/text())"                     source="config" />
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/esn/text()) = 0)"
+        expr="'#ESN='"                                                                      source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/spcunlock/text()) > 0)"
+        expr="concat('SPC_UNLOCK=', /GAUCfg/provisioning/manual/spcunlock/text())"               source="config" />
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/spcunlock/text()) = 0)"
+        expr="'#SPC_UNLOCK='"                                                                      source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/provisiontype/text()) > 0)"
+        expr="concat('PROVISION_TYPE=', /GAUCfg/provisioning/manual/provisiontype/text())"       source="config" />
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/provisiontype/text()) = 0)"
+        expr="'#PROVISION_TYPE='"                                                                  source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/mdn/text()) > 0)"
+        expr="concat('MDN=', /GAUCfg/provisioning/manual/mdn/text())"                 source="config" />
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/mdn/text()) = 0)"
+        expr="'#MDN='"                                                                  source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/min/text()) > 0)"
+        expr="concat('MIN=', /GAUCfg/provisioning/manual/min/text())"                 source="config" />
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/min/text()) = 0)"
+        expr="'#MIN='"                                                                  source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/nai/text()) > 0)"
+        expr="concat('NAI_USER=', /GAUCfg/provisioning/manual/nai/text())"                 source="config" />
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/nai/text()) = 0)"
+        expr="'#NAI_USER='"                                                                  source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/aaapass/text()) > 0)"
+        expr="concat('AAA_PASS=', /GAUCfg/provisioning/manual/aaapass/text())"                 source="config" />
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/aaapass/text()) = 0)"
+        expr="'#AAA_PASS='"                                                                  source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/hapass/text()) > 0)"
+        expr="concat('HA_PASS=', /GAUCfg/provisioning/manual/hapass/text())"                 source="config" />
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/hapass/text()) = 0)"
+        expr="'#HA_PASS='"                                                                  source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/homeip/text()) > 0)"
+        expr="concat('HOME_IP=', /GAUCfg/provisioning/manual/homeip/text())"                 source="config" />
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/homeip/text()) = 0)"
+        expr="'#HOME_IP='"                                                                  source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/prihaip/text()) > 0)"
+        expr="concat('PRIMARY_HA_IP=', /GAUCfg/provisioning/manual/prihaip/text())"                 source="config" />
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/prihaip/text()) = 0)"
+        expr="'#PRIMARY_HA_IP='"                                                                  source="config" />
+     <arg expr="\n" />
+
+
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/sechaip/text()) > 0)"
+        expr="concat('SECONDARY_HA_IP=', /GAUCfg/provisioning/manual/sechaip/text())"                 source="config" />
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/sechaip/text()) = 0)"
+        expr="'#SECONDARY_HA_IP='"                                                                  source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/haspi/text()) > 0)"
+        expr="concat('HA_SPI=', /GAUCfg/provisioning/manual/haspi/text())"                 source="config" />
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/haspi/text()) = 0)"
+        expr="'#HA_SPI='"                                                                  source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/aaaspi/text()) > 0)"
+        expr="concat('AAA_SPI=', /GAUCfg/provisioning/manual/aaaspi/text())"                 source="config" />
+     <arg dependency="(string-length(/GAUCfg/provisioning/manual/aaaspi/text()) = 0)"
+        expr="'#AAA_SPI='"                                                                  source="config" />
+     <arg expr="\n" />
+
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move Provisioning configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/cellmodem_provision_data.conf /etc/jbm/wireless/cellmodem_provision_data.conf " />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to Roaming/Band preference configuration file." name="WriteFormattedFile" >
+     <arg expr="'/tmp/cellmodem_roampref'" source="config" />
+
+     <arg expr="/GAUCfg/provisioning/common/rbp/text())" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move Roaming/Band preference configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/cellmodem_roampref /etc/jbm/wireless/cellmodem_roampref " />
+    </astep>
+   </action>
+
+   <action name="Force" successmsg="Forced Manual provisioning initiated and in progress">
+    <astep abort="y" errmsg="Failed to write Provisioning trigger file." name="SystemCommand" >
+     <arg expr="touch /etc/jbm/wireless/FORCE_PROVISIONING" />
+    </astep>
+   </action>
+
+   <action name="Save" successmsg="">
+    <pre subsystem="manual_provisioning" action="Apply" />
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>
+
+

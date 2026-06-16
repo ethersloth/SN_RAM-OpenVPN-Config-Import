@@ -1,0 +1,51 @@
+<form id="firmware-form" class="form-horizontal">
+	<!--ko template:{name:'title-template',data:'Firmware Update'}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: method}--><!--/ko-->
+	<hr data-bind="visible: haveSDCard">
+	<div data-bind="visible: showLocal">
+		<div class="gw-row" style="margin-bottom: 10px">
+			<!--ko template: {name: 'file-input-template', data: bootfile}--><!--/ko-->
+		</div>
+		<div class="gw-row">
+			<!--ko template: {name: 'file-input-template', data: rootfile}--><!--/ko-->
+		</div>
+	</div>
+	<div data-bind="visible: ! showLocal()">
+		<!--ko template:{name:'h4-template',data: showStandard() ? 'Files in Firmware Location' : 'Browse Card'}--><!--/ko-->
+		<!-- ko if: filesBrowser.root().length > 0 -->
+		<button class="btn gw-auto-margin" data-bind="click: toggleStandard, text: showStandard() ? 'Browse entire card' : 'Show images from firmware location'"></button>
+			<!-- ko if: showStandard -->
+				<!-- ko if: standardImages().length > 0 -->
+					<div class="gw-auto-margin gw-border" style="width: 600px; text-align: left; margin-top: 10px" data-bind="foreach: standardImages">
+						<!-- ko template: {name: 'browser-entry-template', data: $data} --><!-- /ko -->
+					</div>
+				<!-- /ko -->
+				<!-- ko ifnot: standardImages().length > 0 -->
+					<p style="color: red; text-align: center; margin-top: 10px">No images found in <span style="color:black; background-color: lightgray; padding: 2px 5px" data-bind="text: firmwarePath"></span> folder on sdcard</p>
+				<!-- /ko -->
+			<!-- /ko -->
+			<!-- ko ifnot: showStandard -->
+				<!-- ko template: {name: 'file-browser-template', data: filesBrowser} --><!-- /ko -->
+			<!-- /ko -->
+		<!-- /ko -->
+		<!-- ko ifnot: filesBrowser.root().length > 0 -->
+			<!-- ko if: listErrorMessage -->
+				<p style="color: red; text-align: center" data-bind="text: listErrorMessage"></p>
+			<!-- /ko -->
+			<!-- ko ifnot: listErrorMessage -->
+				<p style="color: red; text-align: center">No files found on SD card</p>
+			<!-- /ko -->
+		<!-- /ko -->
+		<div style="margin-top: 5px" data-bind="visible: filesBrowser.selectedFiles().length > 0">
+			<!--ko template:{name:'h4-template',data:'Selected Images'}--><!--/ko-->
+			<div class="gw-auto-margin gw-border" style="width: 600px; text-align: left" data-bind="foreach: filesBrowser.selectedFiles">
+				<div style="padding-left: 5px; cursor: pointer" title="remove" data-bind="click: $parent.getPathRemove($data)">
+					<span data-bind="text: $data"></span>
+				</div>
+			</div>
+		</div>
+		<div style="text-align: center; margin-top: 10px"><button class="btn btn-primary" data-bind="click: updateSDCardList">Refresh</button></div>
+	</div>
+	<hr />
+	<!--ko template: {name: 'select-template-bool', data: savecfg}--><!--/ko-->
+</form>

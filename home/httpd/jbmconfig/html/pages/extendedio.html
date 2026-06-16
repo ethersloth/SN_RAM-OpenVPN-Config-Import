@@ -1,0 +1,1295 @@
+<form id="extendedio-form" class="form-horizontal">
+	<!--ko template: {name:'title-template',data:'I/O Control'}--><!--/ko-->
+	<!-- ko if: isFirmwareError -->
+		<div style="text-align: center; vertical-align: middle;">
+			<span><font color="#FF0000"><b>Error: Problem communicating with I/O coprocessor.&nbsp;&nbsp;Contact Technical Support.</b></font></span>
+		</div>
+		<hr />
+	<!-- /ko -->
+	<div style="text-align: center">
+		<button class="btn" data-bind="click: setDisplay('global'), css: {'btn-primary': isDisplay('global'), 'gw-highlight': isGlobalChanged}">Global</button>
+		<button class="btn" data-bind="click: setDisplay('discreteinput'), css: {'btn-primary': isDisplay('discreteinput'), 'gw-highlight': isDiChanged}">Discrete Input</button>
+		<button class="btn" data-bind="click: setDisplay('discreteoutput'), css: {'btn-primary': isDisplay('discreteoutput'), 'gw-highlight': isDoChanged}">Discrete Output</button>
+		<button class="btn" data-bind="click: setDisplay('analoginput'), css: {'btn-primary': isDisplay('analoginput'), 'gw-highlight': isAiChanged}">Analog Input</button>
+		<button class="btn" data-bind="click: setDisplay('analogoutput'), css: {'btn-primary': isDisplay('analogoutput'), 'gw-highlight': isAoChanged}">Analog Output</button>
+		<button class="btn" data-bind="click: setDisplay('ioaddresses'), css: {'btn-primary': isDisplay('ioaddresses'), 'gw-highlight': isChannelsChanged}">I/O Channels</button>
+		<button class="btn" data-bind="click: setDisplay('calib'), css: {'btn-primary': isDisplay('calib')}">Calibration</button>
+		<button class="btn" data-bind="click: setDisplay('status'), css: {'btn-primary': isDisplay('status')}">Status</button>
+		<a class="btn" href="?0t=0&0a=0&0n=3&1t=10&1a=0&1n=2&2t=11&2a=0&2n=2&3t=11&3a=2&3n=1&4t=0&4a=20&4n=4&5t=1&5a=20&5n=3#!/testio">View in Test I/O</a>
+	</div>
+	<hr />
+	<!-- ko if: isDisplay('global') -->
+		<!--ko template: {name:'h4-template',data:'CPU Monitor Timeout and Timeout Action'}--><!--/ko-->
+		<table border="1" align="center" style="text-align: center; vertical-align: middle">
+			<thead>
+				<tr>
+					<th>&nbsp;CPU Monitor Timeout (s)&nbsp;&nbsp;<a tabindex="-1" data-bind="help: {'title': 'CPU Monitor Timeout', 'link': '/h_extendedio_timeout.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;Timeout Actions&nbsp;&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Timeout Actions', 'link': '/h_extendedio_timeoutaction.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<!--ko template: {name: 'smart-input-text-template', data: NewComTimeout}--><!--/ko-->
+					</td>
+					<td>
+						<!--ko template: {name: 'smart-select-template', data: NewTimeoutAction}--><!--/ko-->
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	<!-- /ko -->
+	<!-- ko if: isDisplay('discreteinput') -->
+		<!--ko template: {name:'h4-template',data:'Discrete Input Configuration'}--><!--/ko-->
+		<table border="1" align="center" style="text-align: center; vertical-align: middle">
+			<thead>
+				<tr>
+					<th>&nbsp;Channel&nbsp;</th>
+					<th>&nbsp;Modbus Address&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Modbus Address', 'link': '/h_extendedio_iodbaddr.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;Input Mode&nbsp;&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Input Mode', 'link': '/h_extendedio_inputmode.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;Counter&nbsp;&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Counter', 'link': '/h_extendedio_enablecounter.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;Count Value Size&nbsp;&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Count Value Size', 'link': '/h_extendedio_countvaluesize.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;Counter Mode&nbsp;&nbsp;<a tabindex="-1" data-bind="click: counterModeHelp" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;CNT Modbus Address&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Modbus Address', 'link': '/h_extendedio_cntiodbaddr.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: discreteInputs">
+				<tr>
+					<td data-bind="text: 'DI' + ($index() + 1)"></td>
+					<td>
+						<div class="input-append">
+							<input data-bind="value: Address.value, attr: {title: 'Address Fixed Sequentially', readonly: 'readonly'}, css: $index() === 0 ? {'gw-highlight': Address.changed} : {}, validate: $index() === 0 ? {type: 'vNumeric', collection: $parent.extendedioCollection, optional: false} : {}, event: $index() === 0 ? {change: $parent.validateDI} : {}" type="text" style="width: 105px">
+							<span class="add-on" data-bind="text: AddressModbus"></span>
+						</div>
+					</td>
+					<td>
+						<select style="width: 200px" data-bind="value: Mode.value, css: {'gw-highlight': Mode.changed}, attr: {name: 'DI' + $index() + '_Mode'}, event: $index() === 0 ? {change: $parent.dInModeUpdate} : {}">
+							<option value="disabled">Disabled</option>
+							<option value="slow">Slow response (filtered)</option>
+							<option value="fast">Fast response (no filtering)</option>
+						</select>
+					</td>
+					<td>
+						<input style="width: 120px" data-bind="checked: CounterEn, attr: {name: 'DI' + $index() + '_CounterEn'}, enable: Mode.value() === 'slow' || Mode.value() === 'fast'" type="checkbox">
+					</td>
+					<td>
+						<select style="width: 200px" data-bind="value: CounterSize.value, enable: CounterEn() && Mode.value() !== 'disabled', css:{'gw-highlight': CounterSize.changed}, attr: {name: 'DI' + $index() + '_CounterSize'}, event: {change: $parent.dInModeUpdate}">
+							<option value="16">16-bit Count Returned</option>
+							<option value="32">32-bit Count Returned</option>
+						</select>
+					</td>
+					<td>
+						<select style="width: 170px" data-bind="value: CounterMode.value, enable: CounterEn() && Mode.value() !== 'disabled', css:{'gw-highlight': CounterMode.changed}, attr: {name: 'DI' + $index() + '_CounterMode'}, event: {change: $parent.dInModeUpdate}">
+							<option value="00">Up</option>
+							<option value="1000000">Run time sec.</option>
+							<option value="60000000">Run time min.</option>
+							<!--<option value="05">On-Time Accumulator</option>-->
+							<option value="fr100000">Freq Rate 0.1s</option>
+							<option value="fr200000">Freq Rate 0.2s</option>
+							<option value="fr500000">Freq Rate 0.5s</option>
+							<option value="fr1000000">Freq Rate 1s</option>
+							<option value="fr2000000">Freq Rate 2s</option>
+							<option value="fr5000000">Freq Rate 5s</option>
+							<option value="fr10000000">Freq Rate 10s</option>
+							<option value="fr30000000">Freq Rate 30s</option>
+							<option value="fr60000000">Freq Rate 1min</option>
+							<option value="fr3600000000">Freq Rate 1hr</option>
+							<!--<option value="02">Frequency Mode</option>-->
+							<option value="Up">ON Pulse Width</option>
+							<option value="Down">OFF Pulse Width</option>
+							<!--<option value="07">Pulse Width Measurement</option>-->
+						</select>
+					</td>
+					<td>
+						<div class="input-append">
+							<input style="width: 140px" data-bind="value: CounterAddress.value, enable: $index() === 0, css: $index() === 0 ? {'gw-highlight': CounterAddress.changed} : {}, validate: {type: 'vNumeric', collection: $parent.extendedioCollection, optional: false}, event: {change: $parent.validateCNT}, attr: {title: 'Address Fixed Sequentially', readonly: 'readonly'}" type="text">
+							<span class="add-on" data-bind="text: CounterAddressModbus"></span>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	<!-- /ko -->
+	<!-- ko if: isDisplay('discreteoutput') -->
+		<!--ko template: {name:'h4-template',data:'Discrete Output Configuration'}--><!--/ko-->
+		<table border="1" align="center" style="text-align: center; vertical-align: middle">
+			<thead>
+				<tr>
+					<th>&nbsp;TPO period (ms)&nbsp;&nbsp;<a tabindex="-1" data-bind="help: {'title': 'TPO period', 'link': '/h_extendedio_tponumber.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;Min OFF/ON (ms)&nbsp;&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Min OFF/ON', 'link': '/h_extendedio_tpomin.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+				</tr>
+			</thead>
+			<tbody>
+				</tr>
+					<td>
+						<!--ko template: {name: 'smart-input-text-template', data: NewTPO_Cycle_Time}--><!--/ko-->
+					</td>
+					<td>
+						<!--ko template: {name: 'smart-input-text-template', data: NewTPO_Min_Time}--><!--/ko-->
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<hr />
+		<table border="1" align="center" style="text-align: center; vertical-align: middle">
+			<thead>
+				<tr>
+					<th>&nbsp;Channel&nbsp;</th>
+					<th>&nbsp;Modbus Address&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Modbus Address', 'link': '/h_extendedio_iodbaddr.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;Mode&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Mode', 'link': '/h_extendedio_outputmode.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;TPO&nbsp;<a tabindex="-1" data-bind="help: {'title': 'TPO', 'link': '/h_extendedio_outputtpo.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;TPO Modbus Address&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Modbus Address', 'link': '/h_extendedio_iodbaddr.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: discreteOutputs">
+				<tr>
+					<td data-bind="text: 'DO' + ($index() + 1)"></td>
+					<td>
+						<div class="input-append">
+							<input type="text" data-bind="value: Address.value, attr: {title: 'Address Fixed Sequentially', readonly: 'readonly'}, css: $index() === 0 ? {'gw-highlight': Address.changed} : {}, validate: $index() === 0 ? {type: 'vNumeric', collection: 'extendedioCollection', optional: false} : {}, event: $index() === 0 ? {change: $parent.validateDO} : {}" style="width: 100px">
+							<span class="add-on" data-bind="text: AddressModbus"></span>
+						</div>
+					</td>
+					<td>
+						<select data-bind="value: Mode.value, css: {'gw-highlight': Mode.changed}, event: {change: $parent.doModeUpdate}, attr: {name: 'DO' + $index() + '_Mode'}" name="mode">
+							<option value="OFF">DO Disabled</option>
+							<option value="ON">DO Enabled</option>
+						</select>
+					</td>
+					<td>
+						<select data-bind="value: TPO.value, css:{'gw-highlight': TPO.changed}, event: {change: $parent.doModeUpdate}, enable: Mode.value() === 'ON', attr: {name: 'DO' + $index() + '_TPO'}">
+							<option value="disable">TPO Disabled</option>
+							<option value="enable">TPO Enabled</option>
+						</select>
+					</td>
+					<td>
+						<div class="input-append">
+							<input data-bind="value: TPOAddress.value, css: $index() === 0 ? {'gw-highlight': TPOAddress.changed} : {}, validate: $index() === 0 ? {type: 'vNumeric', collection: $parent.extendedioCollection, optional: false} : {}, event: {change: $parent.validateTPO}, attr: {title: 'Address Fixed Sequentially', readonly: 'readonly'}" type="text">
+							<span class="add-on" data-bind="text: TPOAddressModbus"></span>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<hr />
+		<table border="1" align="center" style="text-align: center; vertical-align: middle">
+			<thead>
+				<tr>
+					<th>&nbsp;Channel&nbsp;</th>
+					<th>&nbsp;Modbus Address&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Modbus Address', 'link': '/h_extendedio_iodbaddr.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;Mode&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Mode', 'link': '/h_extendedio_outputmode.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;TPO&nbsp;<a tabindex="-1" data-bind="help: {'title': 'TPO', 'link': '/h_extendedio_outputtpo.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;TPO Modbus Address&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Modbus Address', 'link': '/h_extendedio_iodbaddr.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: relays">
+				<tr>
+					<td data-bind="text: 'RLY' + ($index() + 1)"></td>
+					<td>
+						<div class="input-append">
+							<input readonly title="Address Fixed Sequentially" style="width: 100px" data-bind="value: Address.value" type="text">
+							<span class="add-on" data-bind="text: AddressModbus"></span>
+						</div>
+					</td>
+					<td>
+						<select data-bind="value: Mode.value, css:{'gw-highlight': Mode.changed}, event: {change: $parent.rlyModeUpdate}">
+							<option value="OFF">DO Disabled</option>
+							<option value="ON">DO Enabled</option>
+						</select>
+					</td>
+					<td>
+						<select data-bind="value: TPO.value, css:{'gw-highlight': TPO.changed}, event: {change: $parent.rlyModeUpdate}, enable: Mode.value() === 'ON'">
+							<option value="disable">TPO Disabled</option>
+							<option value="enable">TPO Enabled</option>
+						</select>
+					</td>
+					<td>
+						<div class="input-append">
+							<input readonly title="Address Fixed Sequentially" data-bind="value: TPOAddress.value" type="text">
+							<span class="add-on" data-bind="text: TPOAddressModbus"></span>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	<!-- /ko -->
+	<!-- ko if: isDisplay('analoginput') -->
+		<!--ko template: {name:'h4-template',data:'Analog Input Filtering and Temperature Reporting'}--><!--/ko-->
+		<table border="1" align="center" style="text-align: center; vertical-align: middle">
+			<thead>
+				<tr>
+					<!--<th>&nbsp;Analog Input Filtering&nbsp;&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Analog Input Filtering', 'link': '/h_extendedio_analoginputfiltering.html'}" class="btn"><i class="icon-question-sign"></i></a></th>-->
+					<th>&nbsp;Analog Input Filtering&nbsp;&nbsp;<a tabindex="-1" data-bind="click: aiFilteringHelp" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;Temperature Reporting&nbsp;&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Temperature Reporting', 'link': '/h_extendedio_temperaturereporting.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<select data-bind="value: AI_FilterHz, css:{'gw-highlight': AI_FilterHzhHLUpdate}" name="AI_FilterHz">
+							<!--<option value="89">0.5ms/channel</option>
+							<option value="88">1ms/channel</option>
+							<option value="87">1.5ms/channel</option>-->
+							<option value="86">3ms/channel</option>
+							<option value="85">6ms/channel</option>
+							<option value="84">12.5ms/channel</option>
+							<option value="83">25ms/channel</option>
+							<option value="82">50ms/channel&nbsp;(Default)</option>
+							<option value="81">100ms/channel</option>
+							<option value="80">200ms/channel</option>
+						</select>
+					</td>
+					<td>
+						<select data-bind="value: Thermometer, css:{'gw-highlight': ThermometerHLUpdate}" name="Thermometer">
+							<option value="00">&deg;C</option>
+							<option value="01">0.1 &deg;C</option>
+							<option value="02">&deg;F</option>
+							<option value="03">0.1 &deg;F</option>
+						</select>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<hr />
+		<!--ko template: {name:'h4-template',data:'Analog Input Configuration'}--><!--/ko-->
+		<table border="1" align="center" style="text-align: center; vertical-align: middle">
+			<thead>
+				<tr>
+					<th>&nbsp;Channel&nbsp;</th>
+					<th>&nbsp;Modbus Address&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Modbus Address', 'link': '/h_extendedio_iodbaddr.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;Input Type&nbsp;&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Input Type', 'link': '/h_extendedio_inputtype.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th>&nbsp;Input Range&nbsp;&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Input Range', 'link': '/h_extendedio_analoginputrange.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: analogInputs">
+				<tr>
+					<td data-bind="text: 'AI' + ($index() + 1)"></td>
+					<td>
+						<div class="input-append">
+							<input type="text" data-bind="value: Address.value, attr: {title: 'Address Fixed Sequentially', readonly: 'readonly'}, css: $index() === 0 ? {'gw-highlight': Address.changed} : {}, validate: $index() === 0 ? {type: 'vNumeric', collection: 'extendedioCollection', optional: false} : {}, event: $index() === 0 ? {change: $parent.validateAI} : {}" style="width: 100px">
+							<span class="add-on" data-bind="text: AddressModbus"></span>
+						</div>
+					</td>
+					<td>
+						<select data-bind="value: Type.value, css:{'gw-highlight': Type.changed}, event: {change: $parent.aiTypeUpdate}">
+							<option value="disabled">Disabled</option>
+							<option value="00">Voltage Range</option>
+							<option value="05">Current Range</option>
+						</select>
+					</td>
+					<td>
+						<select data-bind="value: Range.value, css:{'gw-highlight': Range.changed}, event: {change: $parent.aiUpdate}, enable: Type.value() !== 'disabled'">
+						<!-- ko if: Type.value() === '00' || Type.value() === 'disabled' -->
+							<option value="09">0-5VDC</option>
+							<option value="0A">0-10VDC</option>
+						<!-- /ko -->
+						<!-- ko if: Type.value() === '05' -->
+							<option value="02">0-20mA Positive Results Only</option>
+							<option value="04">4-20mA Negative Below 4mA</option>
+							<option value="06">4-20mA Positive Results Only</option>
+						<!-- /ko -->
+						</select>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	<!-- /ko -->
+	<!-- ko if: isDisplay('analogoutput') -->
+		<!-- ko ifnot: isExtendedioMax -->
+			<!--ko template: {name:'h4-template',data:'Analog Output configuration is not supported for this model'}--><!--/ko-->
+		<!-- /ko -->
+		<!-- ko if: isExtendedioMax -->
+			<!--ko template: {name:'h4-template',data:'Analog Output Configuration'}--><!--/ko-->
+			<table border="1" align="center" style="text-align: center; vertical-align: middle">
+				<thead>
+					<tr>
+						<th>&nbsp;Channel&nbsp;</th>
+						<th>&nbsp;Modbus Address&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Modbus Address', 'link': '/h_extendedio_iodbaddr.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+						<th>&nbsp;Output Range&nbsp;&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Output Range', 'link': '/h_extendedio_analogoutputrange.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: analogOutputs">
+					<tr>
+						<td data-bind="text: 'AO' + ($index() + 1)"></td>
+						<td>
+							<div class="input-append">
+								<input type="text" data-bind="value: Address.value, attr: {title: 'Address Fixed Sequentially', readonly: 'readonly'}, css: $index() === 0 ? {'gw-highlight': Address.changed} : {}, validate: $index() === 0 ? {type: 'vNumeric', optional: false} : {}, event: $index() === 0 ? {change: $parent.validateAO} : {}" style="width: 100px">
+								<span class="add-on" data-bind="text: AddressModbus"></span>
+							</div>
+						</td>
+						<td>
+							<select style="width: 175px" data-bind="value: Range.value, css:{'gw-highlight': Range.changed}, event: {change: $parent.aorngUpdate}">
+								<option value="00">Disable</option>
+								<option value="04">0-5VDC</option>
+								<option value="0A">4-20mA</option>
+							</select>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		<!-- /ko -->
+	<!-- /ko -->
+	<!-- ko if: isDisplay('ioaddresses') -->
+	<div class="row-fluid">
+		<div class="span6">
+			<!--ko template: {name:'h4-template',data:'Discrete I/O Channels, Modbus Addresses'}--><!--/ko-->
+			<table border="1" align="center" style="text-align: center; vertical-align: middle">
+				<thead>
+					<tr>
+						<!--
+						<th>&nbsp;Tag Name&nbsp;</th>
+						-->
+						<th>&nbsp;Channel&nbsp;</th>
+						<th>&nbsp;Modbus Address&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Modbus Address', 'link': '/h_extendedio_iodbaddr.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- ko foreach: discreteInputs -->
+					<tr>
+						<!--
+						<td data-bind="with: TagName.name, attr: {title: TagName.title}">
+							<input type="text" style="width: 100px" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}"></input>
+						</td>
+						-->
+						<td data-bind="text: 'DI' + ($index() + 1)"></td>
+						<td>
+							<div class="input-append">
+								<input data-bind="value: Address.value, attr: {title: 'Address Fixed Sequentially', readonly: 'readonly', tabindex: -1}, css: $index() === 0 ? {'gw-highlight': Address.changed} : {}, validate: $index() === 0 ? {type: 'vNumeric', collection: $parent.extendedioCollection, optional: false} : {}, event: $index() === 0 ? {change: $parent.validateDI} : {}" type="text">
+								<span class="add-on" data-bind="text: AddressModbus"></span>
+							</div>
+						</td>
+					</tr>
+					<!-- /ko -->
+					<!-- ko foreach: discreteOutputs -->
+					<tr>
+						<!--
+						<td data-bind="with: TagName.name, attr: {title: TagName.title}">
+							<input type="text" style="width: 100px" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}"></input>
+						</td>
+						-->
+						<td data-bind="text: 'DO' + ($index() + 1)"></td>
+						<td>
+							<div class="input-append">
+								<input type="text" data-bind="value: Address.value, attr: {title: 'Address Fixed Sequentially', readonly: 'readonly', tabindex: -1}, css: $index() === 0 ? {'gw-highlight': Address.changed} : {}, validate: $index() === 0 ? {type: 'vNumeric', collection: 'extendedioCollection', optional: false} : {}, event: $index() === 0 ? {change: $parent.validateDO} : {}">
+								<span class="add-on" data-bind="text: AddressModbus"></span>
+							</div>
+						</td>
+					</tr>
+					<!-- /ko -->
+					<!-- ko foreach: relays -->
+					<tr>
+						<!--
+						<td data-bind="with: TagName.name, attr: {title: TagName.title}">
+							<input type="text" style="width: 100px" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}"></input>
+						</td>
+						-->
+						<td data-bind="text: 'RLY' + ($index() + 1)"></td>
+						<td>
+							<div class="input-append">
+								<input readonly tabindex="-1" title="Address Fixed Sequentially" type="text" data-bind="value: Address.value">
+								<span class="add-on" data-bind="text: AddressModbus"></span>
+							</div>
+						</td>
+					</tr>
+					<!-- /ko -->
+				</tbody>
+			</table>
+			<div style="text-align: center; margin-top: 10px">
+				<a class="btn btn-primary" href="?0t=0&0a=0&0n=3&1t=10&1a=0&1n=2&2t=11&2a=0&2n=2&3t=11&3a=2&3n=1&4t=0&4a=20&4n=4&5t=1&5a=20&5n=3#!/testio" tabindex="-1">View in Test I/O</a>
+			</div>
+		</div>
+		<div class="span6">
+			<!--ko template: {name:'h4-template',data:'Analog I/O Channels, Modbus Addresses'}--><!--/ko-->
+			<table border="1" align="center" style="text-align: center; vertical-align: middle">
+				<thead>
+					<tr>
+						<!--
+						<th>&nbsp;Tag Name&nbsp;</th>
+						-->
+						<th>&nbsp;Channel&nbsp;</th>
+						<th>&nbsp;Modbus Address&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Modbus Address', 'link': '/h_extendedio_alliodbaddr.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- ko foreach: analogInputs -->
+					<tr>
+						<!--
+						<td data-bind="with: TagName.name, attr: {title: TagName.title}">
+							<input type="text" style="width: 100px" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}"></input>
+						</td>
+						-->
+						<td data-bind="text: 'AI' + ($index() + 1)"></td>
+						<td>
+							<div class="input-append">
+								<input type="text" data-bind="value: Address.value, attr: {title: 'Address Fixed Sequentially', readonly: 'readonly', tabindex: -1}, css: $index() === 0 ? {'gw-highlight': Address.changed} : {}, validate: $index() === 0 ? {type: 'vNumeric', collection: 'extendedioCollection', optional: false} : {}, event: $index() === 0 ? {change: $parent.validateAI} : {}">
+								<span class="add-on" data-bind="text: AddressModbus"></span>
+							</div>
+						</td>
+					</tr>
+					<!-- /ko -->
+					<!-- ko foreach: discreteInputs -->
+					<tr>
+						<!--
+						<td data-bind="with: CNTTagName.name, attr: {title: CNTTagName.title}">
+							<input type="text" style="width: 100px" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}"></input>
+						</td>
+						-->
+						<td data-bind="text: 'CNT' + ($index() + 1)"></td>
+						<td>
+							<div class="input-append">
+								<input data-bind="value: CounterAddress.value, attr: {title: 'Address Fixed Sequentially', readonly: 'readonly', tabindex: -1}, css: $index() === 0 ? {'gw-highlight': CounterAddress.changed} : {}, validate: $index() === 0 ? {type: 'vNumeric', collection: $parent.extendedioCollection} : {}, event: $index() === 0 ? {change: $parent.validateCNT} : {}" type="text">
+								<span class="add-on" data-bind="text: CounterAddressModbus"></span>
+							</div>
+						</td>
+					</tr>
+					<!-- /ko -->
+					<!-- ko foreach: analogOutputs -->
+					<tr>
+						<!--
+						<td data-bind="with: TagName.name, attr: {title: TagName.title}">
+							<input type="text" style="width: 100px" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}"></input>
+						</td>
+						-->
+						<td data-bind="text: 'AO' + ($index() + 1)"></td>
+						<td>
+							<div class="input-append">
+								<input type="text" data-bind="value: Address.value, attr: {title: 'Address Fixed Sequentially', readonly: 'readonly', tabindex: -1}, css: $index() === 0 ? {'gw-highlight': Address.changed} : {}, validate: $index() === 0 ? {type: 'vNumeric', collection: 'extendedioCollection', optional: false} : {}, event: $index() === 0 ? {change: $parent.validateAO} : {}">
+								<span class="add-on" data-bind="text: AddressModbus"></span>
+							</div>
+						</td>
+					</tr>
+					<!-- /ko -->
+					<!-- ko foreach: discreteOutputs -->
+					<tr>
+						<!--
+						<td data-bind="with: TPOTagName.name, attr: {title: TPOTagName.title}">
+							<input type="text" style="width: 100px" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}"></input>
+						</td>
+						-->
+						<td data-bind="text: 'TPO' + ($index() + 1)"></td>
+						<td>
+							<div class="input-append">
+								<input type="text" readonly data-bind="value: TPOAddress.value, addr: {title: 'Address Fixed Sequentially', tabindex: -1}, css: $index() === 0 ? {'gw-highlight': TPOAddress.changed} : {}, validate: $index() === 0 ? {type: 'vNumeric', collection: 'extendedioCollection', optional: false} : {}, event: $index() === 0 ? {change: $parent.validateTPO} : {}">
+								<span class="add-on" data-bind="text: TPOAddressModbus"></span>
+							</div>
+						</td>
+					</tr>
+					<!-- /ko -->
+					<!-- ko foreach: relays -->
+					<tr>
+						<!--
+						<td data-bind="with: TPOTagName.name, attr: {title: TPOTagName.title}">
+							<input type="text" style="width: 100px" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}"></input>
+						</td>
+						-->
+						<td data-bind="text: 'TPO' + ($index() + $parent.discreteOutputs.length + 1)"></td>
+						<td>
+							<div class="input-append">
+								<input type="text" tabindex="-1" readonly title="Address Fixed Sequentially" data-bind="value: TPOAddress.value">
+								<span class="add-on" data-bind="text: TPOAddressModbus"></span>
+							</div>
+						</td>
+					</tr>
+					<!-- /ko -->
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<hr />
+	<!--ko template: {name:'h4-template',data:'Important Note'}--><!--/ko-->
+	<p class="gw-auto-margin" style="width: 600px; text-align: center">The Onboard Temperature (TMP1), Power Voltage (PWR1), Power Voltage (PWR2) and Battery Voltage (VBAT) status values have been deprecated. The status of these channels have been moved to IODB status processing and they are viewable via <b>Automation->Tags</b> page.</p>
+	<!-- /ko -->
+	<!-- ko if: isDisplay('calib') -->
+		<!--ko template: {name:'h4-template',data:'Analog Input/Output User or One/Two Point Calibration'}--><!--/ko-->
+		<table border="1" align="center" style="text-align: center; vertical-align: middle">
+			<thead>
+				<tr>
+					<th style="width: 75px">&nbsp;Channel&nbsp;</th>
+					<th style="width: 250px">&nbsp;User Zero Correction&nbsp;&nbsp;<a tabindex="-1" data-bind="click: analogZero" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th style="width: 250px">&nbsp;User Span Correction&nbsp;&nbsp;<a tabindex="-1" data-bind="click: analogSpan" class="btn"><i class="icon-question-sign"></i></a></th>
+					<th style="width: 250px">&nbsp;Wizard&nbsp;&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: analogInputs">
+				<tr>
+					<td data-bind="text: 'AI' + ($index() + 1)"></td>
+					<td style="padding-top: 5px">
+						<label>Offset</label>
+						<input type="text" style="text-align: center" data-bind="value: Offset, event: {change: $parent.changeOffset}"></input>
+						<div style="margin-top: 5px; padding: 5px">
+							<table style="width: 100%">
+								<tr>
+									<td style="width: 32px">
+										<button style="float: left" class="btn" data-bind="click: $parent.decOffset">-</button>
+									</td>
+									<td>
+										<div style="margin: 10px" data-bind="slider: Offset, sliderOptions: $parent.correctionSliderOpts"></div>
+									</td>
+									<td style="width: 32px">
+										<button style="float: right" class="btn" data-bind="click: $parent.incOffset">+</button>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</td>
+					<td style="padding-top: 5px">
+						<label>Span</label>
+						<input type="text" style="text-align: center" data-bind="value: Span, event: {change: $parent.changeSpan}"></input>
+						<div style="margin-top: 5px; padding: 5px">
+							<table style="width: 100%">
+								<tr>
+									<td style="width: 32px">
+										<button style="float: left" class="btn" data-bind="click: $parent.decSpan">-</button>
+									</td>
+									<td>
+										<div style="margin: 10px" data-bind="slider: Span, sliderOptions: $parent.correctionSliderOpts"></div>
+									</td>
+									<td style="width: 32px">
+										<button style="float: right" class="btn" data-bind="click: $parent.incSpan">+</button>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</td>
+					<td style"padding-top: 5px">
+						<button class="btn btn-primary" data-bind="click: $parent.wizardCalibrate($index())">Calibration Wizard</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<!-- ko if: isExtendedioMax -->
+			<!--ko template: {name:'h4-template',data:'Analog Output Configuration'}--><!--/ko-->
+			<table border="1" align="center" style="text-align: center; vertical-align: middle">
+				<thead>
+					<tr>
+						<th style="width: 75px">&nbsp;Channel&nbsp;</th>
+						<th style="width: 250px">&nbsp;User Zero Correction&nbsp;&nbsp;<a tabindex="-1" data-bind="click: analogZero" class="btn"><i class="icon-question-sign"></i></a></th>
+						<th style="width: 250px">&nbsp;User Span Correction&nbsp;&nbsp;<a tabindex="-1" data-bind="click: analogSpan" class="btn"><i class="icon-question-sign"></i></a></th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: analogOutputs">
+					<tr>
+						<td data-bind="text: 'AO' + ($index() + 1)"></td>
+						<td style="padding-top: 5px">
+							<label>Offset</label>
+							<input type="text" style="text-align: center" data-bind="value: Offset"></input>
+							<div style="margin-top: 5px; padding: 5px">
+								<table style="width: 100%">
+									<tr>
+										<td style="width: 32px">
+											<button style="float: left"  class="btn" data-bind="click: $parent.decOffset">-</button>
+										</td>
+										<td>
+											<div style="margin: 10px" data-bind="slider: Offset, sliderOptions: $parent.correctionSliderOpts"></div>
+										<td>
+										<td style="width: 32px">
+											<button style="float: right"  class="btn" data-bind="click: $parent.incOffset">+</button>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</td>
+						<td style="padding-top: 5px">
+							<label>Span</label>
+							<input type="text" style="text-align: center" data-bind="value: Span"></input>
+							<div style="margin-top: 5px; padding: 5px">
+								<table style="width: 100%">
+									<tr>
+										<td style="width: 32px">
+											<button style="float: left"  class="btn" data-bind="click: $parent.decSpan">-</button>
+										</td>
+										<td>
+											<div style="margin: 10px" data-bind="slider: Span, sliderOptions: $parent.correctionSliderOpts"></div>
+										<td>
+										<td style="width: 32px">
+											<button style="float: right"  class="btn" data-bind="click: $parent.incSpan">+</button>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		<!-- /ko -->
+		<hr />
+		<!-- ko ifnot: isExtendedioMax -->
+			<!--ko template: {name:'h4-template',data:'Analog Output User Calibration is not supported for this model'}--><!--/ko-->
+		<!-- /ko -->
+	<!-- /ko -->
+	<!-- ko if: isDisplay('status') -->
+		<table style="width: 100%;">
+			<tr>
+				<td style="width: 50%; text-align: right"><b>Onboard I/O Firmware:&#160;</b></td>
+				<td style="width: 50%" data-bind="text: firmware"></td>
+			</tr>
+			<!-- ko if: showBoard -->
+			<tr>
+				<td style="text-align: right"><b>I/O Board Type:&#160;</b></td>
+				<td data-bind="text: board"></td>
+			</tr>
+			<!-- /ko -->
+			<!-- ko if: showSerialno -->
+			<tr>
+				<td style="text-align: right"><b>I/O Board Serial Number:&#160;</b></td>
+				<td data-bind="text: serialno"></td>
+			</tr>
+			<!-- /ko -->
+		</table>
+		<hr />
+		<!-- ko if: isIoctrlStatus -->
+			<!--ko template: {name:'h4-template',data:'I/O Control Status'}--><!--/ko-->
+			<!--ko template: {name: 'textarea-template-ro', data: ioctrlstatus}--><!--/ko-->
+			<hr />
+		<!-- /ko -->
+		<!-- ko if: isIoctrlCfgStatus -->
+			<!--ko template: {name:'h4-template',data:'I/O Control Config Status'}--><!--/ko-->
+			<!--ko template: {name: 'textarea-template-ro', data: ioctrlcfgstatus}--><!--/ko-->
+			<br />
+		<!-- /ko -->
+		<div style="text-align: center">
+			<a class="btn btn-primary" data-bind="click: refresh">Refresh</a>
+		</div>
+	<!-- /ko -->
+</form>
+<form>
+	<div id="cntmode-help" data-backdrop="static" data-keyboard="false" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="carousel slide" data-interval="false" data-pause="false">
+			<div class="carousel-inner">
+				<div class="item active">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h3>Counter Mode</h3>
+					</div>
+					<div class="modal-body" style="line-height: 20px">
+						<p>When counter is enabled on the discrete input counter the counter mode must also be selected. In all <u>16-bit Counter Returned</u> upward counting modes the analog input register increases from 0 to 32767, then -32768 to 0.</p>
+						<p>If the <u>32-bit Count Returned</u> is selected the long integer input register increases from 0 to 4.2949673E9, then -4.2949673E9 and back to 0.<br />The menu selections for all available counter modes and their default resolutions are listed below.</p>
+						<p><b>Note:</b> When the <u>Input Mode</u> is set to <u>Slow Response (filtered)</u> some of the <u>Counter Mode</u> options are not particularly suited since the maximum count is 10Hz. For example, <u>Freq Rate 0.1s</u> would only be capable of measuring one count.</p>
+						<table style="width: 100%; padding: 5px">
+						<tr><th colspan="2" style="text-align: left"><u>Pulse Accumulator:</u></th></tr>
+						<tr><td style="width: 125px">Up Counter</td><td>Upward accumulator of input pulses.</td></tr>
+						<tr><th colspan="2" style="text-align: left"><u>Run Time:</u></th></tr>
+						<tr><td>Run Time Sec</td><td>This is the On-time Timer feature that counts the time the associated input is in the ON state. Output is in Seconds.</td></tr>
+						<tr><td>Run Time Min</td><td>This is the On-time Timer feature that counts the time the associated input is in the ON state. Same as above, except the output is in Minutes.</td></tr>
+						<tr><th  colspan="2" style="text-align: left"><u>Frequency Rate:</u></th></tr>
+						<tr><td>0.1 Seconds</td><td>Pulses are accumulated for 100 mS.</td></tr>
+						<tr><td>0.2 Seconds</td><td>Pulses are accumulated for 200 mS.</td></tr>
+						<tr><td>0.5 Seconds</td><td>Pulses are accumulated for 500 mS.</td></tr>
+						<tr><td>1 Seconds</td><td>Pulses are accumulated for 1 second.</td></tr>
+						<tr><td>2 Seconds</td><td>Pulses are accumulated for 2 seconds.</td></tr>
+						<tr><td>5 Seconds</td><td>Pulses are accumulated for 5 seconds.</td></tr>
+						<tr><td>10 Seconds</td><td>Pulses are accumulated for 10 seconds.</td></tr>
+						<tr><td>30 Seconds</td><td>Pulses are accumulated for 30 seconds.</td></tr>
+						<tr><td>1 Minute</td><td>Pulses are accumulated for 60 seconds.</td></tr>
+						<tr><td>1 Hour</td><td>Pulses are accumulated for 60 minutes.</td></tr>
+						<tr><td>ON Pulse Width</td><td>Time in mS between consecutive leading (OFF to ON) and trailing (ON to OFF) edges.</td></tr>
+						<tr><td>OFF Pulse Width</td><td>Time in mS between consecutive leading (ON to OFF) and trailing (OFF to ON) edges.</td></tr>
+						</table>
+						<br />
+						<p><u><b>Notes regarding pulse width measurements:</b></u></p>
+						<ul>
+							<li>Pulses longer than the maximum size allowed by the register will result in an overflow condition (full scale 16-bit value equal to 65535)</li>
+							<li>Pulses shorter than 1ms will not be accurately detected resulting in erroneous values.</li>
+							<li>If no edge is ever detected by an input, the result will read as $0000. Timing only begins when an edge is detected.</li>
+						</ul>
+						<p><b>Warning:</b> Counters are volatile (forget their counts if power is lost). Typically, retention of the values and resetting the counts is accomplished in software at the host computer that polls these inputs.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<form>
+	<div id="aifiltering-help" data-backdrop="static" data-keyboard="false" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="carousel slide" data-interval="false" data-pause="false">
+			<div class="carousel-inner">
+				<div class="item active">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h3>Analog Input Filtering</h3>
+					</div>
+					<div class="modal-body" style="line-height: 20px">
+						<p>The table below explains the filtering (integration) options on the analog inputs.  The faster the integration time the quicker the channels will be sampled.  With quicker samples comes less accurate readings.  For the most accurate readings select the slower sample/filtering settings.</p>
+						<br />
+						<table border="1" style="text-align: center">
+							<tr>
+								<th style="width: 150px">Integration Time</th>
+								<th style="width: 150px">Samples/Second<br />(1 channel)</th>
+								<th>Notes</th>
+							</tr>
+							<tr>
+								<tr>
+									<td>3ms/channel</td>
+									<td>320</td>
+									<td rowspan="4">Best for high speed reporting and lower accuracy</td>
+								</tr>
+								<tr>
+									<td>6ms/channel</td>
+									<td>160</td>
+								</tr>
+								<tr>
+									<td>12.5ms/channel</td>
+									<td>80</td>
+								</tr>
+								<tr>
+									<td>25ms/channel</td>
+									<td>40</td>
+								</tr>
+							</tr>
+							<tr>
+								<tr>
+									<td>50ms/channel (default)</td>
+									<td>20</td>
+									<td rowspan="3">Best for 50/60Hz noise rejection and higher accuracy.</td>
+								</tr>
+								<tr>
+									<td>100ms/channel</td>
+									<td>10</td>
+								</tr>
+								<tr>
+									<td>200ms/channel</td>
+									<td>5</td>
+								</tr>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<form>
+	<div id="userzero-help" data-backdrop="static" data-keyboard="false" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="carousel slide" data-interval="false" data-pause="false">
+			<div class="carousel-inner">
+				<div class="item active">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h3>User Zero Correction</h3>
+					</div>
+					<div class="modal-body" style="line-height: 20px">
+						<p>Manually adjust the user offset calibration for analog inputs/outputs. Every analog input/output is calibrated at the factory according to the specified accuracy.  User calibration is supplied so that the user has the ability to adjust the reported values to account for wiring loss or instrumentation compensation.  For this reason most inputs/outputs will NOT need to be calibrated.</p>
+						<p>Zero or Offset calibrations are used to adjust the reported value from 5 to 15% of full scale.</p>
+						<p>The calibration can be adjusted coarsely by moving the slide bar to the left or right with a mouse.  For fine adjustments use the <b>-</b>/<b>+</b> buttons on either side of the slide bar. The corresponding adjustment will be displayed in the calibration configuration.  The calibration will not take effect until the <b>apply</b> button is clicked. A negative adjustment (negative calibration value) will cause the reported channel value to go down.  A positive adjustment (positive calibration value) will cause the reported channel value to go up. The larger the calibration value the greater the difference will be between the reported channel value and the actual measured value.</p>
+						<b><u>Instructions on adding user calibrations:</u></b>
+						<p>Use this method to calibrate a channel using the manual slide bar user calibration.</p>
+						<ol>
+							<li>Set your analog signal device for a near minimum (5 to 15% full scale) output. Measure the device's output at the module's screw terminals with a precision meter or external standard monitor.</li>
+							<li>Apply the small signal to the analog input channel. Compare the value currently being reported with the value on your meter. If they are not equal, adjust the Offset value by using the slide bar and arrows in the Offset display box. Click the Apply button and observe the effect of the new offset factor.  Repeat this step until a satisfactory reading is obtained.</li>
+							<li>Set your analog signal device for a near full scale (85 to 95% full scale) output.  Compare the value currently being reported with the value on your meter.  If they are not equal, adjust the Span value by using the slide bar and arrows in the Span display box. Click the Apply button and observe the effect of the new span factor.  Repeat this step until a satisfactory reading is obtained.</li>
+							<li>The channel is now calibrated.</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<form>
+	<div id="userspan-help" data-backdrop="static" data-keyboard="false" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="carousel slide" data-interval="false" data-pause="false">
+			<div class="carousel-inner">
+				<div class="item active">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h3>User Span Correction</h3>
+					</div>
+					<div class="modal-body" style="line-height: 20px">
+						<p>Manually adjust the user span calibration for analog inputs/outputs. Every analog input/output is calibrated at the factory according to the specified accuracy.  User calibration is supplied so that the user has the ability to adjust the reported values to account for wiring loss or instrumentation compensation.  For this reason most inputs/outputs will NOT need to be calibrated.</p>
+						<p>Span calibrations are used to adjust the reported value from 85 to 95% of full scale.</p>
+						<p>The calibration can be adjusted coarsely by moving the slide bar to the left or right with a mouse. For fine adjustments use the <b>-</b>/<b>+</b> buttons on either side of the slide bar. The corresponding adjustment will be displayed in the calibration configuration.  The calibration will not take effect until the <b>apply</b> button is clicked. A negative adjustment (negative calibration value) will cause the reported channel value to go down.  A positive adjustment (positive calibration value) will cause the reported channel value to go up. The larger the calibration value the greater the difference will be between the reported channel value and the actual measured value.</p>
+						<b><u>Instructions on adding user calibrations:</u></b>
+						<p>Use this method to calibrate a channel using the manual slide bar user calibration.</p>
+						<ol>
+							<li>Set your analog signal device for a near minimum (5 to 15% full scale) output. Measure the device's output at the module's screw terminals with a precision meter or external standard monitor.</li>
+							<li>Apply the small signal to the analog input channel. Compare the value currently being reported with the value on your meter. If they are not equal, adjust the Offset value by using the slide bar and arrows in the Offset display box. Click the Apply button and observe the effect of the new offset factor.  Repeat this step until a satisfactory reading is obtained.</li>
+							<li>Set your analog signal device for a near full scale (85 to 95% full scale) output.  Compare the value currently being reported with the value on your meter.  If they are not equal, adjust the Span value by using the slide bar and arrows in the Span display box. Click the Apply button and observe the effect of the new span factor.  Repeat this step until a satisfactory reading is obtained.</li>
+							<li>The channel is now calibrated.</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<form>
+	<div id="calibrate-modal" data-backdrop="static" data-keyboard="false" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true">
+		<div id="calibrate-carousel" class="carousel slide" data-interval="false" data-pause="false">
+			<div class="carousel-inner">
+				<div class="item active">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: wizardCancel">&times;</button>
+						<h3>Important Note</h3>
+					</div>
+					<div class="modal-body" style="line-height: 20px">
+						<form>
+							<p>You will need to measure the analog signal with a reliable instrument in order to calibrate this module correctly.</p>
+							<p>During calibration, all input signals must remain within the working range of the analog module, or calibration errors may result.</p>
+							<!--ko template: {name:'h4-template',data:'Channel Status'}--><!--/ko-->
+							<table border="1" align="center" style="text-align: center; vertical-align: middle">
+								<thead>
+									<tr>
+										<th>&nbsp;Channel Tag Name&nbsp;</th>
+										<th>&nbsp;Channel&nbsp;</th>
+										<th>&nbsp;Address&nbsp;</th>
+										<th>&nbsp;Range&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<span data-bind="text: ChannelTag"></span>
+										</td>
+										<td>
+											<span data-bind="text: ChannelNum"></span>
+										</td>
+										<td>
+											<span data-bind="text: Address"></span>
+										</td>
+										<td>
+											<span data-bind="text: Range"></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<br />
+							<a class="btn btn-primary pull-right" data-bind="click: wizardNextToTwo">Proceed</a>
+							<a class="btn pull-right" data-bind="click: wizardCancel">Cancel</a>
+						</form>
+					</div>
+				</div>
+				<div class="item">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: wizardCancel">&times;</button>
+						<h3>Method and Unit Selection</h3>
+					</div>
+					<div class="modal-body">
+						<form>
+							<p>Select the Calibration method and Calibration units you are going to use to calibrate this channel.</p>
+							<br />
+							<!--ko template: {name:'select-template', data: Method}--><!--/ko-->
+							<!--ko template: {name:'select-template', data: Unit}--><!--/ko-->
+							<!--ko template: {name:'h4-template',data:'Channel Status'}--><!--/ko-->
+							<table border="1" align="center" style="text-align: center; vertical-align: middle">
+								<thead>
+									<tr>
+										<th>&nbsp;Channel Tag Name&nbsp;</th>
+										<th>&nbsp;Channel&nbsp;</th>
+										<th>&nbsp;Address&nbsp;</th>
+										<th>&nbsp;Range&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<span data-bind="text: ChannelTag"></span>
+										</td>
+										<td>
+											<span data-bind="text: ChannelNum"></span>
+										</td>
+										<td>
+											<span data-bind="text: Address"></span>
+										</td>
+										<td>
+											<span data-bind="text: Range"></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<br />
+							<a class="btn pull-left" data-bind="click: wizardPrev">Back</a>
+							<a class="btn btn-primary pull-right" data-bind="click: wizardNextToThree">Next</a>
+						</form>
+					</div>
+				</div>
+				<div class="item">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: wizardCancel">&times;</button>
+						<!-- ko if: isOnePointOffset -->
+							<h3>Calibrate the Offset</h3>
+						<!-- /ko -->
+						<!-- ko if: isTwoPoint -->
+							<h3>First Point Recording</h3>
+						<!-- /ko -->
+					</div>
+					<div class="modal-body">
+						<form>
+							<!-- ko if: isOnePointOffset -->
+								<p>Calibrate the offset for the selected channel.</p>
+							<!-- /ko -->
+							<!-- ko if: isTwoPoint -->
+								<p>Calibrate the first point for the selected channel.</p>
+							<!-- /ko -->
+							<br />
+							<p>Step 1.  Apply a known signal (5 - 15% full scale) to the channel.</p>
+							<br />
+							<table align="center" style="text-align: center; vertical-align: middle">
+								<thead>
+									<tr>
+										<th></th>
+										<th>&nbsp;Decimal&nbsp;</th>
+										<!-- ko if: isVoltage -->
+											<th>&nbsp;Volt&nbsp;</th>
+										<!-- /ko -->
+										<!-- ko ifnot: isVoltage -->
+											<th>&nbsp;mA&nbsp;</th>
+										<!-- /ko -->
+										<th>&nbsp;%&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Value currently being reported</td>
+										<td><input style="width: 100px;" data-bind="value: RepValDec, attr:{readonly: 'readonly'}" type="text"></td>
+										<td><input style="width: 100px;" data-bind="value: RepValmA, attr:{readonly: 'readonly'}" type="text"></td>
+										<td><input style="width: 100px;" data-bind="value: RepValPer, attr:{readonly: 'readonly'}" type="text"></td>
+									</tr>
+								</tbody>
+							</table>
+							<br />
+							<table align="center" style="text-align: center; vertical-align: middle">
+								<tbody>
+									<tr>
+										<td>
+											<div class="input-append">
+												<label>Step 2.  Enter known signal's measured value</label>
+												<input style="width: 100px;" data-bind="value: userInputOffset, validate: {type: 'vFloat', collection: wizardPageCollection}" name="userInputOffset" type="text">
+												<!-- ko if: isDecimal -->
+													<span class="add-on">&nbsp;16bit&nbsp;</span>
+												<!-- /ko -->
+												<!-- ko if: isSignalVolt -->
+													<span class="add-on">&nbsp;Volt&nbsp;</span>
+												<!-- /ko -->
+												<!-- ko if: isSignalmA -->
+													<span class="add-on">&nbsp;mA&nbsp;</span>
+												<!-- /ko -->
+												<!-- ko if: isPercentage -->
+													<span class="add-on">&nbsp;%&nbsp;</span>
+												<!-- /ko -->
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!--ko template: {name:'h4-template',data:'Channel Status'}--><!--/ko-->
+							<table border="1" align="center" style="text-align: center; vertical-align: middle">
+								<thead>
+									<tr>
+										<th>&nbsp;Channel Tag Name&nbsp;</th>
+										<th>&nbsp;Channel&nbsp;</th>
+										<th>&nbsp;Address&nbsp;</th>
+										<th>&nbsp;Range&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<span data-bind="text: ChannelTag"></span>
+										</td>
+										<td>
+											<span data-bind="text: ChannelNum"></span>
+										</td>
+										<td>
+											<span data-bind="text: Address"></span>
+										</td>
+										<td>
+											<span data-bind="text: Range"></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<br />
+							<a class="btn pull-left" data-bind="click: wizardPrev">Back</a>
+							<a class="btn btn-primary pull-right" data-bind="click: wizardNextToFour">Next</a>
+						</form>
+					</div>
+				</div>
+				<div class="item">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: wizardCancel">&times;</button>
+						<!-- ko if: isOnePointSpan -->
+							<h3>Calibrate the Span</h3>
+						<!-- /ko -->
+						<!-- ko if: isTwoPoint -->
+							<h3>Second Point Recording</h3>
+						<!-- /ko -->
+					</div>
+					<div class="modal-body">
+						<form>
+							<!-- ko if: isOnePointSpan -->
+								<p>Calibrate the span for the selected channel.</p>
+							<!-- /ko -->
+							<!-- ko if: isTwoPoint -->
+								<p>Calibrate the second point for the selected channel.</p>
+							<!-- /ko -->
+							<br />
+							<p>Step 1.  Apply a known signal (85 - 95% full scale) to the channel.</p>
+							<br />
+							<table align="center" style="text-align: center; vertical-align: middle">
+								<thead>
+									<tr>
+										<th></th>
+										<th>&nbsp;Decimal&nbsp;</th>
+										<!-- ko if: isVoltage -->
+											<th>&nbsp;Volt&nbsp;</th>
+										<!-- /ko -->
+										<!-- ko ifnot: isVoltage -->
+											<th>&nbsp;mA&nbsp;</th>
+										<!-- /ko -->
+										<th>&nbsp;%&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Value currently being reported</td>
+										<td><input style="width: 100px;" data-bind="value: RepValDec, attr:{readonly: 'readonly'}" type="text"></td>
+										<td><input style="width: 100px;" data-bind="value: RepValmA, attr:{readonly: 'readonly'}" type="text"></td>
+										<td><input style="width: 100px;" data-bind="value: RepValPer, attr:{readonly: 'readonly'}" type="text"></td>
+									</tr>
+								</tbody>
+							</table>
+							<br />
+							<table align="center" style="text-align: center; vertical-align: middle">
+								<tbody>
+									<tr>
+										<td>
+											<div class="input-append">
+												<label>Step 2.  Enter known signal's measured value</label>
+												<input style="width: 100px;" data-bind="value: userInputSpan, validate: {type: 'vFloat', collection: wizardPageCollection}" name="userInputSpan" type="text">
+												<!-- ko if: isDecimal -->
+													<span class="add-on">&nbsp;16bit&nbsp;</span>
+												<!-- /ko -->
+												<!-- ko if: isSignalVolt -->
+													<span class="add-on">&nbsp;Volt&nbsp;</span>
+												<!-- /ko -->
+												<!-- ko if: isSignalmA -->
+													<span class="add-on">&nbsp;mA&nbsp;</span>
+												<!-- /ko -->
+												<!-- ko if: isPercentage -->
+													<span class="add-on">&nbsp;%&nbsp;</span>
+												<!-- /ko -->
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!--ko template: {name:'h4-template',data:'Channel Status'}--><!--/ko-->
+							<table border="1" align="center" style="text-align: center; vertical-align: middle">
+								<thead>
+									<tr>
+										<th>&nbsp;Channel Tag Name&nbsp;</th>
+										<th>&nbsp;Channel&nbsp;</th>
+										<th>&nbsp;Address&nbsp;</th>
+										<th>&nbsp;Range&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<span data-bind="text: ChannelTag"></span>
+										</td>
+										<td>
+											<span data-bind="text: ChannelNum"></span>
+										</td>
+										<td>
+											<span data-bind="text: Address"></span>
+										</td>
+										<td>
+											<span data-bind="text: Range"></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<br />
+							<a class="btn pull-left" data-bind="click: wizardPrevFour">Back</a>
+							<a class="btn btn-primary pull-right" data-bind="click: wizardNextToFive">Next</a>
+						</form>
+					</div>
+				</div>
+				<div class="item">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: wizardCancel">&times;</button>
+						<h3>Apply Calibration</h3>
+					</div>
+					<div class="modal-body">
+						<form>
+							<p>Apply the calibration to the selected channel.</p>
+							<br />
+							<table align="center" style="text-align: center; vertical-align: middle">
+								<thead>
+									<tr>
+										<th></th>
+										<th>&nbsp;Decimal&nbsp;</th>
+										<!-- ko if: isVoltage -->
+											<th>&nbsp;Volt&nbsp;</th>
+										<!-- /ko -->
+										<!-- ko ifnot: isVoltage -->
+											<th>&nbsp;mA&nbsp;</th>
+										<!-- /ko -->
+										<th>&nbsp;%&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Value currently being reported</td>
+										<td><input style="width: 100px;" data-bind="value: RepValDec, attr:{readonly: 'readonly'}" type="text"></td>
+										<td><input style="width: 100px;" data-bind="value: RepValmA, attr:{readonly: 'readonly'}" type="text"></td>
+										<td><input style="width: 100px;" data-bind="value: RepValPer, attr:{readonly: 'readonly'}" type="text"></td>
+									</tr>
+								</tbody>
+							</table>
+							<br />
+							<table style="width: 100%;">
+								<tr>
+									<td>The current calibration factors for this channel are:</td>
+								</tr>
+								<tr><td></td></tr>
+								<tr>
+									<td>&nbsp;&nbsp;&nbsp;Offset: <span data-bind="text: CurrOffset"></span></td>
+								</tr>
+								<tr>
+									<td>&nbsp;&nbsp;&nbsp;Offset: <span data-bind="text: CurrSpan"></span></td>
+								</tr>
+							</table>
+							<br />
+							<table style="width: 100%;">
+								<tr>
+									<td>The new calibration factors for this channel are:</td>
+								</tr>
+								<tr><td></td></tr>
+								<tr>
+									<td>&nbsp;&nbsp;&nbsp;Offset: <span data-bind="text: NewOffset"></span></td>
+								</tr>
+								<tr>
+									<td>&nbsp;&nbsp;&nbsp;&nbsp;Span: <span data-bind="text: NewSpan"></span></td>
+								</tr>
+							</table>
+							<!--ko template: {name:'h4-template',data:'Channel Status'}--><!--/ko-->
+							<table border="1" align="center" style="text-align: center; vertical-align: middle">
+								<thead>
+									<tr>
+										<th>&nbsp;Channel Tag Name&nbsp;</th>
+										<th>&nbsp;Channel&nbsp;</th>
+										<th>&nbsp;Address&nbsp;</th>
+										<th>&nbsp;Range&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<span data-bind="text: ChannelTag"></span>
+										</td>
+										<td>
+											<span data-bind="text: ChannelNum"></span>
+										</td>
+										<td>
+											<span data-bind="text: Address"></span>
+										</td>
+										<td>
+											<span data-bind="text: Range"></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<br />
+							<a class="btn pull-left" data-bind="click: wizardPrevFinish">Back</a>
+							<a class="btn btn-primary pull-right" data-bind="click: applycal">Apply</a>
+							<a class="btn pull-right" data-bind="click: wizardCancel">Cancel</a>
+						</form>
+					</div>
+				</div>
+				<div class="item">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: wizardCancel">&times;</button>
+						<h3>Exit</h3>
+					</div>
+					<div class="modal-body">
+						<form>
+							<p>View calibration result for the selected channel.</p>
+							<br />
+							<table align="center" style="text-align: center; vertical-align: middle">
+								<thead>
+									<tr>
+										<th></th>
+										<th>&nbsp;Decimal&nbsp;</th>
+										<!-- ko if: isVoltage -->
+											<th>&nbsp;Volt&nbsp;</th>
+										<!-- /ko -->
+										<!-- ko ifnot: isVoltage -->
+											<th>&nbsp;mA&nbsp;</th>
+										<!-- /ko -->
+										<th>&nbsp;%&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Value currently being reported</td>
+										<td><input style="width: 100px;" data-bind="value: RepValDec, attr:{readonly: 'readonly'}" type="text"></td>
+										<td><input style="width: 100px;" data-bind="value: RepValmA, attr:{readonly: 'readonly'}" type="text"></td>
+										<td><input style="width: 100px;" data-bind="value: RepValPer, attr:{readonly: 'readonly'}" type="text"></td>
+									</tr>
+								</tbody>
+							</table>
+							<br />
+							<table style="width: 100%;">
+								<tr>
+									<td>The current calibration factors for this channel are:</td>
+								</tr>
+								<tr><td></td></tr>
+								<tr>
+									<td>&nbsp;&nbsp;&nbsp;Offset: <span data-bind="text: CurrOffset"></span></td>
+								</tr>
+								<tr>
+									<td>&nbsp;&nbsp;&nbsp;Offset: <span data-bind="text: CurrSpan"></span></td>
+								</tr>
+							</table>
+							<br />
+							<table style="width: 100%;">
+								<tr>
+									<td>The new calibration factors for this channel are:</td>
+								</tr>
+								<tr><td></td></tr>
+								<tr>
+									<td>&nbsp;&nbsp;&nbsp;Offset: <span data-bind="text: NewOffset"></span></td>
+								</tr>
+								<tr>
+									<td>&nbsp;&nbsp;&nbsp;&nbsp;Span: <span data-bind="text: NewSpan"></span></td>
+								</tr>
+							</table>
+							<!--ko template: {name:'h4-template',data:'Channel Status'}--><!--/ko-->
+							<table border="1" align="center" style="text-align: center; vertical-align: middle">
+								<thead>
+									<tr>
+										<th>&nbsp;Channel Tag Name&nbsp;</th>
+										<th>&nbsp;Channel&nbsp;</th>
+										<th>&nbsp;Address&nbsp;</th>
+										<th>&nbsp;Range&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<span data-bind="text: ChannelTag"></span>
+										</td>
+										<td>
+											<span data-bind="text: ChannelNum"></span>
+										</td>
+										<td>
+											<span data-bind="text: Address"></span>
+										</td>
+										<td>
+											<span data-bind="text: Range"></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<br />
+							<a class="btn btn-primary pull-right" data-bind="click: wizardCancel">Finish</a>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+

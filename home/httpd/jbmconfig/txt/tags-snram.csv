@@ -1,0 +1,5 @@
+AI1,,,0,0,,,,,,,,,,Analog In - Voltage: 0-10V,0,1,model
+CNT1_LSW,,,0,1,,,,,,,,,,Digital Input Counter. 16/32-bit Lower word,0,1,model
+CNT1_MSW,,,0,2,,,,,,,,,,Digital Input Counter. 32-bit Higher word,0,1,model
+DI1,,,10,0,,,,,,,,,,Digital Input (shared with AI1). Active ~3V,0,1,model
+DO1,,,11,0,,,,,,,,,,Open Collector Digital Out,0,0,model

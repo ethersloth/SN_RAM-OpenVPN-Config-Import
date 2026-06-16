@@ -1,0 +1,29 @@
+
+<profile>
+ <subsystems>
+                                                                                                                              <!--
+               Networking -> Cellular -> Provisioning Settings Section (Generic)                                                        -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/generic_provisioning.prf" name="generic_provisioning">
+   <validation>
+
+   </validation>
+
+
+   <configuration>
+
+   </configuration>
+
+
+   <action name="Force" successmsg="Forced (generic) provisioning initiated and in progress">
+    <astep abort="y" errmsg="Failed to write Provisioning trigger file." name="SystemCommand" >
+     <arg expr="touch /etc/jbm/wireless/FORCE_PROVISIONING" />
+    </astep>
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>
+
+

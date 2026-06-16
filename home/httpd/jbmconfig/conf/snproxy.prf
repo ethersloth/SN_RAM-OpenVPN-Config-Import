@@ -1,0 +1,249 @@
+
+<profile>
+ <subsystems>
+                                                                                                                                                          
+                <!-- Advanced -> SN Proxy Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/snproxy.prf" name="snproxy">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save SN Proxy Enable/Disable Interface to system configuration file."
+             name="enable"
+             path="/GAUCfg/snproxy/enable" />
+
+    <cstep errmsg="Unable to save SN Proxy HTTPS to system configuration file."
+             name="https"
+             path="/GAUCfg/snproxy/https" />
+
+    <cstep errmsg="Unable to save SN Proxy HTTP to system configuration file."
+             name="http"
+             path="/GAUCfg/snproxy/http" />
+
+    <cstep errmsg="Unable to save SN Proxy HTTP Username to system configuration file."
+             name="snproxyun"
+             path="/GAUCfg/snproxy/snproxyun" />
+
+    <cstep errmsg="Unable to save SN Proxy HTTP Password to system configuration file."
+             name="snproxypw"
+             path="/GAUCfg/snproxy/snproxypw" />
+
+    <cstep errmsg="Unable to save SN Proxy HTTP Listen Port to system configuration file."
+             name="listenport"
+             path="/GAUCfg/snproxy/listenport" />
+
+    <cstep errmsg="Unable to save SN Proxy HTTP Host IP to system configuration file."
+             name="hostip"
+             path="/GAUCfg/snproxy/hostip" />
+
+    <cstep errmsg="Unable to save SN Proxy HTTP Host Port to system configuration file."
+             name="hostport"
+             path="/GAUCfg/snproxy/hostport" />
+
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+
+       <!-- Start writing the snproxy.conf file. -->                                                                    
+
+    <astep abort="y" errmsg="Failed to save snproxy configuration" name="SystemCommand">
+     <arg expr="'prfhandler_snproxy Save'" source="config" />
+    </astep>
+
+<!--Moved to prfhandler_snproxy
+       <astep errmsg="Failed to write the snproxy.conf configuration file." name="WriteFormattedFile" abort="y"> 
+           <arg expr="'/tmp/snproxy.conf'" source="config" />                                                         
+           <arg expr="\n" />                                                                                            
+       </astep>                                                                                                        
+
+       <astep abort="y" errmsg="Failed to write the snproxy.conf file for SN Proxy configuration file." name="AppendFormatted2File">
+           <arg expr="'/tmp/snproxy.conf'" source="config" />
+           <arg expr="'####'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'####BASIC SN Proxy SERVER CONFIG STUFF'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'####'" source="config" />
+           <arg expr="\n" />
+           <arg expr="\n" />
+           <arg expr="concat('server.errorlog-use-syslog = ', quote(), 'enable', quote())" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('server.document-root = ', quote(), '/home/httpd/', quote())" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('server.port = ', /GAUCfg/snproxy/listenport/text())" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('server.event-handler = ', quote(), 'select', quote())" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('server.upload-dirs = (', quote(), '/tmp', quote(), ')')" source="config" />
+           <arg expr="\n" />
+           <arg expr="'server.max-request-size = 20000000'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'mimetype.assign = ('" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat(quote(), '.html', quote(), ' => ', quote(), 'text/html', quote(), ',')" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat(quote(), '.txt', quote(), ' => ', quote(), 'text/plain', quote(), ',')" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat(quote(), '.jpg', quote(), ' => ', quote(), 'image/jpeg', quote(), ',')" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat(quote(), '.png', quote(), ' => ', quote(), 'image/png', quote())" source="config" />
+           <arg expr="\n" />
+           <arg expr="')'" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('index-file.names = (', quote(), 'index.html', quote(), ')')" source="config" />
+           <arg expr="\n" />
+           <arg expr="\n" />
+           <arg expr="'####'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'####PID FILE'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'####'" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('server.pid-file = ', quote(), '/var/run/snproxy-lighttpd.pid', quote())" source="config" />
+           <arg expr="\n" />
+           <arg expr="\n" />
+           <arg expr="'####'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'####MODULES'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'####'" source="config" />
+           <arg expr="\n" />
+           <arg expr="\n" />
+           <arg expr="concat('server.modules = ( ', quote(), 'mod_access', quote(), ' )')" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('server.modules += ( ', quote(), 'mod_accesslog', quote(), ' )')" source="config" />
+           <arg expr="\n" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'no'"
+                      expr="concat('#server.modules += ( ', quote(), 'mod_auth', quote(), ' )')" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'"
+                      expr="concat('server.modules += ( ', quote(), 'mod_auth', quote(), ' )')" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('server.modules += ( ', quote(), 'mod_cgi', quote(), ' )')" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('server.modules += ( ', quote(), 'mod_proxy', quote(), ' )')" source="config" />
+           <arg expr="\n" />
+           <arg expr="\n" />
+           <arg expr="'# Use syslog, not some other snproxy-sepcific file'" source="config" />
+           <arg expr="\n" />
+           <arg expr="\n" />
+           <arg expr="concat('accesslog.use-syslog = ', quote(), 'enable', quote())" source="config" />
+           <arg expr="\n" />
+           <arg expr="\n" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'# User auth setup stuff'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'\n'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'\n'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="concat('auth.backend = ', quote(), 'plain', quote())" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'\n'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="concat('auth.backend.plain.userfile = ', quote(), '/etc/lighttpd/snproxy.user', quote())" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'\n'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="concat('#auth.backend.plain.groupfile = ', quote(), '/etc/lighttpd/snproxy.group', quote())" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'\n'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'\n'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="concat('auth.require = ( ', quote(), '/', quote(), ' => ')" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'\n'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="' ('" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'\n'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="concat(quote(), 'method', quote(), ' => ', quote(), 'basic', quote(), ',')" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'\n'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="concat(quote(), 'realm', quote(), ' => ', quote(), 'All Access', quote(), ',')" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'\n'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="concat(quote(), 'require', quote(), ' => ', quote(), 'user=', /GAUCfg/snproxy/snproxyun/text(), quote())" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'\n'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="' ),'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'\n'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="')'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'\n'" source="config" />
+           <arg dependency="/GAUCfg/snproxy/http/text() = 'yes'" expr="'\n'" source="config" />
+           <arg expr="concat('cgi.assign = ( ', quote(), '.cgi', quote(), ' => ', quote(), quote(), ' )')" source="config" />
+           <arg expr="\n" />
+           <arg expr="\n" />
+           <arg expr="'####'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'####SSL STUFF'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'####'" source="config" />
+           <arg expr="\n" />
+           <arg expr="\n" />
+           <arg dependency="/GAUCfg/snproxy/https/text() = 'no'"
+                      expr="concat('#ssl.engine = ', quote(), 'enable', quote())" source="config" />
+           <arg dependency="/GAUCfg/snproxy/https/text() = 'yes'"
+                      expr="concat('ssl.engine = ', quote(), 'enable', quote())" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('ssl.pemfile = ', quote(), '/etc/lighttpd/gau/lighttpd-gau.pem', quote())" source="config" />
+           <arg expr="\n" />
+           <arg expr="\n" />
+           <arg expr="'####'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'####PROXY STUFF'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'####'" source="config" />
+           <arg expr="\n" />
+           <arg expr="\n" />
+           <arg expr="concat('proxy.server = ( ', quote(), quote(), ' => ( ( ', quote(), 'host', quote(), ' => ', quote(), /GAUCfg/snproxy/hostip/text(), quote(), ', ', quote(), 'port', quote(), ' => ', /GAUCfg/snproxy/hostport/text(), ' ) ) )')" source="config" />
+           <arg expr="\n" />
+           <arg expr="\n" />
+       </astep>
+
+       <astep abort="y" errmsg="Failed to write the snproxy.conf configuration file to /etc/lighttpd/ directory." name="SystemCommand">
+           <arg   expr="mv -f /tmp/snproxy.conf /etc/lighttpd/snproxy.conf" />
+       </astep>
+Moved to prfhandler_snproxy-->
+
+       <!-- Start writing the snproxy.user file. -->                                                                    
+
+<!--Moved to prfhandler_snproxy
+       <astep errmsg="Failed to write the snproxy.user configuration file." name="WriteFormattedFile" abort="y"> 
+           <arg expr="'/tmp/snproxy.user'" source="config" />                                                         
+       </astep>                                                                                                        
+
+       <astep abort="y" errmsg="Failed to write the snproxy.user file for SN Proxy configuration file." name="AppendFormatted2File">
+           <arg expr="'/tmp/snproxy.user'" source="config" />
+           <arg expr="concat(/GAUCfg/snproxy/snproxyun/text(), ':', /GAUCfg/snproxy/snproxypw/text())" source="config" />
+           <arg expr="\n" />
+       </astep>
+
+       <astep abort="y" errmsg="Failed to write the snproxy.user configuration file to /etc/lighttpd/ directory." name="SystemCommand">
+           <arg   expr="mv -f /tmp/snproxy.user /etc/lighttpd/snproxy.user" />
+       </astep>
+
+       <astep abort="n" name="SystemCommand"> 
+        <arg dependency="/GAUCfg/snproxy/enable/text() = 'no'"
+                   expr="'chkconfig snproxy off'"
+                 source="config" />
+       </astep>
+   
+       <astep abort="n" name="SystemCommand"> 
+        <arg dependency="/GAUCfg/snproxy/enable/text() = 'yes'"
+                   expr="'chkconfig snproxy on'"
+                 source="config" />
+       </astep>
+Moved to prfhandler_snproxy-->
+
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+
+    <astep abort="y" errmsg="Failed to apply snproxy configuration" name="SystemCommand">
+     <arg expr="'prfhandler_snproxy Apply'" source="config" />
+    </astep>
+
+<!--Moved to prfhandler_snproxy
+       <astep abort="n" name="SystemCommand"> 
+        <arg dependency="/GAUCfg/snproxy/enable/text() = 'no'"
+                   expr="'service snproxy stop'"
+                 source="config" />
+       </astep>
+   
+       <astep abort="n" name="SystemCommand"> 
+        <arg dependency="/GAUCfg/snproxy/enable/text() = 'yes'"
+                   expr="'service snproxy restart'"
+                 source="config" />
+       </astep>
+Moved to prfhandler_snproxy-->
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

@@ -1,0 +1,37 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall.prf"
+             name="firewall" />
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall_mr.prf" name="firewall_mr">
+   <validation>
+    <vstep errmsg="Invalid Firewall Masquerade Rules Set. Must be a well-formed XML document."
+             name="masqrules"
+             test="string-length(/input/masqrules/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Firewall Masquerade Rule(s) to system configuration file."
+             name="masqrules"
+             path="/GAUCfg/firewall/masqrules"
+             type="node" />
+   </configuration>
+
+   <action name="Dummy" successmsg="Firewall Masquerade rules saved.">
+   </action>
+   
+   <action name="Save" successmsg="Firewall settings saved.">
+    <pre subsystem="firewall" action="Save" />
+
+   </action>
+
+   <action name="Apply" successmsg="Firewall settings applied.">
+    <pre subsystem="firewall" action="Apply" />
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

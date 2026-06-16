@@ -1,0 +1,59 @@
+#!/usr/bin/perl -w
+# (C)2016 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+my $numArgs = $#ARGV + 1;
+my $PARSEABLE = 0;
+
+my $reqCertType = "";
+
+if ($numArgs > 0)
+  {
+   $reqCertType = $ARGV[0];
+  }
+
+foreach my $argnum (0 .. $#ARGV)
+{
+    if ("--parseable" eq $ARGV[$argnum])
+    {
+        $PARSEABLE = 1;
+        next;
+    }
+}
+
+my @certFiles = split /\s+/, `grep -A 4 "certificate record" /home/httpd/jbmconfig/conf/config.xml | grep "file" | sed 's/<[^>]*>//g'`;
+my @certTypes = split /\s+/, `grep -A 4 "certificate record" /home/httpd/jbmconfig/conf/config.xml | grep "type" | sed 's/<[^>]*>//g'`;
+
+my $optCnt = 0;
+
+for (my $certNdx = 0; $certNdx <= $#certFiles; $certNdx++)
+   {
+    my $certFile = $certFiles[ $certNdx ];
+
+    my $cfgCertType = $certTypes[ $certNdx ];
+
+    if ($reqCertType eq "" || $reqCertType eq $cfgCertType)
+      {
+       $optCnt++;
+
+       if ($PARSEABLE)
+       {
+	   print $certFile;
+	   print '|';
+       }
+       else {
+	  print "<option value=\"" . $certFile . "\">" .$certFile . "</option>\n";
+       }
+      }
+   }
+
+
+if (0 == $optCnt)
+  {
+   if (0 == $PARSEABLE) {
+      print "<option value=\"\"></option>\n";
+   }
+  }
+
+
+exit(0);
+

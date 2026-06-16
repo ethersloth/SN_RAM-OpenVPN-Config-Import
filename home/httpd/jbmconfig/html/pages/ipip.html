@@ -1,0 +1,28 @@
+<!--ko template: {name:'title-template',data:'IP in IP'}--><!--/ko-->
+<!--ko template: {name:'h4-template',data:'IP in IP Tunnels'}--><!--/ko-->
+<!--ko template: {name:'table-template',data:ipipTable}--><!--/ko-->
+<div id="ipiptunnel-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="ipip-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Add IP in IP Tunnel</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: id}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: enable}--><!--/ko-->
+					<!-- ko if: enable.value() === 'Yes'-->
+						<!--ko template: {name: 'full-savable-input-template', data: localip}--><!--/ko-->
+						<!--ko template: {name: 'full-savable-input-template', data: localnet}--><!--/ko-->
+						<!--ko template: {name: 'full-savable-input-template', data: remoteip}--><!--/ko-->
+						<!--ko template: {name: 'full-savable-input-template', data: remotenet}--><!--/ko-->
+						<!--ko template: {name: 'full-savable-input-template', data: ttl}--><!--/ko-->
+						<!--ko template: {name: 'full-savable-select-template', data: onboot}--><!--/ko-->
+					<!-- /ko -->
+					<a class="btn btn-primary pull-right" data-bind="click: ipipWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,25 @@
+<h4>Description</h4>
+<p>
+<b>Object 30 - Binary Inputs</b> Web UI screen provides configuration of Mapping Binary Input I/O's Reg/Index to DNP points for generating events
+based on configured Class Assignments when the status of any Binary Input I/O's changes.
+</p>
+<p>
+<b>Default</b> Class Assignments are applied to all the Reg/Index defined by Highest Register Address
+except Reg/Index entries that are defined in <b>Exception</b> Class Assignments Table.
+</p>
+<p>
+The <b>Exception</b> table provides you with the ability to define Reg/Index ranges that are needed to be configured different
+than Default Class Assignments.
+</p>
+<p>
+<b>Example:</b> If the Highest Register Address is set to <b>10</b> and Reg/Index <b>2</b>, <b>4</b>, <b>6-7</b> are needed to be set for different Class Assignments than Default, then the final result for all 10 registers would be as follows:
+</p>
+<p>
+Reg/Index <b>0-1</b>, <b>3</b>, <b>5</b> and <b>8-10</b> will be set to <b>Default</b> Class Assignments.
+</p>
+<p>
+Reg/Index <b>2</b>, <b>4</b>, and <b>6-7</b> will be set to <b>Exception</b> Class Assignments.
+</p>
+<p>
+<b>Important Note:</b> The Starting Reg/Index and Ending Reg/Index of Exception table entries for a single Reg/Index such as Reg/Index <b>2</b> and <b>4</b> in above example has to be the same address.
+</p>

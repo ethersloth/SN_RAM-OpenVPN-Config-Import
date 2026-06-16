@@ -1,0 +1,94 @@
+
+<profile>
+ <subsystems>
+                                                                                                                             <!--
+                Services -> TELNET Server Settings Section
+
+  V2.20 behaviors (taken from cfg_sec.cpp ApplyTelnetSettings()):
+
+  +==========+========================================================================+============+
+  |  ACTION  |                           STEP                                         | ON FAILURE |
+  +==========+========================================================================+============+
+  |    Apply | Try to read /GAUCfg/telnetserver/enable from Master Configuration file | Abort      |
+  |          +------------------------------------------------------------------------+------------+
+  |          | if ('y' == /GAUCfg/telnetserver/enable)                                |            |
+  |          |   {                                                                    |            |
+  |          |    if ("chkconfig --list | grep -i telnet | grep -i on")               |            |
+  |          |      {                                                                 |            |
+  |          |       Try to enable telnetd                                            | Abort      |
+  |          |      }                                                                 |            |
+  |          |   }                                                                    |            |
+  |          |  else                                                                  |            |
+  |          |      {                                                                 |            |
+  |          |       Verify 'n' == /GAUCfg/telnetserver/enable                        | Abort      |
+  |          |                                                                        |            |
+  |          |       if (!"chkconfig --list | grep -i telnet | grep -i on")           |            |
+  |          |         {                                                              |            |
+  |          |          Try to disable telnetd                                        | Abort      |
+  |          |         }                                                              |            |
+  |          |      }                                                                 |            |
+  |          +------------------------------------------------------------------------+------------+
+  |          | Try to execute 'service xinetd restart                                 | Abort      |
+  |          +------------------------------------------------------------------------+------------+
+  |          | Try to perform Firewall APPLY action operations                        | Abort      |
+  +==========+========================================================================+============+                          -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/telnetserver.prf" name="telnetserver">
+   <validation>
+    <vstep errmsg="Invalid Enable value. Must be 'y' or 'n'." name="enable" test="isyorn(/input/enable/text())" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable Flag to system configuration file."
+             name="enable"
+             path="/GAUCfg/telnetserver/enable" />
+   </configuration>
+
+   <action name="Apply" successmsg="TELNET Server settings applied.">
+
+<!--Moved to prfhandler_telnetserver
+    <pre subsystem="telnetserver" action="Save" />
+
+    <astep  abort="y"
+           errmsg="Failed to restart telnet"
+             name="SystemCommand">
+
+     <arg expr="service xinetd restart" />
+    </astep>
+Moved to prfhandler_telnetserver-->
+
+    <astep abort="y" errmsg="Failed to apply Telnet Server configuration file" name="SystemCommand">
+     <arg expr="'prfhandler_telnetserver Apply'" source="config" />
+    </astep>
+   </action>
+
+   <action name="Save" successmsg="TELNET Server settings saved.">
+
+<!--Moved to prfhandler_telnetserver
+    <astep         abort="n"
+                    name="SystemCommand"
+           sysdependency="chkconfig --list | grep -i telnet | grep -i on">
+
+     <arg expr="chkconfig telnet off" />
+    </astep>
+
+    <astep  abort="y"
+           errmsg="Failed to enable telnet"
+             name="SystemCommand">
+
+     <arg dependency="/GAUCfg/telnetserver/enable/text() = 'y'"
+                 expr="'chkconfig telnet on'"
+               source="config" />
+    </astep>
+Moved to prfhandler_telnetserver-->
+
+    <astep abort="y" errmsg="Failed to save Telnet Server configuration file" name="SystemCommand">
+     <arg expr="'prfhandler_telnetserver Save'" source="config" />
+    </astep>
+   </action>
+
+
+  </subsystem>
+
+ </subsystems>
+</profile>

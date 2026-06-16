@@ -1,0 +1,103 @@
+<!-- ko template: {name: 'title-template', data: 'Firewall'}--><!-- /ko -->
+<div style="text-align: center; vertical-align: middle;" data-bind="visible: isIPTransEnabled">
+	<span><font color="#FF0000">The Firewall is currently under the control of IP Transparency</font></span>
+</div>
+<div style="text-align: center; vertical-align: middle;" data-bind="visible: !isFirewallEnabled()">
+	<span>The firewall is currently not enabled.<br/>It may be enabled under the 'General Settings' section.</span>
+</div>
+<!-- ko if: isFirewallEnabled -->
+	<!-- ko template: {name: 'h4-template', data: 'Masquerade Rules'}--><!-- /ko -->
+	<!--ko template: {name:'table-template',data:masqTable}--><!--/ko-->
+	<hr />
+	<!-- ko template: {name: 'h4-template', data: 'NAT (One-To-One) Rules'}--><!-- /ko -->
+	<!--ko template: {name:'table-template',data:natTable}--><!--/ko-->
+	<hr />
+	<!-- ko template: {name: 'h4-template', data: 'NAT Range (One-To-One) Rules'}--><!-- /ko -->
+	<!--ko template: {name:'table-template',data:natrangeTable}--><!--/ko-->
+	<hr />
+	<!-- ko template: {name: 'h4-template', data: 'DMZ Host Rules'}--><!-- /ko -->
+	<!--ko template: {name:'table-template',data:dmzTable}--><!--/ko-->
+<!-- /ko -->
+<div id="masqrule-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="masqrule-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Host Masquerade Rules Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: osaddr}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: masqintf}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: masqWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="natrule-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="natrule-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Nat Rules Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: natlabel}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: odaddr}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: ndaddr}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: proto}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: whitelist}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: natWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="natrangerule-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="natrangerule-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>NAT Range Rules Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: natrlabel}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: odaddrs}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: odaddre}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: ndaddrs}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: ndaddre}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: nrproto}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: nrwhitelist}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: natrangeWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="dmzrule-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="dmzrule-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>DMZ Host Rules Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: dmzlabel}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: dmzintf}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: dmzndaddr}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: dmzwhitelist}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: dmzWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div style="text-align: center">
+	<a class="btn" data-bind="click: switchPage('#!/fwgeneral')">General Settings</a>
+	<a class="btn" data-bind="click: switchPage('#!/filter')">ACL Rules</a>
+	<a class="btn" data-bind="click: switchPage('#!/access')">Port Allow/Forwarding Rules</a>
+</div>

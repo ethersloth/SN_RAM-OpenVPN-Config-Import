@@ -1,0 +1,215 @@
+<!-- ko template: {name: 'title-template', data: {title: 'Tags', helpLink: 'h_tags.html'}}--><!-- /ko -->
+<div style="display: none; text-align: center; margin-bottom: 15px" data-bind="visible: showUserTagsPrompt">
+	<span style="display: block;margin-bottom: 10px"><b><u>User Defined</u></b><a style="margin-left: 10px" tabindex="-1" data-bind="help: {'title': 'User Defined', 'link': 'h_tags_user.html'}" class="btn"><i class="icon-question-sign"></i></a></span>
+	<span>Please click <button style="margin-left: 5px; margin-right: 5px" class="btn btn-primary" data-bind="click: addTag">Add</button> to specify a new tag</span>
+</div>
+<!-- ko if: haveUserTags -->
+<!-- ko template: {name: 'h4-template', data: {title: 'User Defined', helpLink: 'h_tags_user.html'}}--><!-- /ko -->
+<div style="margin-left: 70px" data-bind="style: {'padding-left': retainBump}">
+<table class="form-horizontal gw-auto-margin" style="margin-bottom: 15px">
+	<thead>
+		<tr>
+			<!-- ko if: showRetain -->
+			<th><button style="width: 100%; padding: 4px 4px" data-bind="click: sortBy('retain')" class="btn btn-primary" title="Sort by Retained">Retain</button></th>
+			<!-- /ko -->
+			<th><button style="width: 100%; padding: 4px 4px" data-bind="click: sortBy('tagName')" class="btn btn-primary" title="Sort by Name">Name</button></th>
+			<th><button style="width: 100%; padding: 4px 4px" data-bind="click: sortBy('ioType')" class="btn btn-primary" title="Sort by Type">Type</button></th>
+			<th><button style="width: 100%; padding: 4px 4px" data-bind="click: sortBy('registerDisplay')" class="btn btn-primary" title="Sort by Address">Address</button></th>
+			<th><button style="width: 100%; padding: 4px 4px" data-bind="click: sortBy('dataType')" class="btn btn-primary" title="Sort by Data Type">Data Type</button></th>
+			<th><button style="width: 100%; padding: 4px 4px" data-bind="click: sortBy('deadband')" class="btn btn-primary" title="Sort by Deadband">Deadband</button></th>
+			<th><button style="width: 100%; padding: 4px 4px" data-bind="click: sortBy('engUnits')" class="btn btn-primary" title="Sort by Units">Units</button></th>
+			<th><button style="width: 100%; padding: 4px 4px" data-bind="click: sortBy('description')" class="btn btn-primary" title="Sort by Address">Description</button></th>
+		</tr>
+	</thead>
+	<tbody data-bind="foreach: userList">
+		<tr data-bind="attr: {name: 'row-' + tagName.value()}">
+			<!-- ko if: $parent.showRetain -->
+			<td>
+				<div style="width: 80px; text-align: center">
+					<input type="checkbox" data-bind="checked: boolRetain, attr: {name: 'retain-' + tagName.value()}"></input>
+				</div>
+			</td>
+			<!-- /ko -->
+			<td data-bind="with: tagName">
+				<input type="text" style="width: 200px" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}, attr: {placeholder: changed() && value() === '' ? 'Pending Removal' : 'Name', name: 'name-' + value()}"></input>
+			</td>
+			<td data-bind="with: ioType">
+				<select style="width: 74px" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}, options: options, optionsText: optionsText, optionsValue: optionsValue, optionsCaption: optionsCaption, attr: {name: 'type-' + $parent.tagName.value()}"></select>
+			</td>
+			<td data-bind="with: registerDisplay">
+				<input style="width: 60px" type="text" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}, attr: {name: 'addr-' + $parent.tagName.value()}" placeholder="Address"></input>
+			</td>
+			<td style="text-align: center" data-bind="with: dataType">
+				<!-- ko if: displayValue -->
+				<button class="btn" style="width: 81px" data-bind="text: displayValue, click: click, css: {'btn-warning': enable}, attr: {name: 'datatype-' + $parent.tagName.value(), title: title}"></button>
+				<!-- /ko -->
+				<!-- ko ifnot: displayValue -->
+				<input type="text" readonly style="width: 67px; height: 20px" data-bind="css: {'btn-warning': enable}, attr: {name: 'datatype-' + $parent.tagName.value(), title: title}"></input>
+				<!-- /ko -->
+			</td>
+			<td data-bind="with: deadband">
+				<input style="width: 70px" type="text" data-bind="value: value, enable: enable, css: {'gw-highlight': changed, 'gw-error': error}, attr: {name: 'deadband-' + $parent.tagName.value()}"></input>
+			</td>
+			<td data-bind="with: engUnits">
+				<input style="width: 50px" type="text" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}, attr: {name: 'units-' + $parent.tagName.value()}"></input>
+			</td>
+			<td data-bind="with: description">
+				<input style="width: 200px" type="text" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}, attr: {name: 'desc-' + $parent.tagName.value()}" placeholder="Description"></input>
+			</td>
+			<td style="width: 160px">
+				<button name="tagRemove" class="btn btn-danger" data-bind="click: $parent.remove">Remove</button>
+				<button name="tagReset" class="btn" data-bind="click: reset, css: {'btn-warning': changed}">Undo</button>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+<!-- /ko -->
+<!-- ko if: haveModelTags -->
+<!-- ko template: {name: 'h4-template', data: {title: 'Onboard I/O', helpLink: 'h_tags_onboard.html'}}--><!-- /ko -->
+<div style="margin-left: 75px" data-bind="style: {'padding-left': retainBump}">
+<table class="form-horizontal gw-auto-margin" style="margin-bottom: 15px">
+	<thead>
+		<tr>
+			<!-- ko if: showRetain -->
+			<th>Retain</th>
+			<!-- /ko -->
+			<th>Name</th>
+			<th>Type</th>
+			<th>Address</th>
+			<th>Deadband</th>
+			<th>Units</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody data-bind="foreach: modelList">
+		<tr data-bind="attr: {name: 'row-' + tagName.value()}">
+			<!-- ko if: $parent.showRetain -->
+			<td data-bind="attr: {title: hasOwnProperty('title') ? title : undefined}">
+				<div style="width: 80px; text-align: center">
+					<!-- tag-specific showRetain flag -->
+					<!-- ko if:    showRetain -->
+					<input type="checkbox" data-bind="checked: boolRetain, attr: {name: 'retain-' + tagName.value()}"></input>
+					<!-- /ko -->
+					<!-- ko ifnot: showRetain -->
+					<span>-</span>
+					<!-- /ko -->
+				</div>
+			</td>
+			<!-- /ko -->
+			<td data-bind="with: tagName">
+				<input type="text" style="width: 200px" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}, attr: {name: 'name-' + value()}" placeholder="Name"></input>
+			</td>
+			<td>
+				<input type="text" readonly style="width: 60px; text-align: center" data-bind="value: $root.utils.iodbTypeItoS(ioType.value()), attr: {name: 'type-' + tagName}"></input>
+			</td>
+			<td>
+				<input type="text" readonly style="width: 60px; text-align: center" type="text" data-bind="value: registerDisplay.value, attr: {name: 'addr-' + tagName}"></input>
+			</td>
+			<td data-bind="with: deadband">
+				<input type="text" style="width: 70px" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}, attr: {name: 'deadband-' + $parent.tagName.value()}"></input>
+			</td>
+			<td data-bind="with: engUnits">
+				<input type="text" style="width: 60px" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}, attr: {name: 'units-' + $parent.tagName.value()}"></input>
+			</td>
+			<td data-bind="with: description">
+				<input style="width: 200px" type="text" data-bind="value: value, css: {'gw-highlight': changed, 'gw-error': error}, attr: {name: 'desc-' + $parent.tagName.value()}" placeholder="Description"></input>
+			</td>
+			<td style="width: 160px">
+				<button name="tagReset" class="btn" data-bind="click: reset, css: {'btn-warning': changed}">Undo</button>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+<!-- /ko -->
+<!-- ko if: haveStatusTags -->
+<!-- ko template: {name: 'h4-template', data: {title: 'System Status', helpLink: 'h_tags_status.html'}}--><!-- /ko -->
+<table class="form-horizontal gw-auto-margin">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Type</th>
+			<th>Address</th>
+			<th>Units</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody data-bind="foreach: statusList">
+		<tr data-bind="attr: {name: 'row-' + tagName}">
+			<td>
+				<input type="text" readonly style="width: 200px; text-align: center" data-bind="value: tagName, attr: {name: 'name-' + tagName}"></input>
+			</td>
+			<td>
+				<input type="text" readonly style="width: 60px; text-align: center" data-bind="value: $root.utils.iodbTypeItoS(ioType), attr: {name: 'type-' + tagName}"></input>
+			</td>
+			<td>
+				<input type="text" readonly style="width: 60px; text-align: center" type="text" data-bind="value: registerDisplay, attr: {name: 'addr-' + tagName}"></input>
+			</td>
+			<td>
+				<input type="text" readonly style="width: 60px; text-align: center" type="text" data-bind="value: engUnits, attr: {name: 'unit-' + tagName}"></input>
+			</td>
+			<td>
+				<input type="text" readonly style="width: 200px; text-align: center" data-bind="value: description, attr: {name: 'desc-' + tagName}"></input>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- /ko -->
+<br />
+<div id="importtags-modal" data-backdrop="static" class="modal hide fade" tabindex="-1" role="dialog">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Upload CSV Tags file</h3>
+	</div>
+	<div class="modal-body">
+		<div style="text-align: center">
+			<!--ko template: {name:'file-input-template',data: tagsFile}--><!--/ko-->
+			<br />
+			<select style="width: 305px" data-bind="value: tagsImportMode.value" name="tags-import-mode">
+				<option value="import">Import Mode: Replace existing tags</option>
+				<option value="merge">Import Mode: Merge with existing tags</option>
+			</select>
+			<br />
+			<button name="file-import" type="button" class="btn btn-primary" data-bind="click: doImport">Import</button>
+		</div>
+	</div>
+</div>
+<div id="tags-datatype-modal" data-bind="modal: dataTypeModal" class="hide">
+	<div class="modal-header">
+		<button class="close" data-bind="click: dataTypeModal.hide">&times;</button>
+		<h3>Set Data Type for Tag <span data-bind="text: dataTypeInputs.tagName"></span></h3>
+	</div>
+	<div class="modal-body" data-bind="with: dataTypeInputs">
+		<!-- ko template: {name: "full-savable-select-template", data: $.extend({
+			label: "Type",
+			helpLink: "h_tags_datatype_type.html",
+			name: "datatype-type"
+		}, type)} --><!-- /ko -->
+		<!-- ko template: {name: "full-savable-select-template", data: $.extend({
+			label: "Size (bits)",
+			helpLink: "h_tags_datatype_size.html",
+			name: "datatype-size"
+		}, size)} --><!-- /ko -->
+		<!-- ko template: {name: "full-savable-select-template", data: $.extend({
+			label: "Signed",
+			helpLink: "h_tags_datatype_signed.html",
+			name: "datatype-signed"
+		}, signed)} --><!-- /ko -->
+		<!-- ko template: {name: "full-savable-select-template", data: $.extend({
+			helpLink: "h_tags_datatype_precision.html",
+			name: "datatype-precision"
+		}, precision)} --><!-- /ko -->
+		<!-- ko template: {name: "full-savable-select-template", data: $.extend({
+			label: "Endianness",
+			helpLink: "h_tags_datatype_endian.html",
+			name: "datatype-endian"
+		}, endian)} --><!-- /ko -->
+		<!-- ko template: {name: "full-savable-select-template", data: $.extend({
+			label: "Offset",
+			helpLink: "h_tags_datatype_offset.html",
+			name: "datatype-offset"
+		}, offset)} --><!-- /ko -->
+		<button class="btn btn-primary" data-bind="click: $parent.clickSubmitDataType">Submit</button>
+	</div>
+</div>

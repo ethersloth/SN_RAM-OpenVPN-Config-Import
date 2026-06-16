@@ -1,0 +1,13 @@
+<h4>Description</h4>
+<p>
+ Choose which data rate of change type to use for this event.
+ <br />
+<b>Min-Max:</b> Takes the lowest point and the highest point within given time window and calculates the difference between the two. If the difference between minimum point and maximum point is grater than Change Limit, then an alarm will be activated.<br /><br />
+Event is activated when <b>(Max - Min) > Change Limit</b> and clears when <b>(Max - Min) <= Change Limit</b> within given time window.
+<br /><br />
+<b>Average:</b> Takes all the data rate points within the current time window and calculates the average rate. Then average rate is compared to change limit. If Average rate is grater then change limit, then the alarm is activated.<br /><br />
+Event is activated when <b>Average > Change Limit</b> and clears when <b>Average <= Change Limit</b> within given time window.<br /><br />
+For example:<br /><br />
+<b>Avg = SUM((|dv/t|)1 + (|dv/t|)2 + ... + (|dv/t|)N) / N</b>.<br /><br />
+Where <b>Avg</b> = average, <b>dv</b> = data value, <b>t</b> = time and <b>N</b> = number of samples in time window.
+</p>

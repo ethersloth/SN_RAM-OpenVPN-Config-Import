@@ -1,0 +1,20 @@
+<!-- ko template: {name: 'title-template', data: 'USB IP Interface'}--><!-- /ko -->
+<!--ko template: {name: 'full-savable-bool-template', data: enable}--><!--/ko-->
+<!--ko if: enable.value() === 'y'-->
+	<!--ko template: {name: 'full-savable-input-template', data: address}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: netmask}--><!--/ko-->
+	<hr />
+	<!--ko template: {name: 'h4-template',data:'DHCP Server Settings'}--><!--/ko-->
+	<table style="width: 100%;"><tr>
+		<td style="width: 50%; text-align: right; vertical-align: middle;">
+			<h4 style="margin-right: 20px">usb0</h4>
+		</td>
+		<td style="width: 50%; text-align: left; vertical-align: middle;">
+			<span data-bind="text: usb0desc"></span>
+		</td>
+	</tr></table>
+	<!--ko template: {name: 'full-savable-select-template', data: usb0endhcp}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: usb0dftgw}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: usb0saddr}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: usb0eaddr}--><!--/ko-->
+<!--/ko-->

@@ -1,0 +1,24 @@
+<form id="predefintfs-form" class="form-horizontal">
+    <!--ko template: {name:'title-template',data:'Predefined Interface'}--><!--/ko-->
+    <!--ko template: {name:'h4-template',data:'Predefined (logical) Interface Names'}--><!--/ko-->
+    <!--ko template: {name:'table-template',data:predefintfsTable}--><!--/ko-->
+
+<div id="predefint-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+    <div id="predefint-carousel" class="carousel slide" data-interval="false" data-pause="false">
+        <div class="carousel-inner">
+            <div class="item active">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3>Predefined Interface Name Settings</h3>
+                </div>
+                <div class="gw-modal-body-long">
+                    <form>
+                        <!--ko template: {name: 'text-template', data: name}--><!--/ko-->
+                        <a class="btn btn-primary pull-right" data-bind="click: predefintfsWizardFinish">Finish</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

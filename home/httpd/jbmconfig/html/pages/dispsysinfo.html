@@ -1,0 +1,11 @@
+<form id="systeminfo-form" class="form-horizontal">
+    <!--ko template:{name:'title-template',data:'System Information'}--><!--/ko-->
+	<!--ko template:{name:'h4-template',data:'Filesystem Status'}--><!--/ko-->
+	<div style="text-align: center">
+		<textarea readonly rows="8" style="width: 600px; font-family: monospace" data-bind="text: filesysstat"></textarea>
+	</div>
+	<!--ko template:{name:'h4-template',data:'Memory Usage'}--><!--/ko-->
+	<div style="text-align: center">
+		<textarea readonly rows="4" style="width: 600px; font-family: monospace" data-bind="text: memusage"></textarea>
+	</div>
+</form>

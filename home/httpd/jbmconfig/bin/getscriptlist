@@ -1,0 +1,132 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+my $CONFIG_XPATH = "";
+my $SCRIPT_DIR   = "";
+my $PARSEABLE = 0;
+my $JSON = 0;
+
+if (scalar(@ARGV) < 2)
+{
+    $CONFIG_XPATH = "/GAUCfg/ipfallback/pcmd/text()";
+    $SCRIPT_DIR   = "/etc/jbm/bin_ipfb";
+}
+else
+{
+    $CONFIG_XPATH = $ARGV[0];
+
+    if ($CONFIG_XPATH !~ /^.*text\(\)$/)
+    {
+        if ($CONFIG_XPATH !~ /^.*\/$/)
+        {
+            $CONFIG_PATH .= "/";
+        }
+
+        $CONFIG_PATH .= "text()";
+    }
+
+    $SCRIPT_DIR   = $ARGV[1];
+
+    if ($ARGV[2]) {
+       if ("--parseable" eq $ARGV[2])
+       {
+           $PARSEABLE = 1;
+       }
+       elsif ("--json" eq $ARGV[2])
+       {
+           $JSON = 1;
+       }
+    }
+
+}
+
+if (-d $SCRIPT_DIR)
+{
+    my $command = "/home/httpd/jbmconfig/bin/xpeval " .
+                  "-s " .
+                  "--in=/home/httpd/jbmconfig/conf/config.xml " .
+                  "--xpath=\"$CONFIG_XPATH\"";
+    my $selected_script = `$command`;
+
+    chomp($selected_script);
+
+    if ($selected_script !~ /^\w+/)
+    {
+        system("/usr/bin/logger -t $0 \"Unable to determine selected script!\n\"");
+    }
+
+    if ($JSON)
+    {
+       print "[\n{\"value\":\"None\",\"text\":\"None\"},\n";
+    }
+    elsif ($PARSEABLE) {
+        print "None:None\n";
+    }
+    else {
+       print "<option value=\"None\"";
+
+       if ("None" eq $selected_script)
+       {
+           print " selected=\"selected\"";
+       }
+
+       print ">None</option>\n";
+    }
+
+    opendir(DIR, $SCRIPT_DIR) or die "Unable to open script directory ($SCRIPT_DIR)!\n";
+
+    my @scripts = sort(readdir(DIR));
+
+    closedir(DIR);
+
+    my $counter = 1;
+    foreach my $script (@scripts)
+    {
+        if ($script !~ /^\./)
+        {
+            $script_no_ext = $script;
+            $script_no_ext =~ s/(\.\w*)$//; #remove the extension
+            $script_no_ext =~ s/_+/ /g;     #Convert any underscores to 1 space
+            $script_no_ext =~ s/(\w+)/\u$1/g;; #Capitalize the first letter of each word
+
+
+            if ($JSON)
+            {
+               my $comma = ",";
+               if ( $counter >= scalar(@scripts) )
+               {
+                   $comma = "";
+               }
+               print "{\"value\":\"$script\",\"text\":\"$script_no_ext\"}$comma\n";
+            }
+            elsif ($PARSEABLE) {
+                print "$script:$script_no_ext\n";
+            }
+            else {
+                print "<option value=\"" . $script . "\"";
+           
+                if ($selected_script eq $script)
+                {
+                    print " selected=\"selected\"";
+                }
+           
+                print ">" . $script_no_ext . "</option>\n";
+            }
+        }
+        $counter++;
+    }
+
+    if ($JSON)
+    {
+       print "]\n";
+    }
+
+
+}
+else
+{
+    die "'$SCRIPT_DIR' is NOT a valid directory!\n";
+}
+
+exit(0);
+

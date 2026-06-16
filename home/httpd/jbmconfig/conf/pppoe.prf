@@ -1,0 +1,392 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                        <!--
+               Networking -> PPPoE Settings Section                                                                      -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/pppoe.prf" name="pppoe">
+   <validation>
+
+    <vstep errmsg="Invalid Enable Flag value. Must be 'y' or 'n'."
+               id="step1"
+             name="enable"
+             test="isyorn(/input/enable/text())" />
+
+    <vstep errmsg=""
+               id="STEP_TSTENABLE"
+             name="enable"
+           skipto="step15"
+             test="/input/enable/text() = 'n'" />
+
+    <vstep errmsg="User name is required."
+               id="step2"
+             name="username"
+             test="string-length(/input/username/text()) > 0)" />
+
+    <vstep errmsg="Password is required."
+               id="step3"
+             name="password"
+             test="string-length(/input/password/text()) > 0)" />
+
+    <vstep errmsg="Passwords mismached."
+               id="step4"
+             name="password"
+             test="/input/password/text() = /input/password2/text()" />
+
+    <vstep errmsg="Invalid Peer DNS value."
+               id="step5"
+             name="peerdns"
+             test="/input/peerdns/text() = 'custom' or
+                   /input/peerdns/text() = 'no'     or
+                   /input/peerdns/text() = 'yes' "/>
+
+    <vstep     id="step6"
+             name="peerdns"
+           skipto="step10"
+             test="/input/peerdns/text() = 'yes'" />
+
+    <vstep     id="step7"
+             name="peerdns"
+           skipto="step10"
+             test="/input/peerdns/text() = 'no'" />
+
+    <vstep errmsg="Invalid Primary DNS Address. Must be a valid IPv4 address."
+               id="step8"
+             name="pridns"
+             test="isipaddr(/input/pridns/text())" />
+
+    <vstep errmsg="Invalid Secondary DNS Address. Must be a valid IPv4 address."
+               id="step9"
+             name="secdns"
+             test="isipaddr(/input/secdns/text())" />
+
+    <vstep errmsg="Invalid Default Route value. Must be 'y' or 'n'."
+               id="step10"
+             name="dfltrte"
+             test="isyorn(/input/dfltrte/text())" />
+
+    <vstep errmsg="Invalid Dial-on-Demand value. Must be 'y' or 'n'."
+               id="step11"
+             name="dod"
+             test="isyorn(/input/dod/text())" />
+
+    <vstep     id="step12"
+             name="dod"
+           skipto="step15"
+             test="/input/dod/text() = 'n'" />
+
+    <vstep errmsg="Invalid Dial-on-Demand idle time. Must be a number 0-65535."
+               id="step14"
+             name="dodidletime"
+             test="isnumber(/input/dodidletime/text())" />
+
+    <vstep     id="step15"
+             name="dod"
+             test="string-length(/input/dod/text()) > 0" />
+
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable Flag to system configuration file."
+             name="enable"
+             path="/GAUCfg/pppoe/enable" />
+    <cstep errmsg="Unable to save Interface to system configuration file."
+             name="intf"
+             path="/GAUCfg/pppoe/intf" />
+    <cstep errmsg="Unable to save old Username to system configuration file."
+             name="olduser"
+             path="/GAUCfg/pppoe/olduser" />
+    <cstep errmsg="Unable to save Username to system configuration file."
+             name="username"
+             path="/GAUCfg/pppoe/username" />
+    <cstep errmsg="Unable to save Password to system configuration file."
+             name="password"
+             path="/GAUCfg/pppoe/password" />
+    <cstep errmsg="Unable to save Peer DNS to system configuration file."
+             name="peerdns"
+             path="/GAUCfg/pppoe/peerdns" />
+    <cstep errmsg="Unable to save Primary DNS IP to system configuration file."
+             name="pridns"
+             path="/GAUCfg/pppoe/pridns" />
+    <cstep errmsg="Unable to save Secondary DNS IP to system configuration file."
+             name="secdns"
+             path="/GAUCfg/pppoe/secdns" />
+    <cstep errmsg="Unable to save Dial-on-Demand to system configuration file."
+             name="dod"
+             path="/GAUCfg/pppoe/dod" />
+    <cstep errmsg="Unable to save Dial-on-Demand idle time to system configuration file."
+             name="dodidletime"
+             path="/GAUCfg/pppoe/dodidletime" />
+    <cstep errmsg="Unable to save Default Route to system configuration file."
+             name="dfltrte"
+             path="/GAUCfg/pppoe/dfltrte" />
+   </configuration>
+
+   <action name="Save" successmsg="PPPoE settings saved.">
+    <astep abort="y" errmsg="Failed to write PPPoE Settings configuration file." name="WriteFormattedFile" >
+     <arg expr="'/tmp/pppoe.conf'" source="config" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg expr="## Start of PPPoE config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('ETH=', /GAUCfg/pppoe/intf/text())"  source="config" />
+     <arg expr="\n" />
+
+
+     <arg expr="PPPD_EXTRA=" />
+     <arg expr="quote()" source="config" />
+     <arg expr="unit " />
+
+     <arg       expr="100"
+          dependency="/GAUCfg/pppoe/intf/text() = 'eth0'"
+              source="config" />
+
+     <arg       expr="101"
+          dependency="/GAUCfg/pppoe/intf/text() = 'eth1'"
+              source="config" />
+
+     <arg expr=" linkname pppoe" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+
+
+     <arg dependency="/GAUCfg/pppoe/dod/text() = 'n'"
+                expr="'DEMAND=no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/pppoe/dod/text() = 'y'"
+                expr="concat('DEMAND=', /GAUCfg/pppoe/dodidletime/text())"
+              source="config" />
+
+     <arg expr="\n" />
+
+
+     <arg dependency="/GAUCfg/pppoe/dfltrte/text() = 'n'"
+                expr="'DEFAULTROUTE=no'"
+              source="config" />
+
+     <arg expr="\n" />
+
+
+     <arg dependency="/GAUCfg/pppoe/dfltrte/text() = 'y'"
+                expr="'DEFAULTROUTE=yes'"
+              source="config" />
+
+     <arg expr="\n" />
+
+
+     <arg dependency="/GAUCfg/pppoe/peerdns/text() = 'custom'"
+                expr="'DNSTYPE=SPECIFY'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/pppoe/peerdns/text() = 'yes'"
+                expr="'DNSTYPE=SERVER'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/pppoe/peerdns/text() = 'no'"
+                expr="'DNSTYPE=NOCHANGE'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/pppoe/peerdns/text() = 'custom'"
+                expr="concat('DNS1=', /GAUCfg/pppoe/pridns/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/pppoe/peerdns/text() = 'custom'"
+                expr="\n" />
+
+     <arg dependency="/GAUCfg/pppoe/peerdns/text() = 'custom'"
+                expr="concat('DNS2=', /GAUCfg/pppoe/secdns/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/pppoe/peerdns/text() = 'custom'"
+                expr="\n" />
+
+
+     <arg expr="USER=" />
+     <arg expr="tick()" source="config" />
+     <arg expr="/GAUCfg/pppoe/username/text())" source="config" />
+     <arg expr="tick()" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="CONNECT_TIMEOUT=0" />
+     <arg expr="\n" />
+
+     <arg expr="CONNECT_POLL=2" />
+     <arg expr="\n" />
+
+     <arg expr="ACNAME=" />
+     <arg expr="\n" />
+
+     <arg expr="PING=" />
+     <arg expr="quote()" source="config" />
+     <arg expr="." />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="CF_BASE=" />
+     <arg expr="`" />
+     <arg expr="basename $CONFIG" />
+     <arg expr="`" />
+     <arg expr="\n" />
+
+     <arg expr="PIDFILE=" />
+     <arg expr="quote()" source="config" />
+     <arg expr="/var/run/$CF_BASE-pppoe.pid" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="SYNCHRONOUS=no" />
+     <arg expr="\n" />
+
+     <arg expr="CLAMPMSS=1412" />
+     <arg expr="\n" />
+
+     <arg expr="LCP_INTERVAL=20" />
+     <arg expr="\n" />
+
+     <arg expr="LCP_FAILURE=3" />
+     <arg expr="\n" />
+
+     <arg expr="PPPOE_TIMEOUT=80" />
+     <arg expr="\n" />
+
+     <arg expr="FIREWALL=NONE" />
+     <arg expr="\n" />
+
+     <arg expr="LINUX_PLUGIN=" />
+     <arg expr="\n" />
+
+     <arg expr="PPPOE_EXTRA=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move config file" name="SystemCommand">
+     <arg expr="mv -f /tmp/pppoe.conf /etc/ppp/pppoe.conf" />
+    </astep>
+
+
+    <astep abort="y" errmsg="Failed to remove old comment" name="SystemCommand">
+     <arg   expr="concat('(sed ',
+                         tick(), '/', 'GAU Generated', '/d ', tick(),
+                         ' /etc/ppp/pap-secrets > /tmp/pap-secrets)')"
+          source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to add new comment" name="SystemCommand">
+     <arg   expr="concat('(sed ',
+                         tick(), '1i',
+                         '# This is a GAU Generated file, ',
+                         'subsequent edits are not guaranteed to be retained.',
+                         tick(), ' /tmp/pap-secrets > /tmp/pap-secrets2)')"
+          source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to remove old user" name="SystemCommand">
+     <arg dependency="string-length(/GAUCfg/pppoe/olduser/text()) > 0)"
+                expr="concat('(sed ',
+                             tick(), '/', quote(), /GAUCfg/pppoe/olduser/text(), quote(), '/d ', tick(),
+                             ' /tmp/pap-secrets2 > /tmp/pap-secrets)')"
+              source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to add new user" name="SystemCommand">
+     <arg   expr="concat('(sed ',
+                         tick(), '$a',
+                         quote(), /GAUCfg/pppoe/username/text(), quote(),
+                         ' * ',
+                         quote(), /GAUCfg/pppoe/password/text(), quote(),
+                         ' * ', tick(), ' /tmp/pap-secrets > /tmp/pap-secrets2)')"
+          source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move 1st password file" name="SystemCommand">
+     <arg expr="mv -f /tmp/pap-secrets2 /etc/ppp/pap-secrets" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to delete temp file" name="SystemCommand">
+     <arg   expr="rm -f /tmp/pap-secrets" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to remove old comment" name="SystemCommand">
+     <arg   expr="concat('(sed ',
+                         tick(), '/', 'GAU Generated', '/d ', tick(),
+                         ' /etc/ppp/chap-secrets > /tmp/chap-secrets)')"
+          source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to add new comment" name="SystemCommand">
+     <arg   expr="concat('(sed ',
+                         tick(), '1i',
+                         '# This is a GAU Generated file, ',
+                         'subsequent edits are not guaranteed to be retained.',
+                         tick(), ' /tmp/chap-secrets > /tmp/chap-secrets2)')"
+          source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to remove old user" name="SystemCommand">
+     <arg dependency="string-length(/GAUCfg/pppoe/olduser/text()) > 0)"
+                expr="concat('(sed ',
+                             tick(), '/', quote(), /GAUCfg/pppoe/olduser/text(), quote(), '/d ', tick(),
+                            ' /tmp/chap-secrets2 > /tmp/chap-secrets)')"
+              source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to add new user" name="SystemCommand">
+     <arg   expr="concat('(sed ',
+                         tick(), '$a',
+                         quote(), /GAUCfg/pppoe/username/text(), quote(),
+                         ' * ',
+                         quote(), /GAUCfg/pppoe/password/text(), quote(),
+                         ' * ', tick(), ' /tmp/chap-secrets > /tmp/chap-secrets2)')"
+          source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move 1st password file" name="SystemCommand">
+     <arg expr="mv -f /tmp/chap-secrets2 /etc/ppp/chap-secrets" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to delete temp file" name="SystemCommand">
+     <arg   expr="rm -f /tmp/chap-secrets" />
+    </astep>
+
+    <astep abort="n" name="SystemCommand">
+     <arg dependency="/GAUCfg/pppoe/enable/text() = 'n'"
+                expr="'chkconfig adsl off'"
+              source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="PPPoE settings saved, failed to enable" name="SystemCommand">
+     <arg dependency="/GAUCfg/pppoe/enable/text() = 'y'"
+                expr="'chkconfig adsl on'"
+              source="config" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="PPPoE settings saved and applied.">
+    <pre subsystem="pppoe" action="Save" />
+
+    <astep abort="n" name="SystemCommand">
+     <arg  dependency="/GAUCfg/pppoe/enable/text() = 'n'"
+                 expr="'service adsl stop'"
+               source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to start PPPoE" name="SystemCommand">
+
+     <arg dependency="/GAUCfg/pppoe/enable/text() = 'y'"
+                expr="'service adsl restart'"
+              source="config" />
+    </astep>
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

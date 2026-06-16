@@ -1,0 +1,22 @@
+<!--ko template: {name:'title-template',data:'PPP Dial Backup'}--><!--/ko-->
+<!--ko template: {name: 'full-savable-bool-template', data: enablepppdialbkup}--><!--/ko-->
+<!-- ko if: enablepppdialbkup.value() === 'y'-->
+	<!--ko template: {name: 'full-savable-select-template', data: ttyport}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: dialstring}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: username}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-password-template', data: password}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-password-template', data: password2}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: dialondemand}--><!--/ko-->
+	<!-- ko if: dialondemand.value() === 'y'-->
+		<!--ko template: {name: 'full-savable-input-template', data: dodidletimeout}--><!--/ko-->
+	<!-- /ko -->
+	<!--ko template: {name: 'full-savable-bool-template', data: usedefroute}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: advancesetup}--><!--/ko-->
+	<!-- ko if: advancesetup.value() === 'y'-->
+		<!--ko template: {name: 'full-savable-input-template', data: rxidletimeout}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-bool-template', data: modem}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-bool-template', data: crtscts}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-bool-template', data: modemspkr}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: customATstring}--><!--/ko-->
+	<!-- /ko -->
+<!-- /ko -->

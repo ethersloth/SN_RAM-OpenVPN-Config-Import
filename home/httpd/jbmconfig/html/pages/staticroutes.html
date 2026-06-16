@@ -1,0 +1,30 @@
+<!--ko template: {name:'title-template',data:'Static Routes'}--><!--/ko-->
+<!--ko template: {name:'h4-template',data:'Static Routes Table'}--><!--/ko-->
+<!--ko template: {name: 'table-template', data: staticRoutesTable}--><!--/ko-->
+<div id="sroute-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="staticroutes-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Static Routes Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-select-template', data: intf}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: any}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: routetype}--><!--/ko-->
+					<!-- ko if: routetype.value() === 'host' -->
+						<!--ko template: {name: 'full-savable-input-template', data: targetIP}--><!--/ko-->
+					<!-- /ko -->
+					<!-- ko if: routetype.value() === 'network' -->
+						<!--ko template: {name: 'full-savable-input-template', data: subnet}--><!--/ko-->
+						<!--ko template: {name: 'full-savable-input-template', data: netmask}--><!--/ko-->
+					<!-- /ko -->
+					<!--ko template: {name: 'full-savable-input-template', data: gtwy}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: metric}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: staticRoutesWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

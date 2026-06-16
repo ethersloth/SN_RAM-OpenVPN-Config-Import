@@ -1,0 +1,184 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+#This Script builds the Binary Input DNP End Points to be 
+#tagged on sxdnpdrv.ini driver configuration file.
+#Created By Moe on 11/16/2012.
+
+my $exceptCnt = 0;
+#Option flag to build the table 
+#'yes' = don't build, 'no' = build
+my $nodnpchecked;
+#Number of Registers to Build
+my $highestReg;
+#Default Class Assignment tables Parms.
+my $startReg;
+my $endReg;
+my $defobj2class;
+#Exception Class Assignment tables Parms.
+my %TableEntryList = ();
+my $startreg;
+my $endreg;
+my $exobj2class;
+#Default DNP Index Register
+my $DNPIndex = 0;
+#Traveling Start Register
+my $BaseReg = 0;
+#Snippet of Binary Input DNP Mapping End Points Table 
+my $ini_snippet = "";
+#File name and Location of Binary Input DNP Mapping End Points Table 
+my $temp_file_name = "/etc/stacfg/sxbinaryinput";
+#Temparary Holding File Contents
+my $TEMP_FILE;
+
+$CONFIG_FILE = '/etc/stacfg/binaryinput.conf';
+$JBMLIB_FILE = '/etc/jbm/jbm_lib.pl';
+
+#Include our standard perl library:
+
+require($JBMLIB_FILE);
+
+#Read the configuration file:
+
+%CONFIG = &read_config($CONFIG_FILE) or exit(-1);
+
+#Establish default values:
+
+$CONFIG{highestreg}   = 0  unless (exists($CONFIG{highestreg}));
+$CONFIG{nodnpchecked} = "yes"  unless (exists($CONFIG{nodnpchecked}));
+$CONFIG{defobj2class} = "None"  unless (exists($CONFIG{defobj2class}));
+$CONFIG{exceptCnt}    = 0  unless (exists($CONFIG{exceptCnt}));
+$CONFIG{EXC_RULES}    = [] unless (exists($CONFIG{EXC_RULES}));
+
+
+$highestReg = $CONFIG{highestreg};
+$nodnpchecked = $CONFIG{nodnpchecked};
+$defobj2class = $CONFIG{defobj2class};
+$exceptCnt = $CONFIG{exceptCnt};
+
+if ("None" eq $defobj2class) {
+   $defobj2class = 0;
+}
+if ("Class 1" eq $defobj2class) {
+   $defobj2class = 1;
+}
+if ("Class 2" eq $defobj2class) {
+   $defobj2class = 2;
+}
+if ("Class 3" eq $defobj2class) {
+   $defobj2class = 3;
+}
+
+foreach my $exception (@{$CONFIG{EXC_RULES}})
+{
+    #Check configuration for syntax and minimum required values:
+
+    my $errStr = 'Incorrect syntax for Binaryinput Exception rule!' . "\n";
+
+    if ($exception !~ /^\{/)
+    {
+       print "$errStr\n";
+    }
+
+    my $href = eval($exception);
+
+    if (ref($href) ne 'HASH')
+    {
+        print "$errStr\n";
+    }
+
+    if (!exists($href->{startreg}) || !exists($href->{endreg}) || !exists($href->{exobj2class}))
+    {
+       print "$errStr\n";
+    }
+
+    $startReg =  $href->{startreg};
+    $endReg = $href->{endreg};
+    $exobj2class = $href->{exobj2class};
+
+    if ("None" eq $exobj2class) {
+       $exobj2class = 0;
+    }
+    if ("Class 1" eq $exobj2class) {
+       $exobj2class = 1;
+    }
+    if ("Class 2" eq $exobj2class) {
+       $exobj2class = 2;
+    }
+    if ("Class 3" eq $exobj2class) {
+       $exobj2class = 3;
+    }
+
+    push(@TableEntryList, {'startreg' => $startReg, 'endreg' => $endReg, 'exobj2class' => $exobj2class});
+}
+
+if (0 == $exceptCnt && "no" eq $nodnpchecked) {
+   for (my $Ndx=0; $Ndx<=$highestReg; $Ndx++) {
+         my $DNPNdx = $DNPIndex + $Ndx;
+         $ini_snippet .= "[FrozenAndEvents_DIN( $DNPNdx)]\n"; 
+         $ini_snippet .= "DNPIndex= $DNPNdx\n"; 
+         $ini_snippet .= "SxIOAddr= $Ndx\n"; 
+         $ini_snippet .= "SxIOType= X\n"; 
+         $ini_snippet .= "SxTag= \n"; 
+         $ini_snippet .= "EventClass= $defobj2class\n"; 
+   }
+}
+else {
+  if ("no" eq $nodnpchecked) {
+    foreach my $entry (@TableEntryList) {
+       $startreg = $entry->{startreg};
+       $endreg = $entry->{endreg};
+       $exobj2class = $entry->{exobj2class};
+       for (my $Ndx=$BaseReg; $Ndx<$startreg; $Ndx++) {
+          my $DNPNdx = $DNPIndex + $Ndx;
+          $ini_snippet .= "[FrozenAndEvents_DIN( $DNPNdx)]\n"; 
+          $ini_snippet .= "DNPIndex= $DNPNdx\n"; 
+          $ini_snippet .= "SxIOAddr= $Ndx\n"; 
+          $ini_snippet .= "SxIOType= X\n"; 
+          $ini_snippet .= "SxTag= \n"; 
+          $ini_snippet .= "EventClass= $defobj2class\n"; 
+       }
+       $BaseReg = $startreg;
+       for (my $Ndx=$BaseReg; $Ndx<=$endreg; $Ndx++) {
+          my $DNPNdx = $DNPIndex + $Ndx;
+          $ini_snippet .= "[FrozenAndEvents_DIN( $DNPNdx)]\n"; 
+          $ini_snippet .= "DNPIndex= $DNPNdx\n"; 
+          $ini_snippet .= "SxIOAddr= $Ndx\n"; 
+          $ini_snippet .= "SxIOType= X\n"; 
+          $ini_snippet .= "SxTag= \n"; 
+          $ini_snippet .= "EventClass= $exobj2class\n"; 
+       }
+       $BaseReg = $endreg + 1;
+    }
+    for (my $Ndx=$BaseReg; $Ndx<=$highestReg; $Ndx++) {
+       my $DNPNdx = $DNPIndex + $Ndx;
+       $ini_snippet .= "[FrozenAndEvents_DIN( $DNPNdx)]\n"; 
+       $ini_snippet .= "DNPIndex= $DNPNdx\n"; 
+       $ini_snippet .= "SxIOAddr= $Ndx\n"; 
+       $ini_snippet .= "SxIOType= X\n"; 
+       $ini_snippet .= "SxTag= \n"; 
+       $ini_snippet .= "EventClass= $defobj2class\n"; 
+    }
+  }
+}
+
+#We should now have a fully mapped DNP Points
+#for Binary Input to be added to sxdnpdrv.ini 
+#driver configuration file.
+
+if( ! open $TEMP_FILE, '>', $temp_file_name )
+{
+    print "Can't open temporary file \'$temp_file_name\': $!";
+    return 1;
+}
+
+if( ! print $TEMP_FILE $ini_snippet )
+{
+    print "Can't write to file \'$temp_file_name\': $!";
+    close $TEMP_FILE;
+    return 2;
+}
+
+close $TEMP_FILE;
+exit(0);
+

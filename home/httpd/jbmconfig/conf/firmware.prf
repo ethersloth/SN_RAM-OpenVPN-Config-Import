@@ -1,0 +1,82 @@
+
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/firmware.prf" name="firmware">
+   <validation>
+    <vstep name="savecfg" errmsg="Preserve Current Configuration must be either 'n' or 'y'" test="isyorn(/input/savecfg/text())" />
+    <vstep name="bootfile" errmsg="Invalid Boot Firmware Image File. Must be non-empty." test="string-length(/input/bootfile/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Preserved Current Configuration option."
+             name="savecfg"
+             path="/GAUCfg/firmware/savecfg" />
+    <cstep errmsg="Unable to save Boot File Name to system configuration file."
+             name="bootfile"
+             path="/GAUCfg/firmware/bootfile" />
+    <cstep errmsg="Unable to save Root File Name to system configuration file."
+             name="rootfile"
+             path="/GAUCfg/firmware/rootfile" />
+    <cstep errmsg="Unable to save File2expect Name to system configuration file."
+             name="file2expect"
+             path="/GAUCfg/firmware/file2expect" />
+   </configuration>
+
+   <action name="Revert" successmsg="System Reverted.">
+    <astep cfgdependency="/GAUCfg/firmware/file2expect/text() = 'BTROOT'" 
+                   abort="y" 
+                  errmsg="Failed to store the configuration files: Unable to execute script." 
+                    name="ExecStringAsCmd">
+     <arg expr="/bin/rm -f /tmp/*.jffs2 /storage/configs-backup.zip &amp;>/dev/null" />
+    </astep>
+   </action>
+
+   <action name="Upload" successmsg="Firmware Image Uploaded.">
+    <astep cfgdependency="/GAUCfg/firmware/file2expect/text() = 'BTBOOT'" 
+            abort="y"
+           errmsg="File appears to not be a valid boot firmware module."
+             name="SystemCommand" >
+     <arg    expr="concat('/home/httpd/jbmconfig/bin/chkfirmware ', /input/bootfile/text())"
+           source="input" />
+    </astep>
+
+    <astep cfgdependency="/GAUCfg/firmware/file2expect/text() = 'BTROOT'" 
+            abort="y"
+           errmsg="File appears to not be a valid root firmware module."
+             name="SystemCommand" >
+     <arg    expr="concat('/home/httpd/jbmconfig/bin/chkfirmware ', /input/rootfile/text())"
+           source="input" />
+    </astep>
+
+    <astep cfgdependency="/GAUCfg/firmware/savecfg/text() = 'y' and /GAUCfg/firmware/file2expect/text() = 'BTBOOT'"
+                   abort="y" 
+                  errmsg="Failed to store the configuration files: Unable to execute script." 
+                    name="ExecStringAsCmd">
+     <arg expr="/home/httpd/jbmconfig/bin/backupcfgs.sh &amp;>/dev/null" />
+    </astep>
+
+    <astep cfgdependency="/GAUCfg/firmware/file2expect/text() = 'BTROOT'"
+                   abort="y" 
+                  errmsg="Failed to install root firmware file: Unable to prepare script." 
+                    name="WriteFile">
+     <!-- Build a simple script to prepare for flashing: -->
+     <arg expr="'/tmp/flash_btr.sh'" source="config" />
+
+     <arg expr="'#!/bin/bash'" source="config" />
+
+     <arg expr="concat('cd /tmp/ ; /bin/btflash.sh ', '-b ', /GAUCfg/firmware/bootfile/text(), ' -r ', /GAUCfg/firmware/rootfile/text(), ' -f', ' &amp;>/dev/console')" source="config" /> 
+
+     <arg expr="'exit 0'" source="config" />
+    </astep>
+
+    <astep cfgdependency="/GAUCfg/firmware/file2expect/text() = 'BTROOT'"
+                   abort="y" 
+                  errmsg="Failed to install root firmware file: Unable to execute script." 
+                    name="ExecStringAsCmd">
+     <arg expr="chmod u+x /tmp/flash_btr.sh ; /tmp/flash_btr.sh &amp;>/dev/null" />
+    </astep>
+
+   </action>
+  </subsystem>
+ </subsystems>
+</profile>

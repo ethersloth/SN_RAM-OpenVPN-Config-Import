@@ -1,0 +1,270 @@
+<form id="provision-form" class="form-horizontal">
+	<!--ko template: {name:'title-template',data:'Cellular Provisioning'}--><!--/ko-->
+	<div style="text-align: center">
+		<a class="btn" href="#!/cellular">Config</a>
+		<a class="btn" href="#!/dispcsq">Status</a>
+		<a class="btn gw-grayed" href="#!/provisioning">Provisioning</a>
+	</div>
+	<hr />
+<!-- ko ifnot: isEnabled -->
+	<p style="color: red; text-align: center">
+		Cellular modem is disabled / Powered off
+	</p>
+<!-- /ko -->
+<!-- ko if: isEnabled -->
+	<table style="width: 100%;">
+		<tr>
+			<td style="width: 50%; text-align: right"><b>Detected Modem:&#160;</b></td>
+			<td name="installedModem" style="width: 50%" data-bind="text: detectedModem"></td>
+		</tr>
+		<tr>
+			<td style="text-align: right"><b>Detected Carrier:&#160;</b></td>
+			<td name="detectedCarrier" data-bind="text: detectedCarrier"></td>
+		</tr>
+		<tr data-bind="visible: displayOutage">
+			<td colspan="2" style="text-align: center; padding: 10px" data-bind="text: temporaryOutage"></td>
+		</tr>
+		<!-- ko if: showMC572 -->
+			<!-- ko if: showESN -->
+				<!-- ko if: IsModemCDMA -->
+					<tr>
+						<td style="text-align: right"><b>Detected ESN:&#160;</b></td>
+						<td name="detectedESN" data-bind="text: detectedESN"></td>
+					</tr>
+					<tr>
+						<td style="text-align: right"><b>ESN Decimal Value:&#160;</b></td>
+						<td name="decimalESN" data-bind="text: decimalESN"></td>
+					</tr>
+				<!-- /ko -->
+			<!-- /ko -->
+			<tr>
+				<td style="text-align: right"><b>Modem Model:&#160;</b></td>
+				<td name="modemModel" data-bind="text: CELLMODEM_MODEL"></td>
+			</tr>
+			<tr>
+				<td style="text-align: right"><b>Modem supports OMA:&#160;</b></td>
+				<td name="modemSupOMA" data-bind="text: modemSupOMA"></td>
+			</tr>
+			<tr>
+				<td style="text-align: right"><b>Modem Firmware Version:&#160;</b></td>
+				<td name="modemFirmVer" data-bind="text: CELLMODEM_FIRMWARE_V"></td>
+			</tr>
+			<tr>
+				<td style="text-align: right"><b>PRL Version:&#160;</b></td>
+				<td name="prlVersion" data-bind="text: prlVersion"></td>
+			</tr>
+			<tr>
+				<td style="text-align: right"><b>Detected NAI:&#160;</b></td>
+				<td name="detectedNAI" data-bind="text: detectedNAI"></td>
+			</tr>
+			<tr>
+				<td style="text-align: right"><b>Mobile Directory Number (MDN):&#160;</b></td>
+				<td name="mdnNumber" data-bind="text: mdnNumber"></td>
+			</tr>
+		<!-- /ko -->
+		<!-- ko if: IsGSM -->
+			<tr>
+				<td style="text-align: right"><b>Detected IMEI:&#160;</b></td>
+				<td name="detectedIMEI" data-bind="text: detectedIMEI"></td>
+			</tr>
+			<tr>
+				<td style="text-align: right"><b>SIM ID:&#160;</b></td>
+				<td name="SIM_ID" data-bind="text: SIM_ID"></td>
+			</tr>
+			<tr>
+				<td style="text-align: right"><b>SIM IMSI:&#160;</b></td>
+				<td name="SIM_IMSI" data-bind="text: SIM_IMSI"></td>
+			</tr>
+			<tr data-bind="style: {color: mismatchColor}, attr: {title: mismatchTitle}">
+				<td style="text-align: right"><b>SIM Carrier:&#160;</b></td>
+				<td name="SIM_CARRIER" data-bind="text: SIM_CARRIER"></td>
+			</tr>
+			<tr>
+				<td style="text-align: right"><b>Module Model:&#160;</b></td>
+				<td name="SIM_MODEL" data-bind="text: CELLMODEM_MODEL"></td>
+			</tr>
+			<tr>
+				<td style="text-align: right"><b>Current Module Firmware Version:&#160;</b></td>
+				<td name="SIM_FIRMWARE_V" data-bind="text: CELLMODEM_FIRMWARE_V"></td>
+			</tr>
+			<tr>
+				<td style="text-align: right"><b>SKU PRIID:&#160;</b></td>
+				<td name="SKU_PRIID" data-bind="text: SKU_PRIID"></td>
+			</tr>
+			<tr>
+				<td style="text-align: right"><b>ENSEN:&#160;</b></td>
+				<td name="ENSEN" data-bind="text: ENSEN"></td>
+			</tr>
+			<tr>
+				<td style="text-align: right"><b>ACTIVATION STATUS:&#160;</b></td>
+				<td name="CREG" data-bind="text: CREG"></td>
+			</tr>
+		<!-- /ko -->
+	</table>
+	<!-- ko with: firmware -->
+		<!-- ko if: canManage -->
+			<hr style="margin: 20px" />
+			<!--ko template: {name:'h4-template',data:'Manage Module Firmware'}--><!--/ko-->
+			<table style="width: 100%; margin-bottom: 20px">
+				<tbody>
+					<!-- ko ifnot: manifestUnknown -->
+					<tr data-bind="style: {color: $parent.mismatchColor}, attr: {title: $parent.mismatchTitle}">
+						<td style="text-align: right; font-weight: bold; padding-right: 10px">Active:</td>
+						<td style="text-align: left; width: 50%" data-bind="text: activeCarrier"></td>
+					</tr>
+					<!-- /ko -->
+					<!-- ko if: manifestUnknown -->
+					<tr data-bind="style: {color: $parent.mismatchColor}, attr: {title: $parent.mismatchTitle}">
+						<td style="text-align: right; font-weight: bold; padding-right: 10px">Active:</td>
+						<td style="text-align: left; width: 50%" data-bind="text: unknownCarrier"></td>
+					</tr>
+					<tr>
+						<td style="text-align: right; font-weight: bold; padding-right: 10px">Firmware Version:</td>
+						<td style="text-align: left; width: 50%" data-bind="text: unknownFirmware"></td>
+					</tr>
+					<tr>
+						<td style="text-align: right; font-weight: bold; padding-right: 10px">Profile Version:</td>
+						<td style="text-align: left; width: 50%" data-bind="text: unknownProfile"></td>
+					</tr>
+					<!-- ko if: showUnknownWarning -->
+					<tr>
+						<td colspan="2" style="text-align: center; font-weight: bold; padding-right: 10px">
+							<span style="color: red; cursor: pointer">*
+								<a style="color: red" data-bind="click: warnUnknown"><u>Warning</u></a>
+							</span>
+						</td>
+					</tr>
+					<!-- /ko -->
+					<!-- /ko -->
+				</tbody>
+			</table>
+			<div class="control-group" data-bind="with: manifestSelect">
+				<label class="control-label" data-bind="text: label"></label>
+				<div class="controls">
+					<div class="input-append">
+						<select data-bind="value: value, css: {'gw-error': error}, options: options, optionsText: optionsText, optionsCaption: optionsCaption, attr: {name: name}"></select>
+						<a data-bind="help: {'title': helpTitle, 'link': helpLink}, attr: {name: name + '-help'}" tabindex="-1" class="btn"><i class="icon-question-sign"></i></a>
+					</div>
+				</div>
+			</div>
+			<p style="color: blue; text-align: center" data-bind="text: packageWarning"></p>
+			<table style="width: 100%; margin-bottom: 20px" data-bind="visible: hasSelected">
+				<tbody>
+					<tr>
+						<td style="text-align: right; font-weight: bold; padding-right: 10px">Details:</td>
+						<td style="text-align: left; width: 50%" data-bind="text: selectedDetail"></td>
+					</tr>
+					<tr>
+						<td style="text-align: right; font-weight: bold; padding-right: 10px">Firmware Version:</td>
+						<td style="text-align: left; width: 50%" data-bind="text: selectedFirmware"></td>
+					</tr>
+					<tr>
+						<td style="text-align: right; font-weight: bold; padding-right: 10px">Profile Version:</td>
+						<td style="text-align: left; width: 50%" data-bind="text: selectedProfile"></td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="control-group" data-bind="with: apn">
+				<label class="control-label">Also update APN (optional)</label>
+				<div class="controls">
+					<div class="input-append">
+						<input type="text" name="carrier-apn" data-bind="value: value, css: {'gw-error': error, 'gw-highlight': changed}"></select>
+						<a name="carrier-apn-help" data-bind="help: {'title': helpTitle, 'link': helpLink}" tabindex="-1" class="btn"><i class="icon-question-sign"></i></a>
+					</div>
+				</div>
+			</div>
+			<div class="gw-row">
+				<button class="btn" data-bind="click: clickReflash, css: {'btn-primary': canClickReflash}">Update Module</button>
+				<button class="btn" data-bind="click: clickDelete, css: {'btn-danger': canClickDelete}">Delete</button>
+			</div>
+			<!-- ko with: reflashStatus -->
+			<div class="gw-row" style="margin-top: 20px" data-bind="visible: visible">
+				<textarea readonly rows="6" id="reflashStatus" style="width: 600px; font-family: monospace" data-bind="value: value"></textarea>
+			</div>
+			<!-- /ko -->
+		<!-- /ko -->
+	<!-- /ko -->
+	<!-- ko if: IsGSM -->
+		<!-- ko if: isInfoAvailable -->
+			<hr />
+			<!-- ko if: showWirelessInfo -->
+				<!--ko template: {name:'h4-template',data:'Cellular Info'}--><!--/ko-->
+				<!--ko template: {name: 'textarea-template-ro', data: wirelessinfo}--><!--/ko-->
+			<!-- /ko -->
+			<div class="gw-row">
+				<button class="btn" style="margin-top: 10px" data-bind="click: toggleWirelessInfo, text: showWirelessInfo() ? 'Hide' : 'Show Diagnostic Information'"></button>
+			</div>
+		<!-- /ko -->
+	<!-- /ko -->
+<!-- ko if: IsModemCDMA -->
+	<hr />
+	<table align="center" style="text-align: center; vertical-align: middle;">
+		<tr>
+			<td align="left"><button type="button" class="btn btn-primary" data-bind="click: forceprov">Force Provisioning Now</button></td>
+			<td>&#160;</td>
+			<td align="left" nowrap="nowrap"><a tabindex="-1" data-bind="help: {'title': 'Force Provisioning', 'link': '/h_provisioning_force.html'}" class="btn"><i class="icon-question-sign"></i></a></td>
+		</tr>
+		<tr>
+			<td align="left"><button type="button" class="btn btn-primary" data-bind="click: prlupdate">Force PRL Update</button></td>
+			<td>&#160;</td>
+			<td align="left" nowrap="nowrap"><a tabindex="-1" data-bind="help: {'title': 'PRL Update', 'link': '/h_provisioning_prl.html'}" class="btn"><i class="icon-question-sign"></i></a></td>
+		</tr>
+		<!-- ko if: showFUMO -->
+			<tr>
+				<td align="left"><button type="button" class="btn btn-primary" data-bind="click: fumoupdate">Force FUMO Update</button></td>
+				<td>&#160;</td>
+				<td align="left" nowrap="nowrap"><a tabindex="-1" data-bind="help: {'title': 'FUMO Update', 'link': '/h_provisioning_fumo.html'}" class="btn"><i class="icon-question-sign"></i></a></td>
+			</tr>
+		<!-- /ko -->
+	</table>
+	<hr />
+	<!--ko template: {name: 'select-template', data: mipmode}--><!--/ko-->
+	<!--ko template: {name: 'select-template', data: rbp}--><!--/ko-->
+	<!-- ko if: !showManual() && !showVerizon() -->
+		<!--ko template: {name: 'select-template', data: provisiontype}--><!--/ko-->
+	<!-- /ko -->
+	<!-- ko if: showVision() || (!showManual() && !showVerizon() && showProvType() && !showOma()) -->
+		<!--ko template: {name: 'text-template', data: esn}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: spcunlock}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: mdn}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: min}--><!--/ko-->
+	<!-- /ko -->
+	<!-- ko if: showDataLink -->
+		<!--ko template: {name: 'text-template', data: ppperrthreshold}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: timeinvision}--><!--/ko-->
+	<!-- /ko -->
+	<!-- ko if: !showVerizon() && showProvType() -->
+		<!--ko template: {name: 'text-template', data: nai}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: aaapass}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: hapass}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: homeip}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: prihaip}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: sechaip}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: haspi}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: aaaspi}--><!--/ko-->
+	<!-- /ko -->
+	<!-- ko if: showManual() && !showVerizon() && !showProvType() -->
+		<!--ko template: {name: 'select-template', data: manual_provisiontype}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: manual_esn}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: manual_spcunlock}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: manual_mdn}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: manual_min}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: manual_nai}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: manual_aaapass}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: manual_hapass}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: manual_homeip}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: manual_prihaip}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: manual_sechaip}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: manual_haspi}--><!--/ko-->
+		<!--ko template: {name: 'text-template', data: manual_aaaspi}--><!--/ko-->
+	<!-- /ko -->
+<!-- /ko -->
+	<hr />
+	<table align="center" style="text-align: center; vertical-align: middle;">
+		<tr>
+			<td align="left"><button type="button" class="btn btn-primary" data-bind="click: rebootmodule">Reset Cellular Module</button></td>
+		</tr>
+	</table>
+	<br/><br/>
+<!-- /ko -->
+</form>

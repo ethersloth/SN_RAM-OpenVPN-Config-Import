@@ -1,0 +1,158 @@
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/sms.prf" name="sms">
+   <validation>
+   </validation>
+   <configuration>
+    <cstep errmsg="Cannot save enable SMS settings to configuration file"
+             name="enable"
+             path="/GAUCfg/sms/enable" />
+    <cstep errmsg="Cannot save SMS maximum outgoing message settings to configuration file"
+             name="maxoutmsg"
+             path="/GAUCfg/sms/maxoutmsg" />
+    <cstep errmsg="Cannot save SMS limit period settings to configuration file"
+             name="limitperiod"
+             path="/GAUCfg/sms/limitperiod" />
+    <cstep errmsg="Cannot save SMS access security settings to configuration file"
+             name="accsecurity"
+             path="/GAUCfg/sms/accsecurity" />
+    <cstep errmsg="Cannot save SMS login timeout settings to configuration file"
+             name="logintimeout"
+             path="/GAUCfg/sms/logintimeout" />
+    <cstep errmsg="Cannot save SMS basic user settings to configuration file"
+             name="basicuser"
+             path="/GAUCfg/sms/basicuser" />
+    <cstep errmsg="Cannot save SMS tech user settings to configuration file"
+             name="techuser"
+             path="/GAUCfg/sms/techuser" />
+    <cstep errmsg="Cannot save SMS admin user settings to configuration file"
+             name="adminuser"
+             path="/GAUCfg/sms/adminuser" />
+    <cstep errmsg="Cannot save SMS reply to login attempts settings to configuration file"
+             name="replyloginattempts"
+             path="/GAUCfg/sms/replyloginattempts" />
+    <cstep errmsg="Cannot save SMS settings to configuration file"
+             name="smsrules"
+             path="/GAUCfg/sms/smsrules" type="node" />
+   </configuration>
+
+   <action name="Save" successmsg="SMS settings saved.">
+
+<!--Moved to prfhandler_sms
+    <astep  abort="y" errmsg="Failed to write SMS settings to SMS configuration file" name="WriteFormattedFile">
+     <arg expr="/tmp/smscmd.conf" />
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# limitPeriod: Available options are [None/Hourly/Daily]" />
+     <arg expr="\n" />
+     <arg expr="# maxOutgoingMsg: Available options are numeric value 5 - 1000" />
+     <arg expr="\n" />
+     <arg expr="# accessSecurity: Available options are [AnyUser] for 'Allow any number', [AnyUserNotAdmin] for 'Allow any number; Admin must be on whitelist', [WhiteListOnly] for 'Only allow whitelist numbers'" />
+     <arg expr="\n" />
+     <arg expr="# loginSessionTimeout: Available options are numeric value 1 - 1440 in minutes, default to 5 minutes" />
+     <arg expr="\n" />
+     <arg expr="# basicUser: Basic user password" />
+     <arg expr="\n" />
+     <arg expr="# techUser: Tech user password" />
+     <arg expr="\n" />
+     <arg expr="# adminUser: Admin user password" />
+     <arg expr="\n" />
+     <arg expr="# replyLoginAttempts: Available options are [Yes] for 'Yes', [Ignore] for 'Ignore non-whitelist numbers'" />
+     <arg expr="\n" />
+     <arg expr="# logFilePath: for now it is hard coded to be at /datalog/smslog/" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep  abort="y" errmsg="Failed to write SMS settings to SMS configuration file" name="AppendFormatted2File">
+     <arg expr="/tmp/smscmd.conf" />
+     <arg expr="[SYSTEM]" />
+     <arg expr="\n" />
+     <arg expr="concat('limitPeriod=', /GAUCfg/sms/limitperiod/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('maxOutgoingMsg=', /GAUCfg/sms/maxoutmsg/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('accessSecurity=', /GAUCfg/sms/accsecurity/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('loginSessionTimeout=', /GAUCfg/sms/logintimeout/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('basicUser=', /GAUCfg/sms/basicuser/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('techUser=', /GAUCfg/sms/techuser/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('adminUser=', /GAUCfg/sms/adminuser/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('replyLoginAttempts=', /GAUCfg/sms/replyloginattempts/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="logFilePath=/datalog/smslog/" />
+     <arg expr="\n" />
+     <arg expr="[/SYSTEM]" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="[WHITE LIST]" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep      abort="y"
+           dependency="/GAUCfg/sms/smsrules/NumberOfsmsrules/text() != '0'"
+               errmsg="Failed to append smsrules to configuration file"
+                 name="AppendFormatted2File"
+               repeat="/GAUCfg/sms/smsrules/smsrule"
+           rptNdxName="RPT_NDX">
+
+     <arg expr="/tmp/smscmd.conf" />
+
+     <arg expr="concat(/GAUCfg/sms/smsrules/smsrule[RPT_NDX]/callerid/text(), ':', /GAUCfg/sms/smsrules/smsrule[RPT_NDX]/replyid/text(), ':', /GAUCfg/sms/smsrules/smsrule[RPT_NDX]/password/text(), ':', /GAUCfg/sms/smsrules/smsrule[RPT_NDX]/command/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep  abort="y" errmsg="Failed to write SMS settings to SMS configuration file" name="AppendFormatted2File">
+     <arg expr="/tmp/smscmd.conf" />
+     <arg expr="[/WHITE LIST]" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move SMS smscmd.conf file to /etc/smscmd/ directory." name="SystemCommand">
+     <arg expr="mkdir -p /etc/smscmd/; mv -f /tmp/smscmd.conf /etc/smscmd/smscmd.conf" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to disable the smscmd service via chkconfig " name="SystemCommand">
+     <arg dependency="/GAUCfg/sms/enable/text() = 'n'" expr="'chkconfig smscmd off'" source="config"/>
+    </astep>
+
+    <astep abort="y" errmsg="Failed to enable the smscmd service via chkconfig " name="SystemCommand">
+     <arg dependency="/GAUCfg/sms/enable/text() = 'y'" expr="'chkconfig smscmd on'" source="config"/>
+    </astep>
+Moved to prfhandler_sms-->
+
+    <astep abort="y" errmsg="Failed to save the SMS handling configuration" name="SystemCommand">
+     <arg expr="'prfhandler_sms Save'" source="config" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="SMS settings applied.">
+
+<!--Moved to prfhandler_sms
+    <pre subsystem="sms" action="Save" />
+
+    <astep abort="y" errmsg="Failed to stop smscmd service" name="SystemCommand">
+     <arg dependency="/GAUCfg/sms/enable/text() = 'n'" expr="'service smscmd stop'" source="config"/>
+    </astep>
+
+    <astep abort="y" errmsg="Failed to restart smscmd service" name="SystemCommand">
+     <arg dependency="/GAUCfg/sms/enable/text() = 'y'" expr="'service smscmd restart'" source="config"/>
+    </astep>
+Moved to prfhandler_sms-->
+
+    <astep abort="y" errmsg="Failed to apply the SMS handling configuration" name="SystemCommand">
+     <arg expr="'prfhandler_sms Apply'" source="config" />
+    </astep>
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

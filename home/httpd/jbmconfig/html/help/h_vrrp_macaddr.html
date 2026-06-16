@@ -1,0 +1,7 @@
+<h4>Description</h4>
+<p>Specify whether you want to allow the VRRP service to use virtual MAC addresses with the shared IP. If set to No, the actual interface MAC will be used.</p>
+<h4>Recommended Setting</h4>
+<p>
+<b>No </b> - If you are using managed switches between the devices, the virtual MAC will confuse the loop detection. Many VRRP control packets will be dropped and status will bounce.<br /></br />
+<b>Yes</b> - If you are not using managed switches, this mode will allow remote devices to reconnect faster to the backup unit in the event of an outage. This is because local ARP tables will not need to expire and reacquire different MAC addresses for the shared IP.
+</p>

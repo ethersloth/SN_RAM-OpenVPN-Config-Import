@@ -1,0 +1,22 @@
+<h4>Description</h4>
+<p>
+ Enter the IP Address for the gateway device in the field provided.
+ <br /><br />
+ <font color="#FF0000">(Required, if <b>Use Remote Gateway as Default Route</b> is set to <u>Yes</u>.)</font>
+ <br /><br />
+ A gateway is a device (typically a router) used to gain access to another network.
+ <br /><br />
+ For example, if a device is attached to a LAN whose network address is 192.168.1.0 with a netmask of 255.255.255.0,
+ then it can communicate directly with any other device on that network with a range of addresses of 192.168.1.1
+ through 192.168.1.254 (with 192.168.1.255 reserved for broadcast). An address outside of that range is on a different
+ network which would need to accessed indirectly through a router and that router would be the gateway to the network
+ on which the remote target device resides, so to communicate with it would mean sending and receiving via the gateway
+ device. This also requires either defining a static route (defined through the <b>Network&#8594;Static Routes</b>
+ screen) via that gateway or making it the default route (by setting <b>Use Remote Gateway as Default Route</b> to
+ <u>Yes</u>.
+</p>
+<h4>Recommended Setting</h4>
+<p>
+ Your Network Administrator should be able to provide an appropriate value. The address must be one within the
+ valid range for the network.
+</p>

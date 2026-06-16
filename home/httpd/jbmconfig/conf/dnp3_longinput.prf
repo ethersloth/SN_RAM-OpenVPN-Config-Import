@@ -1,0 +1,55 @@
+
+<profile>
+ <subsystems>
+                                                                                                                                                          
+                <!-- Advanced -> DNP3 Long Input Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dnp3_longinput.prf" name="longinput">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save DNP3 Long Input Highest Register Address to system configuration file."
+             name="highestreg"
+             path="/GAUCfg/longinput/highestreg" />
+
+    <cstep errmsg="Unable to save Long Input Auto Detect State to system configuration file."
+             name="autodetectchecked"
+             path="/GAUCfg/longinput/autodetectchecked" />
+
+    <cstep errmsg="Unable to save Long Input No DNP Points State to system configuration file."
+             name="nodnpchecked"
+             path="/GAUCfg/longinput/nodnpchecked" />
+
+    <cstep errmsg="Unable to save Long Input DeadBand to system configuration file."              
+             name="deadband"                                                                       
+             path="/GAUCfg/longinput/deadband" />                                                 
+                                                                                                                                 
+    <cstep errmsg="Unable to save Long Input Object 31 Class Assignment to system configuration file."
+             name="defobj31class"                                                                      
+             path="/GAUCfg/longinput/defobj31class" />                                                
+                                                                                                                                                               
+    <cstep errmsg="Unable to save Long Input Object 32 Class Assignment to system configuration file."                            
+             name="defobj32class"                                                                                                 
+             path="/GAUCfg/longinput/defobj32class" />                                                                            
+    
+    <cstep errmsg="Unable to save Long Input Object 33 Class Assignment to system configuration file."                            
+             name="defobj33class"                                                                                                 
+             path="/GAUCfg/longinput/defobj33class" />                                                                            
+                                                        
+    <cstep errmsg="Unable to save DNP3 Long Input Exception Class Assignments Table to system configuration file."
+             name="exceptions" path="/GAUCfg/longinput/exceptions"
+             type="node" />
+             
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

@@ -1,0 +1,16 @@
+<!--ko template: {name:'title-template',data:'IP Fallback'}--><!--/ko-->
+<!--ko template: {name:'h4-template',data:'Automatic Default Route Failover Settings'}--><!--/ko-->
+<!--ko template: {name: 'full-savable-bool-template', data: enable}--><!--/ko-->
+<!-- ko if: enable.value() === 'y'-->
+	<!--ko template: {name: 'full-savable-select-template', data: pintf}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: pcmd}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: sintf}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: scmd}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: testip}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: interval}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: testpkts}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: lostpkts}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: pingcount}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: switchdelay}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: debug}--><!--/ko-->
+<!-- /ko -->

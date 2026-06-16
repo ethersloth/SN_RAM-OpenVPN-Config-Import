@@ -1,0 +1,59 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                              <!--
+               Admin -> Reboot System Section
+
+  V2.20 behaviors (taken from cfg_adm.cpp - DoReboot()):
+
+  +==========+==========================================================+============+
+  |  ACTION  |                           STEP                           | ON FAILURE |
+  +==========+==========================================================+============+
+  |   Reboot | Build script '/tmp/reboot.sh' to perform delayed reboot: |            |
+  |          |                                                          |            |
+  |          | [                                                        |            |
+  |          |  "#!/bin/bash\n"                                         |            |
+  |          |  "sleep 10\n"                                            |            |
+  |          |  "/sbin/reboot\n"                                        |            |
+  |          |  "exit\n"                                                |            |
+  |          | ]                                                        |            |
+  |          +----------------------------------------------------------+------------+
+  |          | Try to write script to file '/tmp/reboot.sh'             | Abort      |
+  |          +----------------------------------------------------------+------------+
+  |          | chmod u+rx /tmp/reboot.sh                                |            |
+  |          +----------------------------------------------------------+------------+
+  |          | Try to execute '/tmp/reboot.sh > /dev/null 2>&1 &        | Abort      |
+  +==========+==========================================================+============+                                        -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/reboot.prf" name="reboot">
+   <validation>
+   </validation>
+
+   <configuration>
+   </configuration>
+
+   <action name="reboot" successmsg="The device will reboot within 10 secoonds.">
+
+    <astep abort="y" errmsg="Failed to initiate reboot: Unable to prepare script." name="WriteFile" >
+     <arg expr="/tmp/reboot.sh" />
+     <arg expr="#!/bin/bash" />
+     <arg expr="sleep 10" />
+     <arg expr="/sbin/reboot" />
+     <arg expr="exit" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to initiate reboot: Unable make script executable." name="SystemCommand">
+     <arg expr="chmod a+x /tmp/reboot.sh" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to initiate reboot: Unable to execute script." name="SystemCommand">
+     <arg expr="/tmp/reboot.sh &" />
+    </astep>
+   </action>
+  </subsystem>
+
+
+
+ </subsystems>
+</profile>

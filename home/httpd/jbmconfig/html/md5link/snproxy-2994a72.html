@@ -1,0 +1,15 @@
+<!-- ko template: {name: 'title-template', data: 'SN Proxy Settings'}--><!-- /ko -->
+<!--ko template: {name: 'full-savable-select-template', data: enable}--><!--/ko-->
+<!--ko if: enable.value() === 'yes'-->
+	<hr />
+	<!-- ko template: {name: 'full-savable-select-template', data: https}--><!--/ko-->
+	<!-- ko template: {name: 'full-savable-select-template', data: http}--><!--/ko-->
+	<!--ko if: http.value() === 'yes'-->
+		<!-- ko template: {name: 'full-savable-input-template', data: snproxyun}--><!--/ko-->
+		<!-- ko template: {name: 'full-savable-password-template', data: snproxypw}--><!--/ko-->
+	<!--/ko-->
+	<hr />
+	<!-- ko template: {name: 'full-savable-input-template', data: listenport}--><!--/ko-->
+	<!-- ko template: {name: 'full-savable-input-template', data: hostip}--><!--/ko-->
+	<!-- ko template: {name: 'full-savable-input-template', data: hostport}--><!--/ko-->
+<!--/ko-->

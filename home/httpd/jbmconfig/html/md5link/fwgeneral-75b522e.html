@@ -1,0 +1,172 @@
+<!--ko template: {name:'title-template',data:'Firewall General Settings'}--><!--/ko-->
+<div style="text-align: center; vertical-align: middle;" data-bind="visible: isIPTransEnabled">
+	<span><font color="#FF0000">The Firewall is currently under the control of IP Transparency</font></span>
+</div>
+<!--ko template: {name:'h4-template',data:'Global Parameters'}--><!--/ko-->
+<!--ko template: {name: 'full-savable-bool-template', data: enable}--><!--/ko-->
+<!-- ko if: isFirewallEnabled -->
+	<hr />
+	<table border="1" align="center" style="text-align: center; vertical-align: middle;">
+		<thead>
+			<tr>
+				<th>&nbsp;Service&nbsp;</th>
+				<th>&nbsp;Allow/Disallow&nbsp;</th>
+				<th>&nbsp;Whitelist Name&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Ping</td>
+				<td>
+					<div class="input-append">
+						<!--ko template: {name: 'savable-bool-template', data: ping}--><!--/ko-->
+						<a tabindex="-1" data-bind="help: {'title': 'Ping Whitelist Name', 'link': '/h_firewall_ping.html'}" class="btn"><i class="icon-question-sign"></i></a>
+					</div>
+				</td>
+				<td>
+					<div class="input-append">
+						<!--ko template: {name: 'savable-select-template', data: pingwlname}--><!--/ko-->
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>SSH</td>
+				<td>
+					<div class="input-append">
+						<!--ko template: {name: 'savable-bool-template', data: ssh}--><!--/ko-->
+						<a tabindex="-1" data-bind="help: {'title': 'SSH', 'link': '/h_firewall_ssh.html'}" class="btn"><i class="icon-question-sign"></i></a>
+					</div>
+				</td>
+				<td>
+					<div class="input-append">
+						<!--ko template: {name: 'savable-select-template', data: sshwlname}--><!--/ko-->
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>Telnet</td>
+				<td>
+					<div class="input-append">
+						<!--ko template: {name: 'savable-bool-template', data: telnet}--><!--/ko-->
+						<a tabindex="-1" data-bind="help: {'title': 'Telent', 'link': '/h_firewall_telnet.html'}" class="btn"><i class="icon-question-sign"></i></a>
+					</div>
+				</td>
+				<td>
+					<div class="input-append">
+						<!--ko template: {name: 'savable-select-template', data: telnetwlname}--><!--/ko-->
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>Modbus</td>
+				<td>
+					<div class="input-append">
+						<!--ko template: {name: 'savable-bool-template', data: modbus}--><!--/ko-->
+						<a tabindex="-1" data-bind="help: {'title': 'Modbus', 'link': '/h_firewall_modbus.html'}" class="btn"><i class="icon-question-sign"></i></a>
+					</div>
+				</td>
+				<td>
+					<div class="input-append">
+						<!--ko template: {name: 'savable-select-template', data: modbuswlname}--><!--/ko-->
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>DNP3</td>
+				<td>
+					<div class="input-append">
+						<!--ko template: {name: 'savable-bool-template', data: dnp3}--><!--/ko-->
+						<a tabindex="-1" data-bind="help: {'title': 'DNP3', 'link': '/h_firewall_dnp3.html'}" class="btn"><i class="icon-question-sign"></i></a>
+					</div>
+				</td>
+				<td>
+					<div class="input-append">
+						<!--ko template: {name: 'savable-select-template', data: dnp3wlname}--><!--/ko-->
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>Web UI</td>
+				<td>
+					<div class="input-append">
+						<!--ko template: {name: 'savable-bool-template', data: gau}--><!--/ko-->
+						<a tabindex="-1" data-bind="help: {'title': 'Web UI', 'link': '/h_firewall_gau.html'}" class="btn"><i class="icon-question-sign"></i></a>
+					</div>
+				</td>
+				<td>
+					<div class="input-append">
+						<!--ko template: {name: 'savable-select-template', data: gauwlname}--><!--/ko-->
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>SNMP</td>
+				<td>
+					<div class="input-append">
+						<!--ko template: {name: 'savable-bool-template', data: snmp}--><!--/ko-->
+						<a tabindex="-1" data-bind="help: {'title': 'SNMP', 'link': '/h_firewall_snmp.html'}" class="btn"><i class="icon-question-sign"></i></a>
+					</div>
+				</td>
+				<td>
+					<div class="input-append">
+						<!--ko template: {name: 'savable-select-template', data: snmpwlname}--><!--/ko-->
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<hr />
+	<!--ko template: {name:'h4-template',data:'Other Options'}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: ipsec}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: natt}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: cleardf}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: pdlogging}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: dynamichttpx}--><!--/ko-->
+	<hr />
+	<!--ko template: {name:'h4-template',data:'Trusted Interfaces'}--><!--/ko-->
+	<!--ko template: {name:'table-template',data:trustedTable}--><!--/ko-->
+	<hr />
+	<!--ko template: {name:'h4-template',data:'Untrusted Interfaces'}--><!--/ko-->
+	<!--ko template: {name:'table-template',data:untrustedTable}--><!--/ko-->
+<!-- /ko -->
+<div id="trustedintf-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button name="closeWizard" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Trusted Interface Settings</h3>
+	</div>
+	<div class="gw-modal-body-long">
+		<!--ko template: {name: 'full-savable-select-template', data: tintf}--><!--/ko-->
+		<a class="btn btn-primary pull-right" data-bind="click: trustedWizardFinish">Finish</a>
+	</div>
+</div>
+<div id="untrustedintf-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button name="closeWizard" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Untrusted Interface Settings</h3>
+	</div>
+	<div class="gw-modal-body-long">
+		<!--ko template: {name: 'full-savable-select-template', data: uintf}--><!--/ko-->
+		<a class="btn btn-primary pull-right" data-bind="click: untrustedWizardFinish">Finish</a>
+	</div>
+</div>
+<div id="fwconfirm" data-backdrop="static" data-keyboard="false" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Confirmation</h3>
+	</div>
+	<div class="modal-body">
+		<table style="width: 100%;">
+			<tr>
+				<td><span data-bind="html: confirmation"></span></td>
+			</tr>
+		</table>
+		<a class="btn btn-primary pull-right" data-bind="click: Continue">Continue</a>
+		<a class="btn pull-right" data-bind="click: Disable">Disable</a>
+		<a class="btn pull-right" data-bind="click: Exit">Cancel</a>
+	</div>
+</div>
+<div style="text-align: center">
+	<a class="btn" data-bind="click: switchPage('#!/filter')">ACL Rules</a>
+	<a class="btn" data-bind="click: switchPage('#!/masqnat')">Masquerade/NAT/DMZ Rules</a>
+	<a class="btn" data-bind="click: switchPage('#!/access')">Port Allow/Forwarding Rules</a>
+</div>

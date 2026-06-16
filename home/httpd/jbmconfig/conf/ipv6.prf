@@ -1,0 +1,58 @@
+
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/ipv6.prf" name="ipv6">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable option to system configuration file."
+              name="enable"
+              path="/GAUCfg/ipv6/enable" />
+
+    <cstep errmsg="Unable to save WAN Interface option to system configuration file."
+              name="wanintf"
+              path="/GAUCfg/ipv6/wanintf" />
+
+    <cstep errmsg="Unable to save LAN Interface option to system configuration file."
+              name="lanintf"
+              path="/GAUCfg/ipv6/lanintf" />
+   </configuration>
+
+
+   <action name="Save" successmsg="Operation Succeeded.">
+    <!-- Begin writing wan2lanipv6.conf file -->
+    <astep errmsg="Failed to write ipv6 configuration file." name="WriteFormattedFile" abort="y">
+     <arg expr="'/tmp/wan2lanipv6.conf'" source="config" />
+     <arg expr="\n" />
+    </astep>
+    <astep errmsg="Failed to write ipv6 interfaces to configuration file." name="WriteFormattedFile" abort="n">
+     <arg expr="'/tmp/wan2lanipv6.conf'" source="config" />
+     <arg expr="# This is a GUI generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="concat('WAN_INT=', /GAUCfg/ipv6/wanintf/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('LAN_INT=', /GAUCfg/ipv6/lanintf/text())" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to copy wan2lanipv6.conf file to /etc/jbm/ directory." name="SystemCommand">
+     <arg expr="mv -f /tmp/wan2lanipv6.conf /etc/jbm/wan2lanipv6.conf" />
+    </astep>
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+    <pre subsystem="ipv6" action="Save" />
+    <astep dependency="/GAUCfg/ipv6/enable/text() = 'no'" name="SystemCommand">
+     <arg abort="n" expr="/bin/ipv6enable no" />
+    </astep>
+
+    <astep dependency="/GAUCfg/ipv6/enable/text() = 'yes'" errmsg="Failed to start IPv6."   name="SystemCommand">
+     <arg abort="y" expr="/bin/ipv6enable yes" />
+    </astep>
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

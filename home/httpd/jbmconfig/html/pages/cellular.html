@@ -1,0 +1,138 @@
+<!--ko template: {name:'title-template',data:'Cellular Config'}--><!--/ko-->
+<div style="text-align: center">
+	<a class="btn gw-grayed" href="#!/cellular">Config</a>
+	<a class="btn" href="#!/dispcsq">Status</a>
+	<a class="btn" href="#!/provisioning">Provisioning</a>
+	<button class="btn btn-primary" data-bind="visible: fctech.button.visible, click: fctech.button.click">Unlock 4G/LTE</button>
+</div>
+<hr />
+<!-- ko if: '' !== cellforcedstatus() -->
+<table align="center">
+	<tr>
+		<td style="text-align: left; vertical-align: middle;"><pre><span style="color: blue" data-bind="text: cellforcedstatus"></span></pre></td>
+	</tr>
+</table>
+<hr />
+<!-- /ko -->
+<!-- ko if: isEnabled -->
+<table style="width: 100%;">
+	<tr>
+		<td style="width: 50%; text-align: right"><b>Detected Modem:&#160;</b></td>
+		<td name="installedModem" style="width: 50%" data-bind="text: installedModem"></td>
+	</tr>
+	<tr>
+		<td style="text-align: right"><b>Detected Carrier:&#160;</b></td>
+		<td name="detectedCarrier" data-bind="text: detectedCarrier"></td>
+	</tr>
+</table>
+<hr />
+<!-- /ko -->
+<!--ko template: {name:'full-savable-select-template',data: enable}--><!--/ko-->
+<!-- ko if: isEnabled -->
+	<!-- ko if: showCONTEXT -->
+		<!--ko template: {name:'full-savable-select-template',data: context}--><!--/ko-->
+	<!-- /ko -->
+	<!-- ko if: showAPN -->
+		<div class="gw-row">
+			<div class="gw-auto-margin" style="width: 375px; padding-bottom: 10px">
+				<pre><span style="color: blue" data-bind="text: apnNote"></span></pre>
+			</div>
+		</div>
+		<!--ko template: {name:'full-savable-input-template',data: apn}--><!--/ko-->
+	<!-- /ko -->
+	<!-- ko if: showAdvanceOption -->
+		<!--ko template: {name:'full-savable-bool-template',data: advenable}--><!--/ko-->
+	<!-- /ko -->
+	<!-- ko if: isAdvancedSelected -->
+		<!-- ko if: showUserPass -->
+			<!--ko template: {name: 'full-savable-input-template', data: username}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-password-template', data: password}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-password-template', data: password2}--><!--/ko-->
+		<!-- /ko -->
+		<!-- ko if: IsModemPPP -->
+			<!--ko template: {name: 'full-savable-input-template', data: dialstring}--><!--/ko-->
+		<!-- /ko -->
+		<!-- ko if: IsModemGSM -->
+			<!--ko template: {name: 'full-savable-select-template', data: forceapn}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: simunlock}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: cpinaction}--><!--/ko-->
+			<p style="color: blue; text-align: center" data-bind="visible: showPUK"><u><b>CPIN / PUK Status</b></u></p>
+			<table style="width: 100%; margin-bottom: 20px" data-bind="visible: showPUK">
+				<tbody>
+					<tr>
+						<td style="text-align: right; font-weight: bold; padding-right: 10px">CPIN Status:</td>
+						<td style="text-align: left; width: 50%" data-bind="text: cpinStatus"></td>
+					</tr>
+					<tr>
+						<td style="text-align: right; font-weight: bold; padding-right: 10px">PUK Status:</td>
+						<td style="text-align: left; width: 50%" data-bind="text: simExtStatus"></td>
+					</tr>
+				</tbody>
+			</table>
+			<!--ko template: {name: 'full-savable-input-template', data: pukcode}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: newpin}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: roaming}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: network}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: mcc}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: mnc}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: ipfamily}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: authtype}--><!--/ko-->
+			<!--ko template: {name:'full-savable-select-template',data: rfradioregion}--><!--/ko-->
+		<!-- /ko -->
+		<!--ko template: {name:'full-savable-bool-template',data: wwan}--><!--/ko-->
+		<!--ko template: {name:'full-savable-select-template',data: speed}--><!--/ko-->
+		<!--ko template: {name:'full-savable-select-template',data: cmignorereg}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: mtu}--><!--/ko-->
+		<!--ko template: {name:'full-savable-bool-template',data: synctime}--><!--/ko-->
+		<!-- ko if: IsModemPPP -->
+			<!--ko template: {name:'full-savable-select-template',data: conntype}--><!--/ko-->
+			<!-- ko if: isConnectionOnDemand -->
+				<!--ko template: {name: 'full-savable-input-template', data: dodtimeout}--><!--/ko-->
+			<!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: rxidle}--><!--/ko-->
+		<!-- /ko -->
+		<!--ko template: {name:'full-savable-bool-template',data: dfltrte}--><!--/ko-->
+		<!--ko template: {name:'full-savable-bool-template',data: dns}--><!--/ko-->
+		<!--ko template: {name:'full-savable-bool-template',data: snatAuto}--><!--/ko-->
+		<!-- ko if: IsModemPPP -->
+			<!--ko template: {name:'full-savable-bool-template',data: custom}--><!--/ko-->
+			<!-- ko if: isCustomSelected -->
+				<!--ko template: {name:'h4-template',data:'AT Commands'}--><!--/ko-->
+				<!--ko template: {name:'table-template',data: atcommandsTable}--><!--/ko-->
+				<!--ko template: {name:'h4-template',data:'PPP Commands'}--><!--/ko-->
+				<!--ko template: {name:'table-template',data: pppcommandsTable}--><!--/ko-->
+			<!-- /ko -->
+		<!-- /ko -->
+	<!-- /ko -->
+<!-- /ko -->
+<div id="atcmd-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>AT Command Settings</h3>
+	</div>
+	<div class="gw-modal-body-long">
+		<!--ko template: {name: 'full-savable-input-template', data: cmdstr}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: exprsp}--><!--/ko-->
+		<a class="btn btn-primary pull-right" data-bind="click: atcommandsWizardFinish">Finish</a>
+	</div>
+</div>
+<div id="pppcmd-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>PPP Command Settings</h3>
+	</div>
+	<div class="gw-modal-body-long">
+		<!--ko template: {name: 'full-savable-input-template', data: pppcmdstr}--><!--/ko-->
+		<a class="btn btn-primary pull-right" data-bind="click: pppcommandsWizardFinish">Finish</a>
+	</div>
+</div>
+<div id="fctech-unlock-modal" class="hide" data-bind="modal: fctech.modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Unlock Cellular 4G Mode</h3>
+	</div>
+	<div class="modal-body">
+		<!--ko template: {name: 'full-savable-input-template', data: fctech.input}--><!--/ko-->
+		<a class="btn btn-primary pull-right" data-bind="click: fctech.unlock">Unlock</a>
+	</div>
+</div>

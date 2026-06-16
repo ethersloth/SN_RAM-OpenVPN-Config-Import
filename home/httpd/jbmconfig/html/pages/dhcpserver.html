@@ -1,0 +1,110 @@
+<!--ko template: {name:'title-template',data:'DHCP Server Settings'}--><!--/ko-->
+<!--ko template: {name: 'h4-template', data: 'Global Settings'}--><!--/ko-->
+<!--ko template: {name: 'full-savable-input-template', data: domainnamedata}--><!--/ko-->
+<!--ko template: {name: 'full-savable-bool-template', data: weisdnsdata}--><!--/ko-->
+<!--ko template: {name: 'full-savable-input-template', data: dns1data}--><!--/ko-->
+<!--ko template: {name: 'full-savable-input-template', data: dns2data}--><!--/ko-->
+<!--ko template: {name: 'full-savable-input-template', data: defleasedata}--><!--/ko-->
+<!--ko template: {name: 'full-savable-input-template', data: maxleasedata}--><!--/ko-->
+<!--ko template: {name: 'full-savable-input-template', data: minleasedata}--><!--/ko-->
+<!-- ko if: showeth0 -->
+	<hr />
+	<table style="width: 100%;"><tr>
+		<td style="width: 50%; text-align: right; vertical-align: middle;">
+			<h4 style="margin-right: 20px">eth0</h4>
+		</td>
+		<td style="width: 50%; text-align: left; vertical-align: middle;">
+			<span data-bind="html: eth0desc"></span>
+		</td>
+	</tr></table>
+	<!--ko template: {name: 'full-savable-select-template', data: eth0endhcp}--><!--/ko-->
+	<!-- ko if: showEth0Opts() -->
+		<!--ko template: {name: 'full-savable-select-template', data: eth0dftgw}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: eth0saddr}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: eth0eaddr}--><!--/ko-->
+	<!-- /ko -->
+<!-- /ko -->
+<!-- ko if: showEth1 -->
+	<!-- ko if: showeth1 -->
+		<hr />
+		<table style="width: 100%;"><tr>
+			<td style="width: 50%; text-align: right; vertical-align: middle;">
+				<h4 style="margin-right: 20px">eth1</h4>
+			</td>
+			<td style="width: 50%; text-align: left; vertical-align: middle;">
+				<span data-bind="text: eth1desc"></span>
+			</td>
+		</tr></table>
+		<!--ko template: {name: 'full-savable-select-template', data: eth1endhcp}--><!--/ko-->
+		<!-- ko if: showEth1Opts() -->
+			<!--ko template: {name: 'full-savable-select-template', data: eth1dftgw}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: eth1saddr}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: eth1eaddr}--><!--/ko-->
+		<!-- /ko -->
+	<!-- /ko -->
+<!-- /ko -->
+<!-- ko if: showwifi -->
+	<hr />
+	<table style="width: 100%;"><tr>
+		<td style="width: 50%; text-align: right; vertical-align: middle;">
+		<!-- ko if: showEth1 -->
+			<h4 style="margin-right: 20px">Wi-Fi</h4>
+		<!-- /ko -->
+		<!-- ko if: !showEth1() -->
+			<h4 style="margin-right: 20px">Wi-Fi/eth1</h4>
+		<!-- /ko -->
+		</td>
+		<td style="width: 50%; text-align: left; vertical-align: middle;">
+			<span data-bind="text: wifidesc"></span>
+		</td>
+	</tr></table>
+	<!--ko template: {name: 'full-savable-select-template', data: wifiendhcp}--><!--/ko-->
+	<!-- ko if: showWifiOpts() -->
+		<!--ko template: {name: 'full-savable-select-template', data: wifidftgw}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: wifisaddr}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: wifieaddr}--><!--/ko-->
+	<!-- /ko -->
+<!-- /ko -->
+<!-- ko if: showusb0 -->
+	<hr />
+	<table style="width: 100%;"><tr>
+		<td style="width: 50%; text-align: right; vertical-align: middle;">
+			<h4 style="margin-right: 20px">usb0</h4>
+		</td>
+		<td style="width: 50%; text-align: left; vertical-align: middle;">
+			<span data-bind="text: usb0desc"></span>
+		</td>
+	</tr></table>
+	<!--ko template: {name: 'full-savable-select-template', data: usb0endhcp}--><!--/ko-->
+	<!-- ko if: showUsb0Opts() -->
+		<!--ko template: {name: 'full-savable-select-template', data: usb0dftgw}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: usb0saddr}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: usb0eaddr}--><!--/ko-->
+	<!-- /ko -->
+<!-- /ko -->
+<hr />
+<div class="gw-row">
+	<button type="button" class="btn" data-bind="click: toggleLeases, text: leasebutton"></button>
+	<!-- ko if: showleases-->
+	<br />
+	<textarea readonly style="margin-top: 20px; width: 600px; font-family: monospace;" data-bind="text: dhcpleases" rows="20" wrap="off"></textarea>
+	<!-- /ko -->
+</div>
+<hr />
+<table style="width: 100%;"><tr>
+	<td style="text-align: center; vertical-align: middle;">
+		<h4><u>Distribute DHCP Leases Based on MAC Address</u></h4><br />
+	</td>
+</tr></table>
+<!--ko template: {name: 'table-template', data: DHCPLeasesTable}--><!--/ko-->
+<div id="mac-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Add Distribute DHCP Leases</h3>
+	</div>
+	<div class="gw-modal-body-long">
+		<!--ko template: {name: 'full-savable-input-template', data: macaddrdata}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: macipaddrdata}--><!--/ko-->
+		<a class="btn btn-primary pull-right" data-bind="click: dhcpLeasesWizardFinish">Finish</a>
+	</div>
+</div>

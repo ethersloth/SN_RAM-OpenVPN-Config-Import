@@ -1,0 +1,59 @@
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/autonet.prf" name="autonet">
+   <validation>
+    <vstep  errmsg="Invalid autonet enable flag."
+              name="enable"
+              test="isyorn(/input/enable/text())" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save autonet enable flag to system configuration file."
+             name="enable"
+             path="/GAUCfg/autonet/enable" />
+   </configuration>
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+    <astep       abort="n"
+            dependency="/GAUCfg/autonet/enable/text() = 'n'"
+                  name="SystemCommand">
+     <arg expr="chkconfig autonet off" />
+    </astep>
+    <astep       abort="n"
+            dependency="/GAUCfg/autonet/enable/text() = 'y'"
+                errmsg="Failed to enable autonet."
+                  name="SystemCommand">
+     <arg expr="chkconfig autonet on" />
+    </astep>
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+    <pre subsystem="autonet" action="Save" />
+
+    <astep      abort="n"
+           dependency="/GAUCfg/autonet/enable/text() = 'n'"
+                 name="SystemCommand">
+     <arg expr="service autonet stop" />
+    </astep>
+    <astep      abort="n"
+           dependency="/GAUCfg/autonet/enable/text() = 'n'"
+                 name="SystemCommand">
+     <arg expr="service network restart" />
+    </astep>
+    <astep      abort="n"
+           dependency="/GAUCfg/autonet/enable/text() = 'n'"
+                 name="SystemCommand">
+     <arg expr="service dhcpd restart" />
+    </astep>
+
+    <astep      abort="y"
+           dependency="/GAUCfg/autonet/enable/text() = 'y'"
+               errmsg="Failed to start autonet Service."
+                 name="SystemCommand">
+     <arg expr="service autonet restart" />
+    </astep>
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

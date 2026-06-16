@@ -1,0 +1,538 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+###############################################################################################################################
+#                                                                                                                             #
+# sslconvert - Writes ssl configuration file from xml configuration file.                                                     #
+#                                                                                                                             #
+# For the record . .                                                                                                          #
+#                                                                                                                             #
+# Copyright (c) 2008 by Sixnet, LLC.                                                                                          #
+#                                                                                                                             #
+# All rights reserved.  No part of this program may be reproduced, stored in a retrieval system or transmitted, in any form   #
+# or by any means, including but not limited to electronic, mechanical, photocopying, recording, or otherwise, without the    #
+# express prior written consent of Sixnet, 4645 LaGuardia, St. Louis, MO 63134.  (314) 426-7781, fx: (314) 426-0007.          #
+# Contact support@sixnet.com                                                                                                  #
+#                                                                                                                             #
+#                                                                                                                             #
+# This program was written by David Lepsky.                                                                                   #
+#                                                                                                                             #
+###############################################################################################################################
+
+
+# Get command line argument(s), if any:
+
+my $debug = "ON";
+my $infilename = "";
+my $SSLmode = "";   # client or server
+my %mode = (server=>"srv",client=>"cli");
+
+$| = 1;
+
+$version = "1.09";
+
+print "\nWSBU SSL Configuration Writer v$version\n";
+
+$argc = @ARGV;
+
+if ($argc)
+{
+    my $argCnt = $#ARGV;
+
+    my %argList;
+
+    foreach my $argnum (0 .. $#ARGV)
+    {
+        if ("-h" eq $ARGV[$argnum])
+        {
+            Usage();
+
+            exit(0);
+        }
+
+        if ("-d" eq $ARGV[$argnum])
+        {
+            $debug="ON";
+        }
+    }
+
+    $infilename = $ARGV[0];
+    chomp($infilename);
+
+    my @vars = &parseFile($infilename);
+
+    &WriteCfgFile(\@vars);
+}
+else
+{
+    print "\n\nError: Configuration file required\n\n";
+    Usage();
+    exit(1);
+}
+
+#main exit point
+exit(0);
+
+sub parseFile
+{
+    my $file = $_[0];
+
+    open(FILE, $file) or die "\nCannot open configuration file, \"$file\"!\n\n";;
+    my @temp = <FILE>;
+    close(FILE);
+
+    chomp(@temp);
+
+    my %vars = ();
+    my @entry = ();
+
+    $line = $temp[0];
+
+    if (($line =~ /<sslclient/) || (($line =~ /<sslserver/)))
+    {
+        print "Detected '$file' as xml style, ";
+
+        if ($line =~ /<sslclient/)
+        {
+            print "SSL Client Configuration File.\n";
+
+            $SSLmode = $mode{client};
+        }
+        if ($line =~ /<sslserver/)
+        {
+            print "SSL Server Configuration File.\n";
+
+            $SSLmode = $mode{server};
+        }
+    }
+    else
+    {
+        print "\n\nError: Do not recognize this file format.\n";
+        exit(1);
+    }
+
+    my $activityloglvl   = "";
+    my $wait4connection  = "";
+    my $idletimeout      = "";
+    my $advancesetup     = "";
+    my $bindacceptinf    = "";
+    my $bindoutgoingintf = "";
+    my $ciphers          = "";
+    my $certfile         = "";
+    my $sslkeepalive     = "";
+    my $globaloptsdone   = "FALSE"; #set to TRUE when start processing connectcfg records
+
+    foreach my $line (@temp)
+    {
+        if ($line =~ /<activityloglevel/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $activityloglvl=$tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$activityloglvl=$tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<wait4connection/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $wait4connection=$tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$wait4connection=$tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<idletimeout/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $idletimeout=$tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$idletimeout=$tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<advancesetup/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $advancesetup=$tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$advancesetup=$tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<bindacceptintf/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $bindacceptinf=$tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$bindacceptinf=$tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<bindoutgoingintf/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $bindoutgoingintf=$tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$bindoutgoingintf=$tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<ciphers/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $ciphers=$tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$ciphers=$tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<certfile/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $certfile=$tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$certfile=$tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<sslckeepalive/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $sslkeepalive = $tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$sslkeepalive=$tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<sslskeepalive/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $sslkeepalive = $tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$sslkeepalive=$tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<connectcfgs/)
+        {
+            if ($globaloptsdone eq "FALSE")
+            {
+                push(@entry, {
+                        activityloglvl=>$activityloglvl,
+                        wait4connection=>$wait4connection,
+                        idletimeout=>$idletimeout,
+                        bindacceptinf=>$bindacceptinf,
+                        bindoutgoingintf=>$bindoutgoingintf,
+                        ciphers=>$ciphers,
+                        certfile=>$certfile,
+                        sslkeepalive=>$sslkeepalive,
+                        advancesetup=>$advancesetup
+                    }
+                );
+            }
+
+            $globaloptsdone = "TRUE";
+            if ($debug eq "ON")
+            {
+                print "Found $line\n";
+            }
+        }
+        elsif ($line =~ /<connectcfg record=/)
+        {
+            $label        = "";
+            $acceptip     = "";
+            $acceptport   = "";
+            $connectip    = "";
+            $connectport  = "";
+            $tcpsrcbindip = "";
+            $starttls = "";
+            if ($debug eq "ON")
+            {
+                print "Found $line\n";
+            }
+        }
+        elsif ($line =~ /<\/connectcfg>/)
+        {
+            push(@entry, {
+                    label=>$label,
+                    acceptip=>$acceptip,
+                    acceptport=>$acceptport,
+                    connectip=>$connectip,
+                    connectport=>$connectport,
+                    tcpsrcbindip=>$tcpsrcbindip,
+                    starttls=>$starttls
+                }
+            );
+
+            if ($debug eq "ON")
+            {
+                print "Found $line\n";
+            }
+        }
+        elsif ($line =~ /<label>/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $label = $tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$label = $tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<acceptip>/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $acceptip = $tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$acceptip = $tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<acceptport>/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $acceptport = $tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$acceptport = $tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<connectip>/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $connectip = $tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$connectip = $tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<connectport>/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $connectport = $tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$connectport = $tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<tcpsrcbindip>/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $tcpsrcbindip = $tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$tcpsrcbindip = $tagdata[0]\n";
+            }
+        }
+        elsif ($line =~ /<starttls>/)
+        {
+            my @tagdata;
+            @tagdata = split (/>/,$line);
+            $line = $tagdata[1];
+            @tagdata = split (/</,$line);
+            $starttls = $tagdata[0];
+            if ($debug eq "ON")
+            {
+                print "\$starttls = $tagdata[0]\n";
+            }
+        }
+        else
+        {
+            if ($debug eq "ON")
+            {
+                print "Found unknown tag, $line.\n";
+            }
+        }
+    }
+
+    return @entry;
+} #end parseFile()
+
+sub WriteCfgFile
+{
+    my $entry = $_[0];
+#  my $globalopts = @$entry[0];
+    if (scalar(@$entry) < 2) # There are no individual connection configuration details, so no need to write the file.
+    {
+        return;
+    }
+    my $globalopts = shift(@$entry);
+
+    my $SSLfileout = "";
+    my $SSLCfgpath     = "/etc/stunnel/";
+    my $SSLCfgfilename = $SSLCfgpath . "stunnel" . $SSLmode . ".conf";
+
+    $SSLfileout .= "#SSL Configuration File. Written by Sixnet Development Group' sslconvert tool v$version\n#\n\n";
+    $SSLfileout .= "#GLOBALOPTIONS\n";
+
+    $SSLfileout .= "pid=/var/run/stunnel".$SSLmode.".pid\n\n";
+    $SSLfileout .= "foreground=yes\n\n";
+
+    if ($SSLmode eq $mode{server})
+    {
+        $SSLfileout .= "client=no\n\n";
+    }
+    if ($SSLmode eq $mode{client})
+    {
+        $SSLfileout .= "client=yes\n\n";
+    }
+
+    $SSLfileout .= "options=NO_SSLv2\n\n";
+    $SSLfileout .= "options=NO_SSLv3\n\n";
+
+    if ($globalopts->{'advancesetup'} eq "y")
+    {
+        if ("Accept" eq $globalopts->{'sslkeepalive'})
+        {
+            $SSLfileout .= "socket = a:SO_KEEPALIVE=1\n\n";
+        }
+
+        if ("All" eq $globalopts->{'sslkeepalive'})
+        {
+            $SSLfileout .= "socket = a:SO_KEEPALIVE=1\n";
+            $SSLfileout .= "socket = l:SO_KEEPALIVE=1\n";
+            $SSLfileout .= "socket = r:SO_KEEPALIVE=1\n\n";
+        }
+
+        if ("Local" eq $globalopts->{'sslkeepalive'})
+        {
+            $SSLfileout .= "socket = l:SO_KEEPALIVE=1\n\n";
+        }
+
+        if ("Remote" eq $globalopts->{'sslkeepalive'})
+        {
+            $SSLfileout .= "socket = r:SO_KEEPALIVE=1\n\n";
+        }
+    }
+
+    $SSLfileout .= "session=40000\n\n";
+
+    $SSLfileout .= "debug=syslog.".$globalopts->{'activityloglvl'}."\n\n";
+
+    $SSLfileout .= "TIMEOUTconnect=".$globalopts->{'wait4connection'}."\n\n";
+
+    $idletimeinseconds = $globalopts->{'idletimeout'};
+    $idletimeinseconds *= 60;
+    $SSLfileout .= "TIMEOUTidle=".$idletimeinseconds."\n\n";
+
+    $SSLfileout .= "ciphers=".$globalopts->{'ciphers'}."\n\n";
+
+    if ($globalopts->{'certfile'} ne "nofile")
+    {
+        $SSLfileout .= "cert=".$globalopts->{'certfile'}."\n\n";
+    }
+
+    if ($globalopts->{'advancesetup'} eq "y")
+    {
+
+        if (lc($globalopts->{'bindacceptinf'}) ne "any")
+        {
+            $SSLfileout .= "socket=a:SO_BINDTODEVICE=".lc($globalopts->{'bindacceptinf'})."\n\n";
+        }
+
+        if (lc($globalopts->{'bindoutgoingintf'}) ne "any")
+        {
+            $SSLfileout .= "socket=r:SO_BINDTODEVICE=".lc($globalopts->{'bindoutgoingintf'})."\n\n";
+        }
+    }
+
+    #Begin individual connection entries
+    my $recordcnt = 0;
+    foreach $cfgrecord (@$entry)
+    {
+        $SSLfileout .= "[".$cfgrecord->{'label'}."-".$cfgrecord->{'acceptport'}."]\n\n";
+
+        my $acceptip = $cfgrecord->{'acceptip'};
+        if ($acceptip eq "")
+        {
+            $acceptip = "0.0.0.0";
+        }
+
+        $SSLfileout .= "accept=".$acceptip.":".$cfgrecord->{'acceptport'}."\n";
+        $SSLfileout .= "connect=".$cfgrecord->{'connectip'}.":".$cfgrecord->{'connectport'}."\n";
+
+        if ($SSLmode eq $mode{server})
+        {
+            if ($cfgrecord->{'tcpsrcbindip'} ne "")
+            {
+                $SSLfileout .= "local=".$cfgrecord->{'tcpsrcbindip'}."\n";
+            }
+        }
+        if ($SSLmode eq $mode{client})
+        {
+            if ($cfgrecord->{'starttls'} eq "Yes")
+            {
+                $SSLfileout .= "protocol=smtp\n";
+            }
+        }
+
+        $SSLfileout .= "\n";
+
+        $recordcnt++;
+    }
+
+    open(SSL, "+>$SSLCfgfilename");
+    print SSL $SSLfileout;
+    close(SSL);
+
+    print "Done. '$SSLCfgfilename' file created.\n";
+} #end WriteCfgFile()
+
+sub Usage
+{
+    print "\nUsage:\n\n"                                                                                            .
+    "sslconvert <filename1> [{-h}]\n\n"                                                                       .
+    "Creates SSL configuration file from Sixnet WSBU's GAU configuration file.\n"                                    .
+    "<filename> - SSL configuration file created by the GAU.\n\n"                                             .
+    "Options:\n"                                                                                              .
+    "        -h - Displays the usage information summary you are now reading.\n";
+
+}

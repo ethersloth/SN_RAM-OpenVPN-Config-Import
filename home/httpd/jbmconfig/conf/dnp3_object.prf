@@ -1,0 +1,28 @@
+
+<profile>
+ <subsystems>
+                                                                                                                                                          
+                <!-- Advanced -> DNP3 Objects Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dnp3.prf" name="dnp3" />
+  <subsystem file="/home/httpd/jbmconfig/conf/dnp3_object.prf" name="dnp3_object">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save DNP3 Enable option to system configuration file."
+             name="enable"
+             path="/GAUCfg/dnp3/enable" />
+   </configuration>
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+        <pre subsystem="dnp3" action="Save" /> 
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+        <pre subsystem="dnp3" action="Apply" />
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

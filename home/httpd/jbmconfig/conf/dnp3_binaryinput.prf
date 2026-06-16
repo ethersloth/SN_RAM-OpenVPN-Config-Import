@@ -1,0 +1,43 @@
+
+<profile>
+ <subsystems>
+                                                                                                                                                          
+                <!-- Advanced -> DNP3 Binary Inputs Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dnp3_binaryinput.prf" name="binaryinput">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save DNP3 Binary Inputs Highest Register Address to system configuration file."
+             name="highestreg"
+             path="/GAUCfg/binaryinput/highestreg" />
+
+    <cstep errmsg="Unable to save Binary Inputs Auto Detect State to system configuration file."
+             name="autodetectchecked"
+             path="/GAUCfg/binaryinput/autodetectchecked" />
+
+    <cstep errmsg="Unable to save Binary Inputs No DNP Points State to system configuration file."
+             name="nodnpchecked"
+             path="/GAUCfg/binaryinput/nodnpchecked" />
+
+    <cstep errmsg="Unable to save Binary Inputs Object 2 Class Assignment to system configuration file."
+             name="defobj2class"
+             path="/GAUCfg/binaryinput/defobj2class" />
+
+    <cstep errmsg="Unable to save DNP3 Binary Input Exception Class Assignment Table to system configuration file."
+             name="exceptions" path="/GAUCfg/binaryinput/exceptions"
+             type="node" />
+             
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

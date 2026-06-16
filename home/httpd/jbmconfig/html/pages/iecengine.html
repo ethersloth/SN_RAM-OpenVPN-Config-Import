@@ -1,0 +1,167 @@
+<!-- Hide page until knockout loads --><div style="display: none" data-bind="visible: true">
+
+
+
+<!--ko template: {name:'title-template',data:'IEC Engine'}--><!--/ko-->
+
+<!--ko if: unlocked -->
+
+<!--ko template: {name:'full-savable-bool-template', data:enable} --><!--/ko-->
+<div style="width: 700px" class="gw-auto-margin" data-bind="foreach: stats">
+	<div class="gw-pair-left">
+		<span class="gw-middle"><b data-bind="text: label"></b></span>
+	</div>
+	<div class="gw-pair-right">
+		<span class="gw-middle" data-bind="text: value"> </span>
+	</div>
+	<br style="clear: both">
+</div>
+<br />
+<button class="btn gw-auto-margin" style="margin-bottom: 10px" data-bind="click: refresh">Refresh</button>
+
+<hr style="width: 100%;">
+<div style="width: 100%">
+	<!--ko template: {name:'h4-template', data: 'Straton Remote Link Control'}--><!--/ko-->
+	<div class="row-fluid">
+		<div class="span6">
+			<!--ko template: {name:'h4-template',data:'Remote Link Setup'}--><!--/ko-->
+			<div style="text-align: center">
+				<button type="button" class="btn btn-primary" data-bind="click: walkthrough">Walkthrough</button>
+			</div>
+			<br />
+			<div style="text-align: center">
+				<button type="button" class="btn btn-primary" data-bind="click: config">Quick Config</button>
+			</div>
+		</div>
+		<div class="span6">
+			<!--ko template: {name:'h4-template', data: 'Remote Link Status'}--><!--/ko-->
+			<div style="text-align: center">
+				<table style="gw-auto-margin">
+					<tr>
+						<td style="width: 270px; text-align: right"><b>Cellular IP:</b></td>
+						<td style="width: 100px" data-bind="text: listenip"></td>
+					</tr>
+				</table>
+			</div>
+			<br />
+			<div class="control-group">
+				<div style="width: 50%; float: left; text-align: right"><h5 data-bind="text: isRmtRunning() ? 'Running:' : 'Not Running:'"></h5></div>
+				<div style="width: 50%; float: left; text-align: left; padding-top: 5px">
+					<button style="margin-left: 10px" class="btn" data-bind="text: isNotRunning() ? 'Start Link' : 'Stop Link', css: {'btn-success': isNotRunning, 'btn-danger': isRmtRunning}, click: toggleRun"></button>
+				</div>
+			</div>
+			<div style="text-align: center" data-bind="if: showTime">
+				<table style="gw-auto-margin">
+					<tr>
+						<td style="width: 400px; float: left; text-align: right"><b>Remote Link Remaining Time:</b></td>
+						<td style="width: 100px; float: left" data-bind="text: disptime"></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<br />
+<hr style="width: 100%;">
+<div id="walkthrough-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="walkthrough-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: closeLink">&times;</button>
+					<h3>Welcome to the Straton Remote Link Walkthrough</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<p>Straton Remote Link will allow downloading and extracting straton databases through this device's cellular connection.
+					 Any straton database access supported from the straton link can be supported remotely through this feature.
+					</p>
+					<br />
+					<a class="btn btn-primary pull-right" data-bind="click: walkNext">Next</a>
+				</div>
+			</div>
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: closeLink">&times;</button>
+					<h3>Security</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<p>Since this remote unit could be reconfigured or reloaded remotely, we may want to enable some protection
+					 against this access. Once the Straton Remote Link is activated, it will only stay open for a few minutes.
+					 New attempts after this timeout will be rejected, but current connections will not be prematurely terminated.
+					</p>
+					<!--ko template: {name: 'full-savable-input-template', data: accesstime}--><!--/ko-->
+					<p>Access can also be restricted to a specific IP address that you provide. If you will be accessing the straton remote link from the
+					 same PC that you are using right now, we can detect the IP address you are using now and provide that as the only allowed IP address.
+					</p>
+					<!--ko template: {name: 'full-savable-select-template', data: secfilter}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: filter}--><!--/ko-->
+					<br />
+					<a class="btn pull-left" data-bind="click: walkPrev">Back</a>
+					<a class="btn btn-primary pull-right" data-bind="click: walkNextTwo">Next</a>
+				</div>
+			</div>
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: closeLink">&times;</button>
+					<h3>Congratulations</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<p>You have setup the Straton Remote Link. When you are finished, check the status on the previous screen and click Start to open the connection
+					 for the time available.
+					</p>
+					<div class="control-group">
+						<div style="width: 50%; float: left; text-align: right"><h5 data-bind="text: isRmtRunning() ? 'Running:' : 'Not Running:'"></h5></div>
+						<div style="width: 50%; float: left; text-align: left; padding-top: 5px">
+							<button style="margin-left: 10px" class="btn" data-bind="text: isNotRunning() ? 'Start Link' : 'Stop Link', css: {'btn-success': isNotRunning, 'btn-danger': isRmtRunning}, click: toggleRun"></button>
+						</div>
+					</div>
+					<div style="text-align: center" data-bind="if: showTime">
+						<table style="gw-auto-margin">
+							<tr>
+								<td style="width: 460px; float: left; text-align: right"><b>Remote Link Remaining Time:</b></td>
+								<td style="width: 100px; float: left" data-bind="text: disptime"></td>
+							</tr>
+						</table>
+					</div>
+					<br />
+					<a class="btn pull-left" data-bind="click: walkPrev">Back</a>
+					<a class="btn btn-primary pull-right" data-bind="click: walkFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="config-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="config-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: closeLink">&times;</button>
+					<h3>Remote Link Config</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: accesstime}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: secfilter}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: filter}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: configFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- /ko -->
+<!--ko ifnot: unlocked -->
+
+<span style="display: block; text-align: center; color: red; margin-bottom: 20px">You must unlock this feature</span>
+<table class="gw-status-table gw-auto-margin gw-st45" style="width: 300px; margin-bottom: 20px">
+	<tr>
+		<td>Serial Number</td>
+		<td data-bind="text: serialno"></td>
+	</tr>
+</table>
+<!--ko template: {name:'full-savable-input-template', data:unlock_code} --><!--/ko-->
+
+<!-- /ko -->
+
+<!-- Hide page until knockout loads --></div>

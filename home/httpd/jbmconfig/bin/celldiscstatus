@@ -1,0 +1,26 @@
+#!/bin/bash
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+CELL_DISC_TMP_FILE="/tmp/celldiscstat"
+CELL_DISC_OLD_FILE="/var/log/cell_disconnect.status.old"
+CELL_DISC_FILE="/var/log/cell_disconnect.status"
+
+if [ -e $CELL_DISC_TMP_FILE ];
+then
+	rm -f $CELL_DISC_TMP_FILE
+fi
+if [ -e $CELL_DISC_OLD_FILE ];
+then
+	cat $CELL_DISC_OLD_FILE > $CELL_DISC_TMP_FILE
+fi
+if [ -e $CELL_DISC_FILE ];
+then
+	cat $CELL_DISC_FILE >> $CELL_DISC_TMP_FILE
+fi
+if [ -e $CELL_DISC_TMP_FILE ];
+then
+	cat $CELL_DISC_TMP_FILE
+else 
+	echo -n no
+fi
+exit 0

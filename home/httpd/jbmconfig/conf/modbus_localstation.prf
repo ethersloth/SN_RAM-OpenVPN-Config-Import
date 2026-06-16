@@ -1,0 +1,43 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/modbus.prf"
+             name="modbus" />
+                                                                                                                                                          
+                <!-- Advanced -> Modbus /DNP3 Local Station Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/modbus_localstation.prf" name="modbus_localStation">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Modbus enable to system configuration file."
+             name="enable"
+             path="/GAUCfg/modbus/enable" />
+
+    <cstep errmsg="Unable to save Modbus Local Station Name to system configuration file."
+             name="localname"
+             path="/GAUCfg/modbus/localname" />
+
+    <cstep errmsg="Unable to save Modbus Local Station Number to system configuration file."
+             name="localStationNum"
+             path="/GAUCfg/modbus/localStationNum" />
+
+    <cstep errmsg="Unable to save Modbus Local Port Number to system configuration file."
+             name="localPort"
+             path="/GAUCfg/modbus/localPort" />
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+    <pre subsystem="modbus" action="Save" />
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+    <pre subsystem="modbus" action="Apply" />
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

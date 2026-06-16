@@ -1,0 +1,38 @@
+<form class="form-horizontal">
+	<div data-backdrop="static" data-keyboard="false" class="modal" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 0">
+		<div class="modal-header">
+			<h3>About</h3>
+		</div>
+		<div class="modal-body">
+			<div>
+				<table style="width: 100%">
+					<tr>
+						<td style="text-align: right; padding-right: 10px">Build Version:</td>
+						<td data-bind="text: buildVersion"></td>
+					</tr>
+					<tr>
+						<td style="text-align: right; padding-right: 10px">Contact Support:</td>
+						<td>
+							<span>+1 (877) 432-9908</span><br />
+							<a data-bind="text: mailtotext, attr: {href: mailtohref}"></a>
+						</td>
+					</tr>
+				</table>
+				<hr>
+				<!-- ko if: license.options().length > 0 -->
+				<!-- ko template: {name: 'h4-template', data: 'Open Source Licenses'} --><!-- /ko -->
+				<!-- ko template: {name: 'full-savable-select-template', data: license} --><!--/ko-->
+				<button class="btn gw-auto-margin" data-bind="click: showLicense">Display</button>
+				<hr>
+				<!-- /ko -->
+				<p style="text-align: center">&copy; Copyright 2017 Red Lion Controls, Inc. All Rights Reserved.<br />Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.</p>
+			</div>
+		</div>
+	</div>
+</form>
+<div id="about-license-modal" class="modal hide gw-modal-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="gw-modal-body-long">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<!-- ko template: {name: 'savable-textarea-template', data: licenseText} --><!--/ko-->
+	</div>
+</div>

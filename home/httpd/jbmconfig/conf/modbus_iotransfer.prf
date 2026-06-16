@@ -1,0 +1,67 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/modbus.prf"
+             name="modbus" />
+                                                                                                                                             
+                <!-- Advanced -> Modbus I/O Transfer Table Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/modbus_iotransfer.prf" name="modbus_xfer">
+   <validation>
+    <vstep errmsg="Invalid Modbus I/O Transfer Table Record Set. Must be a well-formed XML document."
+             name="xfers"
+             test="string-length(/input/xfers/text()) > 0" />
+   </validation>
+
+   <configuration>
+
+    <cstep errmsg="Unable to save Modbus Local Analog Input to system configuration file."
+             name="AnalogIn:vNumeric:y"
+             path="/GAUCfg/modbus/AnalogIn" />
+
+    <cstep errmsg="Unable to save Modbus Local Analog Output to system configuration file."
+             name="AnalogOut:vNumeric:y"
+             path="/GAUCfg/modbus/AnalogOut" />
+
+    <cstep errmsg="Unable to save Modbus Local Discrete Input to system configuration file."
+             name="DiscreteIn:vNumeric:y"
+             path="/GAUCfg/modbus/DiscreteIn" />
+
+    <cstep errmsg="Unable to save Modbus Local Discrete Output to system configuration file."
+             name="DiscreteOut:vNumeric:y"
+             path="/GAUCfg/modbus/DiscreteOut" />
+
+    <cstep errmsg="Unable to save Modbus Local Float Input to system configuration file."
+             name="FloatIn:vNumeric:y"
+             path="/GAUCfg/modbus/FloatIn" />
+
+    <cstep errmsg="Unable to save Modbus Local Float Output to system configuration file."
+             name="FloatOut:vNumeric:y"
+             path="/GAUCfg/modbus/FloatOut" />
+
+    <cstep errmsg="Unable to save Modbus Local Long Input to system configuration file."
+             name="LongIn:vNumeric:y"
+             path="/GAUCfg/modbus/LongIn" />
+
+    <cstep errmsg="Unable to save Modbus Local Long Output to system configuration file."
+             name="LongOut:vNumeric:y"
+             path="/GAUCfg/modbus/LongOut" />
+
+    <cstep errmsg="Unable to save Modbus I/O Transfer Table to system configuration file."
+             name="xfers" path="/GAUCfg/modbus/xfers"
+             type="node" />
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+    <pre subsystem="modbus" action="Save" />
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+    <pre subsystem="modbus" action="Apply" />
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

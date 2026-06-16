@@ -1,0 +1,37 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall.prf"
+             name="firewall" />
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall_fr.prf" name="firewall_fr">
+   <validation>
+    <vstep errmsg="Invalid Firewall Filter Rules Set. Must be a well-formed XML document."
+             name="filterrules"
+             test="string-length(/input/filterrules/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Firewall Filter Rule(s) to system configuration file."
+             name="filterrules"
+             path="/GAUCfg/firewall/filterrules"
+             type="node" />
+   </configuration>
+
+   <action name="Dummy" successmsg="Firewall Filter rules saved.">
+   </action>
+
+   <action name="Save" successmsg="Firewall settings saved.">
+    <pre subsystem="firewall" action="Save" />
+
+   </action>
+
+   <action name="Apply" successmsg="Firewall settings applied.">
+    <pre subsystem="firewall" action="Apply" />
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

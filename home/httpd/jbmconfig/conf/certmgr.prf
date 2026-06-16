@@ -1,0 +1,151 @@
+
+<profile>
+ <subsystems>
+                                                                                                                              <!--
+               Admin -> Certificate Manager Section
+
+  V2.20 behaviors (taken from cfg_sec.cpp - InstallCertificate() & UploadCertificate()):
+
+  +==========+=====================================================================+============+
+  |  ACTION  |                           STEP                                      | ON FAILURE |
+  +==========+=====================================================================+============+
+  |   Upload | Verify file name exists in Master Configuration file                | Abort      |
+  |          +---------------------------------------------------------------------+------------+
+  |          | Verify length of file name > 0                                      | Abort      |
+  |          +---------------------------------------------------------------------+------------+
+  |          | Verify file exists & readable                                       | Abort      |
+  +----------+---------------------------------------------------------------------+------------+
+  |  Install | Verify Certificate type exists in Master Configuration file         | Abort      |
+  |          +---------------------------------------------------------------------+------------+
+  |          | Verify file name exists in Master Configuration file                | Abort      |
+  |          +---------------------------------------------------------------------+------------+
+  |          | Verify length of file name > 0                                      | Abort      |
+  |          +---------------------------------------------------------------------+------------+
+  |          | Remove filename from Master Configuration file                      | Abort      |
+  |          +---------------------------------------------------------------------+------------+
+  |          | if ("ssl" == Certificate type)                                      | Abort      |
+  |          |   {                                                                 |            |
+  |          |    mv certificatefile /etc/stunnel/certificatename                  |            |
+  |          |   }                                                                 |            |
+  |          |  else                                                               |            |
+  |          |      {                                                              |            |
+  |          |       mv certificatefile /etc/ipsec/ipsec.d/certs/certificatename   |            |
+  |          |       mv certificatefile /etc/ipsec/ipsec.d/private/certificatename |            |
+  |          |       mv certificatefile /etc/ipsec/ipsec.d/cacerts/certificatename |            |
+  |          |      }                                                              |            |
+  +==========+=====================================================================+============+                                -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/certmgr.prf" name="certmgr">
+   <validation>
+    <vstep errmsg="Invalid Cetificaters Record Set. Must be a well-formed XML document."
+             name="certificates"
+             test="string-length(/input/certificates/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Certificates to system configuration file."
+             name="certificates" path="/GAUCfg/certmgr/certificates"
+             type="node" />
+   </configuration>
+
+   <action name="Save" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_certmgr
+    <astep      abort="n"
+               errmsg="Failed to move Certificate files"
+                 name="SystemCommand"
+               repeat="/GAUCfg/certmgr/certificates/certificate"
+           rptNdxName="RPT_NDX">
+
+     <arg       expr="concat('cp -f /tmp/', /GAUCfg/certmgr/certificates/certificate[RPT_NDX]/file/text(), ' /etc/jbm/certificates/; ')"
+          rptNdxName="RPT_NDX"
+              source="config"  />
+
+     <arg       expr="concat('rm -f /tmp/', /GAUCfg/certmgr/certificates/certificate[RPT_NDX]/file/text())"
+          rptNdxName="RPT_NDX"
+              source="config"  />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to create /etc/ramqtt/certs directory" name="SystemCommand">
+     <arg expr="mkdir -p /etc/ramqtt/certs" />
+    </astep>
+
+    <astep      abort="n"
+               errmsg="Failed to link Certificate files"
+                 name="SystemCommand"
+               repeat="/GAUCfg/certmgr/certificates/certificate"
+           rptNdxName="RPT_NDX">
+
+     <arg       expr="concat('ln -sf /etc/jbm/certificates/', /GAUCfg/certmgr/certificates/certificate[RPT_NDX]/file/text(), ' /etc/lighttpd/gau/lighttpd-gau.pem')"
+          dependency="/GAUCfg/certmgr/certificates/certificate[RPT_NDX]/type/text() = 'https'"
+          rptNdxName="RPT_NDX"
+              source="config"  />
+
+     <arg       expr="concat('ln -sf /etc/jbm/certificates/', /GAUCfg/certmgr/certificates/certificate[RPT_NDX]/file/text(), ' /etc/stunnel/certs/.')"
+          dependency="/GAUCfg/certmgr/certificates/certificate[RPT_NDX]/type/text() = 'ssl'"
+          rptNdxName="RPT_NDX"
+              source="config"  />
+
+     <arg       expr="concat('ln -sf /etc/jbm/certificates/', /GAUCfg/certmgr/certificates/certificate[RPT_NDX]/file/text(), ' /etc/ipsec/ipsec.d/certs/.')"
+          dependency="/GAUCfg/certmgr/certificates/certificate[RPT_NDX]/type/text() = 'ipseccert'"
+          rptNdxName="RPT_NDX"
+              source="config"  />
+
+     <arg       expr="concat('ln -sf /etc/jbm/certificates/', /GAUCfg/certmgr/certificates/certificate[RPT_NDX]/file/text(), ' /etc/ipsec/ipsec.d/private/.')"
+          dependency="/GAUCfg/certmgr/certificates/certificate[RPT_NDX]/type/text() = 'ipseckey'"
+          rptNdxName="RPT_NDX"
+              source="config"  />
+
+     <arg       expr="concat('ln -sf /etc/jbm/certificates/', /GAUCfg/certmgr/certificates/certificate[RPT_NDX]/file/text(), ' /etc/ipsec/ipsec.d/cacerts/.')"
+          dependency="/GAUCfg/certmgr/certificates/certificate[RPT_NDX]/type/text() = 'ipsecca'"
+          rptNdxName="RPT_NDX"
+              source="config"  />
+
+     <arg       expr="concat('ln -sf /etc/jbm/certificates/', /GAUCfg/certmgr/certificates/certificate[RPT_NDX]/file/text(), ' /etc/openvpn/.')"
+          dependency="/GAUCfg/certmgr/certificates/certificate[RPT_NDX]/type/text() = 'sslvpn'"
+          rptNdxName="RPT_NDX"
+              source="config"  />
+
+     <arg       expr="concat('ln -sf /etc/jbm/certificates/', /GAUCfg/certmgr/certificates/certificate[RPT_NDX]/file/text(), ' /etc/ramqtt/certs/.')"
+          dependency="/GAUCfg/certmgr/certificates/certificate[RPT_NDX]/type/text() = 'ramqttcert'"
+          rptNdxName="RPT_NDX"
+              source="config"  />
+
+     <arg       expr="concat('ln -sf /etc/jbm/certificates/', /GAUCfg/certmgr/certificates/certificate[RPT_NDX]/file/text(), ' /etc/ramqtt/certs/.')"
+          dependency="/GAUCfg/certmgr/certificates/certificate[RPT_NDX]/type/text() = 'ramqttkey'"
+          rptNdxName="RPT_NDX"
+              source="config"  />
+
+     <arg       expr="concat('ln -sf /etc/jbm/certificates/', /GAUCfg/certmgr/certificates/certificate[RPT_NDX]/file/text(), ' /etc/ramqtt/certs/.')"
+          dependency="/GAUCfg/certmgr/certificates/certificate[RPT_NDX]/type/text() = 'ramqttca'"
+          rptNdxName="RPT_NDX"
+              source="config"  />
+
+    </astep>
+Moved to prfhandler_certmgr-->
+
+    <astep abort="y" errmsg="Failed to save certmgr configuration" name="SystemCommand">
+     <arg expr="'prfhandler_certmgr Save'" source="config" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_certmgr
+    <pre subsystem="certmgr" action="Save" />
+
+    <astep abort="n" errmsg="Failed to clean Certificate repository" name="SystemCommand" >
+     <arg expr="/home/httpd/jbmconfig/bin/cleancertdir" />
+    </astep>
+Moved to prfhandler_certmgr-->
+
+    <astep abort="y" errmsg="Failed to apply certmgr configuration" name="SystemCommand">
+     <arg expr="'prfhandler_certmgr Apply'" source="config" />
+    </astep>
+
+   </action>
+
+  </subsystem>
+ </subsystems>
+</profile>

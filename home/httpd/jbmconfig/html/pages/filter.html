@@ -1,0 +1,98 @@
+<!--ko template: {name:'title-template',data:'Firewall Access Control List (ACL) Rules'}--><!--/ko-->
+<div style="text-align: center; vertical-align: middle;" data-bind="visible: isIPTransEnabled">
+	<span><font color="#FF0000">The Firewall is currently under the control of IP Transparency</font></span>
+</div>
+<div style="text-align: center; vertical-align: middle;" data-bind="visible: !isFirewallEnabled()">
+	<span>The firewall is currently not enabled.<br/>It may be enabled under the 'General Settings' section.</span>
+</div>
+<!-- ko if: isFirewallEnabled -->
+	<!--ko template: {name:'h4-template',data:'Current Whitelist Groups'}--><!--/ko-->
+	<table align="center">
+		<tr>
+			<td><pre><span data-bind="text: wlgdisparea"></span></pre></td>
+		</tr>
+	</table>
+	<hr/>
+	<table align="center">
+		<tr>
+			<td>
+				<h4><u>Subnet Whitelist Rules</u> <a tabindex="-1" data-bind="help: {'title': 'ACL Rules', 'link': '/h_fwfilter_aclrules.html'}" class="btn"><i class="icon-question-sign"></i></a></h4>
+			</td>
+		</tr>
+	</table>
+	<!--ko template: {name:'table-template',data:whitelistTable}--><!--/ko-->
+	<!-- ko template: {name: 'full-savable-select-template', data: outr} --><!-- /ko -->
+	<hr/>
+	<!--ko template: {name:'h4-template',data:'Subnet Blacklist Rules'}--><!--/ko-->
+	<!--ko template: {name:'table-template',data:blacklistTable}--><!--/ko-->
+	<hr/>
+	<table align="center">
+		<tr>
+			<td>
+				<h4><u>Filter Rules</u> <a tabindex="-1" data-bind="help: {'title': 'Filter Rules', 'link': '/h_fwfilter_filterrules.html'}" class="btn"><i class="icon-question-sign"></i></a></h4>
+			</td>
+		</tr>
+	</table>
+	<!--ko template: {name:'table-template',data:filterTable}--><!--/ko-->
+<!-- /ko -->
+
+<div id="filterrule-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="filterrule-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Filter Rules Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: label}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: iintf}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: whitelist}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: ointf}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: odaddr}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: filterWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="whitelistdef-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="whitelistdef-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Whitelist Rules Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: name}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: subnet}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: whitelistWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="blacklistrule-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="blacklistrule-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Blacklist Rules Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: blksubnet}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: blacklistWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div style="text-align: center">
+	<a class="btn" data-bind="click: switchPage('#!/fwgeneral')">General Settings</a>
+	<a class="btn" data-bind="click: switchPage('#!/masqnat')">Masquerade/NAT/DMZ Rules</a>
+	<a class="btn" data-bind="click: switchPage('#!/access')">Port Allow/Forwarding Rules</a>
+</div>

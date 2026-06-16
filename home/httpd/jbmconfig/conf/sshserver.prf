@@ -1,0 +1,351 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/sshserver.prf" name="sshserver">
+   <validation>
+    <vstep errmsg="Invalid Enable value. Must be 'y' or 'n'." name="enable" test="isyorn(/input/enable/text())" />
+
+    <vstep errmsg="Invalid Advanced value. Must be 'y' or 'n'." name="advanced" test="isyorn(/input/advanced/text())" />
+
+    <vstep errmsg="Invalid Listening IP Address. Must be a properly formatted IPv4 address."
+             name="listenaddr"
+             test="isipaddr(/input/listenaddr/text())" />
+
+    <vstep errmsg="Invalid Listening IP Port. Must be an integer between 1 and 65535."
+             name="listenport"
+             test="isnumber(/input/listenport/text()) and /input/listenport/text() < 65536 and /input/listenport/text() > 1" />
+
+    <vstep errmsg="Invalid Protocol. Must be 'm', '1' or '2'."
+             name="protocol"
+             test="/input/protocol/text() = 'm' or /input/protocol/text() = '1' or /input/protocol/text() = '2'" />
+
+    <vstep errmsg="Invalid Login Grace Time. Must be an integer."
+             name="gracetime"
+             test="isnumber(/input/gracetime/text())" />
+
+    <vstep errmsg="Invalid Maximum Concurrent Connections. Must be an integer."
+             name="maxstartups"
+             test="isnumber(/input/maxstartups/text()) and /input/maxstartups/text() > 0" />
+
+    <vstep errmsg="Invalid value for 'Allow Root Login'. Must be 'y' or 'n'."
+             name="rootlogin"
+             test="isyorn(/input/rootlogin/text())" />
+   </validation>
+
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable Flag to system configuration file."
+             name="enable"
+             path="/GAUCfg/sshserver/enable" />
+
+    <cstep errmsg="Unable to save Advanced Flag to system configuration file."
+             name="advanced"
+             path="/GAUCfg/sshserver/advanced" />
+
+    <cstep errmsg="Unable to save Listen IP Address to system configuration file."
+             name="listenaddr"
+             path="/GAUCfg/sshserver/listenaddr" />
+
+    <cstep errmsg="Unable to save Listen IP Port to system configuration file."
+             name="listenport"
+             path="/GAUCfg/sshserver/listenport" />
+
+    <cstep errmsg="Unable to save Protocol Version to system configuration file."
+             name="protocol"
+             path="/GAUCfg/sshserver/protocol" />
+
+    <cstep errmsg="Unable to save Login Grace Time to system configuration file."
+             name="gracetime"
+             path="/GAUCfg/sshserver/gracetime" />
+
+    <cstep errmsg="Unable to save Maximum Concurrent Connections to system configuration file."
+             name="maxstartups"
+             path="/GAUCfg/sshserver/maxstartups" />
+
+    <cstep errmsg="Unable to save Root Login Flag to system configuration file."
+             name="rootlogin"
+             path="/GAUCfg/sshserver/rootlogin" />
+
+    <cstep errmsg="Unable to save Firewall/SSH Flag to system configuration file."
+             name="firewall-ssh" path="/GAUCfg/firewall/ssh" />
+   </configuration>
+
+   <action name="Apply" successmsg="SSH Server settings saved and applied.">
+
+<!--Moved to prfhandler_sshserver
+    <pre subsystem="sshserver" action="Save" />
+
+    <astep      abort="n"
+           dependency="/GAUCfg/sshserver/enable/text() = 'n'"
+                  name="SystemCommand">
+     <arg expr="service sshd stop" />
+    </astep>
+
+    <astep      abort="y"
+           dependency="/GAUCfg/sshserver/enable/text() = 'y'"
+               errmsg="Failed to start SSH Service."
+                  name="SystemCommand">
+     <arg expr="service sshd restart" />
+    </astep>
+Moved to prfhandler_sshserver-->
+
+    <astep abort="y" errmsg="Failed to apply the SSH Server configuration file" name="SystemCommand">
+     <arg expr="'prfhandler_sshserver Apply'" source="config" />
+    </astep>
+   </action>
+
+   <action name="Save" successmsg="SSH Server settings saved.">
+
+<!--Moved to prfhandler_sshserver
+    <astep abort="y" errmsg="Failed to write SSH Server configuration file." name="WriteFormattedFile" >
+     <arg expr="'/tmp/sshd_config'" source="config" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg expr="# This is the sshd server system-wide configuration file." />
+     <arg expr="\n" />
+     <arg expr="# This sshd was compiled with PATH=/usr/bin:/bin:/usr/sbin:/sbin" />
+     <arg expr="\n" />
+     <arg expr="# The strategy used for options in the default sshd_config shipped with" />
+     <arg expr="\n" />
+     <arg expr="# OpenSSH is to specify options with their default value where" />
+     <arg expr="\n" />
+     <arg expr="# possible, but leave them commented.  Uncommented options change a" />
+     <arg expr="\n" />
+     <arg expr="# default value." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg dependency="string-length(/GAUCfg/sshserver/listenport/text()) = 0"
+                expr="'#Port 22'"
+              source="config" />
+
+     <arg dependency="string-length(/GAUCfg/sshserver/listenport/text()) > 0"
+                expr="concat('Port ', /GAUCfg/sshserver/listenport/text())"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/sshserver/protocol/text() = 'm'"
+                expr="'Protocol 2,1'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/sshserver/protocol/text() != 'm'"
+                expr="concat('Protocol ', /GAUCfg/sshserver/protocol/text())"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="string-length(/GAUCfg/sshserver/listenaddr/text()) = 0"
+                expr="'#ListenAddress nnn.nnn.nnn.nnn'"
+              source="config" />
+
+     <arg dependency="string-length(/GAUCfg/sshserver/listenaddr/text()) > 0"
+                expr="concat('ListenAddress ', /GAUCfg/sshserver/listenaddr/text())"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/sshserver/listenaddr/text() = '0.0.0.0'"
+                expr="'ListenAddress ::'"
+                source="config" />
+
+     <arg expr="\n" />
+     <arg expr="# HostKey for protocol version 1" />
+     <arg expr="\n" />
+     <arg expr="#HostKey /etc/ssh/ssh_host_key" />
+     <arg expr="\n" />
+     <arg expr="# HostKeys for protocol version 2" />
+     <arg expr="\n" />
+     <arg expr="#HostKey /etc/ssh/ssh_host_rsa_key" />
+     <arg expr="\n" />
+     <arg expr="#HostKey /etc/ssh/ssh_host_dsa_key" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# Lifetime and size of ephemeral version 1 server key" />
+     <arg expr="\n" />
+     <arg expr="#KeyRegenerationInterval 1h" />
+     <arg expr="\n" />
+     <arg expr="#ServerKeyBits 768" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# Logging" />
+     <arg expr="\n" />
+     <arg expr="# obsoletes QuietMode and FascistLogging" />
+     <arg expr="\n" />
+     <arg expr="#SyslogFacility AUTH" />
+     <arg expr="\n" />
+     <arg expr="#LogLevel INFO" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# Authentication:" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#AddressFamily any" />
+     <arg expr="\n" />
+
+     <arg expr="concat('LoginGraceTime ', /GAUCfg/sshserver/gracetime/text())" source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/sshserver/rootlogin/text() = 'n'" expr="'PermitRootLogin no'" source="config" />
+
+     <arg dependency="/GAUCfg/sshserver/rootlogin/text() = 'y'" expr="'PermitRootLogin yes'" source="config" />
+
+     <arg expr="\n" />
+
+     <arg expr="#StrictModes yes" />
+     <arg expr="\n" />
+     <arg expr="#MaxAuthTries 6" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#RSAAuthentication yes" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#PubkeyAuthentication yes" />
+     <arg expr="\n" />
+     <arg expr="#AuthorizedKeysFile     .ssh/authorized_keys" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# For this to work you will also need host keys in /etc/ssh/ssh_known_hosts" />
+     <arg expr="\n" />
+     <arg expr="#RhostsRSAAuthentication no" />
+     <arg expr="\n" />
+     <arg expr="# similar for protocol version 2" />
+     <arg expr="\n" />
+     <arg expr="#HostbasedAuthentication no" />
+     <arg expr="\n" />
+     <arg expr="# Change to yes if you don't trust ~/.ssh/known_hosts for" />
+     <arg expr="\n" />
+     <arg expr="# RhostsRSAAuthentication and HostbasedAuthentication" />
+     <arg expr="\n" />
+     <arg expr="#IgnoreUserKnownHosts no" />
+     <arg expr="\n" />
+     <arg expr="# Don't read the user's ~/.rhosts and ~/.shosts files" />
+     <arg expr="\n" />
+     <arg expr="#IgnoreRhosts yes" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# To disable tunneled clear text passwords, change to no here!" />
+     <arg expr="\n" />
+     <arg expr="#PasswordAuthentication yes" />
+     <arg expr="\n" />
+     <arg expr="#PermitEmptyPasswords no" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# Change to no to disable s/key passwords" />
+     <arg expr="\n" />
+     <arg expr="#ChallengeResponseAuthentication yes" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# Kerberos options" />
+     <arg expr="\n" />
+     <arg expr="#KerberosAuthentication no" />
+     <arg expr="\n" />
+     <arg expr="#KerberosOrLocalPasswd yes" />
+     <arg expr="\n" />
+     <arg expr="#KerberosTicketCleanup yes" />
+     <arg expr="\n" />
+     <arg expr="#KerberosGetAFSToken no" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# GSSAPI options" />
+     <arg expr="\n" />
+     <arg expr="#GSSAPIAuthentication no" />
+     <arg expr="\n" />
+     <arg expr="#GSSAPICleanupCredentials yes" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# Set this to 'yes' to enable PAM authentication, account processing," />
+     <arg expr="\n" />
+     <arg expr="# and session processing. If this is enabled, PAM authentication will" />
+     <arg expr="\n" />
+     <arg expr="# be allowed through the ChallengeResponseAuthentication mechanism." />
+     <arg expr="\n" />
+     <arg expr="# Depending on your PAM configuration, this may bypass the setting of" />
+     <arg expr="\n" />
+     <arg expr="# PasswordAuthentication, PermitEmptyPasswords, and" />
+     <arg expr="\n" />
+     <arg expr="# " />
+     <arg expr="quote()" source="config" />
+     <arg expr="PermitRootLogin without-password" />
+     <arg expr="quote()" source="config" />
+     <arg expr=". If you just want the PAM account and" />
+     <arg expr="\n" />
+     <arg expr="# session checks to run without PAM authentication, then enable this but set" />
+     <arg expr="\n" />
+     <arg expr="# ChallengeResponseAuthentication=no" />
+     <arg expr="\n" />
+     <arg expr="#UsePAM no" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#AllowTcpForwarding yes" />
+     <arg expr="\n" />
+     <arg expr="#GatewayPorts no" />
+     <arg expr="\n" />
+     <arg expr="#X11Forwarding no" />
+     <arg expr="\n" />
+     <arg expr="#X11DisplayOffset 10" />
+     <arg expr="\n" />
+     <arg expr="#X11UseLocalhost yes" />
+     <arg expr="\n" />
+     <arg expr="#PrintMotd yes" />
+     <arg expr="\n" />
+     <arg expr="#PrintLastLog yes" />
+     <arg expr="\n" />
+     <arg expr="#TCPKeepAlive yes" />
+     <arg expr="\n" />
+     <arg expr="#UseLogin no" />
+     <arg expr="\n" />
+     <arg expr="#UsePrivilegeSeparation yes" />
+     <arg expr="\n" />
+     <arg expr="#PermitUserEnvironment no" />
+     <arg expr="\n" />
+     <arg expr="#Compression delayed" />
+     <arg expr="\n" />
+     <arg expr="#ClientAliveInterval 0" />
+     <arg expr="\n" />
+     <arg expr="#ClientAliveCountMax 3" />
+     <arg expr="\n" />
+     <arg expr="UseDNS no" />
+     <arg expr="\n" />
+     <arg expr="#PidFile /var/run/sshd.pid" />
+     <arg expr="\n" />
+     <arg expr="Subsystem sftp internal-sftp" />
+     <arg expr="\n" />
+
+     <arg expr="concat('MaxStartups ', /GAUCfg/sshserver/maxstartups/text())" source="config" />
+
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move ssh configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/sshd_config /etc/ssh/sshd_config" />
+    </astep>
+
+    <astep       abort="n"
+            dependency="/GAUCfg/sshserver/enable/text() = 'n'"
+                  name="SystemCommand">
+     <arg expr="chkconfig sshd off" />
+    </astep>
+
+    <astep       abort="y"
+            dependency="/GAUCfg/sshserver/enable/text() = 'y'"
+                errmsg="Failed to enable SSH Service."
+                  name="SystemCommand">
+     <arg expr="chkconfig sshd on" />
+    </astep>
+Moved to prfhandler_sshserver-->
+
+    <astep abort="y" errmsg="Failed to save SSH Server configuration file" name="SystemCommand">
+     <arg expr="'prfhandler_sshserver Save'" source="config" />
+    </astep>
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

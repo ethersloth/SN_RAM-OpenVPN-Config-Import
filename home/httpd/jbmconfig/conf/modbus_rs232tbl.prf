@@ -1,0 +1,59 @@
+
+<profile>
+  <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/modbus.prf"
+             name="modbus" />
+                                                                                                                                                          
+                <!-- Advanced -> Modbus Serial Table Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/modbus_rs232tbl.prf" name="modbus_serial">
+   <validation>
+    <vstep errmsg="Invalid Modbus Serial Table Record Set. Must be a well-formed XML document."
+             name="serials"
+             test="string-length(/input/serials/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Modbus Serial Table to system configuration file."
+             name="serials" path="/GAUCfg/modbus/serials"
+             type="node" />
+   </configuration>
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+    <pre subsystem="modbus" action="Save" />
+
+    <astep  abort="y" errmsg="Failed to write RS-485 Lead and Lag time Settings configuration file." name="WriteFormattedFile">
+     <arg expr="/tmp/rs485_config.conf" />
+     <arg expr="# This is a GUI generated file." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="concat('DELAY_RTS_BEFORE_SEND = ', /GAUCfg/modbus/serials/serial[RPT_NDX]/leadTime/text())"
+          dependency="/GAUCfg/modbus/serials/serial[RPT_NDX]/device/text() = 'ttyS5'"
+              repeat="/GAUCfg/modbus/serials/serial"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="concat('DELAY_RTS_AFTER_SEND = ', /GAUCfg/modbus/serials/serial[RPT_NDX]/lagTime/text())"
+          dependency="/GAUCfg/modbus/serials/serial[RPT_NDX]/device/text() = 'ttyS5'"
+              repeat="/GAUCfg/modbus/serials/serial"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to move RS-485 Lead and Lag time configuration file" name="SystemCommand"
+        sysdependency="ls -l /tmp/rs485_config.conf &amp;> /dev/null; [ $? -eq 0 ]">
+            <arg expr="mv -f /tmp/rs485_config.conf /etc/rs485/rs485_config.conf" />
+    </astep>
+    
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+    <pre subsystem="modbus" action="Apply" />
+   </action>
+ </subsystem>
+ </subsystems>
+</profile>

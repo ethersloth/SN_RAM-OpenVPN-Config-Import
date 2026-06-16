@@ -1,0 +1,44 @@
+
+<profile>
+ <subsystems>
+                                                                                                                                                          
+                <!-- Advanced -> DNP3 Floating Output Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dnp3_floatoutput.prf" name="floatoutput">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save DNP3 Floating Output Highest Register Address to system configuration file."
+             name="highestreg"
+             path="/GAUCfg/floatoutput/highestreg" />
+
+    <cstep errmsg="Unable to save Floating Output Auto Detect State to system configuration file."
+             name="autodetectchecked"
+             path="/GAUCfg/floatoutput/autodetectchecked" />
+
+    <cstep errmsg="Unable to save Floating Output No DNP Points State to system configuration file."
+             name="nodnpchecked"
+             path="/GAUCfg/floatoutput/nodnpchecked" />
+
+
+    <cstep errmsg="Unable to save Floating Output Class Assignments to system configuration file."
+             name="class"
+             path="/GAUCfg/floatoutput/class" />
+
+    <cstep errmsg="Unable to save DNP3 Float Output Exception Class Assignments Table to system configuration file."
+             name="exceptions" path="/GAUCfg/floatoutput/exceptions"
+             type="node" />
+             
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

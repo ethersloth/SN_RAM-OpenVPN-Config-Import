@@ -1,0 +1,110 @@
+
+<profile>
+    <subsystems>
+
+        <!-- Advanced -> Modbus All Tables Settings Section -->
+
+        <subsystem file="/home/httpd/jbmconfig/conf/modbus.prf" name="modbus">
+            <validation>
+                <vstep errmsg="Invalid Station Table List. Must be a well-formed XML document."
+                    name="remoteStations"
+                    test="string-length(/input/remoteStations/text()) > 0" />
+
+                <vstep errmsg="Invalid serial Table List. Must be a well-formed XML document."
+                    name="serials"
+                    test="string-length(/input/serials/text()) > 0" />
+
+                <vstep errmsg="Invalid I/O Transfer Table List. Must be a well-formed XML document."
+                    name="xfers"
+                    test="string-length(/input/xfers/text()) > 0" />
+
+                <vstep errmsg="Invalid Forwarding Table List. Must be a well-formed XML document."
+                    name="forwards"
+                    test="string-length(/input/forwards/text()) > 0" />
+            </validation>
+
+            <configuration>
+                <cstep errmsg="Unable to save Modbus enable to system configuration file."
+                    name="enable"
+                    path="/GAUCfg/modbus/enable" />
+
+                <cstep errmsg="Unable to save Modbus Local Station Name to system configuration file."
+                    name="localname"
+                    path="/GAUCfg/modbus/localname" />
+
+                <cstep errmsg="Unable to save Modbus Local Station Number to system configuration file."
+                    name="localStationNum"
+                    path="/GAUCfg/modbus/localStationNum" />
+
+                <cstep errmsg="Unable to save Modbus Local Port Number to system configuration file."
+                    name="localPort"
+                    path="/GAUCfg/modbus/localPort" />
+
+                <cstep errmsg="Unable to save Modbus Local Analog Input to system configuration file."
+                    name="AnalogIn"
+                    path="/GAUCfg/modbus/AnalogIn" />
+
+                <cstep errmsg="Unable to save Modbus Local Analog Output to system configuration file."
+                    name="AnalogOut"
+                    path="/GAUCfg/modbus/AnalogOut" />
+
+                <cstep errmsg="Unable to save Modbus Local Discrete Input to system configuration file."
+                    name="DiscreteIn"
+                    path="/GAUCfg/modbus/DiscreteIn" />
+
+                <cstep errmsg="Unable to save Modbus Local Discrete Output to system configuration file."
+                    name="DiscreteOut"
+                    path="/GAUCfg/modbus/DiscreteOut" />
+
+                <cstep errmsg="Unable to save Modbus Local Float Input to system configuration file."
+                    name="FloatIn"
+                    path="/GAUCfg/modbus/FloatIn" />
+
+                <cstep errmsg="Unable to save Modbus Local Float Output to system configuration file."
+                    name="FloatOut"
+                    path="/GAUCfg/modbus/FloatOut" />
+
+                <cstep errmsg="Unable to save Modbus Local Long Input to system configuration file."
+                    name="LongIn"
+                    path="/GAUCfg/modbus/LongIn" />
+
+                <cstep errmsg="Unable to save Modbus Local Long Output to system configuration file."
+                    name="LongOut"
+                    path="/GAUCfg/modbus/LongOut" />
+
+                <cstep errmsg="Cannot save Station Tables to configuration file"
+                    name="remoteStations"
+                    path="/GAUCfg/modbus/remoteStations"
+                    type="node" />
+
+                <cstep errmsg="Cannot save serial Tables to configuration file"
+                    name="serials"
+                    path="/GAUCfg/modbus/serials"
+                    type="node" />
+
+                <cstep errmsg="Cannot save I/O Transfer Tables to configuration file"
+                    name="xfers"
+                    path="/GAUCfg/modbus/xfers"
+                    type="node" />
+
+                <cstep errmsg="Cannot save Forwarding Tables to configuration file"
+                    name="forwards"
+                    path="/GAUCfg/modbus/forwards"
+                    type="node" />
+            </configuration>
+
+            <action name="Save" successmsg="Save Operation Succeeded.">
+                <astep abort="n" errmsg="Failed to save configuration" name="SystemCommand">
+                    <arg expr="'prfhandler_modbus Save'" source="config" />
+                </astep>
+            </action>
+
+            <action name="Apply" successmsg="Apply Operation Succeeded.">
+                <astep abort="n" errmsg="Failed to apply configuration" name="SystemCommand">
+                    <arg expr="'prfhandler_modbus Apply'" source="config" />
+                </astep>
+            </action>
+
+        </subsystem>
+    </subsystems>
+</profile>

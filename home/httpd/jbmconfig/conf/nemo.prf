@@ -1,0 +1,173 @@
+
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/nemo.prf" name="nemo">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable Flag to system configuration file."
+             name="enable"
+             path="/GAUCfg/nemo/enable" />
+   
+    <cstep errmsg="Unable to save Collocated-Care-of-Address Interface name to system configuration file."
+             name="ccoaintf"
+             path="/GAUCfg/nemo/ccoaintf" />
+   
+    <cstep errmsg="Unable to save Home Agent IP Address to system configuration file."
+             name="agentipaddr"
+             path="/GAUCfg/nemo/agentipaddr" />
+   
+    <cstep errmsg="Unable to save MR Home IP Address to system configuration file."
+             name="homeipaddr"
+             path="/GAUCfg/nemo/homeipaddr" />
+   
+    <cstep errmsg="Unable to save Home IP Netmask to system configuration file."
+             name="homenetmask"
+             path="/GAUCfg/nemo/homenetmask" />
+   
+    <cstep errmsg="Unable to save MTU to system configuration file."
+             name="mtu"
+             path="/GAUCfg/nemo/mtu" />
+   
+    <cstep errmsg="Unable to save Secret Key to system configuration file."
+             name="secretkey"
+             path="/GAUCfg/nemo/secretkey" />
+   
+    <cstep errmsg="Unable to save SPI to system configuration file."
+             name="spi"
+             path="/GAUCfg/nemo/spi" />
+   
+    <cstep errmsg="Unable to save LIFETIME to system configuration file."
+             name="lifetime"
+             path="/GAUCfg/nemo/lifetime" />
+   
+    <cstep errmsg="Unable to save Re-register Delay to system configuration file."
+             name="reregisterdelay"
+             path="/GAUCfg/nemo/reregisterdelay" />
+   
+    <cstep errmsg="Unable to save Maximum Number of Retries to system configuration file."
+             name="maxretry"
+             path="/GAUCfg/nemo/maxretry" />
+   
+    <cstep errmsg="Unable to save Retry RRQ Delay to system configuration file."
+             name="retrydelay"
+             path="/GAUCfg/nemo/retrydelay" />
+   
+    <cstep errmsg="Unable to save Interface List to system configuration file."
+             name="intfs"
+             path="/GAUCfg/nemo/intfs" />
+
+    <cstep errmsg="Unable to save Route Subnet to system configuration file."
+              name="routedsubnets" 
+              path="/GAUCfg/nemo/routedsubnets"
+              type="node" />
+   </configuration>
+   
+   <action name="Save" successmsg="Operation Succeeded.">                                                                            
+    <!-- Begin writing NEMO configuration to file -->
+
+<!--Moved to prfhandler_nemo
+    <astep abort="y"
+          errmsg="Failed to write NEMO Client configuration file."
+      dependency="/GAUCfg/nemo/enable/text() = 'y'"
+            name="WriteFormattedFile">
+     <arg expr="'/tmp/nemo_client.conf'" source="config" />
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="concat('CCOA_INTERFACE = ', /GAUCfg/nemo/ccoaintf/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('HOME_AGENT_IPADDR = ', /GAUCfg/nemo/agentipaddr/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('HOME_IPADDR = ', /GAUCfg/nemo/homeipaddr/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('HOME_IP_NETMASK = ', /GAUCfg/nemo/homenetmask/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('MTU = ', /GAUCfg/nemo/mtu/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('SECRET_KEY = ', /GAUCfg/nemo/secretkey/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('SPI = ', /GAUCfg/nemo/spi/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('LIFETIME = ', /GAUCfg/nemo/lifetime/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('REREGISTER_DELAY = ', /GAUCfg/nemo/reregisterdelay/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('RETRY_RRQ_MAX = ', /GAUCfg/nemo/maxretry/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('RETRY_RRQ_DELAY = ', /GAUCfg/nemo/retrydelay/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('ROUTE_INT_LIST = ', /GAUCfg/nemo/intfs/text())" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep      abort="y"
+               errmsg="Failed to write route subnet configuration file"
+               repeat="/GAUCfg/nemo/routedsubnets/routedsubnet"
+           rptNdxName="RPT_NDX"
+                 name="AppendFormatted2File"
+           dependency="/GAUCfg/nemo/routedsubnets/NumberOfroutedsubnets/text() != '0' and /GAUCfg/nemo/enable/text() = 'y'">
+
+     <arg expr="/tmp/nemo_client.conf" />
+
+     <arg expr="concat('ROUTE_SUBNET_', 'RPT_NDX', ' = ')" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/nemo/routedsubnets/routedsubnet[RPT_NDX]/label/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="','" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/nemo/routedsubnets/routedsubnet[RPT_NDX]/subnet/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to copy nemo_client.conf file to it's location." dependency="/GAUCfg/nemo/enable/text() = 'y'" name="SystemCommand">
+     <arg expr="mkdir -p /etc/nemo/; mv -f /tmp/nemo_client.conf /etc/nemo/nemo_client.conf" />
+    </astep>
+
+    <astep       abort="n"
+            dependency="/GAUCfg/nemo/enable/text() = 'n'"
+                  name="SystemCommand">
+     <arg expr="chkconfig nemo off" />
+    </astep>
+
+    <astep       abort="y"
+            dependency="/GAUCfg/nemo/enable/text() = 'y'"
+                errmsg="Failed to enable NEMO Service."
+                  name="SystemCommand">
+     <arg expr="chkconfig nemo on" />
+    </astep>
+Moved to prfhandler_nemo-->
+
+    <astep abort="y" errmsg="Failed to save nemo configuration" name="SystemCommand">
+     <arg expr="'prfhandler_nemo Save'" source="config" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_nemo
+    <pre subsystem="nemo" action="Save" />
+
+    <astep      abort="y"
+           dependency="/GAUCfg/nemo/enable/text() = 'y'"
+               errmsg="Failed to start NEMO Service."
+                 name="SystemCommand">
+     <arg expr="service nemo restart" />
+    </astep>
+
+    <astep      abort="n"
+           dependency="/GAUCfg/nemo/enable/text() = 'n'"
+               errmsg="Failed to stop NEMO Service."
+                 name="SystemCommand">
+     <arg expr="service nemo stop" />
+    </astep>
+Moved to prfhandler_nemo-->
+
+    <astep abort="y" errmsg="Failed to apply nemo configuration" name="SystemCommand">
+     <arg expr="'prfhandler_nemo Apply'" source="config" />
+    </astep>
+
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

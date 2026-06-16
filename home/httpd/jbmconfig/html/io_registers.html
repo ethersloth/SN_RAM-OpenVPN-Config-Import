@@ -1,0 +1,345 @@
+<!
+  // This is the form used for this page
+  // NOTE: the "onchange=" is how this page generates requests to the server
+  //       to get the io data.  The ShowIO() function sends the request to the 
+  //       server, and the stateChanged function is where the new page is generated
+  //       containing the data requested.
+  //
+/!>
+<html>
+<title>SIXNET I/O TABLES</title>
+
+<style type="text/css">
+body {background-color: white}
+h1 {font-style: italic}
+h1 {font-size: 100%}
+th {background-color: beige}
+td {background-color: beige }
+td {foreground-color: white }
+td {color: black}
+td {text-align: right}
+th {width:100}
+ioTable {width: 300}
+</style>
+
+
+<body>
+<script> type="text/javascript"
+
+var Show_xmlHttp;         // Used to process the request for new io data. 
+var Set_xmlHttp;         // Used to process the request for new io data. 
+var ioTable;         // where the new io data is formated before it is presented
+                     // to the user.
+var regData;         // Contains the register data returned by the server
+//
+// ShowIO:  This function generates the request to the server to get the io data
+//
+function ShowIO(type,addr,numregs)
+{
+    //    alert ("SHOWIO: Type: " + type + "Address: " + addr + "Numregs: " + numregs);
+    if (type == -1) {
+	var myDoc=document.getElementById("iodata");
+	myDoc.innerHTML = "";
+	return;
+    }
+    Show_xmlHttp=GetXmlHttpObject();
+    if (Show_xmlHttp==null)
+    {
+        alert ("Browser does not support HTTP Request");
+        return;
+    } 
+    var url="/cgi-bin/test_io.cgi";
+
+    url= url + "?func=0"
+    url= url + "&type="    + type;
+    url= url + "&addr="    + addr;
+    url= url + "&numregs=" + numregs;
+
+    Show_xmlHttp.onreadystatechange=showStateChanged; 
+    Show_xmlHttp.open("GET",url,true);
+    Show_xmlHttp.send(null);
+}
+
+//
+// SetIO:  This function generates the request to the server to get the io data
+//
+function SetIO(type,addr,numregs,values)
+{
+
+    if (values.length == 0)
+	return;
+
+    if (type == -1) {
+	alert("Type not selected");
+	ioForm.values.value="";
+	return;
+    }
+
+    if (addr.length == 0) {
+	alert("Addr not entered");
+	ioForm.values.value="";
+	return;
+    }
+
+    if (numregs.length == 0) {
+	alert("Number of registers no entered");
+	ioForm.values.value="";
+	return;
+    }
+   
+
+    Set_xmlHttp=GetXmlHttpObject();
+    if (Set_xmlHttp==null)
+    {
+        alert ("Browser does not support HTTP Request");
+        return;
+    } 
+    var url="/cgi-bin/test_io.cgi";
+    url= url + "?func=1"
+    url= url + "&type="    + type;
+    url= url + "&addr="    + addr;
+    url= url + "&numregs=" + numregs;
+    url= url + "&values=" + values;
+
+    Set_xmlHttp.onreadystatechange=setStateChanged; 
+    Set_xmlHttp.open("GET",url,true);
+    Set_xmlHttp.send(null);
+}
+
+var ioTypes = ["ANALOG INPUTS", 
+	       "ANALOG OUTPUTS",
+	       "",
+	       "",
+	       "",
+	       "",
+	       "",
+	       "",
+	       "",
+	       "",
+	       "DISCRETE INPUTS",
+	       "DISCRETE OUTPUTS",
+	       "",
+	       "",
+	       "",
+	       "",
+	       "",
+	       "",
+	       "",
+	       "",
+	       "LONG INPUTS",
+	       "LONG OUTPUTS",
+	       "FLOAT INPUTS",
+	       "FLOAT OUTPUTS",
+	       ];
+
+
+function printHeader(len) 
+{
+    var numCols=8;
+    var myDoc=document.getElementById("iodata");
+    
+
+    if (len < 8)
+	numCols=len;
+    
+    for (var i=0;i<numCols;i++)
+	ioTable = ioTable + "<TH>+" + i + "</TH>";
+
+    myDoc.innerHTML= ioTable;
+}
+
+//
+// ProcessNonDiscretes:
+//     The data returned by the fastcgi program is a comma seperated list
+//     of numbers (floats or ints).  These values are formated for display
+//     by this function.
+//
+// Inputs: regData - an array of integers or float strings
+//
+// Outputs: Table entries appended onto global "ioTable" variable to be displayed
+//          to the user later.
+//
+function ProcessNonDiscretes(regData)
+{
+    //    alert(" Processing " + regData.length + " non-discretes\n");
+
+    printHeader(regData.length);
+
+    for (var i=0;i < regData.length; i++) {
+	
+	if ((i % 8) == 0) {
+	    var myaddr = Number(ioForm.addr.value) + i;
+	    
+	    ioTable = ioTable + "<TR><TD><B>" + myaddr + "</B></TD>";
+	}
+	
+	ioTable = ioTable + "<TD>" + regData[i] + "</TD>";
+	
+    }
+    ioTable = ioTable +  "</TR></Table></body></html>";
+}
+
+//
+// ProcessDiscretes:
+//     The data returned by the fastcgi program is a comma seperated list
+//     of numbers (ints).  These values are formated for display
+//     by this function.  Unlike the ProcessNonDiscretes, the integers need
+//     to be processed to get the individual discrete values.
+//
+// Inputs: regData - an array of integers (only the first bytes contains discrete values)
+//
+// Outputs: Table entries appended onto global "ioTable" variable to be displayed
+//          to the user later.
+//
+function ProcessDiscretes(regData)
+{
+    var numRegs = ioForm.numregs.value;
+    var index = 0;
+
+    //    alert("NUM REGS = " + numRegs + "\nData " + regData);
+
+    printHeader(numRegs);
+    for (var i=0; i < numRegs; i++) {
+	var byteVal;
+	var j;
+
+	if ((i % 8) == 0) {
+	    var myaddr = Number(ioForm.addr.value) + i;
+	    
+	    ioTable = ioTable + "<TR><TD><B>" + myaddr + "</B></TD>";   // print out address value
+	}
+	
+	//
+        // Need to look at first 8 bits of each data item to parse out
+	// each discrete
+	//
+	if (regData[i] == 1) {
+	    ioTable = ioTable + "<TD>ON(1)</TD>";
+	}
+	else if (regData[i] == 0) {
+	    ioTable = ioTable + "<TD>OFF(0)</TD>";
+	} else {
+	    alert("Invalid value returned: " + regData[i]);
+	    ioTable = "";
+	    return;
+	}
+    }
+    ioTable = ioTable +  "</TR></Table></body></html>";
+}
+
+
+//
+// showStateChanged:
+//     This function is called by the browser when an xmlHttp request
+//     status changes.  We a looking for the ready state to be completed
+//     before doing any more processing.
+//
+function setStateChanged() 
+{
+    //    alert(Set_xmlHttp.readyState);
+
+    if (Set_xmlHttp.readyState==4 || Set_xmlHttp.readyState=="complete")
+    { 
+	ioForm.values.value="";
+
+	if (Set_xmlHttp.responseText.indexOf("Error=") > -1) {
+	    alert(Set_xmlHttp.responseText);
+	    return;
+	}
+
+	ShowIO(ioForm.type.value, ioForm.addr.value, 
+	       ioForm.numregs.value);    
+
+    } 
+}
+
+//
+// showStateChanged:
+//     This function is called by the browser when an xmlHttp request
+//     status changes.  We a looking for the ready state to be completed
+//     before doing any more processing.
+//
+function showStateChanged() 
+{
+    //    alert(Show_xmlHttp.readyState);
+
+    if (Show_xmlHttp.readyState==4 || Show_xmlHttp.readyState=="complete")
+    { 
+	var myDoc=document.getElementById("iodata");
+	var myVal = ioForm.type.value;
+
+	//	alert(Show_xmlHttp.responseText.indexOf("="));
+
+	if (Show_xmlHttp.responseText.indexOf("Error=") > -1 ) {
+	    alert(Show_xmlHttp.responseText);
+	    return;
+	}
+
+	// split out the register values (comma seperated data)
+	//
+
+	regData = Show_xmlHttp.responseText.split(",");
+	ioTable = "<html><H1>" + ioTypes[myVal] + "</H1><body><Table name=ioTable BORDER=\"1\">";
+	ioTable = ioTable + "<TH>Address</TH>";
+
+       
+	if ((ioForm.type.value == 10) || (ioForm.type.value == 11)) {
+ 	    ProcessDiscretes(regData);
+	} else {
+ 	    ProcessNonDiscretes(regData);
+	}
+
+       myDoc.innerHTML= ioTable;
+    } 
+} 
+
+//
+// GetXmlHttpObject: get an xmlHttp object for sending requests down to the
+// webserver.
+//
+function GetXmlHttpObject()
+{ 
+    var objXMLHttp=null;
+    if (window.XMLHttpRequest)
+    {
+        objXMLHttp=new XMLHttpRequest();
+    }	
+    else if (window.ActiveXObject)
+    {
+        objXMLHttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    return objXMLHttp;
+}
+
+
+</script>
+
+<a href="index.html"> Home </a><br><br>
+
+
+<form name=ioForm>
+<select name="type" onchange="ShowIO(this.value,ioForm.addr.value,numregs.value)" >
+<option value=-1>Choose one</option>
+<option value="0">Analog In</option>
+<option value="1">Analog Out</option>
+<option value="10">Discrete In</option>
+<option value="11">Discrete Out</option>
+<option value="20">Long In</option>
+<option value="21">Long Out</option>
+<option value="22">Float In</option>
+<option value="23">Float Out</option>
+</select>
+StartAddress: <input type="text" name="addr"
+    value=0 onchange="ShowIO(ioForm.type.value, this.value, numregs.value)">
+NumRegs: <input type="text" name="numregs" 
+    value=8 onchange="ShowIO(ioForm.type.value, addr.value, this.value)">
+Value: <input type="text" name="values" 
+     onchange="SetIO(ioForm.type.value, addr.value, numregs.value, this.value)">
+<br>
+</form>
+
+<p>
+<div id="iodata"><b>Register Info will be listed here.</b></div>
+</p>
+</body>
+</html>

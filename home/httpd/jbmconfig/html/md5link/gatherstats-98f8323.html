@@ -1,0 +1,59 @@
+<form id="gatherstats-form" class="form-horizontal">
+
+	<table style="width: 100%;"><tr><td style="text-align: center; vertical-align: middle;">
+		<h3>Gather</h3>
+	</td></tr></table>
+
+	<span><hr /></span>
+
+	<div class="row-fluid">
+		<div class="span6">
+
+			<table style="width: 100%;"><tr><td style="text-align: center; vertical-align: middle;">
+				<h4>Stats</h4>
+			</td></tr></table>
+
+			<div data-bind="template: {name: 'select-template-bool', data: incipsecst}"></div>
+			<div data-bind="template: {name: 'select-template-bool', data: incgwlnxst}"></div>
+			<div data-bind="template: {name: 'full-savable-bool-template', data: ssdc}"></div>
+		</div>
+		<div class="span6">
+
+			<table style="width: 100%;"><tr><td style="text-align: center; vertical-align: middle;">
+				<h4>Configs</h4>
+			</td></tr></table>
+
+			<div data-bind="template: {name: 'select-template-bool', data: incgwlnxfl}"></div>
+			<div data-bind="template: {name: 'select-template-bool', data: incnetfl}"></div>
+			<div data-bind="template: {name: 'full-savable-bool-template', data: csdc}"></div>
+		</div>
+	</div>
+
+	<br />
+
+	<div class="row-fluid">
+		<div style="text-align: center" class="span6">
+			<button type="button" class="btn btn-primary" data-bind="click: getstats">Generate Stats</button>
+		</div>
+		<div style="text-align: center" class="span6">
+			<button type="button" class="btn btn-primary" data-bind="click: getconfigs">Generate Configs</button>
+		</div>
+	</div>
+	<h4 style="padding-top: 30px; text-align: center">Generated Reports</h4>
+	<div class="gw-auto-margin gw-border" style="padding: 5px; width: 400px; text-align: justify">
+		<span data-bind="visible: statsFiles().length === 0">No files to download.<br />Please generate a stats or configs file</span>
+		<!-- ko foreach: statsFiles -->
+		<span data-bind="text: '(' + size + 'k)'"></span>
+		<a href="#" data-bind="click: $parent.downloadStatsFile(name), text: name"></a><br />
+		<!-- /ko -->
+	</div>
+	<!-- ko if: autoFiles().length > 0 -->
+	<h4 style="padding-top: 10px; text-align: center">Recent Automated Snapshots</h4>
+	<div class="gw-auto-margin gw-border" style="padding: 5px; width: 400px; text-align: justify">
+		<!-- ko foreach: autoFiles -->
+		<span data-bind="text: '(' + size + 'k)'"></span>
+		<a href="#" data-bind="click: $parent.downloadStatsFile(name), text: name"></a><br />
+		<!-- /ko -->
+	</div>
+	<!-- /ko -->
+</form>

@@ -1,0 +1,65 @@
+<!--ko template: {name:'title-template',data:'Firewall Port Forwarding'}--><!--/ko-->
+<div style="text-align: center; vertical-align: middle;" data-bind="visible: isIPTransEnabled">
+	<span><font color="#FF0000">The Firewall is currently under the control of IP Transparency</font></span>
+</div>
+<div style="text-align: center; vertical-align: middle;" data-bind="visible: !isFirewallEnabled()">
+	<span>The firewall is currently not enabled.<br/>It may be enabled under the 'General Settings' section.</span>
+</div>
+<!-- ko if: isFirewallEnabled -->
+	<!--ko template: {name:'h4-template',data:'Service Access (Allow) Rules'}--><!--/ko-->
+	<!--ko template: {name:'table-template',data:accessTable}--><!--/ko-->
+	<hr />
+	<!--ko template: {name:'h4-template',data:'Host Redirect (Port Forwarding) Rules'}--><!--/ko-->
+	<!--ko template: {name:'table-template',data:redirectTable}--><!--/ko-->
+<!-- /ko -->
+
+<div id="allowrule-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="allowrule-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Access Rules Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: label}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: sport}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: eport}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: accintf}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: proto}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: whitelist}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: accessWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="redirrule-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="redirrule-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Host Redirect Rules Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: rdlabel}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: odport}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: redintf}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: ndaddr}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: ndport}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: redmasqintf}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: redproto}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: redwhitelist}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: redirectWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div style="text-align: center">
+	<a class="btn" data-bind="click: switchPage('#!/fwgeneral')">General Settings</a>
+	<a class="btn" data-bind="click: switchPage('#!/filter')">ACL Rules</a>
+	<a class="btn" data-bind="click: switchPage('#!/masqnat')">Masquerade/NAT/DMZ Rules</a>
+</div>

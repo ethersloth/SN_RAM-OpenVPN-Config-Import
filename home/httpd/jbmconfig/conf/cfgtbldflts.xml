@@ -1,0 +1,715 @@
+<GAUCfg>
+    <certmgr subsystem="certmgr">
+        <certificates>
+            <NumberOfcertificates>0</NumberOfcertificates>
+            <certificate record="0">
+                <name />
+                <type />
+                <file />
+            </certificate>
+        </certificates>
+    </certmgr>
+    <datalogs subsystem="datalogs">
+        <datalogs>
+            <NumberOfdatalogs>0</NumberOfdatalogs>
+            <datalog record="0">
+                <datalogenable>n</datalogenable>
+                <datalogname />
+                <writecondition>WriteRegardless</writecondition>
+                <writefrequency>5000</writefrequency>
+                <iodbenable />
+                <iodbaddr />
+                <timeformat>1</timeformat>
+                <logsize>2048</logsize>
+                <rolloverlog>5</rolloverlog>
+                <savepath>sdcard</savepath>
+                <zipcompfile>n</zipcompfile>
+                <zippassword />
+                <addchecksum>n</addchecksum>
+                <iodbpoints />
+                <ftpserver />
+                <ftppath />
+                <delmethod>none</delmethod>
+                <ftpmode>passive</ftpmode>
+                <secmode>implicit-SSL</secmode>
+                <ftpport />
+                <uname />
+                <pword />
+                <recipient />
+            </datalog>
+        </datalogs>
+    </datalogs>
+    <sms subsystem="sms">
+        <smsrules>
+            <NumberOfsmsrules>0</NumberOfsmsrules>
+                <smsrule record="0">
+                     <callerid />
+                     <replyid />
+                     <password />
+                     <command>1</command>
+                </smsrule>
+        </smsrules>
+    </sms>
+    <ramqtt subsystem="ramqtt">
+        <iodbpoints>
+            <NumberOfiodbpoints>0</NumberOfiodbpoints>
+                <iodbpoint record="0">
+                     <type />
+                     <register />
+                </iodbpoint>
+        </iodbpoints>
+    </ramqtt>
+    <serialip subsystem="serialip">
+        <udprules>
+            <NumberOfudprules>0</NumberOfudprules>
+                <udprule record="0">
+                     <udppeerip />
+                     <udppeerport />
+                     <udpclientipport />
+                </udprule>
+        </udprules>
+    </serialip>
+    <snmpagent subsystem="snmpagent">
+        <snmprules>
+            <NumberOfsnmprules>0</NumberOfsnmprules>
+            <snmprule record="0">
+                <username />
+                <authtype>None</authtype>
+                <authpassword />
+                <sectype>None</sectype>
+                <secpassword />
+            </snmprule>
+        </snmprules>
+    </snmpagent>
+    <nemo subsystem="nemo">
+        <routedsubnets>
+            <NumberOfroutedsubnets>0</NumberOfroutedsubnets>
+                <routedsubnet record="0">
+                     <label />
+                     <subnet />
+                </routedsubnet>
+        </routedsubnets>
+    </nemo>
+    <syslog subsystem="syslog">
+        <blacklists>
+            <NumberOfblacklists>0</NumberOfblacklists>
+                <blacklist record="0">
+                     <blackliststr />
+                </blacklist>
+        </blacklists>
+        <whitelists>
+            <NumberOfwhitelists>0</NumberOfwhitelists>
+                <whitelist record="0">
+                     <whiteliststr />
+                </whitelist>
+        </whitelists>
+    </syslog>
+    <dns subsystem="dns">
+        <hosts>
+            <NumberOfhosts>0</NumberOfhosts>
+                <host record="0">
+                     <host />
+                     <domain />
+                     <addr />
+                </host>
+        </hosts>
+    </dns>
+     <cellular subsystem="cellular">
+         <atcmds>
+             <NumberOfatcmds>0</NumberOfatcmds>
+             <atcmd record="0">
+                 <cmdstr />
+                 <exprsp />
+             </atcmd>
+         </atcmds>
+         <pppcmds>
+             <NumberOfpppcmds>0</NumberOfpppcmds>
+             <pppcmd record="0">
+                 <cmdstr />
+             </pppcmd>
+         </pppcmds>
+     </cellular>
+     <eth0 subsystem="eth0">
+        <aliass>
+            <NumberOfaliass>0</NumberOfaliass>
+               <alias record="0">
+                  <subintnum />
+                  <ipaddr />
+                  <netmask />
+               </alias>
+        </aliass>
+        <vlans>
+            <NumberOfvlans>0</NumberOfvlans>
+            <vlan record="0">
+                <vlanidnum />
+                <vlanipaddr />
+                <vlannetmask />
+            </vlan>
+        </vlans>
+    </eth0>
+    <eth1 subsystem="eth1">
+        <aliass>
+            <NumberOfaliass>0</NumberOfaliass>
+               <alias record="0">
+                  <subintnum />
+                  <ipaddr />
+                  <netmask />
+               </alias>
+        </aliass>
+        <vlans>
+            <NumberOfvlans>0</NumberOfvlans>
+            <vlan record="0">
+                <vlanidnum />
+                <vlanipaddr />
+                <vlannetmask />
+            </vlan>
+        </vlans>
+    </eth1>
+    <staticroutes subsystem="staticroutes">
+        <sroutes>
+            <NumberOfsroutes>0</NumberOfsroutes>
+               <sroute record="0">
+                  <intf />
+                  <any />
+                  <routetype />
+                  <targetIP />
+                  <subnet />
+                  <netmask />
+                  <gtwy />
+                  <metric>0</metric>
+               </sroute>
+        </sroutes>
+    </staticroutes>
+    <vpn>
+        <gre subsystem="gretunnel">
+            <gretunnels>
+                <NumberOfgretunnels>0</NumberOfgretunnels>
+                    <gretunnel record="0">
+                         <label />
+                         <name />
+                         <enable>No</enable>
+                         <localip />
+                         <localnet />
+                         <remoteip />
+                         <remotenet />
+                         <ikey />
+                         <okey />
+                         <ttl>64</ttl>
+                         <usemulticast>Yes</usemulticast>
+                         <usearp>Yes</usearp>
+                         <onboot>y</onboot>
+                         <checkdns>y</checkdns>
+                    </gretunnel>
+            </gretunnels>
+        </gre>
+        <ipip subsystem="ipiptunnel">
+            <ipiptunnels>
+                <NumberOfipiptunnels>0</NumberOfipiptunnels>
+                   <ipiptunnel record="0">
+                         <id />
+                         <enable>No</enable>
+                         <localip />
+                         <localnet />
+                         <remoteip />
+                         <remotenet />
+                         <ttl>64</ttl>
+                         <onboot>y</onboot>
+                   </ipiptunnel>
+            </ipiptunnels>
+        </ipip>
+        <ipsec subsystem="ipsectunnel">
+            <ipsectunnels>
+                <NumberOfipsectunnels>0</NumberOfipsectunnels>
+                    <ipsectunnel record="0">
+                         <name />
+                         <enable>No</enable>
+                         <tunneltype />
+                         <aggrmode>n</aggrmode>
+                         <p1enc>aes</p1enc>
+                         <p1auth>md5</p1auth>
+                         <p1dhg>modp1024</p1dhg>
+                         <p1satime>60</p1satime>
+                         <encmethod>psk</encmethod>
+                         <psk />
+                         <lccert />
+                         <lckey />
+                         <lckeyphrase />
+                         <rscert />
+                         <leftid />
+                         <rightid />
+                         <p2authtype>esp</p2authtype>
+			             <p2ahauthenc>hmac-md5-96</p2ahauthenc>
+                         <p2enc>aes</p2enc>
+                         <p2auth>md5</p2auth>
+                         <p2satime>480</p2satime>
+                         <pfs />
+                         <dpd>restart</dpd>
+                         <dpdintvl>30</dpdintvl>
+                         <dpdtimeout>60</dpdtimeout>
+                         <leftip />
+			             <leftsourceip />
+                         <leftnexthop />
+                         <leftsubnet />
+                         <rightip />
+                         <rightnexthop />
+                         <rightsubnet />
+                    </ipsectunnel>
+            </ipsectunnels>
+        </ipsec>
+    </vpn>
+    <dhcp subsystem="dhcpserver">
+        <macs>
+            <NumberOfmacs>0</NumberOfmacs>
+            <mac record="0">
+                <macaddr />
+                <macipaddr />
+            </mac>
+        </macs>
+    </dhcp>
+    <dhcprelay subsystem="dhcprelay">
+        <intfs>
+            <NumberOfintfs>0</NumberOfintfs>
+            <intf record="0">
+                <intf />
+            </intf>
+        </intfs>
+        <rmtsrvrs>
+            <NumberOfrmtsrvrs>0</NumberOfrmtsrvrs>
+            <rmtsrvr record="0">
+                <rmtsrvr />
+            </rmtsrvr>
+        </rmtsrvrs>
+    </dhcprelay>
+    <firewall subsystem="firewall">
+        <trustedintfs>
+           <NumberOftrustedintfs>1</NumberOftrustedintfs>
+             <trustedintf record="0">
+               <intf>eth0</intf>
+             </trustedintf>
+        </trustedintfs>
+        <untrustedintfs>
+           <NumberOfuntrustedintfs>0</NumberOfuntrustedintfs>
+             <untrustedintf record="0">
+               <intf />
+             </untrustedintf>
+        </untrustedintfs>
+        <allowrules>
+            <NumberOfallowrules>0</NumberOfallowrules>
+               <allowrule record="0">
+                   <label />
+                   <sport />
+                   <eport />
+                   <intf>All Untrusted</intf>
+                   <proto>TCP</proto>
+                   <osaddr>0.0.0.0/0</osaddr>
+                   <whitelist>default</whitelist>
+               </allowrule>
+        </allowrules>
+        <redirrules>
+            <NumberOfredirrules>0</NumberOfredirrules>
+               <redirrule record="0">
+                   <label />
+                   <odport />
+                   <intf>All Untrusted</intf>
+                   <ndaddr>127.0.0.1</ndaddr>
+                   <ndport />
+                   <redmasqintf>No</redmasqintf>
+                   <proto>TCP</proto>
+                   <whitelist>default</whitelist>
+                   <osaddr>0.0.0.0/0</osaddr>
+               </redirrule>
+        </redirrules>
+        <natrules>
+            <NumberOfnatrules>0</NumberOfnatrules>
+              <natrule record="0">
+                 <label />
+                 <odaddr />
+                 <ndaddr />
+                 <proto>TCP</proto>
+                 <whitelist>default</whitelist>
+                 <osaddr>0.0.0.0/0</osaddr>
+              </natrule>
+        </natrules>
+        <natrangerules>
+           <NumberOfnatrangerules>0</NumberOfnatrangerules>
+             <natrangerule record="0">
+                <label />
+                <odaddrs />
+                <odaddre />
+                <ndaddrs />
+                <ndaddre />
+                <proto>TCP</proto>
+                <whitelist>default</whitelist>
+                <rosaddr>0.0.0.0/0</rosaddr>
+             </natrangerule>
+        </natrangerules>
+        <blacklistrules>
+            <NumberOfblacklistrules>0</NumberOfblacklistrules>
+              <blacklistrule record="0">
+                <subnet />
+              </blacklistrule>
+        </blacklistrules>
+        <dmzrules>
+            <NumberOfdmzrules>0</NumberOfdmzrules>
+              <dmzrule record="0">
+                 <label />
+                 <intf />
+                 <ndaddr />
+                 <whitelist>default</whitelist>
+                 <osaddr>0.0.0.0/0</osaddr>
+              </dmzrule>
+        </dmzrules>
+        <masqrules>
+            <NumberOfmasqrules>0</NumberOfmasqrules>
+              <masqrule record="0">
+                 <osaddr />
+                 <intf />
+              </masqrule>
+        </masqrules>
+        <filterrules>
+            <NumberOffilterrules>0</NumberOffilterrules>
+              <filterrule record="0">
+                 <label />
+                 <iintf />
+                 <ointf />
+                 <odaddr />
+                 <whitelist>default</whitelist>
+                 <osaddr>0.0.0.0/0</osaddr>
+              </filterrule>
+        </filterrules>
+        <whitelistrules>
+            <whitelistdefs>
+                <NumberOfwhitelistdefs>0</NumberOfwhitelistdefs>
+                <whitelistdef record="1" protected="eo">
+                    <name>default</name>
+                    <subnet>0.0.0.0/0</subnet>
+                </whitelistdef>
+            </whitelistdefs>
+        </whitelistrules>
+    </firewall>
+    <sslclient subsystem="sslclient">
+        <connectcfgs>
+            <NumberOfconnectcfgs />
+              <connectcfg record="0">
+                 <label />
+                 <acceptip>0.0.0.0</acceptip>
+                 <acceptport />
+                 <connectip />
+                 <connectport />
+                 <starttls>No</starttls>
+              </connectcfg>
+        </connectcfgs>
+    </sslclient>
+    <sslserver subsystem="sslserver">
+         <connectcfgs>
+            <NumberOfconnectcfgs />
+              <connectcfg record="0">
+                 <label />
+                 <acceptip>0.0.0.0</acceptip>
+                 <acceptport />
+                 <connectip />
+                 <connectport />
+                 <tcpsrcbindip />
+              </connectcfg>
+        </connectcfgs>
+    </sslserver>
+    <binaryinput subsystem="binaryinput">
+        <exceptions>
+            <NumberOfexceptions>0</NumberOfexceptions>
+            <exception record="0">
+                <startreg />
+                <endreg />
+                <obj2class>None</obj2class>
+            </exception>
+        </exceptions>
+    </binaryinput>
+    <analoginput subsystem="analoginput">
+        <exceptions>
+            <NumberOfexceptions>0</NumberOfexceptions>
+            <exception record="0">
+                <startreg />
+                <endreg />
+                <exdeadband />
+                <obj31class>None</obj31class>
+                <obj32class>None</obj32class>
+                <obj33class>None</obj33class>
+            </exception>
+        </exceptions>
+    </analoginput>
+    <longinput subsystem="longinput">
+        <exceptions>
+            <NumberOfexceptions>0</NumberOfexceptions>
+            <exception record="0">
+                <startreg />
+                <endreg />
+                <exdeadband />
+                <obj31class>None</obj31class>
+                <obj32class>None</obj32class>
+                <obj33class>None</obj33class>
+            </exception>
+        </exceptions>
+    </longinput>
+    <floatinput subsystem="floatinput">
+        <exceptions>
+            <NumberOfexceptions>0</NumberOfexceptions>
+            <exception record="0">
+                <startreg />
+                <endreg />
+                <exdeadband />
+                <obj31class>None</obj31class>
+                <obj32class>None</obj32class>
+                <obj33class>None</obj33class>
+            </exception>
+        </exceptions>
+    </floatinput>
+    <binarycounter subsystem="binarycounter">
+        <exceptions>
+            <NumberOfexceptions>0</NumberOfexceptions>
+            <exception record="0">
+                <startreg />
+                <endreg />
+                <exdeadband />
+                <obj21class>None</obj21class>
+                <obj22class>None</obj22class>
+                <obj23class>None</obj23class>
+            </exception>
+        </exceptions>
+    </binarycounter>
+    <modbus subsystem="modbus">
+        <remoteStations>
+            <NumberOfremoteStations>0</NumberOfremoteStations>
+            <remoteStation record="0">
+                <name />
+                <stationNum />
+                <ipaddr />
+                <ipport />
+                <timeout>3000</timeout>
+                <retries>3</retries>
+                <stationOnlineType />
+                <stationOnlineAddr />
+            </remoteStation>
+        </remoteStations>
+        <serials>
+            <NumberOfserials>0</NumberOfserials>
+            <serial record="0">
+                <device>ttyS1</device>
+                <leadTime>10</leadTime>
+                <lagTime>30</lagTime>
+                <baudRate>9600</baudRate>
+                <dataBits>8</dataBits>
+                <parity>n</parity>
+                <flowControl>n</flowControl>
+                <stopBits>1</stopBits>
+                <protocol>modbusMasterAscii</protocol>
+                <floatWordOrder>LSW</floatWordOrder>
+                <longWordOrder>LSW</longWordOrder>
+                <danielMode>n</danielMode>
+            </serial>
+        </serials>
+        <xfers>
+            <NumberOfxfers>0</NumberOfxfers>
+            <xfer record="0">
+                <localaddrdisp />
+                <remoteaddrdisp />
+                <localAddr />
+                <remoteAddr />
+                <name />
+                <protocol>modbus</protocol>
+                <sendMode>waitForReply</sendMode>
+                <port>TCP</port>
+                <command>READ</command>
+                <localType />
+                <localrelAddr />
+                <remoteType />
+                <remoterelAddr />
+                <numRegs>1</numRegs>
+                <datamanip>None</datamanip>
+                <interval>3000</interval>
+                <scanEnableType />
+                <scanEnableAddr />
+            </xfer>
+        </xfers>
+        <forwards>
+            <NumberOfforwards>0</NumberOfforwards>
+            <forward record="0">
+                <stationNum />
+                <fwdStationNum />
+                <type>TCP</type>
+                <address />
+                <ipport />
+            </forward>
+        </forwards>
+    </modbus>
+    <events subsystem="events">
+        <events>
+            <NumberOfevents>0</NumberOfevents>
+            <event record="0">
+                <eventnum />
+                <eventname />
+                <enable>Yes</enable>
+                <datasource>IODB</datasource>
+                <localtagname />
+                <localType />
+                <localrelAddr />
+                <localAddr />
+                <dataformat>16bit</dataformat>
+                <datasigned>signed</datasigned>
+                <eventexpression />
+                <eventtype>Data Match</eventtype>
+                <selsetpointsrc />
+                <setpointtagname />
+                <setpointType />
+                <setpointrelAddr />
+                <setpointAddr />
+                <setpoint />
+                <mathtype>Scaling by Range</mathtype>
+                <soir />
+                <eoir />
+                <soor />
+                <eoor />
+                <sfv />
+                <scalingrange />
+                <mathoperation>+</mathoperation>
+                <scalingtagname />
+                <scalingType />
+                <scalingrelAddr />
+                <scalingAddr />
+                <alarmvalue />
+                <timewindow />
+                <ratechangetype>Average</ratechangetype>
+                <activationdelay />
+                <alarmreset>automatic</alarmreset>
+                <hysteresis />
+                <deactivationdelay />
+                <actiontype>None</actiontype>
+                <recipient />
+                <subject />
+                <alertlevel>5</alertlevel>
+                <messageformat>standard</messageformat>
+                <customactivemessage />
+                <custominactivemessage />
+                <command>None</command>
+                <writetagname />
+                <writeType />
+                <writerelAddr />
+                <writeAddr />
+                <writevalue />
+                <fixedvalue />
+                <edgetriggering>neither</edgetriggering>
+                <leveltriggering>Yes</leveltriggering>
+                <periodicaction />
+                <alarmseverity>0</alarmseverity>
+                <alarmmessage />
+            </event>
+        </events>
+    </events>
+    <ipdest subsystem="ipdest">
+        <dests>
+            <NumberOfdests>0</NumberOfdests>
+              <dest record="0">
+                 <addr1 />
+                 <port1 />
+                 <connecttimeout1>10</connecttimeout1>
+                 <addr2 />
+                 <port2 />
+                 <connecttimeout2>10</connecttimeout2>
+                 <addr3 />
+                 <port3 />
+                 <connecttimeout3>10</connecttimeout3>
+                 <htype />
+              </dest>
+        </dests>
+    </ipdest>
+    <iptrans subsystem="iptrans">
+        <routermode>n</routermode>
+        <prs>
+            <NumberOfprs>0</NumberOfprs>
+              <pr record="0">
+                <extport />
+                <intport />
+                <proto>TCP</proto>
+              </pr>
+        </prs>
+        <rts>
+            <NumberOfrts>0</NumberOfrts>
+              <rt record="0">
+                <subnet />
+              </rt>
+        </rts>
+    </iptrans>
+    <oobm subsystem="oob">
+        <oobs>
+            <NumberOfoobs>0</NumberOfoobs>
+              <oob record="0">
+                  <intf>ttyS1</intf>
+                 <speed>115200</speed>
+                 <bits>8</bits>
+                 <parity>n</parity>
+                 <stopbits>1</stopbits>
+                 <port />
+                 <useciscoaph>no</useciscoaph>
+                 <localbind>no</localbind>
+                 <telnetservermode>n</telnetservermode>
+              </oob>
+        </oobs>
+    </oobm>
+    <connecttable subsystem="connecttable">
+     <connectcfgs>
+      <NumberOfconnectcfgs>0</NumberOfconnectcfgs>
+        <connectcfg record="0">
+           <label />
+           <ATcmddescript />
+           <ATcommand />
+           <answerdialmode>ANSWER</answerdialmode>
+           <secondarydial />
+           <timer>150</timer>
+           <datamode>8N1</datamode>
+           <msgmode>TRANSPARENT</msgmode>
+           <spoofenq>No</spoofenq>
+           <norxb4tx />
+           <disableack />
+           <passthruack />
+           <ipaddr1 />
+           <port1 />
+           <ipaddr2 />
+           <port2 />
+           <ipaddr3 />
+           <port3 />
+           <hostmsgfmt>DEFAULT</hostmsgfmt>
+           <tcphdrtype>DEFAULT</tcphdrtype>
+           <earlyconnect />
+        </connectcfg>
+     </connectcfgs>
+    </connecttable>
+    <transnifffilter subsystem="transnifffilter">
+        <transniffs>
+           <NumberOftransniffs>0</NumberOftransniffs>
+             <transniff record="0">
+               <ipaddr />
+               <tcpport />
+             </transniff>
+        </transniffs>
+    </transnifffilter>
+    <vrrp subsystem="vrrp">
+        <vrrps>
+            <NumberOfvrrps>0</NumberOfvrrps>
+            <vrrp record="0">
+                <enable />
+                <intf />
+                <mac />
+                <ipaddr />
+                <gid />
+                <priority />
+                <ninterval />
+            </vrrp>
+        </vrrps>
+    </vrrp>
+    <predefs subsystem="predefints">
+      <predefints>
+        <NumberOfpredefints>0</NumberOfpredefints>
+          <predefint record="0">
+            <name />
+          </predefint>
+     </predefints>
+   </predefs>
+</GAUCfg>

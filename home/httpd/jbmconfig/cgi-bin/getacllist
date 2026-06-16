@@ -1,0 +1,331 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+#################################################################################################################################
+#                                                                                                                               #
+# getacllist - Get Whitelist(s).                                                                                                #
+#                                                                                                                               #
+# Get one of:                                                                                                                   #
+#                                                                                                                               #
+# 1 - A list of whitelist names, sorted, except for the one named 'default' which is always at the top of the list, along with  #
+#     their associated list of subnets.                                                                                         #
+# 2 - A set of html option tags, one for each named whitelist sorted, except for the one named 'default' which is always the    #
+#     first element in the list.                                                                                                #
+# 3 - A list of whitelist names and their associated subnets, in the form:                                                      #
+#     name:subnet;subnet|name:subnet;subnet; ...                                                                                #
+# 4 - A list of whitelist names and their associated subnets, in the form:                                                      #
+#     WHITELISTn={name=>'abcdef', list=>'x.x.x.x/n; x.x.x.x/n'}                                                                 #
+#                                                                                                                               #
+#     getacllist <format=display|jbmwall|option|parsable <selected={xpath expression}> <-h|--help> <-v|--version>               #
+#                                                                                                                               #
+# For the record . . .                                                                                                          #
+#                                                                                                                               #
+# Copyright (c) 2009 by Sixnet.                                                                                                 #
+#                                                                                                                               #
+# All rights reserved.  No part of this program may be reproduced, stored in a retrieval system or transmitted, in any form or  #
+# by any means, including but not limited to electronic, mechanical, photocopying, recording, or otherwise, without the express #
+# prior written consent of Sixnet, 4645 LaGuardia, St. Louis, MO 63134.  (314) 426-7781, fx: (314) 426-0007.                    #
+# Contact support@sixnet.com                                                                                                    #
+#                                                                                                                               #
+#                                                                                                                               #
+# This program was written by Art Surgant.                                                                                      #
+#                                                                                                                               #
+#################################################################################################################################
+
+my $VERSION = "1.00";
+
+
+# Get command line argument(s), if any:
+
+my %argList = ();
+
+foreach my $argnum (0 .. $#ARGV)
+       {
+        if ('-h' eq $ARGV[$argnum])
+          {
+           Usage();
+
+           exit(0);
+          }
+
+        if ('--help' eq $ARGV[$argnum])
+          {
+           print 'Version: ', $VERSION, "\n\n";
+
+           Usage();
+
+           exit(0);
+          }
+
+        if ('-v' eq $ARGV[$argnum])
+          {
+           print $VERSION, "\n";
+
+           exit(0);
+          }
+
+        if ('--version' eq $ARGV[$argnum])
+          {
+           print 'Version: ', $VERSION, "\n";
+
+           exit(0);
+          }
+
+        my ($argName, $argVal) = split(/=/, $ARGV[$argnum]);
+
+        $argList{$argName} = $argVal;
+       }
+
+
+# If 'selected=' is present, get its value and use it to get a value from the GAU Master Configuration file to use later to
+# set the 'selected' attribute for the generted <option> element:
+
+my $xpeCmdStr = '/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/config.xml';
+
+my $selected = '';
+
+if ($argList{'selected'})
+  {
+   $selected = $argList{'selected'};
+
+   if (open(FILE, $xpeCmdStr . ' --xpath="' . $selected . '/text()" |'))
+     {
+      while (<FILE>)
+           {
+            $selected = $_;
+
+            chomp($selected);
+           }
+
+      close(FILE);
+     }
+  }
+
+
+my $getcfgsecCmd = '/home/httpd/jbmconfig/bin/getcfgsec --infile=/home/httpd/jbmconfig/conf/config.xml'
+                 . ' --xpath=/GAUCfg/firewall/whitelistrules';
+
+my $whitelistXml = `$getcfgsecCmd`;
+
+my @elements = split(/</, $whitelistXml);
+
+my @aclNames = ();
+
+my %aclGrp = ();
+
+my $elementsSize = @elements;
+
+for (my $elementNdx = 0; $elementNdx < $elementsSize; $elementNdx++)
+   {
+    my $aclName   = '',
+       $aclSubnet = '';
+
+    if ('name>' eq substr($elements[$elementNdx], 0, 5))
+      {
+       $aclName = substr($elements[$elementNdx], 5);
+
+       if ('subnet>' eq substr($elements[$elementNdx + 2], 0, 7))
+         {
+          $aclSubnet = substr($elements[$elementNdx + 2], 7);
+         }
+
+       if ('default' eq substr($aclName, 0, 7))
+         {
+          push(@aclNames, $aclName);
+         }
+
+       my $aclSubnets = '';
+
+       if (exists($aclGrp{$aclName}))
+         {
+          $aclSubnets = $aclGrp{$aclName};
+
+          if ('' ne $aclSubnets)
+            {
+             $aclSubnets .= ':';
+            }
+         }
+
+       $aclSubnets .= $aclSubnet;
+
+       $aclGrp{$aclName} = $aclSubnets;
+      }
+   }
+
+
+@acls = sort { lc($a) cmp lc($b) } keys(%aclGrp);
+
+foreach my $aclName (@acls)
+       {
+        chomp($aclName);
+
+        if ('default' ne substr($aclName, 0, 7))
+          {
+           push(@aclNames, $aclName);
+          }
+       }
+
+my $format = 'display';
+
+if (exists($argList{'format'}))
+  {
+   $format = $argList{'format'};
+  }
+
+if ('option' eq $format)
+  {
+   my $optStr = '';
+
+   foreach my $aclName (@aclNames)
+          {
+           $optStr .= '<option ';
+
+           if ($aclName eq $selected)
+             {
+              $optStr.= 'selected ';
+             }
+
+           $optStr .= 'value="'. $aclName . '">' . $aclName . '</option>';
+          }
+
+   print $optStr;
+  }
+
+if ('display' eq $format)
+  {
+   print "\n";
+
+   foreach my $aclName (sort({ lc($a) cmp lc($b) }keys(%aclGrp)))
+          {
+           my @aclSubNets = split(/:/, $aclGrp{$aclName});
+
+           my $first = 1;
+
+           printf '%24s: ', $aclName;
+
+           foreach my $aclSubnet (@aclSubNets)
+                  {
+                   if (1 == $first)
+                     {
+                      $first = 0;
+
+                      print $aclSubnet, "\n";
+                     }
+                    else
+                        {
+                         printf '%26s', ' ';
+
+                         print $aclSubnet, "\n";
+                        }
+                  }
+
+           print "\n";
+          }
+  }
+
+
+if ('jbmwall' eq $format)
+  {
+   my $aclNdx = 0;
+
+   my $acls = @aclNames;
+
+   foreach my $aclName (sort(keys(%aclGrp)))
+          {
+           $aclNdx++;
+
+           print "WHITELIST", $aclNdx, '={';
+
+           my @aclSubNets = split(/:/, $aclGrp{$aclName});
+
+           my $subnets = @aclSubNets;
+
+           print 'name=>\'', $aclName, '\', list=>\'';
+
+           foreach my $aclSubnet (@aclSubNets)
+                  {
+                   print $aclSubnet;
+
+                   if ($subnets-- > 1)
+                     {
+                      print ';';
+                     }
+                  }
+
+              print '\'}', "\n";
+          }
+  }
+
+
+if ('parsable' eq $format)
+  {
+   my $acls = @aclNames;
+
+   foreach my $aclName (sort(keys(%aclGrp)))
+          {
+           my @aclSubNets = split(/:/, $aclGrp{$aclName});
+
+           my $subnets = @aclSubNets;
+
+           print $aclName, ':';
+
+           foreach my $aclSubnet (@aclSubNets)
+                  {
+                   print $aclSubnet;
+
+                   if ($subnets-- > 1)
+                     {
+                      print ';';
+                     }
+                  }
+
+           if ($acls-- > 1)
+             {
+              print '|';
+             }
+          }
+  }
+
+exit(0);
+
+
+
+sub Usage
+   {
+    #               1         2         3         4         5         6         7         8
+    #      12345678901234567890123456789012345678901234567890123456789012345678901234567890
+
+    print                                                                                       "\n",
+          'Usage:',                                                                             "\n\n",
+
+          'getacllist <format=display|jbmwall|optlist|profile> <selected={xpath expr}>',        "\n",
+          '           <-h|--help> <-v|--version>',                                              "\n\n",
+
+          'Obtain a list of Whitelist Names, formatted according to the "format" option.',      "\n",
+
+          'format=display|jbmwall|optlist|parsable - Select output format:',                    "\n\n",
+
+          '    display = A list of whitelist names, sorted, except for the one named',          "\n",
+          '              "default" which is always at the top of the list, along with',         "\n",
+          '              their associated list of subnets.  Default when "format" is',          "\n",
+          '              omitted.',                                                             "\n\n",
+
+          '    jbmwall = A list of whitelist names and their associated subnets, in the',       "\n",
+          '              form:  WHITELISTn={name=>\'abcdef\', list=>\'x.x.x.x/n; x.x.x.x/n\'}', "\n\n",
+
+          '    optlist = A set of html option tags, one for each named whitelist,',             "\n",
+          '              sorted, except for the one named "default" which is always the',       "\n",
+          '              first element in the list.',                                           "\n\n",
+
+          '   parsable = A list of whitelist names and their associated subnets, in the',       "\n",
+          '              form:  name:subnet;subnet|name:subnet;subnet; ...',                    "\n\n",
+
+          '-h|help - Displays the usage information summary you are now reading.',              "\n\n",
+
+          'selected={xpath expression} - Use the value obtained from the GAU Master',           "\n",
+          '                              Configuration file via the supplied XPATH',            "\n",
+          '                              expression to set the "selected" attribute in the',    "\n",
+          '                              html <option> tag when "format=optlist".',             "\n\n",
+
+          '-v|version - Displays the version number.',                                          "\n\n";
+   }

@@ -1,0 +1,8 @@
+<!--ko template: {name:'title-template',data:'Switch Control Settings'}--><!--/ko-->
+<div style="text-align: center; vertical-align: middle;" data-bind="visible: isRamEnabled">
+	<span><font color="#FF0000"><b>This option may not be modified on Wired Router or Non-RAM units</b></font></span>
+</div>
+<!--ko template: {name: 'full-savable-bool-template', data: splitlan}--><!--/ko-->
+<div style="text-align: center; vertical-align: middle;" data-bind="visible: !isRamEnabled()">
+	<span><font color="#FF0000"><b>You need to reboot the unit once you Enable/Disable this option after clicking Apply button.</b></font></span>
+</div>

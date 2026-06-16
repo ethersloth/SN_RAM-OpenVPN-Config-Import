@@ -1,0 +1,12 @@
+<h4>Description</h4>
+<p>
+RS-485 Lead and Lag Time
+</p>
+<p>
+Red Lion RS485 ports support lead time and lag time delays. Lead and lag times can be specified for Half Duplex Modem and Full Duplex Modem flow control methods only. 
+In Half Duplex Modem and Full Duplex Modem modes, the RTS signal is typically used as a transmitter key. When data is to be sent, 
+the RTS signal will be asserted. Then, after the lead time delay, data will be transmitted. (The lead time allows the transmitter to warm up.) After the data is transmitted, the RTS signal will remain asserted for the lag time duration, to help assure that the transmitted data will not be corrupted when the transmitter turns off. 
+</p>
+<p>
+<b>Recommented Lead and Lag Time: </b>5
+</p>

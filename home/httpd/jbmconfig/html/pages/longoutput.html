@@ -1,0 +1,12 @@
+<form id="longoutput-form" class="form-horizontal">
+	<!--ko template: {name:'title-template',data:'Object 40 - Long Outputs'}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Define Highest Register Address'}--><!--/ko-->
+    <!--ko template: {name: 'select-template-bool', data: nodnp}--><!--/ko-->
+	<!-- ko if: isNoDNPChecked -->
+        <!--ko template: {name: 'text-template', data: highestreg}--><!--/ko-->
+	<!-- /ko -->
+    <hr />  
+    <div style="text-align: center">
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_object')">Object Mapping</a>
+    </div>
+</form>

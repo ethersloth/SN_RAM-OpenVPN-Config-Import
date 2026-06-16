@@ -1,0 +1,17 @@
+<xml2html>
+ <!-- Please note: "div" is a reserved keyword for XPath, and thus may not be used for the input expression -->
+
+ <rule arg="@CFGNODE"  function="XPathLookupNode" translate="node"     type="replace"   input="//i[@CFGNODE]"       />
+ <rule arg="@CFGDATA"  function="XPathLookupText" translate="value"    type="attribute" input="//input[@CFGDATA]"   />
+ <rule arg="@CFGDATA"  function="XPathLookupText" translate="selected" type="depattr"   input="//option[@CFGDATA]"  />
+ <rule arg="@CFGDATA"  function="XPathLookupText" translate="text"     type="replace"   input="//i[@CFGDATA]"       />
+ <rule arg="@CFGDATA"  function="ConfigOptionList" translate="text"    type="child"     input="//select[@CFGDATA]"  />
+ <rule arg="@COMMAND"  function="SystemCall"      translate="text"     type="replace"   input="//i[@COMMAND]"       />
+ <rule arg="@SYSDATA"  function="SystemCall"      translate="value"    type="attribute" input="//input[@SYSDATA]"   />
+ <rule arg="@FILENAME" function="NoCacheFile"     translate="href"     type="attribute" input="//link[@FILENAME]"   />
+ <rule arg="@FILENAME" function="NoCacheFile"     translate="src"      type="attribute" input="//script[@FILENAME]" />
+ <rule arg="@OVERNODE" function="FileDump"        translate="node"     type="replace"   input="//i[@OVERNODE]"      />
+ <rule arg="@OVERTEXT" function="FileDump"        translate="text"     type="replace"   input="//i[@OVERTEXT]"      />
+ <rule arg="@RECORD"   function="RecordRows"      translate="node"     type="replace"   input="//tr[@RECORD]"       />
+ <rule arg="@SYSTEM"   function="OptionList"      translate="text"     type="child"     input="//select[@SYSTEM]"   />
+</xml2html>

@@ -1,0 +1,11 @@
+<h4>Description</h4>
+<p>
+<b><u>TPO:</u></b><br /> 
+Select the Enable Time Proportioned Outputs (TPO Disabled/Enabled) in the dropdown list, if it is desirable to have any discrete outputs 
+in this module function as time proportioned outputs. All discrete outputs support this TPO capability. 
+Each channel can function as a TPO output or a discrete output, but not both. 
+If TPO is enabled the TPO period, Min. OFF/ON and TPO Modbus address must be configured as well.<br />
+The analog value associated with each channel will control how long the TPO will be ON or OFF (16-bit value from 0-32767). 
+For example, an analog value of zero will tell the output to be OFF. A value of 3276 (10% of 32767) will turn the output on for 10% of the "TPO Period" value. 
+32767 (full scale) will control the output to be ON at all times except for Min OFF/ON time.
+</p>

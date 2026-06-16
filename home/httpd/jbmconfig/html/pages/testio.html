@@ -1,0 +1,82 @@
+<!-- ko template: {name: 'title-template', data: 'Test I/O Access'}--><!-- /ko -->
+<div class="gw-row">
+	<div style="display: inline-block" data-bind="with: scanner">
+		<label class="gw-inline" >Scan Rate (s):</label>
+		<input name="scanRate" type="text" style="width: 30px" data-bind="value: rate"></input>
+		<span class="gw-inline" style="width: 70px" data-bind="text: status, style: {color: color}"></span>
+		<button name="toggleScan" class="btn btn-primary gw-inline" data-bind="text: toggleText, click: toggle"></button>
+	</div>
+	<div style="display: inline-block; margin-left: 50px">
+		<div style="inline-block" style="text-align: center">
+			<span>Last Scan:</span>
+			<span data-bind="text: lastScan"></span><br />
+			<span>Data Used (kB):</span>
+			<span data-bind="text: dataUsed"></span>
+		</div>
+	</div>
+	<div style="display: inline-block; margin-left: 100px">
+		<!-- ko template: {name: 'toggle-template', data: scanner.idleToggle} --><!-- /ko -->
+	</div>
+	<hr style="margin: 5px 0px 10px 0px" />
+</div>
+<div class="gw-row">
+	<label class="gw-inline">Add a Tag</label>
+	<input name="addTag" type="text" style="width: 150px" data-bind="value: inputTagName, autotag: inputTagName"></input>
+	<label style="margin-left: 20px" class="gw-inline">To List</label>
+	<input name="toList" type="text" style="width: 150px" data-bind="value: inputHeader, autocomplete: allSetsHeaders"></input>
+	<button name="addToList" class="btn btn-primary gw-inline" data-bind="click: addInputTag">Add</button>
+	<button name="ab-multiple" class="btn btn-primary gw-inline" style="margin-left: 100px" data-bind="click: addPickerTags">Multiple</button>
+	<label style="margin-left: 100px" class="gw-inline">Load Set</label>
+	<select style="width: 150px" data-bind="value: presetSelect, options: presets"></select>
+	<hr style="margin: 5px 0px 10px 0px" />
+</div>
+<div class="gw-row">
+	<label style="margin-left: 20px" class="gw-inline">Add Raw I/O</label>
+	<select name="addRaw" class="gw-inline" style="width: 150px" data-bind="value: inputType">
+		<option value="0">Analog In</option>
+		<option value="1">Analog Out</option>
+		<option value="10">Discrete In</option>
+		<option value="11">Discrete Out</option>
+		<option value="20">Long In</option>
+		<option value="21">Long Out</option>
+		<option value="22">Float In</option>
+		<option value="23">Float Out</option>
+	</select>
+	<div class="input-append">
+		 <span class="add-on" style="border-radius: 4px 0 0 4px">Start Address</span>
+		 <input name="startAddress" class="add-on" type="text" style="width: 50px; background-color: white" data-bind="value: inputStart"></input>
+	</div>
+	<div class="input-append">
+		 <span class="add-on" style="border-radius: 4px 0 0 4px">Register Count</span>
+		 <input name="registerCount" class="add-on" type="text" style="width: 50px; background-color: white" data-bind="value: inputCount"></input>
+	</div>
+	<label style="margin-left: 20px" class="gw-inline">To List</label>
+	<input name="rawToList" type="text" style="width: 150px" data-bind="value: inputHeader, autocomplete: allSetsHeaders"></input>
+	<button class="btn btn-primary gw-inline" data-bind="click: addInputRange">Add</button>
+	<hr style="margin: 5px 0px 10px 0px" />
+</div>
+<div class="gw-row">
+	<!-- ko foreach: pointSets -->
+	<div style="display: inline-block; vertical-align: top; text-align: center; margin-left: 5px; margin-right: 5px">
+		<div style="display: block; margin-bottom: 10px" data-bind="attr: {name: 'set-' + $index()}">
+			<span style="font-weight: bold" data-bind="text: header"></span>
+			<button style="position: relative; top: top" class="btn" data-bind="click: $parent.removeSet">&times;</button>
+		</div>
+		<!-- ko foreach: points -->
+		<div style="display: block; text-align: right" data-bind="attr: {name: 'point-' + $parentContext.$index() + '-' + $index()}">
+			<label style="font-weight: bold" class="gw-inline" data-bind="html: label"></label>
+			<input type="text" style="margin-bottom: 0px; font-size: smaller; font-family: 'Courier New', Courier, monospace" data-bind="value: value, attr: attr, style: {width: $parent.width}"></input>
+		</div>
+		<!-- /ko -->
+	</div>
+	<!-- /ko -->
+</div>
+<div id="testio-url-modal" class="hide gw-modal-extra-wide" data-bind="modal: urlDisplayModal">
+	<div class="gw-modal-body-long">
+		<button class="close" data-bind="click: urlDisplayModal.hide">&times;</button>
+		<p>Copy and paste this URL to restore current I/O points</p>
+		<textarea readonly style="width: 700px; resize: none" id="testio-url" data-bind="text: testioUrl"></textarea>
+		<button class="btn btn-primary" data-bind="click: copyURL">Copy to Clipboard</button>
+	</div>
+</div>
+<!-- ko template: {name: 'picker-template', data: tagPicker}--><!-- /ko -->

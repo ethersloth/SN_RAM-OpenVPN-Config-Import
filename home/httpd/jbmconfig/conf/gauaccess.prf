@@ -1,0 +1,212 @@
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/gauaccess.prf" name="gauaccess">
+   <validation>
+    <vstep errmsg="Invalid Access Method. Valid values are either 'http', 'https', or 'httpr'."
+             name="method"
+             test="/input/method/text()='http' or /input/method/text()='https'" />
+
+    <vstep errmsg="New Full Access account passwords not identical."
+             name="fap1"
+             test="(string-length(/input/fap1/text()) = 0 and string-length(/input/fap2/text()) = 0) or
+                    /input/fap1/text() = /input/fap2/text())" />
+
+    <vstep errmsg="New Full access password too short."
+             name="fap1"
+             test="(string-length(/input/fap1/text()) = 0 and string-length(/input/fap2/text()) = 0) or
+                    string-length(/input/fap1/text()) > 5" />
+
+    <vstep errmsg="New Full access Password too long."
+             name="fap1"
+             test="(string-length(/input/fap1/text()) = 0 and string-length(/input/fap2/text()) = 0) or
+                    string-length(/input/fap1/text()) < 16" />
+
+
+    <vstep errmsg="New Controlled Access account passwords not identical."
+             name="cap1"
+             test="(string-length(/input/cap1/text()) = 0 and string-length(/input/cap2/text()) = 0) or
+                    /input/cap1/text() = /input/cap2/text())" />
+
+    <vstep errmsg="New Controlled access password too short."
+             name="cap1"
+             test="(string-length(/input/cap1/text()) = 0 and string-length(/input/cap2/text()) = 0) or
+                    string-length(/input/cap1/text()) > 5" />
+
+    <vstep errmsg="New Limited access Password too long."
+             name="cap1"
+             test="(string-length(/input/cap1/text()) = 0 and string-length(/input/cap2/text()) = 0) or
+                    string-length(/input/cap1/text()) < 16" />
+
+
+    <vstep errmsg="New Limited Access account passwords not identical."
+             name="lap1"
+             test="(string-length(/input/lap1/text()) = 0 and string-length(/input/lap2/text()) = 0) or
+                    /input/lap1/text() = /input/lap2/text())" />
+
+    <vstep errmsg="New Limited access password too short."
+             name="lap1"
+             test="(string-length(/input/lap1/text()) = 0 and string-length(/input/lap2/text()) = 0) or
+                    string-length(/input/lap1/text()) > 5" />
+
+    <vstep errmsg="New Limited access Password too long."
+             name="lap1"
+             test="(string-length(/input/lap1/text()) = 0 and string-length(/input/lap2/text()) = 0) or
+                    string-length(/input/lap1/text()) < 16" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Unit's Name to system configuration file."
+             name="unitname"
+             path="/GAUCfg/gauaccess/unitname" />
+
+    <cstep errmsg="Unable to save Access Method to system configuration file."
+             name="method"
+             path="/GAUCfg/gauaccess/method" />
+
+    <cstep errmsg="Unable to save redirect option to system configuration file."
+             name="redirect"
+             path="/GAUCfg/gauaccess/redirect" />
+
+    <cstep errmsg="Unable to save zeroconf option to system configuration file."
+             name="zeroconf"
+             path="/GAUCfg/gauaccess/zeroconf" />
+   </configuration>
+
+   <action name="Password">
+    <astep         abort="y"
+                  errmsg="Invalid current password"
+           inpdependency="string-length(/input/fap1/text()) > 0 and /input/fap1/text() = /input/fap2/text()"
+                    name="SystemCommand">
+     <arg   expr="concat('/home/httpd/jbmconfig/bin/chkpswd admin ', tick(), /input/curpass/text(), tick())"
+          source="input" />
+    </astep>
+
+    <astep         abort="y"
+                  errmsg="Invalid current password"
+           inpdependency="string-length(/input/cap1/text()) > 0 and /input/cap1/text() = /input/cap2/text()"
+                    name="SystemCommand">
+     <arg   expr="concat('/home/httpd/jbmconfig/bin/chkpswd admin ', tick(), /input/curpass/text(), tick())"
+          source="input" />
+    </astep>
+
+    <astep         abort="y"
+                  errmsg="Invalid current password"
+           inpdependency="string-length(/input/lap1/text()) > 0 and /input/lap1/text() = /input/lap2/text()"
+                    name="SystemCommand">
+     <arg   expr="concat('/home/httpd/jbmconfig/bin/chkpswd admin ', tick(), /input/curpass/text(), tick())"
+          source="input" />
+    </astep>
+
+    <astep         abort="y"
+                  errmsg="Failed to update cli Full Access user password."
+           inpdependency="string-length(/input/fap1/text()) > 0 and /input/fap1/text() = /input/fap2/text()"
+                    name="SystemCommand">
+     <arg source="input" expr="concat('echo ', tick(), 'cli:', /input/fap1/text(), tick(), ' | chpasswd -m')" />
+    </astep>
+
+    <astep         abort="y"
+                  errmsg="Failed to update admin Full Access user password."
+           inpdependency="string-length(/input/fap1/text()) > 0 and /input/fap1/text() = /input/fap2/text()"
+                    name="SystemCommand">
+     <arg source="input" expr="concat('echo ', tick(), 'admin:', /input/fap1/text(), tick(), ' | chpasswd -m')" />
+    </astep>
+
+    <astep         abort="y"
+                  errmsg="Failed to update htdigest admin gateway Full Access user password."
+           inpdependency="string-length(/input/fap1/text()) > 0 and /input/fap1/text() = /input/fap2/text()"
+                    name="SystemCommand">
+     <arg source="input" expr="concat('htdigest admin gateway ', tick(), /input/fap1/text(), tick())" />
+    </astep>
+
+    <astep         abort="y"
+                  errmsg="Failed to update root Full Access user password."
+           inpdependency="string-length(/input/fap1/text()) > 0 and /input/fap1/text() = /input/fap2/text()"
+                    name="SystemCommand">
+     <arg source="input" expr="concat('echo ', tick(), 'root:', /input/fap1/text(), tick(), ' | chpasswd -m')" />
+    </astep>
+
+    <astep         abort="y"
+                  errmsg="Failed to update jbmgatew Full Access user password."
+           inpdependency="string-length(/input/fap1/text()) > 0 and /input/fap1/text() = /input/fap2/text()"
+                    name="SystemCommand">
+     <arg source="input" expr="concat('echo ', tick(), 'jbmgatew:', /input/fap1/text(), tick(), ' | chpasswd -m')" />
+    </astep>
+
+    <astep         abort="y"
+                  errmsg="Failed to update rlcuser Full Access user password."
+           inpdependency="string-length(/input/fap1/text()) > 0 and /input/fap1/text() = /input/fap2/text()"
+                    name="SystemCommand">
+     <arg source="input" expr="concat('echo ', tick(), 'rlcuser:', /input/fap1/text(), tick(), ' | chpasswd -m')" />
+    </astep>
+
+    <astep         abort="y"
+                  errmsg="Failed to update gauser Controlled Access password."
+           inpdependency="string-length(/input/cap1/text()) > 0 and /input/cap1/text() = /input/cap2/text()"
+                    name="SystemCommand">
+     <arg source="input" expr="concat('echo ', tick(), 'gauser:', /input/cap1/text(), tick(), ' | chpasswd -m')" />
+    </astep>
+
+    <astep         abort="y"
+                  errmsg="Failed to update htdigest gauser Controlled Access password."
+           inpdependency="string-length(/input/cap1/text()) > 0 and /input/cap1/text() = /input/cap2/text()"
+                    name="SystemCommand">
+     <arg source="input" expr="concat('htdigest gauser gateway ', tick(), /input/cap1/text(), tick())" />
+    </astep>
+
+    <astep         abort="y"
+                  errmsg="Failed to update techsup Limited Access password."
+           inpdependency="string-length(/input/lap1/text()) > 0 and /input/lap1/text() = /input/lap2/text()"
+                    name="SystemCommand">
+     <arg source="input" expr="concat('echo ', tick(), 'techsup:', /input/lap1/text(), tick(), ' | chpasswd -m')" />
+    </astep>
+
+    <astep         abort="y"
+                  errmsg="Failed to update htdigest techsup Limited Access password."
+           inpdependency="string-length(/input/lap1/text()) > 0 and /input/lap1/text() = /input/lap2/text()"
+                    name="SystemCommand">
+     <arg source="input" expr="concat('htdigest techsup gateway ', tick(), /input/lap1/text(), tick())" />
+    </astep>
+
+    <astep         abort="n"
+           inpdependency="string-length(/input/fap1/text()) > 0 and /input/fap1/text() = /input/fap2/text()"
+                    name="SystemCommand">
+     <arg source="input" expr="'[ -f /etc/flags/hdhigest-admin ] &amp;&amp; rm -f /etc/flags/hdhigest-admin')" />
+    </astep>
+
+    <astep         abort="n"
+           inpdependency="string-length(/input/cap1/text()) > 0 and /input/cap1/text() = /input/cap2/text()"
+                    name="SystemCommand">
+     <arg source="input" expr="'[ -f /etc/flags/hdhigest-gauser ] &amp;&amp; rm -f /etc/flags/hdhigest-gauser'" />
+    </astep>
+
+    <astep         abort="n"
+           inpdependency="string-length(/input/lap1/text()) > 0 and /input/lap1/text() = /input/lap2/text()"
+                    name="SystemCommand">
+     <arg source="input" expr="'[ -f /etc/flags/hdhigest-techsup ] &amp;&amp; rm -f /etc/flags/hdhigest-techsup'" />
+    </astep>
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+    <pre subsystem="gauaccess" action="Password" />
+
+    <astep  abort="y" errmsg="Failed to call gauaccess subsystem handler" name="SystemCommand">
+     <!--<arg expr="concat('prfhandler_gauaccess apply ', tick(), 'fap=', /input/fap1/text(), tick(), ' ', tick(), 'cap=', /input/cap1/text(), tick(), ' ', tick(), 'lap=', /input/lap1/text(), tick(), ' ', tick(), 'curpass=', /input/curpass/text(), tick())"-->
+     <arg expr="'prfhandler_gauaccess apply'"
+          source="input" />
+    </astep>
+   </action>
+
+   <action name="Save" successmsg="Operation Succeeded.">
+    <pre subsystem="gauaccess" action="Password" />
+
+    <astep  abort="y" errmsg="Failed to call gauaccess subsystem handler" name="SystemCommand">
+     <!--<arg expr="concat('prfhandler_gauaccess save ', tick(), 'fap=', /input/fap1/text(), tick(), ' ', tick(), 'cap=', /input/cap1/text(), tick(), ' ', tick(), 'lap=', /input/lap1/text(), tick(), ' ', tick(), 'curpass=', /input/curpass/text(), tick())"-->
+     <arg expr="'prfhandler_gauaccess save'"
+          source="input" />
+    </astep>
+   </action>
+
+  </subsystem>
+ </subsystems>
+</profile>
+

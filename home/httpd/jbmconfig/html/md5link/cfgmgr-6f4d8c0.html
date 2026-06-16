@@ -1,0 +1,76 @@
+<form id="cfgmgr-form" class="form-horizontal">
+	<!--ko template: {name: 'title-template', data: 'System Configuration Manager'}--><!--/ko-->
+	<!--ko template: {name: 'h4-template', data: 'Export Web UI Master Configuration / Subsystem(s) File'}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: exportmethod}--><!--/ko-->
+	<div style="text-align: center">
+		<div class="control-group" style="text-align: center; margin-top: 20px">
+			<button class="btn btn-primary" name="export-master-config" data-bind="click: clickExportAll">Export Master Configuration</button>
+			<button class="btn btn-primary" name="export-config-bysubs" data-bind="click: clickExportSome">Export Subsystem(s)</button>
+		</div>
+	</div>
+	<hr />
+	<!--ko template: {name: 'h4-template', data: 'Import Web UI Master Configuration File'}--><!--/ko-->
+	<!--ko template: {name: 'select-template', data: dftimpmode}--><!--/ko-->
+	<!--ko template: {name: 'select-template', data: option}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: importmethod}--><!--/ko-->
+	<div data-bind="visible: showLocal" style="width: 100%; text-align: center; margin-bottom: 10px">
+		<!--ko template: {name: 'file-input-template', data: cfgfile}--><!--/ko-->
+	</div>
+	<div data-bind="visible: ! showLocal()">
+		<!--ko template:{name:'h4-template',data: 'Browse Entire SD Card'}--><!--/ko-->
+		<!-- ko if: filesBrowser.root().length > 0 -->
+			<!-- ko template: {name: 'file-browser-template', data: filesBrowser} --><!-- /ko -->
+		<!-- /ko -->
+		<!-- ko ifnot: filesBrowser.root().length > 0 -->
+			<!-- ko if: listErrorMessage -->
+				<p style="color: red; text-align: center" data-bind="text: listErrorMessage"></p>
+			<!-- /ko -->
+			<!-- ko ifnot: listErrorMessage -->
+				<p style="color: red; text-align: center">No files found on SD card</p>
+			<!-- /ko -->
+		<!-- /ko -->
+		<div style="margin-top: 5px" data-bind="visible: filesBrowser.selectedFiles().length > 0">
+			<!--ko template:{name:'h4-template',data:'Selected Files'}--><!--/ko-->
+			<div class="gw-auto-margin gw-border" style="width: 600px; text-align: left" data-bind="foreach: filesBrowser.selectedFiles">
+				<div style="padding-left: 5px; cursor: pointer" title="remove" data-bind="click: $parent.getPathRemove($data)">
+					<span data-bind="text: $data"></span>
+				</div>
+			</div>
+		</div>
+		<div class="control-group" style="text-align: center; margin-top: 20px">
+			<button type="button" class="btn btn-primary" name="cfgmgr-refresh-files" data-bind="click: updateSDCardList, attr: {title: 'Refresh Browser contents from SD card'}">Refresh</button>
+			<button type="button" class="btn btn-primary" name="cfgmgr-import-files" data-bind="click: importf, attr: {title: 'Import file'}, enable: importEnabled">Import</button>
+		</div>
+	</div>
+	<div style="text-align: center" data-bind="visible: showLocal">
+		<button type="button" class="btn btn-primary" data-bind="click: importf, enable: importEnabled">Import</button>
+	</div>
+	<br />
+	<div style="text-align: center" data-bind="if: haveResults">
+		<textarea readonly rows="20" style="width: 600px; font-family: monospace" id="cfgmgr-results" data-bind="text: results"></textarea>
+		<div class="gw-auto-margin" style="width:600px; text-align: left">
+			<input type="checkbox" data-bind="checked: scrolltoend"> Always scroll to end</input>
+		</div>
+	</div>
+	<br />
+</form>
+<!-- ko template: {name: 'picker-template', data: $.extend({
+	header: "Select Subsystems"
+}, subsPicker)}--><!-- /ko -->
+<!-- ko template: {name: 'picker-template', data: $.extend({
+	header: "Exclude Device-Specific Properties",
+	buttonText: "Export"
+}, excludesPicker)}--><!-- /ko -->
+<div id="cfgmgr-export-purpose-modal" data-bind="modal: modalExportPurpose" class="hide">
+	<div class="modal-header">
+		<button class="close" data-bind="click: modalExportPurpose.hide">&times;</button>
+		<h3>Is this Export intended for...</h3>
+	</div>
+	<div class="modal-body gw-row" >
+		<button class="btn btn-primary" data-bind="click: clickPurposeClone">Backup/Clone of this unit</button>
+		<br /><br />
+		<button class="btn btn-primary" data-bind="click: clickPurposeCopy">Copying details to a similar unit</button>
+		<br /><br />
+		<!-- ko template: {name: 'long-help-template', data: {helpTitle: 'Export Type', helpLink: 'h_cfgmgr_exporttype.html'}} --><!-- /ko -->
+	</div>
+</div>

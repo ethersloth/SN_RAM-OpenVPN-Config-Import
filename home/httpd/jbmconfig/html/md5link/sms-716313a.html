@@ -1,0 +1,168 @@
+<!-- ko template: {name: 'title-template', data: 'SMS Handling'}--><!-- /ko -->
+<!-- ko if: showConfig -->
+<!--ko template: {name:'full-savable-bool-template', data: enable}--><!--/ko-->
+<div data-bind="visible: isEnabled">
+	<hr />
+	<!--ko template: {name:'h4-template', data: 'SMS System Configuration'}--><!--/ko-->
+	<!--ko template: {name:'full-savable-select-template', data: limitperiod}--><!--/ko-->
+	<!--ko template: {name:'full-savable-input-template', data: maxoutmsg}--><!--/ko-->
+	<!--ko template: {name:'full-savable-select-template', data: accsecurity}--><!--/ko-->
+	<!--ko template: {name:'full-savable-input-template', data: logintimeout}--><!--/ko-->
+	<!--ko template: {name:'full-savable-select-template', data: replyloginattempts}--><!--/ko-->
+	<!-- ko if: showUser() || showAdmin() -->
+		<hr />
+		<!--ko template: {name:'h4-template',data:'General Passwords'}--><!--/ko-->
+		<!-- ko if: showAdmin -->
+			<!-- ko template: {name: 'full-savable-password-template', data: adminuser}--><!-- /ko -->
+		<!-- /ko -->
+		<!-- ko template: {name: 'full-savable-password-template', data: techuser}--><!-- /ko -->
+		<!-- ko template: {name: 'full-savable-password-template', data: basicuser}--><!-- /ko -->
+	<!-- /ko -->
+	<hr />
+	<!--ko template: {name:'h4-template', data: 'SMS Whitelist Configuration'}--><!--/ko-->
+	<div data-bind="if: showControlTable">
+		<table border="1" align="center" style="text-align: center">
+			<thead>
+				<tr>
+					<th style="width: 200px; border: none">Incoming Number</th>
+					<th style="width: 200px; border: none">Reply-To Number</th>
+					<th style="width: 200px; border: none">Permission Level</th>
+					<th colspan="2" style="border: none">
+						<span class="badge" data-bind="text: numRecords"></span>
+					</th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: smsControlTable">
+				<tr style="height: 35px" data-bind="style: {'background-color': '#eee'}">
+					<td style="text-align: center">
+						<span data-bind="text: callerID"></span>
+					</td>
+					<td style="text-align: center">
+						<span data-bind="text: replyID"></span>
+					</td>
+					<td style="text-align: center">
+						<span data-bind="text: command"></span>
+					</td>
+					<td style="text-align: center">
+						<button type="button" class="btn btn-primary" data-bind="click: $parent.editRecord($index()), attr: {name: 'edit' + $index()}">Edit</button>
+					</td>
+					<td style="text-align: center">
+						<button type="button" class="btn btn-danger" data-bind="click: $parent.deleteRecord($index()), attr: {name: 'delete' + $index()}">Delete</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<br />
+	<div style="text-align: center">
+		<button class="btn btn-primary" name="addcallerid" data-bind="event: {click: addCallerID}">Add Whitelist Number</button>
+	</div>
+</div>
+<!-- /ko -->
+<!-- ko ifnot: showConfig -->
+	<!--ko template: {name:'h4-template',data:'Status'}--><!--/ko-->
+	<table class="gw-auto-margin gw-status-table gw-st45" style="width: 475px">
+		<tr>
+			<td>Account Phone Number</td>
+			<td data-bind="text: detectedMDN"></td>
+		</tr>
+		<tr>
+			<td>Messages Received</td>
+			<td data-bind="text: statusReceived"></td>
+		</tr>
+		<tr>
+			<td>Messages Sent</td>
+			<td data-bind="text: statusSent"></td>
+		</tr>
+		<tr>
+			<td>Failed to Send</td>
+			<td data-bind="text: statusFail"></td>
+		</tr>
+	</table>
+	<hr />
+	<!--ko template: {name:'h4-template',data:'Test'}--><!--/ko-->
+	<!--ko template: {name:'full-savable-input-template', data: testNumber}--><!--/ko-->
+	<!--ko template: {name:'full-savable-expanding-template', data: testMessage}--><!--/ko-->
+	<div class="gw-row">
+		<button class="btn btn-success" name="test-sms-send" data-bind="click: testSend">Send Test Message</button>
+	</div>
+	<hr />
+	<!-- ko if: internalFiles().length > 0 -->
+	<h4 style="padding-top: 30px; text-align: center">Logs Saved Internally</h4>
+	<div class="gw-auto-margin gw-border" style="padding: 5px; width: 400px; max-height: 300px; overflow-y: scroll; text-align: justify">
+		<!-- ko foreach: internalFiles -->
+		<span style="display: block" class="gw-selectable" data-bind="text: text, attr: {name: 'internal-' + name}, style: {'background-color': selected() ? 'lightblue' : 'white'}, click: select"></span>
+		<!-- /ko -->
+	</div>
+	<!-- /ko -->
+	<!-- ko ifnot: internalFiles().length > 0 -->
+	<div style="text-align: center">
+		<span style="color: red">No logs found</span>
+	</div>
+	<!-- /ko -->
+	<div style="text-align: center; margin-top: 15px" data-bind="visible: showDebugLog">
+		<button class="btn" data-bind="click: loadDebugLog">Show Process Log</button>
+	</div>
+	<div style="text-align: center; margin-top: 15px" data-bind="visible: showRotate">
+		<button class="btn btn-danger" data-bind="click: rotateLog">Rotate SMS Log</button>
+	</div>
+<!-- /ko -->
+<div id="sms-preview-modal" data-backdrop="static" class="modal hide gw-modal-wide" data-bind="with: previewModal">
+	<div class="modal-header">
+		<button class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3 data-bind="text: header"></h3>
+	</div>
+	<div class="gw-modal-body-long">
+		<table class="gw-picker-list" style="width: 100%; text-align: center">
+			<thead>
+				<tr data-bind="foreach: tableHeaders">
+					<th style="border: 1px solid #ccc;" data-bind="text: $data"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- ko foreach: tableRows -->
+				<tr data-bind="foreach: $data">
+					<td style="border: 1px solid #ccc;" data-bind="text: $data"></td>
+				</tr>
+				<!-- /ko -->
+				<!-- ko if: showSplitTable -->
+				<tr><td style="border: 1px solid #ccc;" data-bind="attr: {colspan: tableHeaders().length}">...truncated...</td></tr>
+				<!-- ko foreach: tableTail -->
+				<tr data-bind="foreach: $data">
+					<td style="border: 1px solid #ccc;" data-bind="text: $data"></td>
+				</tr>
+				<!-- /ko -->
+				<!-- /ko -->
+			</tbody>
+		</table>
+		<button class="btn btn-primary" style="margin-top: 10px" data-bind="click: download">Download entire file</button>
+	</div>
+</div>
+<div id="sms-debug-modal" data-backdrop="static" class="modal hide gw-modal-extra-wide">
+	<div class="modal-header">
+		<button class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Diagnostic Log</h3>
+	</div>
+	<div class="modal-body">
+		<pre style="max-height: 360px; overflow-y: scroll" data-bind="text: debugLog"></pre>
+	</div>
+</div>
+<div id="smsrule-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="smsrule-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>SMS Whitelist Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name:'full-savable-expanding-template', data: callerid}--><!--/ko-->
+					<!--ko template: {name:'full-savable-expanding-template', data: replyid}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-password-template', data: password}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: command}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: smsFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

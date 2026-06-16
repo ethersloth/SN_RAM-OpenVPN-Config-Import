@@ -1,0 +1,25 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+my @modemlist = (SIM_ID, SIM_IMSI, SIM_CARRIER, MANU, MODEL, FIRMWARE_V, SKU_PRIID, ENSEN, CREG);
+my @modemInfo = ();     
+                             
+foreach my $eachelement(@modemlist)
+       {
+          my $cmdStr = "cat /var/log/wireless.cardstats | grep $eachelement 2>&1 |";
+          if (!open(FILE, $cmdStr))                                                                                                      
+          {                                                                                                                            
+             #print "Error Reading CardStats\n";
+             exit;                                                
+          }       
+          push (@modemInfo, <FILE>);
+          close(FILE);
+       }
+
+foreach my $entry (@modemInfo)
+       {
+         chomp($entry);
+         print $entry . "::";
+       }
+exit(0);                                        
+ 

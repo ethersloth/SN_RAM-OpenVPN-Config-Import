@@ -1,0 +1,30 @@
+<h4>Description</h4>
+<p>
+ The <b>Event Expression</b> is a logical equation built to combine the condition/status of multiple events into a single action. Other events will be referenced by their <b>Event Name</b>. Tag names can be used within expressions by framing the Tag name in <b>$</b>. ie: <b>$TagName$</b>. These operands will evaluate those event's condition/status to be a 0 (false/inactive) or 1 (true/active).
+ <br /><br />
+ There are 4 logical test operations that can be performed on the operands:<br />
+ NOT: Represented by the ! (exclamation) symbol<br />
+ AND: Represented by the & (ampersand) symbol<br />
+ OR:  Represented by the | (pipe) symbol<br />
+ EQU: Represented by the = (equals) symbol<br />
+ <br />
+ Examples:<br />
+ EVT1 & EVT2 | EVT3 & !EVT4<br />
+ !EVT1 & !( EVT2 || ( EVT3 & EVT4) ) | EVT5<br />
+ $TAG1$ & $TAG2$ | $TAG3$ & !$TAG4$<br />
+ !$TAG1$ & !( $TAG2$ || ( $TAG3$ & $TAG4$) ) | $TAG5$<br />
+ EVT1 & MyEvent | $TAGNAME$<br />
+ $TAG1$ & $TAG2$ | $TAG3$ & !$TAG4$<br />
+ where <b>EVT1, EVT2, EVT3, EVT4, EVT5</b> and <b>MyEvent</b> represents the event name and <b>$TAG1$, $TAG2$, $TAG3$, $TAG4$, $TAG5$</b> and <b>$TAGNAME$</b> represents the I/O type register address.<br />
+ <br />
+ Rules:<br />
+ "!" only takes effect for the operand or the total result of the pair of parenthesis at its right hand side.<br />
+ "=" shall be between only two operands - Another "=" following is not allowed.<br />
+ EVT1 == EVT2 == EVT3, shall be written as: EVT1 = EVT2 & ( EVT2 = EVT3 ) instead<br />
+ Operations are evaluated from left to right, unless parenthesis takes higher priority.<br />
+ Maximum level of cascaded parenthesis is 3.<br />
+ Maximum named event operands is 16.<br />
+ "!=" is not allowed.  Instead, use:<br />
+ EVT1 = !EVT2 or !EVT1 = EVT2<br />
+</p>
+

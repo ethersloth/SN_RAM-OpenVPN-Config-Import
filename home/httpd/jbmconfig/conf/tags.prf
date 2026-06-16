@@ -1,0 +1,39 @@
+
+<profile>
+ <subsystems>
+                <!-- Advanced -> tags/csv Input Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/tags.prf" name="tags">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save csv file to tags system configuration file."
+             name="csv"
+             path="/GAUCfg/tags/csv" />
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+
+    <astep abort="y"
+           errmsg="Failed to write /tmp/tags.csv configuration file."
+           cfgdependency="string-length(/GAUCfg/tags/csv/text()) > 0"
+           name="WriteFormattedFile">
+     <arg expr="'/tmp/tags'" source="config" />
+     <arg expr="concat(/GAUCfg/tags/csv/text())" source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to convert end of line delimiter" name="SystemCommand">
+     <arg expr="sed 's/&amp;#x0A;/\n/g' /tmp/tags > /etc/iog/tags.csv; rm -f /tmp/tags" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+    <pre subsystem="tags" action="Save" />
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

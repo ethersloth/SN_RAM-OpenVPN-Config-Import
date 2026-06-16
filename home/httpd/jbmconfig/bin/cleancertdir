@@ -1,0 +1,126 @@
+#!/usr/bin/perl -w
+# (C)2018 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+
+# Get total number of certificate entries from the Master Configuration file:
+
+my $certCnt = 0;
+
+if (
+    open(
+         FILE,
+         "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/config.xml " .
+         "--xpath=\"/GAUCfg/certmgr/certificates/NumberOfcertificates/text()\" |"
+        )
+   )
+  {
+   while (<FILE>)
+        {
+         $certCnt = $_;
+
+         chomp($certCnt);
+        }
+
+   close(FILE);
+  }
+
+
+#Delete all installed certificates from symlink directories.
+sub removeCertFiles {
+    my $certFile = shift;
+    system("rm -f /etc/jbm/certificates/" . $certFile);
+    system("rm -f /etc/stunnel/certs/" . $certFile);
+    system("rm -f /etc/ipsec/ipsec.d/certs/" . $certFile);
+    system("rm -f /etc/ipsec/ipsec.d/private/" . $certFile);
+    system("rm -f /etc/ipsec/ipsec.d/cacerts/" . $certFile);
+    system("rm -f /etc/openvpn/" . $certFile);
+    system("rm -f /etc/ramqtt/certs/" . $certFile);
+}
+
+# Read contents of certificate directory into an array of strings for each:
+
+opendir(DIR, "/etc/jbm/certificates/");
+
+my @instCertFNamesList = sort(readdir(DIR));
+
+closedir(DIR);
+
+if (0 == $certCnt) {
+    foreach my $CertFName (@instCertFNamesList)
+           {
+               if ($CertFName eq "README_WARNING" || "." eq $CertFName || ".." eq $CertFName)
+                 {
+                     next;
+                 }
+                 &removeCertFiles($CertFName);
+           }
+    exit(0);
+}
+
+# Get a list of certificate file names from the Master Configuration file:
+
+my @cfgCertFNamesList;
+
+for (my $certNdx=1; $certNdx<=$certCnt; $certNdx++)
+   {
+    my $certFName = "";
+
+    if (
+        open(
+             FILE,
+             "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/config.xml --xpath=\"/GAUCfg/certmgr/certificates/certificate[" .
+             $certNdx . "]/file/text()\" |"
+            )
+       )
+      {
+       while (<FILE>)
+            {
+             $certFName = $_;
+
+             chomp($certFName);
+
+             push(@cfgCertFNamesList, $certFName);
+            }
+
+       close(FILE);
+      }
+   }
+
+# Compare list of installed certificate file to list of certificates in Master Configuration file and delete the installed file
+# if it is not referenced by the Master Configuration file:
+
+foreach my $instCertFName (@instCertFNamesList)
+       {
+        if ($instCertFName eq "README_WARNING" || "." eq $instCertFName || ".." eq $instCertFName)
+          {
+           next;
+          }
+
+        my $legitFile = 0;
+
+        foreach my $cfgCertFName (@cfgCertFNamesList)
+               {
+                if ($cfgCertFName eq $instCertFName)
+                  {
+                   $legitFile = 1;
+
+                   last;
+                  }
+               }
+
+        if (0 == $legitFile)
+          {
+              &removeCertFiles($instCertFName);
+          }
+       }
+
+system("for cert in"
+    . " /etc/ramqtt/certs/*"
+    . " /etc/stunnel/certs/*"
+    . " /etc/ipsec/ipsec.d/certs/*"
+    . " /etc/ipsec/ipsec.d/private/*"
+    . " /etc/ipsec/ipsec.d/cacerts/*"
+    . " /etc/openvpn/*"
+    . '; do test -e $cert || rm -f "$cert"; done');
+
+exit(0);

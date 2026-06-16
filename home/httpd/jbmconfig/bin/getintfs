@@ -1,0 +1,489 @@
+#!/usr/bin/perl -w
+# (C)2018 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion
+# logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All
+# other company and product names are trademarks of their respective owners.
+
+###############################################################################################################################
+#                                                                                                                             #
+# getiftfs - Get Interface List                                                                                               #
+#                                                                                                                             #
+# Obtain a (sorted) list of interfaces in the form of a list of html <option> elements from the system, filtered according to #
+# the command line arguments.                                                                                                 #
+#                                                                                                                             #
+# For the record . .                                                                                                          #
+#                                                                                                                             #
+# Copyright (c) 2008 by Sixnet, LLC.                                                                                          #
+#                                                                                                                             #
+# All rights reserved.  No part of this program may be reproduced, stored in a retrieval system or transmitted, in any form   #
+# or by any means, including but not limited to electronic, mechanical, photocopying, recording, or otherwise, without the    #
+# express prior written consent of Sixnet, 4645 LaGuardia, St. Louis, MO 63134.  (314) 426-7781, fx: (314) 426-0007.          #
+# Contact support@sixnet.com                                                                                                  #
+#                                                                                                                             #
+#                                                                                                                             #
+# This program was written by Art Surgant.                                                                                    #
+#                                                                                                                             #
+###############################################################################################################################
+
+$ENV{PATH} .= ":/home/httpd/jbmconfig/bin:/sbin:/usr/bin";
+
+my $PARSEABLE = 0;
+my $proc_fc_dir = "/proc/feature_codes";
+use IOG::SKVS;
+
+# Get command line argument(s), if any:
+
+my $argCnt = $#ARGV;
+
+if ($argCnt == -1)
+{
+    Usage();
+
+    exit(0);
+}
+
+
+my $switch_mode_sep = IOG::SKVS::get("FC_SWMODE_SEP");
+
+my %argList;
+
+foreach my $argnum (0 .. $#ARGV)
+{
+    if ("-h" eq $ARGV[$argnum])
+    {
+        Usage();
+
+        exit(0);
+    }
+    elsif ("--parseable" eq $ARGV[$argnum])
+    {
+        $PARSEABLE = 1;
+        next;
+    }
+
+    my ($argName, $argVal) = split(/=/, $ARGV[$argnum]);
+
+    $argList{$argName} = $argVal;
+}
+
+my $xpeCmdStr = "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/config.xml";
+
+
+# If 'selected=' is present, get its value and use it to get a value from the GAU Master Configuration file to use later to
+# set the 'selected' attribute for the generted <option> element:
+
+my $selected = "";
+
+if ($argList{"selected"})
+{
+    $selected = $argList{"selected"};
+
+    if (open(FILE, $xpeCmdStr . " --xpath=\"" . $selected . "/text()\" |"))
+    {
+        while (<FILE>)
+        {
+            $selected = $_;
+
+            chomp($selected);
+        }
+
+        close(FILE);
+    }
+}
+
+
+# If 'filter=' is present, get its value and split it into an array of values (assuming there are one or more values separated
+# by commas) to be used to filter the interface list later:
+
+my $filterStr = "";
+
+my @filterList,
+$filterCnt = 0;
+
+if ($argList{"filter"})
+{
+    $filterStr = $argList{"filter"};
+
+    if ("" ne $filterStr)
+    {
+        @filterList = split(/,/, $filterStr);
+
+        $filterCnt = @filterList;
+    }
+}
+
+
+# If 'nonplus=y' is present, try to get a list of pre-defined Interface names from the GAU Master Configuration file to be
+# included in the final interface list:
+
+my $noPlus = 0;
+
+if ($argList{"noplus"})
+{
+    if ("y" eq $argList{"noplus"})
+    {
+        $noPlus = 1;
+    }
+}
+
+
+# If 'static=' is present, get its value and split it into an array of values (assuming there are one or more values separated
+# by commas) and blindly generate a list of <option> elements using that array (replacing any '%20's with spaces):
+
+my %intfList;
+
+my @staticList;
+
+if ($argList{"static"})
+{
+    my $staticStr = "";
+
+    $staticStr = $argList{"static"};
+
+    if ("" ne $staticStr)
+    {
+        @staticList = split(/,/, $staticStr);
+
+        foreach my $staticIntf (@staticList)
+        {
+            $staticIntf =~ s/%20/ /g;
+
+            my $key = $staticIntf;
+
+            $intfList{$key} = $staticIntf;
+        }
+    }
+}
+
+
+
+# If 'predefs=y' is present, try to get a list of pre-defined Interface names from the GAU Master Configuration file to be
+# included in the final interface list:
+
+if ($argList{"predefs"})
+{
+    if ("y" eq $argList{"predefs"})
+    {
+        foreach (`grep -A 1 predefint /home/httpd/jbmconfig/conf/config.xml | grep name`)
+        {
+            my $preDefIntName = $_;
+
+            chomp($preDefIntName);
+
+            # greps will give us raw <name>interface</name> tags from config
+            $preDefIntName =~ s/\s*<[^>]+>//g;
+
+            if (1 == $noPlus)
+            {
+                if ($preDefIntName =~ /\+$/)
+                {
+                    next;
+                }
+            }
+
+            $intfList{$preDefIntName} = $preDefIntName;
+
+        }
+    }
+}
+
+
+# If 'getips=y' is present, try to get a list of actual IP addrs from Interface names present in ifconfig
+
+my $GetIPs = 0;
+
+if ($argList{"getips"})
+{
+    if ("y" eq $argList{"getips"})
+    {
+        $GetIPs = 1;
+    }
+}
+
+
+
+# Read contents of /sys/class/net, sorted, into arrays of strings for each:
+opendir(DIR, "/sys/class/net/");
+my @sysIntfList = sort(readdir(DIR));
+closedir(DIR);
+
+if ( 1 == $switch_mode_sep )
+{
+   my $found_eth1 = 0;
+   foreach my $entry(@sysIntfList)
+   {
+      if ( $entry =~ /^eth1$/ )
+      {
+         $found_eth1 = 1;
+         last;
+      }
+   }
+   if ( 0 == $found_eth1 )
+   {
+      push(@sysIntfList,"eth1");
+   }
+}
+
+#remove any ethernets not on the unit
+my @tmp_sysIntfList;
+foreach my $entry(@sysIntfList)
+{
+    chomp($entry);
+    if ( $entry =~ /^eth0_cpu/ )
+    {
+        next;
+    }
+    if ( $entry !~ /^eth/ )
+    {
+        push(@tmp_sysIntfList, $entry);
+        next;
+    }
+    #my @parts = split /eth/, $entry;
+    #my $ethnum = $parts[1];
+    my $ethnum;
+    if ( $entry =~ /^eth(\d+)(?:[.:].*)?/i)
+    {
+        $ethnum = $1;
+    }
+    $ethnum =~ s/\s*//g;
+    if ( 1 == &HaveDseriesEthFC($ethnum))
+    {
+        push(@tmp_sysIntfList, $entry);
+        next;
+    }
+}
+@sysIntfList = @tmp_sysIntfList;
+
+
+
+# Process the list just obtained, omitting '.' and '..', adding interface aliases, if requested, and filterng against any
+# filters provided:
+
+foreach my $intf (@sysIntfList)
+{
+    if ("gre0" eq $intf)
+    {
+        next;
+    }
+
+    # If 'aliases=y' is present, try to get a list of interface alias names from the Master Configuration file for each
+    # physical 'eth' interface available in the system:
+
+    if ($argList{"aliases"})
+    {
+        if ("y" eq $argList{"aliases"})
+        {
+            if ($intf =~ m/^eth/)
+            {
+                my $xpathExpr = "/GAUCfg/" . $intf . "/aliass/NumberOfaliass/text()";
+
+                my $aliasCnt = 0;
+
+                if (open(FILE, $xpeCmdStr . " --xpath=\"" . $xpathExpr . "\" |"))
+                {
+                    while (<FILE>)
+                    {
+                        $aliasCnt = $_;
+                        chomp($aliasCnt);
+                        $aliasCnt = 0 if ( $aliasCnt !~ /^[0-9]+$/ );
+                    }
+
+                    close(FILE);
+                }
+
+                for (my $aliasNdx=0; $aliasNdx < $aliasCnt; $aliasNdx++)
+                {
+                    my $xpathExpr = "/GAUCfg/" . $intf . "/aliass/alias[" . ($aliasNdx + 1) . "]/subintnum/text()";
+
+                    if (open(FILE, $xpeCmdStr . " --xpath=\"" . $xpathExpr . "\" |"))
+                    {
+                        while (<FILE>)
+                        {
+                            my $subIntNum = $_;
+
+                            chomp($subIntNum);
+
+                            $intfList{$intf . ":" . $subIntNum} = $intf . ":" . $subIntNum;
+                        }
+
+                        close(FILE);
+                    }
+                }
+            }
+        }
+    }
+
+
+    # Apply filter(s), if any:
+
+    if ($filterCnt > 0)
+    {
+        foreach my $filter (@filterList)
+        {
+            if ($intf =~ m/^$filter/)
+            {
+                $intfList{$intf} = $intf;
+
+                last;
+            }
+        }
+
+        next;
+    }
+
+    # Ignore '.' and '..':
+
+    if ($intf !~ /^\./)
+    {
+        $intfList{$intf} = $intf;
+    }
+
+}
+
+#Get list of real IPs, and do not filter
+
+if ($GetIPs)
+{
+
+    @output = `/sbin/ifconfig 2>&1`;
+    my $counter = 0;
+
+    foreach(@output)
+    {
+        chomp;
+        if ( $_ =~ /^(\S+)\s+.*$/i )
+        {
+            if ($output[$counter+1] =~ /^\s*inet\saddr:(\d+\.\d+\.\d+\.\d+)\s.*$/)
+            {
+                $intfList{$1} = $1;
+            }
+        }
+        $counter++;
+    }
+}
+
+# Sort the completed list and process it.  If raw output was requested, just dump the accumulated list, otherwise format
+# the list into a list of html <option> elements and set the selected element if needed:
+
+foreach $key (sort(keys(%intfList)))
+{
+    my $intf = $intfList{$key};
+
+    if ($argList{"raw"})
+    {
+        if ("y" eq $argList{"raw"})
+        {
+            print $intf . "\n";
+
+            next;
+        }
+    }
+
+    if ($PARSEABLE)
+    {
+        print $intf;
+        if ($intf eq $selected)
+        {
+            print '!';
+        }
+        print '|';
+    }
+    else
+    {
+        print "<option ";
+
+        if ($intf eq $selected)
+        {
+            print "selected=\"selected\" ";
+        }
+
+        print "value=\"" . $intf . "\">" . $intf . "</option>\n";
+    }
+}
+
+exit(0);
+
+
+sub Usage
+{
+    print "\nUsage:\n\n"                                                                                                    .
+
+    "getintfs <aliases=y> <predefs=y> <filter=val, ...> <static=name, ...> <raw=y> <selected={xpath expression}>\n\n" .
+
+    "Obtain a list of Interface Names from the system, subject to user defined selection critera and formatted\n"     .
+    "either as a simple list or in the form of html <option> tags.\n\n"                                               .
+
+    "One or more of the following parameters must be supplied:\n\n"                                                   .
+
+    "-h - Displays the usage information summary you are now reading.\n\n"                                            .
+
+    "aliases=y - Include Ethernet Interface Aliases (sub interfaces) from the GAU Master Configuration file.\n\n"     .
+
+    "predefs=y - Include Pre-defined (logical) Interface names from the GAU Master Configuration file.\n\n"           .
+
+    "static=name, ... - Add the comma separated list of names to the generated list.\n\n"                             .
+
+    "filter=name, ... - Filter the list of physical interfaces using the list of comma separated names.\n\n"          .
+
+    "                   For example, if filter=eth,gre is supplied, only physical interfaces whose names\n"           .
+    "                   begin with 'eth' or 'gre' will be returned.  Note that this filter is NOT applied\n"          .
+    "                   to the lists of aliases, predefs or static values, when requested.\n\n"                       .
+
+    "raw=y - Return a list consisting of interface names only, otherwise format the list as a\n"                      .
+    "        set of html <option> tags.\n\n"                                                                          .
+
+    "selected={xpath expression} - Use the value obtained from the GAU Master Configuration file via the supplied\n"  .
+    "                              XPATH expression to set the 'selected' attribute in the html <option> tag if\n"    .
+    "                              'raw' is omitted or set to 'n', if the value matches an item in the generated\n"   .
+    "                              list.\n\n";
+}
+
+sub HaveDseriesEthFC()
+{
+    my $eth_num = shift;
+    if ( 0 == $eth_num )
+    {
+        `ifconfig eth0 &> /dev/null`;
+        if ( 0 == $? )
+        {
+            return 1;
+        }
+    }
+    else
+    {
+        #are we on a Dseries?
+        `ls $proc_fc_dir/eth0_single_marvel_88e6061 &> /dev/null`;
+        if ( 0 == $? )
+        {
+            `ls $proc_fc_dir/eth$eth_num* &> /dev/null`;
+            if ( 0 == $? )
+            {
+                return 1;
+            }
+        }
+        else
+        {
+            #we are on some other unit, BT, Cclass, etc, so just check ifconfig
+
+
+            #if switch_mode=separation is on, and eth1 is not listed, then the
+            #user has not rebooted yet.  Add it in.
+            if ( 1 == $switch_mode_sep )
+            {
+               if (  1 == $eth_num )
+               {
+                  #incase the user didn't reboot yet, we present it will be there
+                  return 1;
+               }
+            }
+
+            `ifconfig eth$eth_num &> /dev/null`;
+            if ( 0 == $? )
+            {
+                return 1;
+            }
+        }
+    }
+
+    return 0;
+}
+

@@ -1,0 +1,10 @@
+# This file controls the listings under the Extensions tab in the navigation bar
+#
+# Entries should be of the form:
+#    title, URL
+#
+# Ex:
+#Red Lion, http://www.redlion.net/
+#Classic View, classicview.html
+#Summary, #!/start
+OpenVPN Import, #!/ovpnimport

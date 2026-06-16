@@ -1,0 +1,31 @@
+<h4>Description</h4>
+<p>
+ Select the type of certificate that you will be uploading. Each certificate is stored in a unique repository,
+ depending on the service that will be using it.
+ <br /><br />
+  The certificate file name can contain only upper and/or lower case letters, digits, '-', '_' and <u>must</u>
+  end with <tt>.ca</tt>, <tt>.cert</tt>, <tt>.cer</tt>, <tt>.crt</tt>, <tt>.csr</tt>, <tt>.srl</tt>, <tt>.cnf</tt>, <tt>.key</tt>, or <tt>.pem</tt>.
+ <br /><br />
+ Possible Choices include:
+ <br />
+ <ul>
+  <li>HTTPS</li>
+   This certificate will be used for the HTTPS engine, and replace the onboard automatically generated self-signed HTTPS cert. This should be a key and cert, together in the same pem format certificate file. The key should not be password protected. If the new cert is unable to be loaded by the HTTPS engine, it will revert to an onboard generated self-signed HTTPS certificate.
+   <br /><br />
+  <li>IPsec Cert</li>
+   This will specify a certificate to be used to authenticate a VPN connection.  A server and client certificate will be required.
+   <br /><br />
+  <li>IPsec Key</li>
+   An RSA key must be provided for any client certificate uploaded.  If this is signed with a password, that will need to be entered in the IPSec as well.
+   <br /><br />
+  <li>IPsec CA</li>
+   This specifies a Certificate Authority.  Please include a CA valid for each signed certificate.
+   <br /><br />
+  <li>SSL</li>
+   This certificate will be available for SSL Connections as a Server Certificate, or a Client Certificate.
+   <br /><br />
+  <li>SSLVPN</li>
+   This certificate will be available for SSL VPN tunnels.
+ </ul>
+</p>
+

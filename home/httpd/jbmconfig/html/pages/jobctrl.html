@@ -1,0 +1,29 @@
+<!--ko template: {name: 'title-template', data: 'Job Control'}--><!--/ko-->
+<!--ko template: {name: 'h4-template', data: 'Predefined Job Settings'}--><!--/ko-->
+<!--ko template: {name: 'full-savable-select-template', data: preinterval}--><!--/ko-->
+<!--ko template: {name: 'full-savable-select-template', data: prejob}--><!--/ko-->
+<div style="text-align: center">
+	<button type="button" class="btn btn-primary" data-bind="click: apply">Apply</button>
+</div>
+<hr />
+<!--ko template: {name: 'h4-template', data: 'Import Job Script'}--><!--/ko-->
+<!--ko template: {name: 'full-savable-select-template', data: impinterval}--><!--/ko-->
+<div class="gw-row">
+	<!--ko template: {name: 'file-input-template', data: scriptfile}--><!--/ko-->
+</div>
+<div style="text-align: center">
+	<button type="button" class="btn btn-primary" data-bind="click: importf">Import</button>
+</div>
+<hr />
+<!--ko template: {name: 'h4-template', data: 'Delete Imported Job Script'}--><!--/ko-->
+<!--ko template: {name: 'full-savable-select-template', data: impjob}--><!--/ko-->
+<div style="text-align: center">
+	<button type="button" class="btn btn-primary" data-bind="click: deletef">Delete</button>
+</div>
+<hr />
+<!-- ko template: {name: 'h4-template', data: 'List of Current Scheduled Jobs'}--><!-- /ko -->
+<!--ko template: {name: 'textarea-template-ro', data: joblist}--><!--/ko-->
+<br />
+<div style="text-align: center">
+	<button type="button" class="btn btn-primary" data-bind="click: refresh">Refresh</button>
+</div>

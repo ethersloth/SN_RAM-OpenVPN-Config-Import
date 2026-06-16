@@ -1,0 +1,132 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+###############################################################################################################################
+#                                                                                                                             #
+# getsslcertlist - Get sslcert list                                                                                           #
+#                                                                                                                             #
+# Obtain a list of cert files in the /etc/stunnel/certs subdirectory.                                                         #
+#                                                                                                                             #
+# For the record . .                                                                                                          #
+#                                                                                                                             #
+# All rights reserved.  No part of this program may be reproduced, stored in a retrieval system or transmitted, in any form   #
+# or by any means, including but not limited to electronic, mechanical, photocopying, recording, or otherwise, without the    #
+# express prior written consent of Sixnet, 4645 LaGuardia, St. Louis, MO 63134.  (314) 426-7781, fx: (314) 426-0007.          #
+# Contact support@sixnet.com                                                                                                  #
+#                                                                                                                             #
+#                                                                                                                             #
+#                                                                                                                             #
+###############################################################################################################################
+
+$ENV{PATH} .= ":/home/httpd/jbmconfig/bin:/sbin:/usr/bin";
+
+my $PARSEABLE = 0;
+my %argList;
+
+foreach my $argnum (0 .. $#ARGV)
+       {
+        if ("-h" eq $ARGV[$argnum])
+        {
+           Usage();
+
+           exit(0);
+        }
+        elsif ("--parseable" eq $ARGV[$argnum])
+        {
+            $PARSEABLE = 1;
+            next;
+        }
+
+        my ($argName, $argVal) = split(/=/, $ARGV[$argnum]);
+
+        $argList{$argName} = $argVal;
+       }
+
+my $xpeCmdStr = "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/config.xml";
+
+
+# If 'selected=' is present, get its value and use it to get a value from the GAU Master Configuration file to use later to
+# set the 'selected' attribute for the generted <option> element:
+
+my $selected = "";
+
+if ($argList{"selected"})
+  {
+   $selected = $argList{"selected"};
+
+   if (open(FILE, $xpeCmdStr . " --xpath=\"" . $selected . "/text()\" |"))
+     {
+      while (<FILE>)
+           {
+            $selected = $_;
+
+            chomp($selected);
+           }
+
+      close(FILE);
+     }
+  }
+
+opendir(DIR, "/etc/stunnel/certs/");
+
+my @instCfgFNamesList = sort(readdir(DIR));
+
+closedir(DIR);
+
+my $optCnt = 0;
+
+foreach my $eachelement(@instCfgFNamesList)
+{
+    if ($eachelement =~ /\.pem$/)
+    {
+       my $certfile = "/etc/stunnel/certs/" . $eachelement;
+
+       if ($PARSEABLE)
+       {
+           print "$certfile:$eachelement\n";
+           if ($certfile eq $selected)
+           {
+               print '!';
+           }
+           print '|';
+       }
+       else
+       {
+          print "<option ";
+
+          if ($certfile eq $selected)
+            {
+              print "selected=\"selected\" ";
+            }
+
+          print "value=\"/etc/stunnel/certs/" . $eachelement . "\">" . $eachelement . "</option>\n";
+       }
+       $optCnt++;
+    }
+}
+
+if (0 == $optCnt)
+{
+   if ($PARSEABLE)
+   {
+      print "nofile:No Pem Files Exist\|";
+   }
+   else
+   {
+      print "<option value=\"nofile\">No Pem Files Exist</option>\n";
+   }
+}
+
+exit(0);
+
+sub Usage
+   {
+     print "\nUsage:\n\n"                                                                                            .
+           "getsslcertlist [{-h}{<selected={xpath expression}>}]\n\n"                                                .
+           "Obtain a list of certificates to you for SSL.\n"                                                         .
+           "Options:\n"                                                                                              .
+           "        -h - Displays the usage information summary you are now reading.\n"                              .
+           "selected={xpath expression} - Use the value obtained from the GAU Master Configuration file via the supplied\n"  .
+           "                              XPATH expression to set the 'selected' attribute in the html <option> tag if\n"    .
+           "                              the value matches an item in the generated list\n";
+   }

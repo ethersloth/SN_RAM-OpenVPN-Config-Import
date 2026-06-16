@@ -1,0 +1,27 @@
+<!--ko template: {name:'title-template',data:'DNS Settings'}--><!--/ko-->
+<!--ko template: {name:'full-savable-input-template', data: maindomain}--><!--/ko-->
+<!--ko template: {name:'full-savable-input-template', data: primary}--><!--/ko-->
+<!--ko template: {name:'full-savable-input-template', data: backup1}--><!--/ko-->
+<!--ko template: {name:'full-savable-input-template', data: backup2}--><!--/ko-->
+<hr />
+<!--ko template: {name:'h4-template',data:'Static Hosts'}--><!--/ko-->
+<!--ko template: {name:'table-template', data: dnsTable}--><!--/ko-->
+
+<div id="host-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="dns-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Static Host Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: host}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: domain}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: addr}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: dnsWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

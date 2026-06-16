@@ -1,0 +1,37 @@
+<!-- ko ifnot: isram -->
+	<!--ko template: {name:'title-template',data:'Upgrade to RAM is required in order to load this page'}--><!--/ko-->
+	<div style="text-align: center">
+		<a class="btn btn-primary" href="#!/ram_unlock">Upgrade to RAM</a>
+	</div>
+	<br />
+	<h5><p class="gw-auto-margin" style="width: 600px; text-align: center">Please contact <span data-bind="text: manufacturer"></span> support at <span><font color="red" data-bind="text: contactemail"></font></span> or <span><font color="red" data-bind="text: contactphone"></font></span></h5>
+<!-- /ko -->
+<!-- ko if: isram -->
+	<!--ko template: {name:'title-template',data:'Modbus Forwards'}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Forwards Table Properties'}--><!--/ko-->
+	<!--ko template: {name:'table-template',data: forwardsTable}--><!--/ko-->
+<!-- /ko -->
+	<div id="forward-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h3>Modbus Forward Settings</h3>
+		</div>
+		<div class="gw-modal-body-long">
+			<!--ko template: {name: 'full-savable-input-template', data: stationNum}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: fwdStationNum}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: type}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: modbusdevice}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: modbusaddress}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: ipport}--><!--/ko-->
+			<a class="btn btn-primary pull-right" data-bind="click: forwardsWizardFinish">Finish</a>
+		</div>
+	</div>
+<!-- ko if: isram -->
+	<div style="text-align: center">
+		<a class="btn" data-bind="click: switchPage('#!/localstation')">Local Station</a>
+		<a class="btn" data-bind="click: switchPage('#!/serial')">Serial Ports</a>
+		<a class="btn" data-bind="click: switchPage('#!/modbus_remotestations')">Remote Stations</a>
+		<a class="btn" data-bind="click: switchPage('#!/modbus_transfers')">I/O Transfers</a>
+		<a class="btn" data-bind="click: switchPage('#!/modbus_config')">Display Config File</a>
+	</div>
+<!-- /ko -->

@@ -1,0 +1,67 @@
+<form id="access-form" class="form-horizontal">
+	<!--ko template: {name: 'title-template', data: 'Access Settings'}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: unitname}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: displayMethod}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: zeroconf}--><!--/ko-->
+	<hr />
+	<!--ko template: {name:'h4-template',data:'User: admin (Full access)'}--><!--/ko-->
+	<!-- ko template: {name: 'full-savable-password-template', data: fap1}--><!-- /ko -->
+	<!-- ko template: {name: 'full-savable-password-template', data: fap2}--><!-- /ko -->
+	<!-- ko if: showFap1Strength -->
+	<div style="text-align: center; margin-bottom: 15px">
+		<span style="display: block;margin-bottom: 10px"><b><u>Full access password strength</u></b><a style="margin-left: 10px" tabindex="-1" data-bind="help: {'title': 'Strength and Score', 'link': 'h_gauaccount_strength.html'}" class="btn"><i class="icon-question-sign"></i></a></span>
+	</div>
+	<table class="gw-status-table gw-auto-margin gw-st49" style="margin-bottom: 15px; width: 250px">
+		<tr>
+			<td style="width: 50%; text-align: right"><b>Strength:</b></td>
+			<td name="fap1strength" style="width: 50%; font-weight: bold" data-bind="text: fap1strength, style {color: fap1color}"></td>
+		</tr>
+		<tr>
+			<td style="text-align: right"><b>Score:</b></td>
+			<td name="fap1score" style="font-weight: bold" data-bind="text: fap1score, style {color: fap1color}"></td>
+		</tr>
+	</table>
+	<!-- /ko -->
+	<hr />
+	<!--ko template: {name:'h4-template',data:'User: gauser (Controlled access)'}--><!--/ko-->
+	<!-- ko template: {name: 'full-savable-password-template', data: cap1}--><!-- /ko -->
+	<!-- ko template: {name: 'full-savable-password-template', data: cap2}--><!-- /ko -->
+	<!-- ko if: showCap1Strength -->
+	<div style="text-align: center; margin-bottom: 15px">
+		<span style="display: block;margin-bottom: 10px"><b><u>Controlled access password strength</u></b><a style="margin-left: 10px" tabindex="-1" data-bind="help: {'title': 'Strength and Score', 'link': 'h_gauaccount_strength.html'}" class="btn"><i class="icon-question-sign"></i></a></span>
+	</div>
+	<table class="gw-status-table gw-auto-margin gw-st49" style="margin-bottom: 15px; width: 250px">
+		<tr>
+			<td style="width: 50%; text-align: right"><b>Strength:</b></td>
+			<td name="cap1strength" style="width: 50%; font-weight: bold" data-bind="text: cap1strength, style {color: cap1color}"></td>
+		</tr>
+		<tr>
+			<td style="text-align: right"><b>Score:</b></td>
+			<td name="cap1score" style="font-weight: bold" data-bind="text: cap1score, style {color: cap1color}"></td>
+		</tr>
+	</table>
+	<!-- /ko -->
+	<hr />
+	<!--ko template: {name:'h4-template',data:'User: techsup (Limited access)'}--><!--/ko-->
+	<!-- ko template: {name: 'full-savable-password-template', data: lap1}--><!-- /ko -->
+	<!-- ko template: {name: 'full-savable-password-template', data: lap2}--><!-- /ko -->
+	<!-- ko if: showLap1Strength -->
+	<div style="text-align: center; margin-bottom: 15px">
+		<span style="display: block;margin-bottom: 10px"><b><u>Limited access password strength</u></b><a style="margin-left: 10px" tabindex="-1" data-bind="help: {'title': 'Strength and Score', 'link': 'h_gauaccount_strength.html'}" class="btn"><i class="icon-question-sign"></i></a></span>
+	</div>
+	<table class="gw-status-table gw-auto-margin gw-st49" style="margin-bottom: 15px; width: 250px">
+		<tr>
+			<td style="width: 50%; text-align: right"><b>Strength:</b></td>
+			<td name="lap1strength" style="width: 50%; font-weight: bold" data-bind="text: lap1strength, style {color: lap1color}"></td>
+		</tr>
+		<tr>
+			<td style="text-align: right"><b>Score:</b></td>
+			<td name="lap1score" style="font-weight: bold" data-bind="text: lap1score, style {color: lap1color}"></td>
+		</tr>
+	</table>
+	<!-- /ko -->
+	<!-- ko if: showCurPass -->
+	<hr />
+	<!-- ko template: {name: 'full-savable-password-template', data: curpass}--><!-- /ko -->
+	<!-- /ko -->
+</form>

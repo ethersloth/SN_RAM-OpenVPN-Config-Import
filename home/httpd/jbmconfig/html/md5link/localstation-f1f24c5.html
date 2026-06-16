@@ -1,0 +1,20 @@
+<!-- ko ifnot: isram -->
+	<!--ko template: {name:'title-template',data:'Upgrade to RAM is required in order to load this page'}--><!--/ko-->
+	<div style="text-align: center">
+		<a class="btn btn-primary" href="#!/ram_unlock">Upgrade to RAM</a>
+	</div>
+	<br />
+	<h5><p class="gw-auto-margin" style="width: 600px; text-align: center">Please contact <span data-bind="text: manufacturer"></span> support at <span><font color="red" data-bind="text: contactemail"></font></span> or <span><font color="red" data-bind="text: contactphone"></font></span></h5>
+<!-- /ko -->
+<!-- ko if: isram -->
+	<!--ko template: {name:'title-template',data:'Local Station'}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Define Local Station Properties'}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: enable}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: localname}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: localStationNum}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: localPort}--><!--/ko-->
+	<div style="text-align: center">
+		<a class="btn" data-bind="click: switchPage('#!/modbus_remotestations')">Modbus</a>
+		<a class="btn" data-bind="click: switchPage('#!/dnp3_general')">DNP3</a>
+	</div>
+<!-- /ko -->

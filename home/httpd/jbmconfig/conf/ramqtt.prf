@@ -1,0 +1,388 @@
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/ramqtt.prf" name="ramqtt">
+   <validation>
+   </validation>
+   <configuration>
+    <cstep errmsg="Cannot save Enable RAMQTT to configuration file"
+             name="enable"
+             path="/GAUCfg/ramqtt/enable" />
+    <cstep errmsg="Cannot save RAMQTT Application Project Name to configuration file"
+             name="project"
+             path="/GAUCfg/ramqtt/project" />
+    <cstep errmsg="Cannot save RAMQTT IODB Point Topic to configuration file"
+             name="iodbTopic"
+             path="/GAUCfg/ramqtt/iodbTopic" />
+    <cstep errmsg="Cannot save RAMQTT Device Info Topic to configuration file"
+             name="devInfoTopic"
+             path="/GAUCfg/ramqtt/devInfoTopic" />
+    <cstep errmsg="Cannot save RAMQTT Location Topic to configuration file"
+             name="locationTopic"
+             path="/GAUCfg/ramqtt/locationTopic" />
+    <cstep errmsg="Cannot save RAMQTT Last Will And Testament Topic to configuration file"
+             name="lwtTopic"
+             path="/GAUCfg/ramqtt/lwtTopic" />
+    <cstep errmsg="Cannot save RAMQTT Command Topic to configuration file"
+             name="cmdTopic"
+             path="/GAUCfg/ramqtt/cmdTopic" />
+    <cstep errmsg="Cannot save RAMQTT Command Response Topic to configuration file"
+             name="cmdResponseTopic"
+             path="/GAUCfg/ramqtt/cmdResponseTopic" />
+    <cstep errmsg="Cannot save RAMQTT Host Name to configuration file"
+             name="hostname"
+             path="/GAUCfg/ramqtt/hostname" />
+    <cstep errmsg="Cannot save RAMQTT Host IP/Domain to configuration file"
+             name="hostip"
+             path="/GAUCfg/ramqtt/hostip" />
+    <cstep errmsg="Cannot save RAMQTT Primary Host ID to configuration file"
+             name="primaryHostID"
+             path="/GAUCfg/ramqtt/primaryHostID" />
+    <cstep errmsg="Cannot save RAMQTT Host Port to configuration file"
+             name="hostport"
+             path="/GAUCfg/ramqtt/hostport" />
+    <cstep errmsg="Cannot save RAMQTT useSSL to configuration file"
+             name="usessl"
+             path="/GAUCfg/ramqtt/usessl" />
+    <cstep errmsg="Cannot save RAMQTT clientId to configuration file"
+             name="clientId"
+             path="/GAUCfg/ramqtt/clientId" />
+    <cstep errmsg="Cannot save RAMQTT Quality of Service to configuration file"
+             name="QoS"
+             path="/GAUCfg/ramqtt/QoS" />
+    <cstep errmsg="Cannot save RAMQTT Message Format to configuration file"
+             name="msgFormat"
+             path="/GAUCfg/ramqtt/msgFormat" />
+    <cstep errmsg="Cannot save RAMQTT Topic to configuration file"
+             name="topic"
+             path="/GAUCfg/ramqtt/topic" />
+    <cstep errmsg="Cannot save RAMQTT Retain Flag to configuration file"
+             name="retain"
+             path="/GAUCfg/ramqtt/retain" />
+    <cstep errmsg="Cannot save RAMQTT Keep_alive to configuration file"
+             name="keepalive"
+             path="/GAUCfg/ramqtt/keepalive" />
+    <cstep errmsg="Cannot save RAMQTT useAuthentication to configuration file"
+             name="useauth"
+             path="/GAUCfg/ramqtt/useauth" />
+    <cstep errmsg="Cannot save RAMQTT userName to configuration file"
+             name="username"
+             path="/GAUCfg/ramqtt/username" />
+    <cstep errmsg="Cannot save RAMQTT password to configuration file"
+             name="password"
+             path="/GAUCfg/ramqtt/password" />
+    <cstep errmsg="Cannot save RAMQTT Device Connection String to configuration file"
+             name="deviceConnectionString"
+             path="/GAUCfg/ramqtt/deviceConnectionString" />
+    <cstep errmsg="Cannot save RAMQTT SAS Token Expiry to configuration file"
+             name="sasTokenTTL"
+             path="/GAUCfg/ramqtt/sasTokenTTL" />
+    <cstep errmsg="Cannot save RAMQTT groupName to configuration file"
+             name="groupName"
+             path="/GAUCfg/ramqtt/groupName" />
+    <cstep errmsg="Cannot save RAMQTT token to configuration file"
+             name="token"
+             path="/GAUCfg/ramqtt/token" />
+    <cstep errmsg="Cannot save RAMQTT device name to configuration file"
+             name="devname"
+             path="/GAUCfg/ramqtt/devname" />
+    <cstep errmsg="Cannot save RAMQTT device certificate to configuration file"
+             name="devcert"
+             path="/GAUCfg/ramqtt/devcert" />
+    <cstep errmsg="Cannot save RAMQTT device certificate key to configuration file"
+             name="devkey"
+             path="/GAUCfg/ramqtt/devkey" />
+    <cstep errmsg="Cannot save RAMQTT root CA certificate to configuration file"
+             name="devca"
+             path="/GAUCfg/ramqtt/devca" />
+    <cstep errmsg="Cannot save RAMQTT Master API Key to configuration file"
+             name="masapikey"
+             path="/GAUCfg/ramqtt/masapikey" />
+    <cstep errmsg="Cannot save RAMQTT Distribution ID to configuration file"
+             name="distid"
+             path="/GAUCfg/ramqtt/distid" />
+    <cstep errmsg="Cannot save RAMQTT Device API Key to configuration file"
+             name="devapikey"
+             path="/GAUCfg/ramqtt/devapikey" />
+    <cstep errmsg="Cannot save RAMQTT Device ID to configuration file"
+             name="devid"
+             path="/GAUCfg/ramqtt/devid" />
+    <cstep errmsg="Cannot save RAMQTT Track Error to configuration file"
+             name="trackerr"
+             path="/GAUCfg/ramqtt/trackerr" />
+    <cstep errmsg="Cannot save RAMQTT Track Alarms to configuration file"
+             name="trackAlarms"
+             path="/GAUCfg/ramqtt/trackAlarms" />
+    <cstep errmsg="Cannot save RAMQTT allow incoming messages (allowSub) to configuration file"
+             name="allowSub"
+             path="/GAUCfg/ramqtt/allowSub" />
+    <cstep errmsg="Cannot save RAMQTT authentication type to configuration file"
+             name="authtype"
+             path="/GAUCfg/ramqtt/authtype" />
+    <cstep errmsg="Cannot save RAMQTT useMessageHistory to configuration file"
+             name="useMessageHistory"
+             path="/GAUCfg/ramqtt/useMessageHistory" />
+    <cstep errmsg="Cannot save RAMQTT device Info Message Type to configuration file"
+             name="devinfomsg"
+             path="/GAUCfg/ramqtt/devinfomsg" />
+    <cstep errmsg="Cannot save RAMQTT Device Info Message Publish Interval to configuration file"
+             name="devinfointv"
+             path="/GAUCfg/ramqtt/devinfointv" />
+    <cstep errmsg="Cannot save RAMQTT publish_Type to configuration file"
+             name="pubtype"
+             path="/GAUCfg/ramqtt/pubtype" />
+    <cstep errmsg="Cannot save RAMQTT publish_Interval to configuration file"
+             name="pubinterval"
+             path="/GAUCfg/ramqtt/pubinterval" />
+    <cstep errmsg="Cannot save RAMQTT publish all points interval to configuration file"
+             name="publishAllInterval"
+             path="/GAUCfg/ramqtt/publishAllInterval" />
+    <cstep errmsg="Cannot save RAMQTT iodbScanRate to configuration file"
+             name="scanrate"
+             path="/GAUCfg/ramqtt/scanrate" />
+    <cstep errmsg="Unable to save IODB Points to system configuration file."
+             name="iodbpoints"
+             path="/GAUCfg/ramqtt/iodbpoints" type="node" />
+   </configuration>
+
+   <action name="Save" successmsg="RAMQTT configuration saved.">
+
+<!--Moved to prfhandler_ramqtt
+    <astep  abort="y" errmsg="Failed to write RAMQTT Configuration file" name="WriteFormattedFile">
+     <arg expr="/tmp/conf.json" />
+     <arg expr="{" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'connection', quote(), ':')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="{" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'appName', quote(), ':', quote(), /GAUCfg/ramqtt/project/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'name', quote(), ':', quote(), /GAUCfg/ramqtt/hostname/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'host', quote(), ':', quote(), /GAUCfg/ramqtt/hostip/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'primaryHostID', quote(), ':', quote(), /GAUCfg/ramqtt/primaryHostID/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'port', quote(), ':', quote(), /GAUCfg/ramqtt/hostport/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'useSSL', quote(), ':', quote(), /GAUCfg/ramqtt/usessl/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'topic', quote(), ':', quote(), /GAUCfg/ramqtt/topic/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'retainFlag', quote(), ':', quote(), /GAUCfg/ramqtt/retain/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'keepAlive', quote(), ':', quote(), /GAUCfg/ramqtt/keepalive/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'QoS', quote(), ':', quote(), '0', quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'useAuthentication', quote(), ':', quote(), /GAUCfg/ramqtt/useauth/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'userName', quote(), ':', quote(), /GAUCfg/ramqtt/username/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'password', quote(), ':', quote(), /GAUCfg/ramqtt/password/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'deviceName', quote(), ':', quote(), /GAUCfg/ramqtt/devname/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'devCert', quote(), ':', quote(), '/etc/ramqtt/certs/', /GAUCfg/ramqtt/devcert/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'devKey', quote(), ':', quote(), '/etc/ramqtt/certs/', /GAUCfg/ramqtt/devkey/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'rootCa', quote(), ':', quote(), '/etc/ramqtt/certs/', /GAUCfg/ramqtt/devca/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'masterApiKey', quote(), ':', quote(), /GAUCfg/ramqtt/masapikey/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'distributionId', quote(), ':', quote(), /GAUCfg/ramqtt/distid/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'deviceApiKey', quote(), ':', quote(), /GAUCfg/ramqtt/devapikey/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'deviceId', quote(), ':', quote(), /GAUCfg/ramqtt/devid/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'useMessageHistory', quote(), ':', quote(), /GAUCfg/ramqtt/useMessageHistory/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'trackAlarms', quote(), ':', quote(), /GAUCfg/ramqtt/trackAlarms/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'trackError', quote(), ':', quote(), /GAUCfg/ramqtt/trackerr/text(), quote())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="}," />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'iodb', quote(), ':')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="{" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'deviceInfo', quote(), ':', quote(), /GAUCfg/ramqtt/devinfomsg/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'deviceInfoPubInterval', quote(), ':', quote(), /GAUCfg/ramqtt/devinfointv/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'publishType', quote(), ':', quote(), /GAUCfg/ramqtt/pubtype/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'publishInterval', quote(), ':', quote(), /GAUCfg/ramqtt/pubinterval/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'iodbScanRate', quote(), ':', quote(), /GAUCfg/ramqtt/scanrate/text(), quote(), ',')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'tags', quote(), ':')" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="[" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep      abort="y"
+           dependency="/GAUCfg/ramqtt/iodbpoints/NumberOfiodbpoints/text() != '0'"
+               errmsg="Failed to append IODB points ramqtt configuration file"
+                 name="AppendFormatted2File"
+               repeat="/GAUCfg/ramqtt/iodbpoints/iodbpoint"
+           rptNdxName="RPT_NDX">
+
+     <arg expr="/tmp/conf.json" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="{" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'type', quote(), ':', quote(), /GAUCfg/ramqtt/iodbpoints/iodbpoint[RPT_NDX]/type/text(), quote(), ',')" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="concat(quote(), 'register', quote(), ':', quote(), /GAUCfg/ramqtt/iodbpoints/iodbpoint[RPT_NDX]/register/text(), quote())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg dependency="/GAUCfg/ramqtt/iodbpoints/NumberOfiodbpoints/text() != 'RPT_NDX'"
+                expr="'},'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="/GAUCfg/ramqtt/iodbpoints/NumberOfiodbpoints/text() = 'RPT_NDX'"
+                expr="'}'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep  abort="y" errmsg="Failed to write RAMQTT Configuration file" name="AppendFormatted2File">
+     <arg expr="/tmp/conf.json" />
+     <arg expr="\t" />
+     <arg expr="\t" />
+     <arg expr="]" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="}" />
+     <arg expr="\n" />
+     <arg expr="}" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move RAMQTT conf.json file to /etc/ramqtt/ directory." name="SystemCommand">
+     <arg expr="mkdir -p /etc/ramqtt/; mv -f /tmp/conf.json /etc/ramqtt/conf.json" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to stop RAMQTT service" name="SystemCommand">
+     <arg dependency="/GAUCfg/ramqtt/enable/text() = 'n'" expr="'chkconfig ramqtt off'" source="config"/>
+    </astep>
+
+    <astep abort="y" errmsg="Failed to start RAMQTT service" name="SystemCommand">
+     <arg dependency="/GAUCfg/ramqtt/enable/text() = 'y'" expr="'chkconfig ramqtt on'" source="config"/>
+    </astep>
+Moved to prfhandler_ramqtt-->
+
+    <astep abort="y" errmsg="Failed to save ramqtt configuration" name="SystemCommand">
+     <arg expr="'prfhandler_ramqtt Save'" source="config" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="RAMQTT settings applied.">
+
+<!--Moved to prfhandler_ramqtt
+    <pre subsystem="ramqtt" action="Save" />
+
+    <astep abort="y" errmsg="Failed to stop RAMQTT service" name="SystemCommand">
+     <arg dependency="/GAUCfg/ramqtt/enable/text() = 'n'" expr="'service ramqtt stop'" source="config"/>
+    </astep>
+
+    <astep abort="y" errmsg="Failed to start RAMQTT service" name="SystemCommand">
+     <arg dependency="/GAUCfg/ramqtt/enable/text() = 'y'" expr="'service ramqtt restart'" source="config"/>
+    </astep>
+Moved to prfhandler_ramqtt-->
+
+    <astep abort="y" errmsg="Failed to apply ramqtt configuration" name="SystemCommand">
+     <arg expr="'prfhandler_ramqtt Apply'" source="config" />
+    </astep>
+
+   </action>
+
+  </subsystem>
+ </subsystems>
+</profile>

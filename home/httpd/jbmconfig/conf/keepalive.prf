@@ -1,0 +1,141 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                              <!--
+                Networking -> IP Keepalive Settings Section
+
+  V2.20 behaviors (taken from cfg_net.cpp - ApplyKeepAliveSettings():
+
+  +==========+===============================================================================+============+
+  |  ACTION  |                           STEP                                                | ON FAILURE |
+  +==========+===============================================================================+============+
+  |    Apply | Try to read /GAUCfg/keepalive/timeout from Master Configuration file          | Abort      |
+  |          +-------------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/keepalive/probes from Master Configuration file           | Abort      |
+  |          +-------------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/keepalive/timeout is numeric                                   | Abort      |
+  |          +-------------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/keepalive/probes is numseric                                   | Abort      |
+  |          +-------------------------------------------------------------------------------+------------+
+  |          | Try to open '/proc/sys/net/ipv4/tcp_keepalive_probes' for writing             | Abort      |
+  |          +-------------------------------------------------------------------------------+------------+
+  |          | Write /GAUCfg/keepalive/probes to '/proc/sys/net/ipv4/tcp_keeeplive_probes'   | Abort      |
+  |          +-------------------------------------------------------------------------------+------------+
+  |          | Try to open '/proc/sys/net/ipv4/tcp_keepalive_timeout' for writing            | Abort      |
+  |          +-------------------------------------------------------------------------------+------------+
+  |          | Write /GAUCfg/keepalive/timeout to '/proc/sys/net/ipv4/tcp_keeeplive_timeout' | Abort      |
+  |          +-------------------------------------------------------------------------------+------------+
+  |          | Try to open '/etc/syscntl.conf' for writing                                   | Abort      |
+  |          +-------------------------------------------------------------------------------+------------+
+  |          | Try to write the following lines to '/etc/syscntl.conf':                      | Abort      |
+  |          |                                                                               |            |
+  |          | [                                                                             |            |
+  |          |  #Changes the TCP Keepalive timer                                             |            |
+  |          |  #Recommended setting is 10                                                   |            |
+  |          |  #** Set to a higher value arouind 300                                        |            |
+  |          |  #** if using a Cell modem wireless                                           |            |
+  |          |  net.ipv4.tcp.keepalive_timeout = /GAUCfg/keepalive/timeout                   |            |
+  |          |                                                                               |            |
+  |          |  #Changes the TCP Keepalive Probes                                            |            |
+  |          |  #Recommended setting is 4                                                    |            |
+  |          |  net.ipv4.tcp.keepalive_probes = /GAUCfg/keepalive/probes                     |            |
+  |          | ]                                                                             |            |
+  +==========+===============================================================================+============+                   -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/keepalive.prf" name="keepalive">
+   <validation>
+    <vstep errmsg="Invalid SYN Tx Timeout. Must be a number."
+             name="syntxto"
+             test="isnumber(/input/syntxto/text())" />
+    <vstep errmsg="Invalid Timeout. Must be a number."
+             name="timeout"
+             test="isnumber(/input/timeout/text())" />
+    <vstep errmsg="Invalid Probes value. Must be a number."
+             name="probes"
+             test="isnumber(/input/probes/text())" />
+    <vstep errmsg="Invalid PMTUD value. Must be a number."
+             name="pmtud"
+             test="isnumber(/input/pmtud/text())" />
+    <vstep errmsg="Invalid rp_filter value. Must be a number."
+             name="rpfilter"
+             test="isnumber(/input/rpfilter/text())" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Timeout to system configuration file."
+             name="timeout"
+             path="/GAUCfg/keepalive/timeout" />
+    <cstep errmsg="Unable to save Probes to system configuration file."
+             name="probes"
+             path="/GAUCfg/keepalive/probes" />
+    <cstep errmsg="Unable to save SYN Tx timeout to system configuration file."
+             name="syntxto"
+             path="/GAUCfg/keepalive/syntxto" />
+    <cstep errmsg="Unable to save Path MTU Discovery to system configuration file."
+             name="pmtud"
+             path="/GAUCfg/keepalive/pmtud" />
+    <cstep errmsg="Unable to save Reverse Path Filtering (rp_filter) to system configuration file."
+             name="rpfilter"
+             path="/GAUCfg/keepalive/rpfilter" />
+   </configuration>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_keepalive
+    <astep abort="y" errmsg="Failed to Write Sysctl file" name="WriteFile">
+     <arg expr="/tmp/sysctl.conf" />
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="#" />
+     <arg expr=" " />
+     <arg expr="# Changes the TCP Keepalive timer" />
+     <arg expr="# Recommended value = 300" />
+     <arg expr="# ** Set to a higher value, around 300 if using a wireless cellular modem" />
+     <arg expr="concat('net.ipv4.tcp_keepalive_time = ', /GAUCfg/keepalive/timeout/text())" source="config" />
+     <arg expr=" " />
+     <arg expr="# Changes the TCP Keepalive probes" />
+     <arg expr="# Recommended setting is 4" />
+     <arg expr="concat('net.ipv4.tcp_keepalive_probes = ', /GAUCfg/keepalive/probes/text())" source="config" />
+     <arg expr=" " />
+     <arg expr="# [SYN] Tx Timeout" />
+     <arg expr="concat('net.ipv4.netfilter.ip_conntrack_tcp_timeout_syn_sent = ', /GAUCfg/keepalive/syntxto/text())" source="config" />
+     <arg expr=" " />
+     <arg expr="# Path MTU Discovery. Default 0 (which enables PMTUD)" />
+     <arg expr="concat('net.ipv4.ip_no_pmtu_disc = ', /GAUCfg/keepalive/pmtud/text())" source="config" />
+     <arg expr=" " />
+     <arg expr="# Default Reverse Path Filtering (rp_filter). Default 2 (which enables rp_filter)" />
+     <arg expr="concat('net.ipv4.conf.default.rp_filter = ', /GAUCfg/keepalive/rpfilter/text())" source="config" />
+     <arg expr=" " />
+     <arg expr="# All Reverse Path Filtering (rp_filter). Default 2 (which enables rp_filter)" />
+     <arg expr="concat('net.ipv4.conf.all.rp_filter = ', /GAUCfg/keepalive/rpfilter/text())" source="config" />
+     <arg expr=" " />
+    </astep>
+    <astep abort="y" errmsg="Failed to save Global TCP settings to system." name="SystemCommand">
+     <arg expr="mv -f /tmp/sysctl.conf /etc/sysctl.conf" />
+    </astep>
+    <astep abort="y" errmsg="Failed to apply global TCP setting to system." name="SystemCommand">
+     <arg expr="/sbin/sysctl -p" />
+    </astep>
+Moved to prfhandler_keepalive-->
+
+    <astep abort="y" errmsg="Failed to apply keepalive (TCP Global) configuration file" name="SystemCommand">
+     <arg expr="'prfhandler_keepalive Apply'" source="config" />
+    </astep>
+   </action>
+
+   <action name="Save" successmsg="">
+
+<!--Moved to prfhandler_keepalive
+    <pre subsystem="keepalive" action="Apply" />
+Moved to prfhandler_keepalive-->
+
+    <astep abort="y" errmsg="Failed to save keepalive (TCP Global) configuration file" name="SystemCommand">
+     <arg expr="'prfhandler_keepalive Save'" source="config" />
+    </astep>
+   </action>
+
+  </subsystem>
+
+
+ </subsystems>
+</profile>

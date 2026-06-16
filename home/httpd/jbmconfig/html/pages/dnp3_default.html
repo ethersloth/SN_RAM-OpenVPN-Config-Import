@@ -1,0 +1,70 @@
+<form id="default-form" class="form-horizontal">
+<!-- ko ifnot: isram -->
+    <!--ko template: {name:'title-template',data:'Upgrade to RAM is required in order to load this page'}--><!--/ko-->
+    <div style="text-align: center">
+        <a class="btn btn-primary" href="#!/ram_unlock">Upgrade to RAM</a>
+    </div>
+    <br />
+    <h5><p class="gw-auto-margin" style="width: 600px; text-align: center">Please contact <span data-bind="text: manufacturer"></span> support at <span><font color="red" data-bind="text: contactemail"></font></span> or <span><font color="red" data-bind="text: contactphone"></font></span></h5>
+<!-- /ko -->
+<!-- ko if: isram -->
+	<!--ko template: {name:'title-template',data:'DNP3 Default Variation Configuration'}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Binary Objects'}--><!--/ko-->
+	<!--ko template: {name:'select-template',data: bininput}--><!--/ko-->
+	<!--ko template: {name:'select-template',data: bininputchange}--><!--/ko-->
+    <!-- ko if: isLevel1Enabled -->
+	    <!--ko template: {name:'select-template',data: binoutputstatus}--><!--/ko-->
+	<!-- /ko -->
+    <!-- ko if: isLevel2Enabled -->
+	    <!--ko template: {name:'select-template',data: binoutputstatus1}--><!--/ko-->
+	<!-- /ko -->
+    <hr />
+	<!--ko template: {name:'h4-template',data:'Analog Objects'}--><!--/ko-->
+    <!-- ko if: isLevel1Enabled -->
+	    <!--ko template: {name:'select-template',data: analoginput}--><!--/ko-->
+	<!-- /ko -->
+    <!-- ko if: isLevel2Enabled -->
+	    <!--ko template: {name:'select-template',data: analoginput1}--><!--/ko-->
+	<!-- /ko -->
+    <!--ko template: {name:'select-template',data: frozenanaloginput}--><!--/ko-->
+    <!-- ko if: isLevel1Enabled -->
+	    <!--ko template: {name:'select-template',data: analogchangeevent}--><!--/ko-->
+	<!-- /ko -->
+    <!-- ko if: isLevel2Enabled -->
+	    <!--ko template: {name:'select-template',data: analogchangeevent1}--><!--/ko-->
+	<!-- /ko -->
+    <!--ko template: {name:'select-template',data: frozenanalogevent}--><!--/ko-->
+    <!-- ko if: isLevel1Enabled -->
+	    <!--ko template: {name:'select-template',data: analogoutputstatus}--><!--/ko-->
+	<!-- /ko -->
+    <!-- ko if: isLevel2Enabled -->
+	    <!--ko template: {name:'select-template',data: analogoutputstatus1}--><!--/ko-->
+	<!-- /ko -->
+    <hr />
+	<!--ko template: {name:'h4-template',data:'Binary Counter Objects'}--><!--/ko-->
+    <!--ko template: {name:'select-template',data: bincounter}--><!--/ko-->
+    <!-- ko if: isLevel1Enabled -->
+	    <!--ko template: {name:'select-template',data: frozencounter}--><!--/ko-->
+	<!-- /ko -->
+    <!-- ko if: isLevel2Enabled -->
+	    <!--ko template: {name:'select-template',data: frozencounter1}--><!--/ko-->
+	<!-- /ko -->
+    <!-- ko if: isLevel1Enabled -->
+	    <!--ko template: {name:'select-template',data: bincounterchange}--><!--/ko-->
+	<!-- /ko -->
+    <!-- ko if: isLevel2Enabled -->
+	    <!--ko template: {name:'select-template',data: bincounterchange1}--><!--/ko-->
+	<!-- /ko -->
+    <!--ko template: {name:'select-template',data: frozencounterchange}--><!--/ko-->
+    <hr />
+    <div style="text-align: center">
+        <a class="btn btn-small" data-bind="click: switchPage('#!/localstation')">Local Station</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/serial')">Serial Ports</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_general')">General</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_physicallink')">Physical Link Layer</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_datalink')">Data Link and Application Layer</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_object')">Object Mapping</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_config')">Display Config File</a>
+    </div>
+<!-- /ko -->
+</form>

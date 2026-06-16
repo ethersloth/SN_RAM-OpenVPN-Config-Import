@@ -1,0 +1,1 @@
+/sbin/ethtool eth0 | grep Link | awk '{ sub("yes", "Up", $NF); sub("no", "Down", $NF); print $NF; }'

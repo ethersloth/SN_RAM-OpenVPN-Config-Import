@@ -1,0 +1,42 @@
+<h4>Description</h4>
+<p>
+ This option enables TCP Keep-alives on the underlying sockets.
+ <br/ ><br/ >
+ The following options are supported:
+ <br/ ><br/ >
+ <table>
+  <tr>
+   <td align="right" valign="top"><b>None:</b></td>
+   <td align="left">Keep-alives not used.</td>
+  </tr>
+  <tr>
+   <td align="right" valign="top"><b>All:</b></td>
+   <td align="left">Keep-alives enabled for all sockets.</td>
+  </tr>
+  <tr>
+   <td align="right" valign="top"><b>Accept:</b></td>
+   <td align="left">
+    Keep-alives enabled for listening server socket side connections only.
+    <br/>
+    This applies to the clear text server for Client mode sockets, or the
+    SSL Encrypted server for Server mode sockets.
+   </td>
+  </tr>
+  <tr>
+   <td align="right" valign="top"><b>Remote:</b></td>
+   <td align="left">Keep-alives enabled for client initiated sockets.</td>
+  </tr>
+  <tr>
+   <td align="right" valign="top"><b>Local:</b></td>
+   <td align="left">Keep-alives enabled for Client connections bound to a local IP address.</td>
+  </tr>
+ </table>
+ <br/ ><br/ >
+ You may need to adjust the master Keep-alive timer via <b><tt>Network&#8594;TCP Global Settings&#8594;TCP Keep Alives</tt></b>.
+ <br/ ><br/ >
+ <b>NOTE:</b> Enabling TCP Keep-alives <i>may</i>, <u>dramatically</u>, increase the total amount of
+ traffic for the affected socket(s) depending on the master interval, probe and timeout settings, which
+ should be considered for connections using a wireless (cellular) connection with respect to total data
+ usage for the subscripted plan.
+</p>
+

@@ -1,0 +1,40 @@
+<!--ko template:{name:'title-template',data:'SSL Client'}--><!--/ko-->
+<div class="gw-row">
+	<span data-bind="text: sslclientstat"></span>
+</div>
+<hr />
+<!--ko template: {name:'full-savable-bool-template',data: enablessl}--><!--/ko-->
+<!-- ko if: enablessl.value() === 'y'-->
+	<!--ko template: {name:'full-savable-select-template',data: activityloglevel}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: wait4connection}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: idletimeout}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: advancesetup}--><!--/ko-->
+	<!-- ko if: advancesetup.value() === 'y'-->
+		<!--ko template: {name: 'full-savable-select-template', data: bindacceptintf}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: bindoutgoingintf}--><!--/ko-->
+		<!--ko template: {name:'full-savable-expanding-template', data: ciphers}--><!--/ko-->
+		<div style="position: absolute; padding-left: 360px">
+			<!--ko template: {name: 'file-icon-template', data: certFileDrop}--><!--/ko-->
+		</div>
+		<!--ko template: {name: 'full-savable-select-template', data: certfile}--><!--/ko-->
+		<!--ko template: {name:'full-savable-select-template',data: sslckeepalive}--><!--/ko-->
+	<!-- /ko -->
+	<hr />
+	<!--ko template: {name:'h4-template',data:'SSL Client Table Properties'}--><!--/ko-->
+	<!--ko template: {name:'table-template',data:sslclientsTable}--><!--/ko-->
+<!-- /ko -->
+<div id="cliconnectcfg-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>SSL Client Settings</h3>
+	</div>
+	<div class="gw-modal-body-long">
+		<!--ko template: {name: 'full-savable-input-template', data: label}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: acceptip}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: acceptport}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: connectip}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: connectport}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: starttls}--><!--/ko-->
+		<a class="btn btn-primary pull-right" data-bind="click: sslclientsWizardFinish">Finish</a>
+	</div>
+</div>

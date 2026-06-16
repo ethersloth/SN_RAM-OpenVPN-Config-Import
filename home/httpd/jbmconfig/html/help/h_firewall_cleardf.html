@@ -1,0 +1,8 @@
+<h4>Description</h4>
+<p>When other hosts behind us send IP packets with the Don't Fragment (DF) bit set, this will <b>clear the DF-bit</b> before forwarding
+ the packet. This will allow upstream routers to fragment the packets if smaller MTUs are encountered along the way, but performance
+ may be impacted for fragmentation and reassembly. If the DF-bit is set, then the packet will be dropped when smaller MTUs are encountered.
+ This is useful if a misconfigured upstream router is preventing PMTU discovery from operating properly.
+</p>
+<h4>Recommended Setting</h4>
+<p>No</p>

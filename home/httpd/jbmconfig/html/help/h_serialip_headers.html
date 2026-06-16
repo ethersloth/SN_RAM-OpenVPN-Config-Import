@@ -1,0 +1,12 @@
+<h4>Description</h4>
+<p>Select the TCP/IP Header Type (Message Length Field) required for TCP/IP communication from the drop-down list.
+</p>
+<p><b>None:</b> If this option is selected, the device will not add or remove any bytes as the length field from the data packets received or transmitted.</p>
+<p><b>Standard:</b> If this option is selected, the device will add 2 bytes of binary exclusive network order to all transmitted TCP packets, and will remove the 2 bytes from the received TCP packets.</p>
+<p><b>Extended</b> If this option is selected, the device will add 4 bytes of binary exclusive network order to all transmitted TCP packets, and will remove the 4 bytes from the received TCP packets.
+ Extended header normally is used as an indicator <b>First, Mid, and Last</b> when dealing with the large TCP messages and possibility of TCP/IP packet fragmentation.
+</p>
+
+<h4>Recommended Setting</h4>
+<p>None, if TCP headers are not used.</p>
+

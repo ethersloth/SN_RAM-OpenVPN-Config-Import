@@ -1,0 +1,27 @@
+#!/bin/bash
+# (C)2018 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+#
+# File: getintfdets
+# Helper script for reporting interface details
+#
+# Author: Paul Walker
+#
+# Copyright: Sixnet 2012
+#
+# Details: This script is called by gau screen dispintfdets to report interface 
+# details for switch and non-switch devices. If model_name, as reported by
+# getfc, is of the form "BT-##21", this script will call intfdetssnwrpt to
+# report snswrpt for a switch device. ethtool will be called for any other
+# model names.
+
+#deal with SN-, BT-, RAM-, LALA-, ANY-
+
+modelNo="$(skvs get FC_MODELNO | sed -e 's/[A-Z]*-[0-9][0-9]\(\S*\).*/\1/g')"
+case "$modelNo" in
+        21)
+                ../bin/intfdetssnswrpt
+                ;;
+        *)
+                ../bin/intfdetsethtool
+                ;;
+esac

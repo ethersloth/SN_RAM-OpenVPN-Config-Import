@@ -1,0 +1,47 @@
+<form id="firewallrules-form" class="form-horizontal">
+  <table style="width: 100%;">
+    <tr>
+       <td style="text-align: center; vertical-align: middle;">
+            <h3>Firewall Rules</h3>
+       </td>
+    </tr>
+  </table>
+
+  <span><hr/></span>
+
+   <div data-bind="visible: isErrorDisabled">
+       <table style="width: 100%;">
+         <tr>
+            <td style="text-align: center; vertical-align: middle;">
+               <strong>Subsystem Configured: </strong><span data-bind="text: fwev"></span>
+            </td>
+         </tr>
+         <tr>
+            <td style="text-align: center; vertical-align: middle;">
+               <strong>Starts at Boot: </strong><span data-bind="text: fwav"></span>
+            </td>
+         </tr>
+         <tr>
+            <td style="text-align: center; vertical-align: middle;">
+               <strong>Active: </strong><span data-bind="text: fwrv"></span>
+            </td>
+         </tr>
+       </table>
+
+       <span><hr/></span>
+    </div>
+
+   <div class="control-group" data-bind="visible: isErrorEnabled">
+       <div style="text-align: center; vertical-align: middle;">
+           <span>IP Transparency is in effect. Normal firewall operations are suspended.</span>
+       </div>
+       <span><hr/></span>
+   </div>
+
+   <div class="control-group">
+      <div style="text-align: center">
+          <textarea readonly style="width: 90%; font-family: monospace;" data-bind="value: fwrules" rows="20" wrap="off">Acquiring Firewall Rules, please standby . . .</textarea>
+      </div>
+  </div>
+
+</form>

@@ -1,0 +1,80 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dnp3.prf"
+             name="dnp3" />
+                                                                                                                                                          
+                <!-- Advanced -> DNP3 Physical Link Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dnp3_physicallink.prf" name="dnp3_physicallink">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save DNP3 Enable option to system configuration file."
+             name="enable"
+             path="/GAUCfg/dnp3/enable" />
+
+    <cstep errmsg="Unable to save DNP3 Communication Mode to system configuration file."
+             name="commMode"
+             path="/GAUCfg/dnp3/commMode" />
+
+    <cstep errmsg="Unable to save DNP3 Serial Port Device to system configuration file."
+             name="serialport"
+             path="/GAUCfg/dnp3/serialport" />
+
+    <cstep errmsg="Unable to save DNP3 Max. Random Delay to system configuration file."
+             name="randomdelay"
+             path="/GAUCfg/dnp3/randomdelay" />
+
+    <cstep errmsg="Unable to save DNP3 TCP Host IP Address to system configuration file."
+             name="hostip"
+             path="/GAUCfg/dnp3/hostip" />
+
+    <cstep errmsg="Unable to save DNP3 TCP/UDP Port Number to system configuration file."
+             name="port"
+             path="/GAUCfg/dnp3/port" />
+
+    <cstep errmsg="Unable to save DNP3 UDP Host IP Address to system configuration file."
+             name="udphostip"
+             path="/GAUCfg/dnp3/udphostip" />
+
+    <cstep errmsg="Unable to save DNP3 Serial Check Box to system configuration file."
+             name="serialchecked"
+             path="/GAUCfg/dnp3/serialchecked" />
+
+    <cstep errmsg="Unable to save DNP3 Collision Check Box to system configuration file."
+             name="collisionchecked"
+             path="/GAUCfg/dnp3/collisionchecked" />
+
+    <cstep errmsg="Unable to save DNP3 TCP Check Box to system configuration file."
+             name="tcpchecked"
+             path="/GAUCfg/dnp3/tcpchecked" />
+
+    <cstep errmsg="Unable to save DNP3 UDP Check Box to system configuration file."
+             name="udpchecked"
+             path="/GAUCfg/dnp3/udpchecked" />
+
+    <cstep errmsg="Unable to save DNP3 Client Check Box to system configuration file."
+             name="clientchecked"
+             path="/GAUCfg/dnp3/clientchecked" />
+
+    <cstep errmsg="Unable to save DNP3 Server Check Box to system configuration file."
+             name="serverchecked"
+             path="/GAUCfg/dnp3/serverchecked" />
+
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+    <pre subsystem="dnp3" action="Save" />
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+    <pre subsystem="dnp3" action="Apply" />
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

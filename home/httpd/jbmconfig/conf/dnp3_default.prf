@@ -1,0 +1,104 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dnp3.prf"
+             name="dnp3" />
+                                                                                                                                                          
+                <!-- Advanced -> DNP3 Data Link Layer Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dnp3_default.prf" name="dnp3_default">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save DNP3 Enable option to system configuration file."
+             name="enable"
+             path="/GAUCfg/dnp3/enable" />
+
+    <cstep errmsg="Unable to save DNP3 Binary Input to system configuration file."
+             name="bininput"
+             path="/GAUCfg/dnp3/bininput" />
+
+    <cstep errmsg="Unable to save DNP3 Binary Input Change to system configuration file."
+             name="bininputchange"
+             path="/GAUCfg/dnp3/bininputchange" />
+
+    <cstep errmsg="Unable to save DNP3 Binary Output Status to system configuration file."
+             name="binoutputstatus"
+             path="/GAUCfg/dnp3/binoutputstatus" />
+
+    <cstep errmsg="Unable to save DNP3 Binary Output Status 1 to system configuration file."
+             name="binoutputstatus1"
+             path="/GAUCfg/dnp3/binoutputstatus1" />
+                                  
+    <cstep errmsg="Unable to save DNP3 Analog Input to system configuration file."
+             name="analoginput"
+             path="/GAUCfg/dnp3/analoginput" />
+
+    <cstep errmsg="Unable to save DNP3 Analog Input 1 to system configuration file."       
+             name="analoginput1"                                                          
+             path="/GAUCfg/dnp3/analoginput1" />      
+                               
+    <cstep errmsg="Unable to save DNP3 Frozen Analog Input to system configuration file."
+             name="frozenanaloginput"
+             path="/GAUCfg/dnp3/frozenanaloginput" />
+
+    <cstep errmsg="Unable to save DNP3 Analog Change Event to system configuration file."
+             name="analogchangeevent"
+             path="/GAUCfg/dnp3/analogchangeevent" />
+
+    <cstep errmsg="Unable to save DNP3 Analog Change Event 1 to system configuration file." 
+             name="analogchangeevent1"                                                     
+             path="/GAUCfg/dnp3/analogchangeevent1" /> 
+                                                                                    
+    <cstep errmsg="Unable to save DNP3 Frozen Analog Event to system configuration file."
+             name="frozenanalogevent"
+             path="/GAUCfg/dnp3/frozenanalogevent" />
+
+    <cstep errmsg="Unable to save DNP3 Analog Output Status to system configuration file."
+             name="analogoutputstatus"
+             path="/GAUCfg/dnp3/analogoutputstatus" />
+
+    <cstep errmsg="Unable to save DNP3 Analog Output Status 1 to system configuration file." 
+             name="analogoutputstatus1"                                                     
+             path="/GAUCfg/dnp3/analogoutputstatus1" />                                     
+                                                                                                                         
+    <cstep errmsg="Unable to save DNP3 Binary Counter to system configuration file."
+             name="bincounter"
+             path="/GAUCfg/dnp3/bincounter" />
+
+    <cstep errmsg="Unable to save DNP3 Frozen Counter to system configuration file."
+             name="frozencounter"
+             path="/GAUCfg/dnp3/frozencounter" />
+
+    <cstep errmsg="Unable to save DNP3 Frozen Counter 1 to system configuration file."        
+             name="frozencounter1"                                                           
+             path="/GAUCfg/dnp3/frozencounter1" />                                           
+                                                                                                                          
+    <cstep errmsg="Unable to save DNP3 Binary Counter Change to system configuration file."
+             name="bincounterchange"
+             path="/GAUCfg/dnp3/bincounterchange" />
+
+    <cstep errmsg="Unable to save DNP3 Binary Counter Change 1 to system configuration file." 
+             name="bincounterchange1"                                                        
+             path="/GAUCfg/dnp3/bincounterchange1" />                                        
+                                                                                                                          
+    <cstep errmsg="Unable to save DNP3 Frozen Counter Change to system configuration file."
+             name="frozencounterchange"
+             path="/GAUCfg/dnp3/frozencounterchange" />
+
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+    <pre subsystem="dnp3" action="Save" />
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+    <pre subsystem="dnp3" action="Apply" />
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

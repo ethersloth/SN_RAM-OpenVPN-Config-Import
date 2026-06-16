@@ -1,0 +1,35 @@
+<h4>Description</h4>
+<p>
+Define what type of content the Event alert message will contain.<br /><br />
+<b><u>Standard:</b></u> Send only the standard informational message.<br />
+<b><u>Custom:</b></u> Send only the custom message as specified. Tag values may be inserted as a variable by declaring the Tag Name framed in <b>$</b>. ie: <b>$TAGNAME$</b>.<br />
+<b><u>Standard + Custom:</b></u> Append up to a 60 character Custom message to the standard message.<br />
+</p>
+<p>
+<u>The Standard Message will be constructed as follows:</u><br /><br />
+
+EVT&lt;Num&gt;:&lt;Name&gt; &lt;Cond&gt; &lt;Custom&gt; Duration:&lt;Time&gt; DS:&lt;DSValue&gt; &lt;Clear Condition&gt;<br /><br />
+<u>Where</u><br /><br />
+<b>&lt;Num&gt;</b> is the event number.<br />
+<b>&lt;Name&gt;</b> is the event name.<br />
+<b>&lt;Cond&gt;</b> is the current event condition or status, ACTIVE or INACTIVE.<br />
+<b>&lt;Custom&gt;</b> is the optional custom message specified by the user.<br />
+<b>&lt;Time&gt;</b> is the amount of time that the event has been active.<br />
+<b>&lt;DSValue&gt;</b> is the value of the Data Source that caused the event to activate or deactivate.<br />
+<b>&lt;Clear Condition&gt;</b> will indicate if the event "Will Auto Clear" on its own or if a "Manual Clear Required".<br /><br />
+
+<b>Note:</b> Manual Clearing can be accomplished by clicking the Clear button on the Event Status page, or by writing a "1" into the Clear Condition register defined in IODB. See Appendix B.<br /><br />
+</p>
+<p>
+The Data Source value will change depending on the type of Data Source configured for each event. When an Event Expression is used, a series of bits will indicated the True/False status of terms in the Event Expression. For example, if you had an expression like:<br /><br />
+
+Evt1 | Evt2 | (Evt3 & Evt4)
+</p>
+<p>
+You could get a message that would trigger with:<br /><br />
+1000000000000<br />
+0100000000000<br />
+0011000000000<br /><br />
+
+First Bit = the first event name in the expression, and so on.
+</p>

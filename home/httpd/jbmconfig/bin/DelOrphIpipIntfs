@@ -1,0 +1,173 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+
+# Get command line arguments, a single '-h' bypasses everything else, display usage info and exit:
+
+chomp(@ARGV);
+
+if ($ARGV[0])
+{
+    my $arg = $ARGV[0];
+
+    if ($arg =~ /\-h/)
+    {
+        print "Usage:  DelOrphIpipIntfs\n";
+
+        exit(1);
+    }
+}
+
+my $debugEnable = "";
+
+if (
+    open(
+        FILE,
+        "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/profile.xml " .
+        "--xpath=\"/profile/settings/Debug/GAURuntime/GAUDebugEnable/text()\" |"
+        )
+    )
+{
+    while (<FILE>)
+    {
+        $debugEnable = $_;
+
+        chomp($debugEnable);
+    }
+
+    close(FILE);
+}
+
+
+my $jbm_lib = "/etc/jbm/jbm_lib.pl";
+
+if (! -e $jbm_lib)
+{
+    print "Missing JBM Perl library, cannot run";
+
+    exit(1);
+}
+else
+{
+    require $jbm_lib;
+}
+
+
+if ("y" eq $debugEnable)
+{
+    syslog("DelOrphIpipIntfs:  Starting");
+}
+
+
+
+# Get total number of Ipip interface entries from the Master Configuration file:
+
+my $confIpipIntfsCnt = 0;
+
+if (
+    open(
+        FILE,
+        "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/config.xml " .
+        "--xpath=\"/GAUCfg/vpn/ipip/ipiptunnels/NumberOfipiptunnels/text()\" |"
+        )
+    )
+{
+    while (<FILE>)
+    {
+        $confIpipIntfsCnt = $_;
+
+        chomp($confIpipIntfsCnt);
+    }
+
+    close(FILE);
+}
+
+
+# Get a list of gre tunnel names from the Master Configuration file:
+
+my @cfgIpipIntfIdsList;
+
+for (my $intfNdx=1; $intfNdx<=$confIpipIntfsCnt; $intfNdx++)
+{
+    my $intfId = "";
+
+    if (
+        open(
+            FILE,
+            "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/config.xml " .
+            "--xpath=\"/GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[" . $intfNdx . "]/id/text()\" |"
+            )
+        )
+    {
+        while (<FILE>)
+        {
+            $intfId = $_;
+
+            chomp($intfId);
+        }
+
+        close(FILE);
+    }
+
+    push(@cfgIpipIntfIdsList, $intfId);
+}
+
+
+
+# Read contents of /etc/sysconfig/network-scripts directory into an array of strings for each:
+
+opendir(DIR, "/etc/sysconfig/network-scripts/");
+
+my @instIntfsList = readdir(DIR);
+
+closedir(DIR);
+
+
+# Compare the list of existing gre interface configuration files to list of gre tunnel names obtained from the Master
+# Configuration file and delete any existing file that is not referenced by the Master Configuration file:
+
+foreach my $instIntfName (@instIntfsList)
+{
+    my $searchStr = "ifcfg-tunl";
+
+    if ($instIntfName =~ m/^($searchStr)/i)
+    {
+        my $legitFile = 0;
+
+        foreach my $intfId (@cfgIpipIntfIdsList)
+        {
+            if ("ifcfg-tunl" . $intfId eq $instIntfName)
+            {
+                $legitFile = 1;
+
+                last;
+            }
+        }
+
+        if (0 == $legitFile)
+        {
+            my $intf = substr($instIntfName, length("ifcfg-"));
+
+            my $cmd = "/sbin/ifconfig " . $intf . " down &> /dev/null";
+
+            if ("y" eq $debugEnable)
+            {
+                syslog("DelOrphIpipIntfs:   Deleting " . $instIntfName);
+
+                syslog("DelOrphIpipIntfs:   Execing " . $cmd);
+            }
+
+            system($cmd);
+
+            unlink("/etc/sysconfig/network-scripts/" . $instIntfName);
+        }
+    }
+}
+
+if ("y" eq $debugEnable)
+{
+    syslog("DelOrphIpipIntfs:  Exit {0}");
+}
+
+exit(0);
+

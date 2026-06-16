@@ -1,0 +1,19 @@
+<h4>Description</h4>
+<p>
+  This setting controls whether or not the whitelist rules apply to packets originating from this device and being routed through the device.<br /><br />
+  There are two choices:<br /><br />
+  <ul>
+   <li>Only to Whitelisted IPs from local</li>
+   <li>No Restrictions</li>
+  </ul>
+  <br />
+  When <u>Only to Whitelisted IPs from local</u> is selected, packets that originate locally from the device that are destined for subnets outside those specified in any whitelist will be suppressed by the firewall.
+  <br /><br />
+  When <u>No Restrictions</u> is selected, the device may send a packet to any subnet and the whitelist rules apply
+  only to packets received.
+  <br /><br />
+  <b>Note:</b> ICMP traffic and UDP destination port 67 are omitted and will bypass whitelists.  Failing to allow DNS IPs, will keep DNS from resolving addresses.
+  <br /><br />
+  Whitelists may still be attached to specific rules in the firewall to further refine allowed networks.
+ </p>
+

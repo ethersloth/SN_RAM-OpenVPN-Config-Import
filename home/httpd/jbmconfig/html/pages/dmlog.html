@@ -1,0 +1,60 @@
+<!-- ko template: {name: 'title-template', data: title}--><!-- /ko -->
+<table class="gw-auto-margin gw-status-table gw-st45" style="width: 475px">
+	<tr>
+		<td>Device Model</td>
+		<td data-bind="text: deviceModel"></td>
+	</tr>
+	<tr>
+		<td>Device Serial Number</td>
+		<td data-bind="text: deviceSerialno"></td>
+	</tr>
+	<tr>
+		<td>Device Build Version</td>
+		<td data-bind="text: buildVersion"></td>
+	</tr>
+	<tr>
+		<td>Device Build Date</td>
+		<td data-bind="text: buildDate"></td>
+	</tr>
+	<tr>
+		<td>Installed Device Modem</td>
+		<td data-bind="text: modemModel"></td>
+	</tr>
+	<tr>
+		<td>USB Used by Modem</td>
+		<td data-bind="text: usbdevice"></td>
+	</tr>
+	<tr>
+		<td>Log File Size</td>
+		<td data-bind="text: logfileSize"></td>
+	</tr>
+</table>
+<hr />
+<table align="center">
+	<tr>
+		<td style="text-align: left; vertical-align: middle;"><pre><span data-bind="text: notes"></span></pre></td>
+	</tr>
+	<tr>
+		<td colspan="2" style="text-align: center; padding-top: 10px"><strong><u>Diagnostic process:</u></strong></td>
+	</tr>
+	<tr>
+		<td colspan="2" style="text-align: center; font-weight: normal" data-bind="text: diagStatus, style: {color: diagStatus() === 'DM Log Running' ? 'green' : 'red'}"></td>
+	</tr>
+</table>
+<div style="text-align: center; padding-top: 10px">
+	<button type="button" class="btn btn-primary" data-bind="click: refresh">Refresh</button>
+</div>
+<hr />
+<!--ko template: {name: 'h4-template', data: 'Upload Filter'}--><!-- /ko -->
+<div style="width: 100%; text-align: center">
+	<!--ko template: {name: 'file-input-template', data: filterFileDrop}--><!--/ko-->
+</div>
+<hr />
+<!--ko template: {name: 'h4-template', data: 'Download Log File and Start/Stop Diagnostic'}--><!--/ko-->
+<div class="gw-auto-margin" style="width:600px; text-align: center; padding-bottom: 20px">
+	<input type="checkbox" data-bind="checked: auto"> Auto Stop/Start Connection</input>
+</div>
+<div style="text-align: center">
+	<button class="btn btn-primary" data-bind="click: downloadLog">Download Log File</button>
+	<button class="btn btn-success" data-bind="text: isNotRunning() ? 'Start' : 'Stop', css: {'btn-success': isNotRunning, 'btn-danger': isRunning}, click: toggleRun"></button>
+</div>

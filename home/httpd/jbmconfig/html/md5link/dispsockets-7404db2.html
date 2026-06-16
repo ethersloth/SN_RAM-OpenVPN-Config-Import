@@ -1,0 +1,53 @@
+<form id="socketstatus-form" class="form-horizontal">
+  <table style="width: 100%;">
+    <tr>
+       <td style="text-align: center; vertical-align: middle;">
+            <h3>Socket Statuses</h3>
+       </td>
+    </tr>
+  </table>
+
+  <span><hr/></span>
+
+  <table style="width: 100%;">
+    <tr>
+       <td style="text-align: center; vertical-align: middle;">
+            <h4><u>TCP Only</u></h4><br />
+       </td>
+    </tr>
+  </table>
+
+	<div class="gw-row">
+		<textarea readonly style="width: 90%; font-family: monospace;" data-bind="value: tcponly" rows="20" name="tcponly" wrap="off"></textarea>
+	</div>
+
+  <span><hr/></span>
+
+  <table style="width: 100%;">
+    <tr>
+       <td style="text-align: center; vertical-align: middle;">
+            <h4><u>Conn Track</u></h4><br />
+       </td>
+    </tr>
+  </table>
+
+	<div class="gw-row">
+		<textarea readonly style="width: 90%; font-family: monospace;" data-bind="value: conntrack" rows="20" name="tcponly" wrap="off"></textarea>
+	</div>
+
+  <span><hr/></span>
+
+  <table style="width: 100%;">
+    <tr>
+       <td style="text-align: center; vertical-align: middle;">
+            <h4><u>Socket Statuses All</u></h4><br />
+       </td>
+    </tr>
+  </table>
+
+	<div class="gw-row">
+		<textarea readonly style="width: 90%; font-family: monospace;" data-bind="value: allsocket" rows="20" name="tcponly" wrap="off"></textarea>
+	</div>
+  
+
+</form>

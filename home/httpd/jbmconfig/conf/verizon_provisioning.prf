@@ -1,0 +1,99 @@
+
+<profile>
+ <subsystems>
+                                                                                                                              <!--
+               Networking -> Cellular -> Provisioning Settings Section (Verizon)                                               -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/verizon_provisioning.prf" name="verizon_provisioning">
+   <validation>
+    <vstep errmsg="Invalid Sync Time value. Must be 'y' or 'n'."
+             name="synctime"
+             test="isyorn(/input/synctime/text())" />
+
+    <vstep errmsg="Invalid Mobile IP value."
+             id="step000"
+             name="mipmode"
+             test="/input/mipmode/text() = 'pref' or 
+		   /input/mipmode/text() = 'only' or
+		   /input/mipmode/text() = 'sip'" />
+
+    <vstep errmsg="Invalid Roaming/Band preference value."
+             id="step001"
+             name="rbp"
+             test="/input/rbp/text() = ''          or
+                   /input/rbp/text() = 'automatic' or
+                   /input/rbp/text() = 'home'      or
+                   /input/rbp/text() = 'aonly'     or
+                   /input/rbp/text() = 'bonly'        " />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Time Sync to system configuration file."
+             name="synctime"
+             path="/GAUCfg/provisioning/common/synctime" />
+
+    <cstep errmsg="Unable to save Mobile IP Mode to system configuration file."
+             name="mipmode"
+             path="/GAUCfg/provisioning/common/mipmode" />
+
+    <cstep errmsg="Unable to save Roaming/Band preference to system configuration file."
+             name="rbp"
+             path="/GAUCfg/provisioning/common/rbp" />
+
+   </configuration>
+
+   <action name="Apply" successmsg="Provisioning settings saved and applied.">
+    <astep abort="y" errmsg="Failed to write Provisioning configuration file." name="WriteFormattedFile" >
+     <arg expr="'/tmp/cellmodem_provision_data.conf'" source="config" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/provisioning/common/synctime/text() = 'n'"
+                expr="'SYNC_TIME=no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/provisioning/common/synctime/text() = 'y'"
+                expr="'SYNC_TIME=yes'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg expr="concat('MIP_MODE=', /GAUCfg/provisioning/common/mipmode/text())" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move Provisioning configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/cellmodem_provision_data.conf /etc/jbm/wireless/cellmodem_provision_data.conf " />
+    </astep>
+
+
+    <astep abort="y" errmsg="Failed to Roaming/Band preference configuration file." name="WriteFormattedFile" >
+     <arg expr="'/tmp/cellmodem_roampref'" source="config" />
+
+     <arg expr="/GAUCfg/provisioning/common/rbp/text())" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move Roaming/Band preference configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/cellmodem_roampref /etc/jbm/wireless/cellmodem_roampref " />
+    </astep>
+   </action>
+
+   <action name="Force" successmsg="Forced (Verizon) provisioning initiated and in progress">
+    <astep abort="y" errmsg="Failed to write Provisioning trigger file." name="SystemCommand" >
+     <arg expr="touch /etc/jbm/wireless/FORCE_PROVISIONING" />
+    </astep>
+   </action>
+
+   <action name="Save" successmsg="">
+    <pre subsystem="verizon_provisioning" action="Apply" />
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>
+
+

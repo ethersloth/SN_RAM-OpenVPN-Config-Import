@@ -1,0 +1,90 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+###############################################################################################################################
+#                                                                                                                             #
+# getATinitstrings - Get list of predefined AT init strings.                                                                  #
+#                                                                                                                             #
+# Obtain a list of available predefined AT init strings from external file.                                                   #
+#                                                                                                                             #
+# For the record . .                                                                                                          #
+#                                                                                                                             #
+# All rights reserved.  No part of this program may be reproduced, stored in a retrieval system or transmitted, in any form   #
+# or by any means, including but not limited to electronic, mechanical, photocopying, recording, or otherwise, without the    #
+# express prior written consent of Sixnet, 4645 LaGuardia, St. Louis, MO 63134.  (314) 426-7781, fx: (314) 426-0007.          #
+# Contact support@sixnet.com                                                                                                  #
+#                                                                                                                             #
+#                                                                                                                             #
+###############################################################################################################################
+
+my $ATinitstring_file = "/etc/jbm/atcomm.conf";
+
+# Get command line argument(s), if any:
+
+my $argCnt = $#ARGV;
+
+my %argList;
+
+foreach my $argnum (0 .. $#ARGV)
+       {
+        if ("-h" eq $ARGV[$argnum])
+          {
+           Usage();
+
+           exit(0);
+          }
+
+        my ($argName, $argVal) = split(/=/, $ARGV[$argnum]);
+
+        $argList{$argName} = $argVal;
+       }
+
+if ($argList{"file"})
+  {
+   $ATinitstring_file = $argList{'file'};
+  }
+
+my $optCnt = 0;
+
+open(FILE, "$ATinitstring_file") or die "\nCannot open the file name \"$ATinitstring_file\"!\n\n";
+
+$/ = undef;
+
+my $temp = <FILE>;
+
+$/ = "\n";
+
+close(FILE);
+
+my @ATstringentries = split "\n", $temp;
+
+foreach my $eachelement(@ATstringentries)
+       {
+         @output = split(/\s=\s/, $eachelement);
+         
+         print "<option value=\"" . $output[1] . "\">" . $output[0] . "</option>\n"
+       }
+
+# Want User Defined to always be the last option in list
+if (0 == $optCnt)
+  {
+   print "<option value=\"USERDEFINED\">--- Enter User Defined ---</option>\n";
+  }
+
+exit(0);
+
+sub Usage
+   {
+    print "\nUsage:\n\n"                                                                                             .
+
+          "getATinitstrings \n\n"                                                                                    .
+                                                                                                          
+          "Obtain a list of AT init strings from a file on system, formatted in the form of html <option> tags.\n\n" .                                     
+
+          "One or more of the following parameters must be supplied:\n\n"                                            .
+                                                                                                                   
+          "-h - Displays the usage information summary you are now reading.\n\n"                                     .
+
+          "file=<filename> - Read AT init strings from this <filename> file.\n";
+
+   }

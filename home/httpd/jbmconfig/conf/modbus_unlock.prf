@@ -1,0 +1,37 @@
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/modbus_unlock.prf" name="modbus_unlock">
+   <validation>
+    <vstep errmsg="Invalid Unlock Code. Must be 12 digits."
+             name="unlock"
+             test="string-length(/input/unlock/text()) = 12" />
+   </validation>
+   <configuration>
+   </configuration>
+   <action name="unlock" successmsg="Thank you for upgrading to RAM!">
+    <astep abort="y" errmsg="Failed to upgrade to RAM. Invalid Unlock Code." name="SystemCommand" >
+     <arg source="input" expr="concat('unlocker -f modbus -u ', /input/unlock/text())" />
+    </astep>
+
+    <astep abort="n" name="SystemCommand" >
+     <arg source="input" expr="'/home/httpd/jbmconfig/bin/gau_sysinit.sh'" />
+    </astep>
+
+    <astep abort="n" name="SystemCommand" >
+     <arg expr="getfc" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to allow Modbus service through firewall" name="SystemCommand" >
+     <arg dependency="/bin/ismodbusenabled.sh &amp;>/dev/null; [ $? -eq 0 ]"
+                expr="/home/httpd/jbmconfig/bin/xpeval -u --in='/home/httpd/jbmconfig/conf/config.xml' --out='/home/httpd/jbmconfig/conf/config.xml' --xpath='/GAUCfg/firewall/modbus' --value='y'" />
+    </astep>
+<!--
+    <astep abort="n" errmsg="Failed to start the Modbus services" name="SystemCommand" >
+     <arg dependency="/bin/ismodbusenabled.sh &>/dev/null; [ $? -eq 0 ]"
+                expr="service modbus start &amp;" />
+    </astep>
+-->
+   </action>
+  </subsystem>
+ </subsystems>
+</profile>

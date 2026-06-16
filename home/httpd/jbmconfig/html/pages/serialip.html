@@ -1,0 +1,139 @@
+<!--ko template: {name: 'title-template', data: 'Serial IP Interface'}--><!--/ko-->
+<!--ko template: {name: 'full-savable-select-template', data: enable}--><!--/ko-->
+<!--ko if: isEnabled-->
+	<!--ko template: {name: 'full-savable-input-template', data: description}--><!--/ko-->
+	<hr />
+	<!--ko template: {name: 'h4-template', data: 'Serial Port Configuration'}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: intf}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: linespeed}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: indactive}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: wordlength}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: parity}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: stopbit}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: dtrdial}--><!--/ko-->
+	<!--ko if: dtrdial.value() === 'no'-->
+		<!--ko template: {name: 'full-savable-input-template', data: atcommand}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: dialip}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: ignoreringout}--><!--/ko-->
+	<!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: ignoredtr}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: connectiontype}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: usetimer}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: interchartimeout}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: eomstring}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: stripeom}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: maxbufsize}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: flowctrl}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: missedpoll}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: advancesetup}--><!--/ko-->
+	<!-- ko if: advancesetup.value() === 'y' -->
+		<!--ko template: {name: 'full-savable-select-template', data: dnis}--><!--/ko-->
+	<!--/ko-->
+	<!--ko if: false-->
+		<!--ko template: {name: 'full-savable-input-template', data: callreportfilename}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: callreport}--><!--/ko-->
+	<!--/ko-->
+	<hr />
+	<!--ko template: {name: 'h4-template', data: 'TCP/UDP Port Configuration'}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: sockettypedata}--><!--/ko-->
+	<!--ko if: showDest -->
+		<!--ko template: {name: 'full-savable-select-template', data: destcfg}--><!--/ko-->
+	<!--/ko-->
+	<!--ko if: sockettypeUDP -->
+		<!--ko template: {name: 'full-savable-input-template', data: peerip}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: peerport}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: clientipport}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: srcintf}--><!--/ko-->
+	<!--/ko-->
+	<!--ko if: sockettypeTCPC -->
+		<!--ko template: {name: 'full-savable-select-template', data: tcpindactive}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: headers}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: hostip}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: hostport}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: sourceport}--><!--/ko-->
+	<!--/ko-->
+	<!--ko if: sockettypeTCPS -->
+		<!--ko template: {name: 'full-savable-select-template', data: tcpindactive}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: headers}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: allowpeerreattach}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: listenip}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: listenport}--><!--/ko-->
+	<!--/ko-->
+	<!--ko if: sockettypeTCP2WAY -->
+		<!--ko template: {name: 'full-savable-select-template', data: headers}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: hostip}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: hostport}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: sourceport}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: allowpeerreattach}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: listenip}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: listenport}--><!--/ko-->
+	<!--/ko-->
+	<!--ko if: sockettypeUDPBRD -->
+	<!--ko template: {name:'h4-template', data: 'UDP Broadcast Configuration'}--><!--/ko-->
+	<div data-bind="if: showControlTable">
+		<table border="1" align="center" style="text-align: center">
+			<thead>
+				<tr>
+					<th style="width: 200px; border: none">Peer IP</th>
+					<th style="width: 200px; border: none">Peer Port</th>
+					<th style="width: 200px; border: none">Client IP Port</th>
+					<th colspan="2" style="border: none">
+						<span class="badge" data-bind="text: numRecords"></span>
+					</th>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: udpControlTable">
+				<tr style="height: 35px" data-bind="style: {'background-color': '#eee'}">
+					<td style="text-align: center">
+						<span data-bind="text: udppeerip"></span>
+					</td>
+					<td style="text-align: center">
+						<span data-bind="text: udppeerport"></span>
+					</td>
+					<td style="text-align: center">
+						<span data-bind="text: udpclientipport"></span>
+					</td>
+					<td style="text-align: center">
+						<button type="button" class="btn btn-primary" data-bind="click: $parent.editRecord($index()), attr: {name: 'edit' + $index()}">Edit</button>
+					</td>
+					<td style="text-align: center">
+						<button type="button" class="btn btn-danger" data-bind="click: $parent.deleteRecord($index()), attr: {name: 'delete' + $index()}">Delete</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<br />
+	<div style="text-align: center">
+		<button class="btn btn-primary" name="addudpport" data-bind="event: {click: addUdpPort}">Add UDP Broadcast Port</button>
+	</div>
+	<!--/ko-->
+	<!--ko if: sockettypeTCPCBRD() || showIPDest()-->
+		<div style="text-align: center">
+			<a class="btn" href="#!/ipdest">Configure IP Destinations</a>
+		</div>
+	<!--/ko-->
+	<!--ko if: dnisEnabled -->
+		<div style="text-align: center">
+			<a class="btn" href="#!/connecttable">Configure Connect Table</a>
+		</div>
+	<!--/ko-->
+<!--/ko-->
+<div id="udprule-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="udprule-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>UDP Broadcast Port Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: udppeerip}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: udppeerport}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: udpclientipport}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: udpFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

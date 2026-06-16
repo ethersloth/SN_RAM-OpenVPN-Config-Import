@@ -1,0 +1,605 @@
+<!
+/** 
+ * @brief TEST I/O web page for Solo 
+ *
+ *  Configurable interface to I/O registers on the Solo RTU. I/O ranges can be
+ *  added and removed. Values are updated with a timer-based update mechanism. 
+ *  Register values can be changed in real time.
+ *
+ *  Copyright 2012 SIXNET, LLC.
+ *
+ *  Notice: This document contains proprietary, confidential information
+ *  owned by SIXNET, LLC and is protected as an unpublished work under
+ *  the Copyright Law of the United States. No part of this document may
+ *  be copied, disclosed to others or used for any purpose without the
+ *  written permission of Digitronics Inventioneering Corporation.
+ *
+ */
+/!>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>SIXNET TEST I/O</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link rel="stylesheet" type="text/css" src="/css/test_io.css" />
+</head>
+
+<body>
+<script type="text/javascript">
+
+  // # TODO: Add tagging information to the display and (possibly) a method
+  // #       to change the tags.
+
+var ioRanges = new Array();   // Contains the types and ranges to be monitored.
+var editing = 0;              // flag if we are editing a cell (have focus)
+var timerSec = 5;             // Global refresh interval
+var timerEn  = 1;             // Whether to ignore timer events (editing a cell)
+var removed = 0;              // true if we are removing an ioRange.
+var timer = 0;                // This will contain the global timer ID.
+var messages = new Array();   // Object to store our messages.
+
+// The indexes of this array are the numbers used by the I/O DB for that type
+var ioTypes =
+    [
+     ["ANALOG INPUTS","AI"],
+     ["ANALOG OUTPUTS","AO"],
+     ["",""],
+     ["",""],
+     ["",""],
+     ["",""],
+     ["",""],
+     ["",""],
+     ["",""],
+     ["",""],
+     ["DISCRETE INPUTS","DI"],
+     ["DISCRETE OUTPUTS","DO"],
+     ["",""],
+     ["",""],
+     ["",""],
+     ["",""],
+     ["",""],
+     ["",""],
+     ["",""],
+     ["",""],
+     ["LONG INPUTS","LI"],
+     ["LONG OUTPUTS","LO"],
+     ["FLOAT INPUTS","FI"],
+     ["FLOAT OUTPUTS","FO"]
+];
+
+
+/**
+ * Main timer function that decides whether to update values or display 
+ * a message based on the state of the web page and user interaction.
+ *
+ */
+function doTimer()
+{
+    var timerMS = timerSec * 1000;
+
+    if (removed) {
+        DisplayMessage("Waiting for I/O before removing range", "trace");
+    }
+    else if (editing) {
+        DisplayMessage("Pausing I/O updates while editing cells",
+                       "trace");
+    }
+    else if (timerEn && (timerSec > 0) && (ioRanges.length > 0)) {
+        DisplayMessage("I/O updates continuing", "trace");
+        UpdateIORanges();
+    }
+
+    timer = setTimeout("doTimer()", timerMS);
+}
+
+/**
+ * Update timer interval and give feedback to user.
+ *
+ * @param[in] scanrate.  The new scan rate given in seconds.
+ *
+ */
+function UpdateScanrate(scanrate) 
+{
+    timerSec = scanrate;
+    DisplayMessage("Scan Rate changed to <b>" + scanrate + 
+                   "</b> second(s)", "trace");
+    Refresh();
+}
+
+/**
+ * Update the I/O values and reset the timer
+ *
+ */
+function Refresh()
+{
+    clearTimeout(timer);
+    UpdateIORanges();
+    timer = setTimeout("doTimer()", timerSec*1000);
+}
+
+/**
+ * Display or Hide the messages div depending on the value of an input checkbox
+ *
+ * @param[in] show    whether to display the message area or not.
+ *
+ */
+function ShowMessages(show)
+{
+    var msgArea = document.getElementById("messages");
+    var ioArea = document.getElementById("iodata");
+
+    if (show) {
+        msgArea.style.display = "block";
+        msgArea.scrollTop = msgArea.scrollHeight;
+    }
+    else {
+        msgArea.style.display = "none";
+    }
+}
+
+/**
+ * Add a message to the message area with a given severity. The message will 
+ * be wrapped in a div with the class equal to the severity string. If the
+ * message is the same as the most recent message, don't display it.
+ *
+ * @param[in] message    The message to be displayed to the user
+ * @param[in] severity   The string which determines the div class for the
+ *                       message. This div class can be styled with a 
+ *                       CSS section.
+ *
+ */
+function DisplayMessage(message, severity)
+{
+    var msgArea=document.getElementById("messages");
+    var HTML = "<div class=" + severity + ">" + message + "</div>";
+    var msgCnt = messages.length;
+
+    // Don't Display the message if it is equal to the previous one
+    if ((msgCnt == 0) || (messages[msgCnt-1].html.indexOf(message) == -1)) {
+        messages[msgCnt] = new Object();
+        messages[msgCnt].html = HTML;
+        msgArea.innerHTML += messages[msgCnt].html;
+        msgArea.scrollTop = msgArea.scrollHeight;
+    }
+}
+
+/**
+ * For each displayed I/O Range, update its values. The main timer is disabled 
+ * during this operation and is reenabled after all values have been processed.
+ *
+ */
+function UpdateIORanges()
+{
+    // Bail if we are removing an I/O range.
+    if (!removed) {
+        // We don't want to deal with another timer event until we have all IO
+        timerEn = 0;
+
+        for (var i = 0; i < ioRanges.length; i++) {
+            UpdateIOValues(i);
+        }
+    }
+}
+
+/**
+ * Update the I/O values by processing the results of an fcgi query. The fcgi
+ * query interface allows you to query by specifying the address, type, and 
+ * number of registers. The ajax callback function, ProcessAjaxResults(), is
+ * responsible for processing the results.
+ * 
+ * @param[in] ioNum   the specific I/O range we are going to query for. This
+ *                    value is an index to the array of all I/O ranges and their
+ *                    associated data.
+ *
+ */
+function UpdateIOValues(ioNum)
+{
+    var type = ioRanges[ioNum].type;
+    var addr = ioRanges[ioNum].addr;
+    var numregs = ioRanges[ioNum].numregs;
+    var ajax = GetXmlHttpObject();
+
+    ioRanges[ioNum].processed = 0;
+    ioRanges[ioNum].regData = new Array();
+
+    if (ajax == null) {
+        DisplayMessage("Browser does not support HTTP Request","alert");
+    }
+    else {
+
+        var url="/cgi-bin/test_io.cgi";
+
+        url= url + "?func=0";
+        url= url + "&type="    + type;
+        url= url + "&addr="    + addr;
+        url= url + "&numregs=" + numregs;
+
+        ajax.onreadystatechange = function() 
+        {
+            ProcessAjaxResults(ioNum, ajax);
+        }
+        ajax.open("GET", url, true);
+        ajax.send(null);
+    }
+}
+
+/**
+ * This is the callback function for the UpdateIOValues() ajax call. When the
+ * calls are all finished and the results are available, update the I/O range's
+ * values. If all of the I/O values for all of the I/O ranges have finished
+ * updating, update the table elements on the web page.
+ *
+ * @param[in] ioNum   The specific I/O range we are processing results for. This
+ *                    value is an index to the array of all I/O ranges and their
+ *                    associated data.
+ * @param[in] ajax    the xmlHttpRequest object containing the state of the 
+ *                    request and the return values from the fast cgi server.
+ *
+ */
+function ProcessAjaxResults(ioNum, ajax)
+{
+    if (ajax.readyState == 4) {
+        var allProcessed = 1;
+        var results = ajax.responseText;
+
+        if (results.indexOf("Error=") > -1 ) {
+            // This might be overly specified.
+            // If all Error= stuff needs to be removed, don't ask.
+            if (results.indexOf("Too many registers requested") > -1 ||
+                results.indexOf("Address out of range") > -1 ||
+                results.indexOf("Invalid or missing 'addr' value") > -1 ) {
+
+                RemIORange(ioNum);
+            }
+
+            DisplayMessage(results, "alert");
+        }
+
+        // split out the register values (comma seperated data)
+        ioRanges[ioNum].regData = results.split(",");
+        ioRanges[ioNum].processed = 1;
+
+        // If all the ajax requests are complete,
+        // update the Table values and enable the timer
+        for (var i = 0; (i < ioRanges.length) && allProcessed; i++) {
+            allProcessed = allProcessed && ioRanges[i].processed;
+        }
+
+        if (allProcessed) {
+            for(var i = 0; i < ioRanges.length; i++) {
+                ioRanges[i].processed = 0;
+            }
+            DisplayIOValues();
+            timerEn = 1;
+        }
+    }
+}
+
+
+/**
+ * Write a value to a specific offset in one of the I/O ranges using an fast 
+ * cgi query and processing the results in a callback function. Errors will 
+ * be displayed in the message area. After the ajax callback has finished 
+ * processing the results, all of the I/O ranges will be updated. 
+ *
+ * @param[in] ioNum   The specific I/O range we are going to update a value in.
+ *                    This value is an index to the array of all I/O ranges and 
+ *                    their associated data.
+ * @param[in] i       The offset of the register in the I/O range.
+ * @param[in] value   The new value to be written to the register 
+ *
+ */
+function SetIOValue(ioNum, i, value)
+{
+    var type = ioRanges[ioNum].type;
+    var addr = Number(ioRanges[ioNum].addr) + Number(i);
+
+    var Set_xmlHttp = GetXmlHttpObject();
+
+    if (Set_xmlHttp == null) {
+        alert("Browser does not support HTTP Request");
+    }
+    else {
+        var url="/cgi-bin/test_io.cgi";
+        url= url + "?func=1"
+            url= url + "&type="    + type;
+        url= url + "&addr="    + addr;
+        url= url + "&numregs=1";
+        url= url + "&values=" + value;
+
+        timerEn = 0;
+
+        Set_xmlHttp.onreadystatechange = function() 
+        {
+            if (Set_xmlHttp.readyState == 4) {
+                if (Set_xmlHttp.responseText.indexOf("Error=") > -1) {
+                    DisplayMessage(Set_xmlHttp.responseText, "alert");
+                } 
+                else {
+                    DisplayMessage("Successfully wrote <b>'" + 
+                                   Number(value) + 
+                                   "'</b> to I/O register <b>"+ 
+                                   ioTypes[type][1] + "[" + addr + "]");
+                }
+                Refresh();
+            }
+        }
+        Set_xmlHttp.open("GET", url, true);
+        Set_xmlHttp.send(null);
+    }
+}
+
+/**
+ * Set the html table values to the corresponding values contained in 
+ * each I/O range. If a cell is being editing, skip updating that cell, 
+ * and make sure its contents are selected and focused after the process 
+ * is compelte. 
+ *
+ */
+function DisplayIOValues()
+{
+    for (var i = 0; i < ioRanges.length; i++) {
+        for (var j = 0; j < ioRanges[i].regData.length; j++) {
+            var ioAddr = Number(ioRanges[i].addr) + j;
+            var elementID = "ioRange" + i + "Val" + ioAddr;
+
+            if (elementID != editing) {
+                var ioBox = document.getElementById(elementID);
+                ioBox.value = Number(ioRanges[i].regData[j]);
+            }
+        }
+    }
+
+    // This bit enables brisk tab-edit-tab-edit etc.
+    if (editing) {
+        var cell = document.getElementById(editing);
+        cell.select();
+    }
+
+}
+
+
+/**
+ * Generates HTML tables for all the configured I/O ranges and replaces the
+ * contents of the iodata div with it.
+ *
+ */
+function BuildIOTables()
+{
+    var ioTables = "";
+
+    for (var i=0; i < ioRanges.length; i++) {
+        var type = ioRanges[i].type;
+
+        ioRanges[i].ioTable = "<table id=ioRange" + i + " class=ioRange>" +
+            "<TH class=rangeHead colspan=2><input type=button value=\"X\"" +
+            "onclick=\"RemIORange(" + i + ")\"/>  " + ioTypes[type][0] +
+            "</TH><TR>";
+
+        BuildIOTable(i);
+        ioTables = ioTables + ioRanges[i].ioTable + "<hr class=rangeSep />";
+    }
+
+    var myDoc=document.getElementById("iodata");
+    myDoc.innerHTML = ioTables;
+}
+
+/**
+ * Builds the HTML for a single I/O range. Each I/O value is represented by two
+ * cells. One for the address (and in the future tag name), and one for the 
+ * value (currently unscaled). The value is contained in an editable text input 
+ * field to enable real-time editing of values. 'focus' and 'onchange' 
+ * attributes are used to accomplish this. 
+ *
+ * @param[in] ioNum   The specific I/O range we are building a table for. This
+ *                    value is an index to the array of all I/O ranges and their
+ *                    associated data.
+ */
+function BuildIOTable(ioNum)
+{
+    var type = ioRanges[ioNum].type;
+    var addr = ioRanges[ioNum].addr;
+    var numregs = ioRanges[ioNum].numregs;
+    var cols = ioRanges[ioNum].cols;
+    var ioTable = "";
+
+    for (var i = 0; i < numregs; i++) {
+        var myaddr = Number(addr) + i;
+        var valueID = "ioRange" + ioNum + "Val" + myaddr; 
+        var value = "";
+
+        if (ioRanges[ioNum].regData) {
+            value = Number(ioRanges[ioNum].regData[i]);
+        }
+
+        if ((i % cols) == 0) {
+            // Odd Rows get a special flag.
+            if ((i % (cols * 2)) != 0) {
+                ioTable = ioTable + "<TR class=oddRow>";
+            }
+            else {
+                ioTable = ioTable + "<TR>";
+            }
+        }
+
+        ioTable = ioTable + "<TD id=ioRange" + ioNum + "Addr" + myaddr +
+            " class=ioAddr><B>(" + ioTypes[type][1] + myaddr + ")</B></TD>";
+
+        // This is where the magic happens.
+        // When input box is focused, disable timer with editing=1
+        // When the value is changed, commit the change.
+        ioTable = ioTable +
+            "<TD class=ioVal><input class=io type=\"text\" id=" + valueID +
+            " size=12 onFocus=\"editing='" + valueID + "';\"" + 
+            " onBlur=\"editing=0;\"" + 
+            " onchange=\"SetIOValue(" + ioNum + "," + i + ",this.value);\"" + 
+            " value=\"" + value + "\" onClick=\"this.select()\"/></TD>";
+    }
+    ioTable = ioTable + "</TR></Table></div>";
+
+    ioRanges[ioNum].ioTable = ioRanges[ioNum].ioTable + ioTable;
+}
+
+/**
+ * Remove an I/O range from the display. If there is no current updating of I/O
+ * values, remove the I/O range from ioRanges list and rebuild the HTML for all
+ * ranges; otherwise, wait for ajax to finish.
+ *
+ * @param[in] ioNum   the specific I/O range we are going to remove. This
+ *                    value is an index to the array of all I/O ranges and their
+ *                    associated data.
+ */
+function RemIORange(ioNum)
+{
+    removed = 1;
+
+    // Wait until all the current ajax stuff is finished
+    if (timerEn == 0) {
+        setTimeout(function () 
+        {
+            RemIORange(ioNum);
+        }, 100);
+    } 
+    else {
+        type = ioRanges[ioNum].type;
+        addr = ioRanges[ioNum].addr;
+        endAddr = Number(ioRanges[ioNum].addr) +
+            Number(ioRanges[ioNum].numregs) - 1;
+
+        ioRanges.splice(ioNum,1);
+
+        if (ioRanges.length == 0) {
+            var myDoc = document.getElementById("iodata");
+            myDoc.innerHTML = " ";
+        }
+
+        BuildIOTables();
+        removed = 0;
+        DisplayMessage("Removed I/O Range <b>" + ioTypes[type][1] + "[" +
+                       addr + ":" + endAddr + "]</b> from Test I/O");
+    }
+}
+
+/**
+ * Add an I/O range to the Test I/O web page. If the I/O Range is not already
+ * being displayed, add it to the list, then regenerate HTML and update values.
+ *
+ * @param[in] type     The numerical value of the type corresponding to analog, 
+ *                     discrete, long, and float, and either input or output.
+ *                     The numbers for these values are the indexes of the 
+ *                     ioTypes global array.
+ * @param[in] addr     The starting address of the I/O range
+ * @param[in] numregs  The number of registers to display for this I/O range
+ * @param[in] cols     The number of columns to use for the HTML table
+ *                     displaying this I/O range
+ */
+function AddIORange(type, addr, numregs, cols)
+{
+    if (type == -1) {
+        DisplayMessage("Type not selected","alert");
+    }
+    else if (addr.length == 0) {
+        DisplayMessage("Addr not entered","alert");
+    }
+    else if (numregs.length == 0) {
+        DisplayMessage("Number of registers not entered","alert");
+    }
+    else {
+        // Feedback
+        var endAddr = Number(addr) + Number(numregs) - 1;
+
+        // make sure we don't add the same range twice
+        // Avoid timer stuff while building up the new io range.
+        var found = 0;
+        for (var i = 0; i < ioRanges.length; i++) {
+            if ((ioRanges[i].type == type) && (ioRanges[i].addr == addr) &&
+                (ioRanges[i].numregs == numregs) && !found) {
+
+                found = 1;
+                DisplayMessage("Error adding I/O Range: <b>" + 
+                               ioTypes[type][1] + "[" + addr +
+                               ":" + endAddr + "]</b> is already displayed",
+                               "alert");
+            }
+        }
+
+        if (!found) {
+            DisplayMessage("Added I/O Range <b>" + ioTypes[type][1] + "[" + 
+                           addr + ":" + endAddr+"]</b> to Test I/O");
+            timerEn = 0;
+            ioRanges[ioRanges.length]
+                = {type: type, addr: addr , numregs: numregs, cols: cols};
+            BuildIOTables();
+            Refresh();
+        }
+    }
+}
+
+/**
+ * A wrapper function for generating a new Ajax object depending on the client's
+ * browser type and capabilities.
+ * 
+ * @param[out] objXMLHttp   The xml http request object used for asynchronous 
+ *                          queries to the fast cgi server.
+ *
+ */
+function GetXmlHttpObject()
+{
+    var objXMLHttp = null;
+
+    if (window.XMLHttpRequest) {
+        objXMLHttp = new XMLHttpRequest();
+    }
+    else if (window.ActiveXObject) {
+        objXMLHttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+
+    return objXMLHttp;
+}
+
+// Allow for html to load before starting timer
+setTimeout("doTimer()", 1000);
+</script>
+
+<div class="wrapper">
+<div id="rangeselect" class="rangeselect">
+<img src="/images/SixnetRedLion.png" alt="Sixnet - a Red Lion business" align="right"/>
+<a href="index.html"> Home</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Scan Rate 
+<input type=text name="scanrate" value=5 Size=1 maxlength=3 
+    onchange="UpdateScanrate(this.value)">
+Show Messages 
+<input type=checkbox name="showmsgs" value="checked" checked 
+    onclick="ShowMessages(this.checked)">
+<br><br>
+<form name=ioForm>
+<select name="type">
+<option value=-1>Select Type</option>
+<option value="0">Analog In</option>
+<option value="1">Analog Out</option>
+<option value="10">Discrete In</option>
+<option value="11">Discrete Out</option>
+<option value="20">Long In</option>
+<option value="21">Long Out</option>
+<option value="22">Float In</option>
+<option value="23">Float Out</option>
+</select>&nbsp;&nbsp;
+Start Address
+<input type="text" name="addr" size=6 maxlength=5 value=0>&nbsp;&nbsp;
+Register Count 
+<input type="text" name="numregs" size=5 maxlength=4 value=8>&nbsp;&nbsp;
+Columns 
+<input type="text" name="columns" size=2 maxlength=2 value=8>&nbsp;&nbsp;
+<input type="button" value="Add To testIO" 
+    onClick="AddIORange(ioForm.type.value, addr.value, numregs.value, 
+                        columns.value)">&nbsp;&nbsp;
+<br>
+</form>
+</div>
+<div id="messages" class="messages"><p></p></div>
+<div id="iodata" class="iodata"></div>
+</div>
+</body>
+</html>

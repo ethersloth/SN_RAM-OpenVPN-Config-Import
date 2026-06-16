@@ -1,0 +1,188 @@
+<!-- ko ifnot: isram -->
+	<!--ko template: {name:'title-template',data:'Upgrade to RAM is required in order to load this page'}--><!--/ko-->
+	<div style="text-align: center">
+		<a class="btn btn-primary" href="#!/ram_unlock">Upgrade to RAM</a>
+	</div>
+	<br />
+	<h5><p class="gw-auto-margin" style="width: 600px; text-align: center">Please contact <span data-bind="text: manufacturer"></span> support at <span><font color="red" data-bind="text: contactemail"></font></span> or <span><font color="red" data-bind="text: contactphone"></font></span></h5>
+<!-- /ko -->
+<!-- ko if: isram -->
+	<!--ko template: {name:'title-template',data:'Modbus I/O Transfer'}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Registers Allocation'}--><!--/ko-->
+	<table align="center" style="text-align: center; vertical-align: middle;">
+		<tr>
+			<td style="text-align: right">Analog In:</td>
+			<td>
+				<div style="margin-bottom: 0px" class="input-append">
+					<!--ko template: {name: 'savable-input-template', data: AnalogIn}--><!--/ko-->
+					<!-- ko template: {name: 'long-help-template',  data: AnalogIn} --><!-- /ko -->
+				</div>
+			</td>
+			<td style="text-align: right"><div style="margin-left: 10px">Analog Out:</div></td>
+			<td>
+				<div style="margin-bottom: 0px" class="input-append">
+					<!--ko template: {name: 'savable-input-template', data: AnalogOut}--><!--/ko-->
+					<!-- ko template: {name: 'long-help-template',  data: AnalogOut} --><!-- /ko -->
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: right">Long In:</td>
+			<td>
+				<div style="margin-bottom: 0px" class="input-append">
+					<!--ko template: {name: 'savable-input-template', data: LongIn}--><!--/ko-->
+					<!-- ko template: {name: 'long-help-template',  data: LongIn} --><!-- /ko -->
+				</div>
+			</td>
+			<td style="text-align: right"><div style="margin-left: 10px">Long Out:</div></td>
+			<td>
+				<div style="margin-bottom: 0px" class="input-append">
+					<!--ko template: {name: 'savable-input-template', data: LongOut}--><!--/ko-->
+					<!-- ko template: {name: 'long-help-template',  data: LongOut} --><!-- /ko -->
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: right">Float In:</td>
+			<td>
+				<div style="margin-bottom: 0px" class="input-append">
+					<!--ko template: {name: 'savable-input-template', data: FloatIn}--><!--/ko-->
+					<!-- ko template: {name: 'long-help-template',  data: FloatIn} --><!-- /ko -->
+				</div>
+			</td>
+			<td style="text-align: right"><div style="margin-left: 10px">Float Out:</div></td>
+			<td>
+				<div style="margin-bottom: 0px" class="input-append">
+					<!--ko template: {name: 'savable-input-template', data: FloatOut}--><!--/ko-->
+					<!-- ko template: {name: 'long-help-template',  data: FloatOut} --><!-- /ko -->
+				</div>
+			</td>
+		</tr>
+	</table>
+	<hr />
+<!-- /ko -->
+<!-- ko if: isram -->
+	<!--ko template: {name:'h4-template',data:'Display Of Modbus Default Slave Addresses'}--><!--/ko-->
+	<table border="1" align="center" style="text-align: center; vertical-align: middle">
+		<thead>
+			<tr>
+				<th>&nbsp;I/O Type&nbsp;</th>
+				<th>&nbsp;Modbus Address Range&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- ko foreach: rangeDisplays -->
+			<tr>
+				<td data-bind="text: iType"></td>
+				<td data-bind="text: dmar, css: {'gw-highlight': highlight}"></td>
+			</tr>
+			<!-- /ko -->
+		</tbody>
+	</table>
+	<hr />
+<!-- /ko -->
+<!-- ko if: isram -->
+	<!--ko template: {name:'h4-template',data:'I/O Transfer Table Properties'}--><!--/ko-->
+    <!--ko template: {name:'table-template',data:transfersTable}--><!--/ko-->
+<!-- /ko -->
+	<div id="xfer-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h3>I/O Transfer Settings</h3>
+		</div>
+		<div class="gw-modal-body-long">
+			<!--ko template: {name: 'full-savable-select-template', data: name}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: protocol}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: sendMode}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: port}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: command}--><!--/ko-->
+			<table class="gw-auto-margin" style="width: 600px; text-align: center"><thead>
+				<th>Local</th>
+				<th></th>
+				<th>Remote</th>
+			</thead>
+			<tbody><tr>
+				<td style="width: 250px">
+					<div data-bind="with: localTag, visible: haveTags">
+						<input type="text" data-bind="value: value, autotag: value, valueUpdate:['blur', 'afterkeydown'], attr: {title: title}" placeholder="Tag Name"></input>
+					</div>
+					<!--ko template: {name: 'savable-select-template', data: localType}--><!--/ko-->
+					<!--ko template: {name: 'savable-input-template', data: localrelAddr}--><!--/ko-->
+				</td>
+				<td>
+					<!-- ko ifnot: command.value() === 'READWRITE' -->
+					<div class="gw-auto-margin" style="width: 0; height: 0; border-top: 15px solid transparent; border-bottom: 15px solid transparent; cursor: pointer" data-bind="
+						click: toggleCommand,
+						style: command.value() === 'READ' ? {
+							'border-left': '0px',
+							'border-right':'30px solid blue'
+						} : {
+							'border-left':'30px solid green',
+							'border-right': '0px'
+						}">
+					</div>
+					<!-- /ko -->
+					<!-- ko if:    command.value() === 'READWRITE' -->
+					<div class="gw-auto-margin" style="display: inline-block; width: 0; height: 0; border-top: 20px solid transparent; border-bottom: 20px solid transparent; border-left: '0px'; border-right: 20px solid blue; cursor: pointer"></div><div class="gw-auto-margin" style="display: inline-block; width: 0; height: 0; border-top: 20px solid transparent; border-bottom: 20px solid transparent; border-right: '0px'; border-left: 20px solid green; cursor: pointer"></div>
+					<!-- /ko -->
+				</td>
+				<td style="width: 250px"><table style="width: 100%"><tbody>
+					<tr><td>
+						<!--ko template: {name: 'savable-select-template', data: remoteType}--><!--/ko-->
+					</td></tr>
+					<tr><td>
+						<!--ko template: {name: 'savable-input-template', data: remoterelAddr}--><!--/ko-->
+					</td></tr>
+				</tbody></table></td>
+			</tr></tbody></table>
+			<br />
+			<!-- ko if: command.value() !== 'WRITE_SINGLE' -->
+			<!--ko template: {name: 'full-savable-input-template', data: numRegs}--><!--/ko-->
+			<!-- /ko -->
+			<!--ko template: {name: 'full-savable-bool-template', data: createTags}--><!--/ko-->
+			<p style="text-align: center; margin-top: -15px" data-bind="visible: haveTagOverlap">
+				<span style="color: red; font-weight: bold">WARNING:</span>
+				<br/>Creating tags for this range may overwrite existing tags.<br/>
+				<button class="btn" data-bind="click: viewConflicts">View conflicts</button>
+			</p>
+			<!--ko template: {name: 'full-savable-select-template', data: datamanip}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: interval}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: scanEnableType}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: scanEnableAddr}--><!--/ko-->
+			<a class="btn btn-primary pull-right" data-bind="click: transfersWizardFinish">Finish</a>
+		</div>
+	</div>
+<!-- ko if: isram -->
+	<div style="text-align: center">
+		<a class="btn" data-bind="click: switchPage('#!/localstation')">Local Station</a>
+		<a class="btn" data-bind="click: switchPage('#!/serial')">Serial Ports</a>
+		<a class="btn" data-bind="click: switchPage('#!/modbus_remotestations')">Remote Stations</a>
+		<a class="btn" data-bind="click: switchPage('#!/modbus_forwards')">Forwards</a>
+		<a class="btn" data-bind="click: switchPage('#!/modbus_config')">Display Config File</a>
+	</div>
+<!-- /ko -->
+<div id="xfer-tags-conflict-modal" data-backdrop="false" class="modal fade" tabindex="-1" style="margin-top: 20px">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3>Tag Conflicts</h3>
+    </div>
+    <div class="modal-body">
+        <table style="width: 100%; text-align: center">
+            <thead>
+                <th>Type</th>
+                <th>Address</th>
+                <th>Old Tag</th>
+                <th>New Tag</th>
+            </thead>
+            <tbody data-bind="foreach: overlappingTags">
+                <tr>
+                    <td name="type" data-bind="text: type"></td>
+                    <td name="addr" data-bind="text: addr"></td>
+                    <td name="oldTag" data-bind="text: oldTag"></td>
+                    <td name="newTag" data-bind="text: newTag"></td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="margin-top:15px" data-bind="visible: haveStatusOverlap">* Status tags cannot be overwritten</p>
+    </div>
+</div>

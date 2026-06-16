@@ -1,0 +1,24 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+# Get a list of imported job file names from the /etc/jobcontrol/custom directories: 
+my $storage = "/etc/jobcontrol/custom";
+
+if (! -d $storage) {
+   exit(0);
+}
+
+opendir(DIR, $storage);
+my @impstorageFNamesList = sort(readdir(DIR));
+closedir(DIR);
+foreach my $impjobFName (@impstorageFNamesList)
+   {
+      if ($impjobFName eq "README" || "." eq $impjobFName || ".." eq $impjobFName)
+      {
+         next;
+      }
+      print $impjobFName . "\n";
+   }
+
+exit(0);
+

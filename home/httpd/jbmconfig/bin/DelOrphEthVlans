@@ -1,0 +1,131 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+
+# Get command line argument(s), if any:
+
+
+# Get command line arguments, a single '-h' bypasses everything else, display usage info and exit:
+
+$argCnt = $#ARGV + 1;
+
+chomp(@ARGV);
+
+if ((0 == $argCnt) || ($ARGV[0] =~ /\-h/))
+{
+    print "Usage:  DelOrphEthVlans eth0|eth1|eth2\n";
+
+    exit(1);
+}
+
+
+# Get total number of ethernet interface vlan entries from the Master Configuration file:
+
+my $intfName = $ARGV[0];
+
+my $confVlansCnt = 0;
+
+if (
+    open(
+        FILE,
+        "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/config.xml " .
+        "--xpath=\"/GAUCfg/" . $intfName . "/vlans/NumberOfvlans/text()\" |"
+        )
+    )
+{
+    while (<FILE>)
+    {
+        $confVlansCnt = $_;
+
+        chomp($confVlansCnt);
+    }
+
+    close(FILE);
+}
+
+
+# Get a list of vlan IDs from the Master Configuration file:
+
+my @cfgVlanIDList;
+
+for (my $vlanNdx=1; $vlanNdx<=$confVlansCnt; $vlanNdx++)
+{
+    my $subIntNum = 0;
+
+    if (
+        open(
+            FILE,
+            "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/config.xml --xpath=\"/GAUCfg/" .
+            $intfName . "/vlans/vlan[" .
+            $vlanNdx . "]/subintnum/text()\" |"
+            )
+        )
+    {
+        while (<FILE>)
+        {
+            $subIntNum = $_;
+
+            chomp($subIntNum);
+        }
+
+        close(FILE);
+    }
+
+    push(@cfgVlansIDList, $subIntNum);
+}
+
+
+
+# Read contents of /etc/sysconfig/network-scripts directory into an array of strings for each:
+
+opendir(DIR, "/etc/sysconfig/network-scripts/");
+
+my @instVlansList = readdir(DIR);
+
+closedir(DIR);
+
+
+# Compare the list of existing interface vlan configuration files to the list of IDs obtained from the Master Configuration
+# file and delete any existing file that is not referenced by the Master Configuration file:
+
+foreach my $instVlanFName (@instVlansList)
+{
+    my $searchStr = "ifcfg-" . $intfName . ".";
+
+    if ($instVlanFName =~ m/^($searchStr)/i)
+    {
+        my $legitFile = 0;
+
+        my $fileNdx = 0;
+
+        # Check if this is a Alias of a Vlan, if so, do not delete
+        if($instVlanFName =~ m/^($searchStr).*:/i)
+        {
+            # File is an Alias of a Vlan, set legitFile flag to 1
+            $legitFile = 1;
+            system("logger -t $0 \"Skipping deletion of Aliased Vlan $instVlanFName\"");
+        }
+
+        foreach my $subIntNum (@cfgVlansIDList)
+        {
+            if ("ifcfg-" . $intfName . "." . $subIntNum eq $instVlanFName)
+            {
+                $legitFile = 1;
+
+                $fileNdx = $subIntNum;
+
+                last;
+            }
+        }
+
+        if (0 == $legitFile)
+        {
+            system("ifconfig " . $intfName . "." . $fileNdx . " down &> /dev/null");
+
+            unlink("/etc/sysconfig/network-scripts/" . $instVlanFName);
+        }
+    }
+}
+
+exit(0);
+

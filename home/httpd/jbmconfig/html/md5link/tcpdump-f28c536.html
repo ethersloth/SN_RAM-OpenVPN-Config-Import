@@ -1,0 +1,132 @@
+<!-- ko template: {name: 'title-template', data: {title: 'Traffic Capture', helpClick: showHelp}} --><!-- /ko -->
+<div class="form-horizontal">
+	<!-- ko with: intf -->
+	<div class="control-group">
+		<label class="control-label">Interface</label>
+		<select name="tcpdumpInterface" data-bind="value: value, options: options"></select>
+	</div>
+	<!-- /ko -->
+	<!-- ko with: snaplen -->
+	<div class="control-group">
+		<label class="control-label">Packet Length</label>
+		<div class="controls">
+			<div class="input-append">
+				<select name="tcpdumpSnapLen" data-bind="value: value, options: options, optionsText: 't', optionsValue: 'v'"></select>
+				<!-- ko template: {name: 'help-template'} --><!-- /ko -->
+			</div>
+		</div>
+	</div>
+	<!-- /ko -->
+	<!-- ko with: capSize -->
+	<div class="control-group">
+		<label class="control-label">Capture (.cap) File Size</label>
+		<div class="controls">
+			<div class="input-append">
+				<select name="tcpdumpCapSize" data-bind="value: value, options: options, optionsText: 't', optionsValue: 'v'"></select>
+				<!-- ko template: {name: 'help-template'} --><!-- /ko -->
+			</div>
+		</div>
+	</div>
+	<!-- /ko -->
+	<!-- ko with: filter -->
+	<div class="control-group" data-bind="css: {'error': error}">
+		<label class="control-label">Filter</label>
+		<div class="controls">
+			<div class="input-append">
+				<input name="tcpdumpFilter" type="text" data-bind="value: value"></input>
+				<!-- ko template: {name: 'help-template'} --><!-- /ko -->
+			</div>
+		</div>
+	</div>
+	<!-- /ko -->
+	<!-- ko if: warnVlan -->
+	<div class="gw-row">
+		<span class="gw-middle"><b>Note: </b> Split Lan is enabled. You must specify <b>vlan</b> in the filter to see traffic on ethX interfaces</span>
+	</div>
+	<!-- /ko -->
+	<!-- ko with: viewLive -->
+	<div class="control-group">
+		<label class="control-label">Mode</label>
+		<div class="controls">
+			<select name="tcpdumpViewLive" type="text" data-bind="value: value">
+				<option value="live">View Live Stream</option>
+
+				<option value="gen">Generate Capture Files</option>
+			</select>
+		</div>
+	</div>
+	<!-- /ko -->
+</div>
+<!-- ko if: isLiveView -->
+<div class="gw-row" style="margin-top: 10px">
+	<button class="btn btn-success" data-bind="visible: isNotStreaming, click: startStream">Start</button>
+	<button class="btn btn-danger" data-bind="visible: isStreaming, click: stopStream">Stop</button>
+</div>
+<div style="text-align: center; margin-top: 10px">
+	<textarea readonly style="width: 1000px; font-family: monospace" rows="18" data-bind="value: streamOutput" id="tcpdumpStreamOutput" name="tcpdumpStreamOutput" wrap="off"></textarea>
+</div>
+<div class="control-group"><div class="controls"><label class="checkbox">
+	<input type="checkbox" data-bind="checked: scrollToEnd">Always scroll to end</input>
+</label></div></div>
+<!-- /ko -->
+<!-- ko ifnot: isLiveView -->
+<div class="gw-row" data-bind="visible: lastRun() !== ''">
+	<span>Last run tcpdump filter:</span>
+	<br />
+	<span class="uneditable-input" style="width: auto; color: #6; border: 1px solid #ccc; background-color: #eee" data-bind="text: lastRun"></span>
+</div>
+<div class="gw-auto-margin" style="padding: 5px; width: 550px; border: 1px solid #000; text-align: center">
+	<!-- ko if: isNotRunning -->
+	<!-- ko if: fileList().length === 0 -->
+	<span>No files to download.<br />Start a capture</span>
+	<!-- /ko -->
+	<!-- ko ifnot: fileList().length === 0 -->
+	<table style="border: 0; width: 100%; text-align: center">
+		<thead>
+			<th>Name</th>
+			<th colspan="2">Size</th>
+			<th>Last Modified</th>
+		</thead>
+		<tbody data-bind="foreach: fileList">
+			<tr>
+				<td>
+					<a data-bind="click: $parent.downloadFile(name), text: name, attr: {href: name}"></a>
+				</td>
+				<td>
+					<a data-bind="click: $parent.viewFile(name), attr: {href: name}">view</a>
+				</td>
+				<td>
+					<span data-bind="text: '(' + $parent.displaySize(size) + ')'"></span>
+				</td>
+				<td>
+					<span data-bind="text: time"></span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<!-- /ko -->
+	<!-- /ko -->
+	<!-- ko if: isRunning -->
+	<span>Stop capture to view files</span>
+	<!-- /ko -->
+</div>
+<div class="gw-row" style="margin-top: 10px">
+	<button class="btn btn-success" data-bind="visible: isNotRunning, click: start">Start</button>
+	<button class="btn btn-danger" data-bind="visible: isRunning, click: stop">Stop</button>
+</div>
+<div style="text-align: center; margin-top: 10px" data-bind="visible: isViewing">
+	<textarea readonly style="width: 1000px; font-family: monospace" rows="18" data-bind="value: output" id="tcpdumpOutput" name="tcpdumpOutput" wrap="off"></textarea>
+	<br />
+	<button class="btn btn-primary" data-bind="click: hide">Hide</button>
+</div>
+<!-- /ko -->
+<div id="tcpdump-help" data-backdrop="static" class="modal hide" tabindex="-1">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Traffic Capture</h3>
+	</div>
+	<div class="modal-body">
+		<p><span style="padding-left: 2em" />Traffic Capture will use the tool <span style="font-family: 'Courier New', Courier, monospace; font-weight: bold">tcpdump</span> to perform network traffic captures and generate a widely compatible .cap file.</p>
+		<p><span style="padding-left: 2em" />A series of rotating capture files will be generated to prevent exhausting local resources and all may be downloaded for post-capture analysis in the viewer of your choice.  Capturing the most relevant information may require trial and error to obtain the best filter for your specific investigation.</p>
+	</div>
+</div>

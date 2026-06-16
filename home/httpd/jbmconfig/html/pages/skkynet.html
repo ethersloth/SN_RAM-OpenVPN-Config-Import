@@ -1,0 +1,85 @@
+<!-- ko template: {name: 'title-template', data: 'Skkynet Control'}--><!-- /ko -->
+<table style="width: 100%;">
+	<tr>
+		<td style="text-align: center; vertical-align: middle;"><strong>Current Status: </strong><span data-bind="text: scriptstatus">&nbsp;</span></td>
+	</tr>
+	<tr>
+		<td style="text-align: center; vertical-align: middle;"><strong>Start-on-boot: </strong><span data-bind="text: enablestatus"></span></td>
+	</tr>
+</table>
+<div style="text-align: center; padding-top: 10px">
+	<button class="btn" data-bind="
+		click: startStop,
+		css: {
+			'btn-success': isNotRunning,
+			'btn-danger': isRunning,
+		},
+		text: isRunning() ? 'Stop' : 'Start'
+	"></button>
+	<button class="btn" data-bind="
+		click: enableDisable,
+		css: {
+			'btn-primary': isNotEnabled,
+		},
+		text: isNotEnabled() ? 'Enable' : 'Disable'
+	"></button>
+	<button class="btn" data-bind="click: refreshStatus">Refresh</button>
+</div>
+<hr />
+<!-- ko template: {name: 'h4-template', data: 'Global Settings'}--><!-- /ko -->
+<!-- ko template: {name: 'full-savable-input-template', data: server} --><!-- /ko -->
+<!-- ko template: {name: 'full-savable-input-template', data: port} --><!-- /ko -->
+<!-- ko template: {name: 'full-savable-bool-template', data: usessl} --><!-- /ko -->
+<!-- ko template: {name: 'full-savable-input-template', data: username} --><!-- /ko -->
+<!-- ko template: {name: 'full-savable-password-template', data: password} --><!-- /ko -->
+<!-- ko template: {name: 'full-savable-input-template', data: domain} --><!-- /ko -->
+<!-- ko template: {name: 'full-savable-input-template', data: dspIp} --><!-- /ko -->
+<div style="text-align: center; display: none">
+	<button type="button" class="btn btn-primary" data-bind="click: dsplookup">DSP Device Lookup</button>
+</div>
+<hr />
+<!-- ko template: {name: 'h4-template', data: 'Local Points'}--><!-- /ko -->
+<!-- ko template: {name: 'savable-textarea-template', data: local} --><!-- /ko -->
+<!-- ko template: {name: 'h4-template', data: 'DSP (Remote) Points'}--><!-- /ko -->
+<!-- ko template: {name: 'savable-textarea-template', data: remote} --><!-- /ko -->
+<div id="dspdevice-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>DSP Device Selection</h3>
+	</div>
+	<div class="gw-modal-body-long">
+		<div data-bind="if: showDspPrd">
+			<table border="1" style="text-align: center">
+				<thead>
+					<tr>
+						<th style="width: 150px;">Product Name</th>
+						<th style="width: 150px;">MAC Address</th>
+						<th style="width: 150px;">IP Address</th>
+						<th style="width: 150px;">Port</th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: dspDevScanner">
+					<tr style="height: 35px; cursor: pointer" data-bind="click: $parent.SelectDsp($index()), style: {'background-color': Selected() ? 'lightblue' : '#eee'}">
+						<td style="text-align: center">
+							<span data-bind="text: Name"></span>
+						</td>
+						<td style="text-align: center">
+							<span data-bind="text: MACAddr"></span>
+						</td>
+						<td style="text-align: center">
+							<span data-bind="text: IPAddr"></span>
+						</td>
+						<td style="text-align: center">
+							<span data-bind="text: Port"></span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<br style="width: 100%">
+			<div style="text-align: center">
+				<button type="button" class="btn btn-primary" data-bind="click: rescanDspDevices">Rescan DSP Devices</button>
+			</div>
+		</div>
+		<a class="btn btn-primary pull-right" data-bind="click: wizardFinish">Finish</a>
+	</div>
+</div>

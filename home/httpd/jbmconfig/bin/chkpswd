@@ -1,0 +1,74 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+###############################################################################################################################
+#                                                                                                                             #
+# chkpswd - Check that user exists in /etc/shadow and password is valid.                                                      #
+#                                                                                                                             #
+# Usage: chkpswd <username> <password> {-h|--help} {-v|--version}                                                             #
+#                                                                                                                             #
+# For the record . .                                                                                                          #
+#                                                                                                                             #
+# Copyright (c) 2009 by Sixnet, LLC.                                                                                          #
+#                                                                                                                             #
+# All rights reserved.  No part of this program may be reproduced, stored in a retrieval system or transmitted, in any form   #
+# or by any means, including but not limited to electronic, mechanical, photocopying, recording, or otherwise, without the    #
+# express prior written consent of Sixnet, 4645 LaGuardia, St. Louis, MO 63134.  (314) 426-7781, fx: (314) 426-0007.          #
+# Contact support@sixnet.com                                                                                                  #
+#                                                                                                                             #
+#                                                                                                                             #
+# This program was written by Art Surgant.                                                                                    #
+#                                                                                                                             #
+###############################################################################################################################
+
+my $VERSION = '1.00';
+
+# Get command line arguments, a single '-h' bypasses everything else, displays usage info and exits:
+
+$argCnt = $#ARGV + 1;
+
+chomp(@ARGV);
+
+if ((0 == $argCnt) || ('-h' eq $ARGV[0]) || ('--help' eq $ARGV[0]))
+  {
+   print "Usage:  chkpswd <username> <password> {-h|--help} {-v|--version}";
+
+   exit(0);
+  }
+
+if (('-v' eq $ARGV[0]) || ('--version' eq $ARGV[0]))
+  {
+   print $VERSION, "\n";
+
+   exit(0);
+  }
+
+if ($argCnt < 2)
+  {
+   print 'Required password parameter missing', "\n";
+
+   exit(1);
+  }
+
+my $userID   = $ARGV[0];
+my $password = $ARGV[1];
+
+my ($name, $passwd, $uid, $gid, $quota, $comment, $gcos, $dir, $shell) = getpwnam($userID);
+
+if (defined($name))
+  {
+   my $cryptPswd = crypt($password, $passwd);
+
+   if ($cryptPswd eq $passwd)
+     {
+      print 'Valid Password', "\n";
+
+      exit(0);
+     }
+  }
+
+print 'Invalid Password', "\n";
+
+exit(1);
+
+

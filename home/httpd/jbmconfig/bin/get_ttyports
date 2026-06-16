@@ -1,0 +1,214 @@
+#!/usr/bin/perl -w
+# (C)2018 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are
+# registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks
+# of their respective owners.
+
+###############################################################################################################################
+#                                                                                                                             #
+# get_ttyports - Get list of ttyports.                                                                                        #
+#                                                                                                                             #
+# Obtain a list of available tty ports from the system.                                                                       #
+#                                                                                                                             #
+###############################################################################################################################
+
+require IOG::GetFC;
+
+my $version   = "1.06";
+
+my $proc_file = "/proc/feature_codes/all";
+my $Extendedio = 0;
+my $Stdio = 0;
+my $fc_cpu_id = -1;
+
+
+my $ttyAUX = `ls /dev`;
+
+if ( $ENV{"FC_MODELNO"} )
+{
+	$Extendedio = $ENV{"FC_EXTENDED_IO"};
+	$Stdio = $ENV{"FC_IO"};
+	$fc_cpu_id = $ENV{"FC_CPU_ID"};
+}
+else
+{
+	die "Error: cannot determine modelno";
+}
+
+if ( "2" eq "$fc_cpu_id" )
+{
+	$proc_file = "/proc/tty/driver/OMAP-SERIAL";
+}
+elsif ( "0" eq "$fc_cpu_id" || "1" eq "$fc_cpu_id" )
+{
+	$proc_file = "/proc/tty/driver/atmel_serial";
+}
+else
+{
+	$proc_file = "";
+}
+
+# Get command line argument(s), if any:
+my $argCnt = $#ARGV;
+my %argList;
+my $getPPPDialBkupPortsOnly = "FALSE";
+foreach my $argnum (0 .. $#ARGV)
+{
+    if ("-h" eq $ARGV[$argnum])
+    {
+        Usage();
+        exit(0);
+    }
+
+    if ("-p" eq $ARGV[$argnum])
+    {
+        $getPPPDialBkupPortsOnly = "TRUE";
+    }
+
+    my ($argName, $argVal) = split(/=/, $ARGV[$argnum]);
+    $argList{$argName} = $argVal;
+}
+
+my $xpeCmdStr = "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/config.xml";
+
+
+# If 'selected=' is present, get its value and use it to get a value from the GAU Master Configuration file to use later to
+# set the 'selected' attribute for the generted <option> element:
+my $selected = "";
+if ($argList{"selected"})
+{
+    $selected = $argList{"selected"};
+    if (open(FILE, $xpeCmdStr . " --xpath=\"" . $selected . "/text()\" |"))
+    {
+        while (<FILE>)
+        {
+            $selected = $_;
+            chomp($selected);
+        }
+        close(FILE);
+    }
+}
+
+#------------------------------------------------------------------------------
+# Checks for valid ttyS port on the unit.
+#
+# get a list of valid ports
+
+open(FILE, "$proc_file") or die "Cannot determine available ttys!\nCannot open the file name \"$proc_file\"!\n\n";
+$/ = undef;
+my $temp = <FILE>;
+$/ = "\n";
+close(FILE);
+my @proc_entries = split "\n", $temp;
+
+foreach my $entry(@proc_entries)
+{
+    chomp $entry;
+    # make sure the line ENDS with ttySx\
+    #for bluetree units
+    if ($entry =~ /^(\d+):\s+uart:(ATMEL_SERIAL|OMAP\sUART\d+).*$/)
+    {
+        next if ( 0 == $1 );
+        push(@list_valid_tty, "ttyS$1");
+    }
+
+    if ($entry =~ /^\s*Port\s+\d+:\s*(ttyS\d+)$/)
+    {
+        push(@list_valid_tty, $1);
+    }
+    elsif ( $entry =~ /^\s*Port\s+\d+:\s*(ttyS\d+)\s*RS232\s*DTE,/ )
+    {
+       push(@list_valid_tty, $1);
+    }
+    if ($getPPPDialBkupPortsOnly eq "TRUE")
+    {
+        if ($entry =~ /^\s*Port\s+\d+:\s*(ttyS\d+) with modem/)
+        {
+            push(@list_valid_tty, $1);
+        }
+    }
+}
+
+my $prefixStr = "";
+
+if ($argList{"prefix"})
+{
+    $prefixStr = $argList{'prefix'};
+}
+
+my $optCnt = 0;
+
+foreach my $eachelement(@list_valid_tty)
+{
+    my $value = "";
+
+    if ($eachelement =~ /^ttyS(\d+)$/)
+    {
+    if ($Extendedio eq "1" || $Stdio eq "1")
+    {
+        if ($eachelement eq "ttyS4" or $eachelement eq "ttyS6")
+        {
+            next;
+        }
+    }
+    $optCnt++;
+
+    $value = $prefixStr . $1;
+    }
+
+    if ($argList{"raw"})
+    {
+        if ("y" eq $argList{"raw"})
+        {
+            print $value . "\n";
+            next;
+        }
+    }
+
+    print "<option ";
+
+    if ( $value eq $selected)
+    {
+        print "selected=\"selected\" ";
+    }
+
+    print "value=\"" . $value . "\">" . $eachelement . "</option>\n";
+}
+
+if ($Extendedio eq "TRUE") 
+{
+   if ($argList{"raw"})
+   {
+      if ("y" eq $argList{"raw"})
+      {
+         if ($ttyAUX =~ m/ttyAUX0/) 
+		 {
+	        print "ttyAUX0\n";
+         }
+      }
+   }
+}
+
+if (0 == $optCnt)
+{
+    if (!$argList{"raw"})
+    {
+        print "<option disabled=\"disabled\" value=\"none\">-None-</option>\n";
+    }
+}
+
+exit(0);
+
+sub Usage
+{
+    print "Version $version: get_ttyports\nUsage:\n\n"                                                             .
+          "get_ttyports {prefix=<str>}\n\n"                                                                        .
+          "Obtain a list of tty interface Names from the system, formatted in the form of html <option> tags.\n\n" .
+          "One or more of the following parameters must be supplied:\n\n"                                          .
+          "-h - Displays the usage information summary you are now reading.\n\n"                                   .
+          "-p - Include only ports available for pppdial backup.\n\n"                                              .
+          "selected={xpath expression} - Use the value obtained from the GAU Master Configuration file via the supplied\n"  .
+          "                              XPATH expression to set the 'selected' attribute in the html <option> tag if\n"    .
+          "                              the value matches an item in the generated list\n\n"                        .
+          "prefix=<str> - prepend the contents of <str> to the value of the generated <option> element.\n"         .
+          "raw=y - does not include the <option> element and just returns element.\n";
+}

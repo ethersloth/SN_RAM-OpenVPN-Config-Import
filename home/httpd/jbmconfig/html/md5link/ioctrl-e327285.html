@@ -1,0 +1,52 @@
+<form id="ioctrl-form" class="form-horizontal">
+	<div class="gw-rounded-border" style="position: fixed; background-color: lightblue; z-index: 100; left: 10px; top: 55px" data-bind="draggable: true">
+		<table class="gw-status-table gw-st40" style="width: 200px">
+			<tr>
+				<td style="text-align: center"data-bind="text: basedReg() + ' Based Addressing'"></td>
+			</tr>
+		</table>
+	</div>
+	<!--ko template: {name:'title-template',data:'I/O Control'}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: enable}--><!--/ko-->
+	<hr />
+	<!-- ko if: enable.value() === 'yes'-->
+		<div class="control-group" data-bind="visible: enable.value() === 'yes'">
+			<table align="center" style="width: 100%;">
+				<tr>
+					<td align="center" nowrap="nowrap" style="font-weight: bold"><u>Digital Input</u></td>
+					<td>&#160;</td>
+					<td align="center" nowrap="nowrap" style="font-weight: bold"><u>Digital Input Counter</u></td>
+					<td>&#160;</td>
+					<td align="center" nowrap="nowrap" style="font-weight: bold"><u>Digital Output</u></td>
+					<td>&#160;</td>
+					<td align="center" nowrap="nowrap" style="font-weight: bold"><u>Analog Input</u></td>
+				</tr>
+				<tr>
+					<td align="center" nowrap="nowrap" data-bind="text: divalue">&#160;</td>
+					<td>&#160;</td>
+					<td align="center" nowrap="nowrap" data-bind="text: dicvalue">&#160;</td>
+					<td>&#160;</td>
+					<td align="center" nowrap="nowrap" data-bind="text: dovalue">&#160;</td>
+					<td>&#160;</td>
+					<td align="center" nowrap="nowrap" data-bind="text: aivalue">&#160;</td>
+					<td>&#160;</td>
+				</tr>
+			</table>
+		</div>
+		<div style="text-align: center">
+			<button type="button" class="btn btn-primary" data-bind="click: Update, enable: isAutoUpdateEnabled">Update</button>
+		</div>
+		<hr />
+		<!--ko template: {name:'h4-template',data:'Define Internal I/O Database Addresses'}--><!--/ko-->
+		<!--ko template: {name:'full-savable-input-template', data: direladdr}--><!--/ko-->
+		<!--ko template: {name:'full-savable-input-template', data: dicreladdr}--><!--/ko-->
+		<!--ko template: {name:'full-savable-input-template', data: doreladdr}--><!--/ko-->
+		<!--ko template: {name:'full-savable-input-template', data: aireladdr}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: interval}--><!--/ko-->
+		<hr />
+		<!--ko template: {name:'h4-template',data:'Update I/O CTRL Screen Display Value'}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-bool-template', data: auto}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: updatefreq}--><!--/ko-->
+	<!-- /ko -->
+	<br/><br/>
+</form>

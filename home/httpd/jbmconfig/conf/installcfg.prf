@@ -1,0 +1,107 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                              <!--
+               GWLNX -> GWLNX Configuration Installation Section
+
+  V2.20 behaviors (taken from cfg_sys.cpp - InstallPackage() & UploadPackage()):
+
+  +==========+======================================================+============+
+  |  ACTION  |                           STEP                       | ON FAILURE |
+  +==========+======================================================+============+
+  |   Upload | Verify file name exists in Master Configuration file | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Verify length of file name > 0                       | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Verify file exists & readable                        | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Verify file is valid ZIP file:                       | Abort      |
+  |          |                                                      |            |
+  |          | unzip -t {package name} &> /dev/null                 |            |
+  |          |                                                      |            |
+  |          | if (!valid zip file)                                 |            |
+  |          |   {                                                  |            |
+  |          |    delete file                                       |            |
+  |          |   }                                                  |            |
+  +----------+------------------------------------------------------+------------+
+  |  Install | Verify file name exists in Master Configuration file | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Verify length of file name > 0                       | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Remove filename from Master Configuration file       | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | installcfg {gwlnxcfgfile} &> /dev/null               | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | if (packagefile exists)                              |            |
+  |          |   {                                                  |            |
+  |          |    Attempt to delete packagefile                     |            |
+  |          |   }                                                  |            |
+  +==========+======================================================+============+                                            -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/installcfg.prf" name="installcfg">
+   <validation>
+    <vstep name="file" errmsg="Invalid Package File. Must be non-empty." test="string-length(/input/file/text())>0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Package File to system configuration file." name="file" path="/GAUCfg/package/gwlnxcfgfile" />
+   </configuration>
+
+   <action name="Install" successmsg="Operation Succeeded.">
+
+    <astep abort="n" errmsg="Unable to prepare script." name="WriteFormattedFile" >
+     <arg expr="/tmp/installcfg.sh" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to write the installcfg script file." name="AppendFormatted2File">
+     <arg expr="/tmp/installcfg.sh" />
+     <arg expr="#!/bin/bash" />
+     <arg expr="\n" />
+     <arg expr="concat('extension=`echo ', /GAUCfg/package/gwlnxcfgfile/text(), ' | awk -F . ', tick(), '{print $NF}', tick(), '`')" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('if [ ', tick(), 'xml', tick(), ' = $extension ]; then')" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('sed ', tick(), 's/unit.cfg/unit.xml/g', tick(), ' /home/jbmgatew/jbmcontrol.conf >/tmp/jbmcontrol.conf;')" source="config" />
+     <arg expr="\n" />
+     <arg expr="mv -f /tmp/jbmcontrol.conf /home/jbmgatew/jbmcontrol.conf" />
+     <arg expr="\n" />
+     <arg expr="else" />
+     <arg expr="\n" />
+     <arg expr="concat('if [ ', tick(), 'cfg', tick(), ' = $extension ]; then')" source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('sed ', tick(), 's/unit.xml/unit.cfg/g', tick(), ' /home/jbmgatew/jbmcontrol.conf >/tmp/jbmcontrol.conf;')" source="config" />
+     <arg expr="\n" />
+     <arg expr="mv -f /tmp/jbmcontrol.conf /home/jbmgatew/jbmcontrol.conf" />
+     <arg expr="\n" />
+     <arg expr="fi" />
+     <arg expr="\n" />
+     <arg expr="fi" />
+     <arg expr="\n" />
+     <arg expr="exit 0" />
+    </astep>
+
+    <astep abort="n" errmsg="Unable to make script executable." name="SystemCommand">
+     <arg expr="chmod a+x /tmp/installcfg.sh" />
+    </astep>
+
+    <astep abort="n" errmsg="Unable to execute script." name="SystemCommand">
+     <arg expr="/tmp/installcfg.sh &" />
+    </astep>
+
+    <astep errmsg="Failed to install config file" name="SystemCommand" abort="y">
+     <arg source="config" expr="concat('installcfg ', /GAUCfg/package/gwlnxcfgfile/text())" />
+    </astep>
+    
+    <astep abort="n" errmsg="jbmcontrol is not running and couldn't start it." name="SystemCommand"
+              sysdependency="pidof jbmcontrol; [ $? -ne 0 ]"> 
+                     <arg expr="/bin/jbmcontrol &>/dev/null" />
+    </astep>
+    
+   </action>
+  </subsystem>
+
+
+
+ </subsystems>
+</profile>

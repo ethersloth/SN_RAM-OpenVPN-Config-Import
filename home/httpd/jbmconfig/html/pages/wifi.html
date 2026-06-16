@@ -1,0 +1,42 @@
+<form id="localstation-form" class="form-horizontal">
+<!--ko template: {name:'title-template',data:'Wi-Fi LAN Interface'}--><!--/ko-->
+<!--ko template: {name:'select-template-bool',data: enable}--><!--/ko-->
+<!-- ko if: isEnabled -->
+	<!--ko template: {name:'h4-template',data:'Basic Wireless Settings'}--><!--/ko-->
+	<!--ko template: {name: 'select-template', data: mode}--><!--/ko-->
+	<!-- ko if: showBridgemode -->
+		<!--ko template: {name: 'select-template', data: bridgemode}--><!--/ko-->
+	<!-- /ko -->
+	<!--ko template: {name: 'text-template', data: address}--><!--/ko-->
+	<!--ko template: {name: 'text-template', data: netmask}--><!--/ko-->
+	<!--ko template: {name: 'text-template', data: ssid}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: band}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: channel}--><!--/ko-->
+	<!--ko template: {name: 'select-template', data: ssidbroadcast}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Wireless Security'}--><!--/ko-->
+	<!--ko template: {name: 'select-template', data: encryption}--><!--/ko-->
+	<!-- ko if:    hideKey -->
+	<!--ko template: {name: 'password-template', data: presharedkey}--><!--/ko-->
+	<!-- /ko -->
+	<!-- ko ifnot: hideKey -->
+	<!--ko template: {name: 'text-template', data: presharedkey}--><!--/ko-->
+	<!-- /ko -->
+	<div class="control-group" style="padding-left: 340px; margin-top: -20px; margin-bottom: 15px"><div class="controls"><label class="checkbox">
+		<input style="vertical-align: center" type="checkbox" data-bind="checked: hideKey">Hide Characters</input>
+	</label></div></div>
+	<span><hr/></span>
+	<!--ko template: {name: 'h4-template',data:'DHCP Server Settings'}--><!--/ko-->
+	<table style="width: 100%;"><tr>
+		<td style="width: 50%; text-align: right; vertical-align: middle;">
+			<h4 style="margin-right: 20px">Wi-Fi/eth1</h4>
+		</td>
+		<td style="width: 50%; text-align: left; vertical-align: middle;">
+			<span data-bind="text: wifidesc"></span>
+		</td>
+	</tr></table>
+	<div data-bind="template: {name: 'full-savable-bool-template', data: wifiendhcp}"></div>
+	<div data-bind="template: {name: 'full-savable-bool-template', data: wifidftgw}"></div>
+	<div data-bind="template: {name: 'full-savable-input-template', data: wifisaddr}"></div>
+	<div data-bind="template: {name: 'full-savable-input-template', data: wifieaddr}"></div>
+<!-- /ko -->
+</form>

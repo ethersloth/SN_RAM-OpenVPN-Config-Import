@@ -1,0 +1,37 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall.prf"
+             name="firewall" />
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall_sar.prf" name="firewall_sar">
+   <validation>
+    <vstep errmsg="Invalid Firewall Service Access Rules Set. Must be a well-formed XML document."
+             name="allowrules"
+             test="string-length(/input/allowrules/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Firewall Service Access Rule(s) to system configuration file."
+             name="allowrules"
+             path="/GAUCfg/firewall/allowrules"
+             type="node" />
+   </configuration>
+
+   <action name="Dummy" successmsg="Firewall Service Access rules saved.">
+   </action>
+
+   <action name="Apply" successmsg="Firewall settings applied.">
+    <pre subsystem="firewall" action="Apply" />
+
+   </action>
+
+   <action name="Save" successmsg="Firewall settings saved.">
+    <pre subsystem="firewall" action="Save" />
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

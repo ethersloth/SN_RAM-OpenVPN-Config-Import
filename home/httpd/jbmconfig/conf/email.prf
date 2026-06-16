@@ -1,0 +1,200 @@
+
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/email.prf" name="email">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save SMTP client email enable option to system configuration file."
+              name="enable"
+              path="/GAUCfg/email/enable" />
+    <cstep errmsg="Unable to save SMTP client email server address option to system configuration file."
+              name="server"
+              path="/GAUCfg/email/server" />
+    <cstep errmsg="Unable to save SMTP client email server port option to system configuration file."
+              name="port"
+              path="/GAUCfg/email/port" />
+    <cstep errmsg="Unable to save SMTP client email sender (from) option to system configuration file."
+              name="sender"
+              path="/GAUCfg/email/sender" />
+    <cstep errmsg="Unable to save SMTP client username option to system configuration file."
+              name="username"
+              path="/GAUCfg/email/username" />
+    <cstep errmsg="Unable to save SMTP client password option to system configuration file."
+              name="password"
+              path="/GAUCfg/email/password" />
+    <cstep errmsg="Unable to save SMTP client starttls option to system configuration file."
+              name="starttls"
+              path="/GAUCfg/email/starttls" />
+    <cstep errmsg="Unable to save SMTP client authentication option to system configuration file."
+              name="auth"
+              path="/GAUCfg/email/auth" />
+   </configuration>
+
+   <action name="Save" successmsg="Operation Succeeded.">
+    <!-- Begin saving email server configuration -->
+
+<!--Moved to prfhandler_email
+    <astep errmsg="Failed to write the email configuration file." name="WriteFormattedFile" abort="y">
+        <arg expr="'/tmp/email.conf'" source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to append writing the email configuration file." name="AppendFormatted2File">
+        <arg expr="'/tmp/email.conf'" source="config" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="# This is a GUI generated file, subsequent edits are not guaranteed to be retained." />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'# This file contains the SMTP server settings for email support.'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg expr="'account default'" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'# Set your SMTP server address/port here'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg expr="concat('host ', /GAUCfg/email/server/text())" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg expr="concat('port ', /GAUCfg/email/port/text())" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'# Set who you want the sender (from: header) to be'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg dependency="/GAUCfg/email/sender/text() = ''"
+                expr="concat('from ', /GAUCfg/email/username/text())" source="config" />
+        <arg dependency="/GAUCfg/email/sender/text() != ''"
+                expr="concat('from ', /GAUCfg/email/sender/text())" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'# Set your username used to connect to the SMTP server'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg expr="concat('user ', /GAUCfg/email/username/text())" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'# Set your password used to connect to the SMTP server'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg expr="concat('password ', /GAUCfg/email/password/text())" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'# End of common configuration\n'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'# You should not touch anything beyond here unless you really know what you are doing\n'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'# Always use TLS.'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg expr="'tls on'" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg expr="'tls_certcheck off'" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'# Set starttls, when it is on, set the host port to 587'" source="config" />
+        <arg expr="\n" />
+        <arg expr="'#'" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg dependency="/GAUCfg/email/starttls/text() = 'n'"
+                   expr="'tls_starttls off'" source="config" />
+        <arg dependency="/GAUCfg/email/starttls/text() = 'y'"
+                   expr="'tls_starttls on'" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+        <arg dependency="/GAUCfg/email/auth/text() != 'any'"
+                expr="'auth plain'" source="config" />
+        <arg dependency="/GAUCfg/email/auth/text() = 'any'"
+                expr="'auth on'" source="config" />
+        <arg expr="\n" />
+        <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to write the email configuration file to /etc/ directory." name="SystemCommand">
+        <arg   expr="mv -f /tmp/email.conf /etc/email.conf" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to enable email " name="SystemCommand">
+     <arg dependency="/GAUCfg/email/enable/text() = 'n'"
+                expr="'chkconfig email off'"
+              source="config" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to disable email " name="SystemCommand">
+     <arg dependency="/GAUCfg/email/enable/text() = 'y'"
+                expr="'chkconfig email on'"
+              source="config" />
+    </astep>
+Moved to prfhandler_email-->
+
+    <astep abort="y" errmsg="Failed to save email client configuration" name="SystemCommand">
+     <arg expr="'prfhandler_email Save'" source="config" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+    <!-- Begin applying email configuration -->
+
+<!--Moved to prfhandler_email
+    <pre subsystem="email" action="Save" />
+
+    <astep abort="n" errmsg="Failed to shutdown email " name="SystemCommand">
+     <arg dependency="/GAUCfg/email/enable/text() = 'n'"
+                expr="'service email stop'"
+              source="config" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to start email " name="SystemCommand">
+     <arg dependency="/GAUCfg/email/enable/text() = 'y'"
+                expr="'service email restart'"
+              source="config" />
+    </astep>
+Moved to prfhandler_email-->
+
+    <astep abort="y" errmsg="Failed to apply email client configuration" name="SystemCommand">
+     <arg expr="'prfhandler_email Apply'" source="config" />
+    </astep>
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

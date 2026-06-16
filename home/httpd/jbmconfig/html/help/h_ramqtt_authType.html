@@ -1,0 +1,12 @@
+<h4>Description</h4>
+<p>The Authentication Type determines how RAMQTT will authenticate with the server.</p>
+<p><b>CA Signed Server Certificate</b><br>
+RAMQTT will automatically trust the Broker and will not authenticate the Broker's Root Certificate.
+This option is not recommended as it does not actually authenticate the Broker to verify it is the
+Broker RAMQTT should be connected to.</p>
+<p><b>CA Certificate File</b><br>
+RAMQTT will use the selected Root Certificate Authority file to authenticate the Broker. This Root Certificate file
+is usually provided by the solution provider.</p>
+<p><b>Self Signed Certificates</b><br>
+RAMQTT will use the selected Device Certificate file, Device Certificate Key file, and a Root Certificate Authority file to
+authenticate the Broker.</p>

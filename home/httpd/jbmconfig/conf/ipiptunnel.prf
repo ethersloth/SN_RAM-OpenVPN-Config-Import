@@ -1,0 +1,150 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                              <!--
+                Networking -> VPN Settings -> IPIP Tunnel Settings Section
+                                                                                                                              -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/ipiptunnel.prf" name="ipiptunnel">
+   <validation>
+    <vstep errmsg="Invalid Tunnel Record Set. Must be a well-formed XML document."
+             name="ipiptunnels"
+             test="string-length(/input/ipiptunnels/text()) > 0" />
+   </validation>
+
+
+   <configuration>
+    <cstep errmsg="Unable to save Tunnels to system configuration file."
+             name="ipiptunnels" path="/GAUCfg/vpn/ipip/ipiptunnels"
+             type="node" />
+   </configuration>
+
+
+   <action name="Save" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_ipip
+    <astep         abort="y"
+           cfgdependency="/GAUCfg/vpn/ipip/ipiptunnels/NumberOfipiptunnels/text() = '0'"
+                  errmsg="No tunnels to be configured, no action taken."
+                    name="SystemCommand" >
+
+     <arg       expr="'/home/httpd/jbmconfig/bin/DelOrphIpipIntfs ; test 0 -eq 1'"
+              source="config" />
+    </astep>
+
+    <astep      abort="y"
+               errmsg="Failed to write ipip tunnel configuration file(s)."
+                 name="WriteFormattedFile"
+               repeat="/GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel"
+           rptNdxName="RPT_NDX">
+
+     <arg       expr="concat('/tmp/ifcfg-tunl', /GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[RPT_NDX]/id/text())"
+          rptNdxName='RPT_NDX'
+              source="config"/>
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg       expr="concat('DEVICE=tunl', /GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[RPT_NDX]/id/text())"
+          rptNdxName='RPT_NDX'
+              source="config"/>
+     <arg expr="\n" />
+     <arg       expr="concat('LOCAL_IP=', /GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[RPT_NDX]/localip/text())"
+          rptNdxName='RPT_NDX'
+              source="config" />
+     <arg expr="\n" />
+
+     <arg       expr="concat('LOCAL_NET=', /GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[RPT_NDX]/localnet/text())"
+          rptNdxName='RPT_NDX'
+               source="config" />
+     <arg expr="\n" />
+
+     <arg       expr="concat('REMOTE_IP=', /GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[RPT_NDX]/remoteip/text())"
+          rptNdxName='RPT_NDX'
+               source="config" />
+     <arg expr="\n" />
+
+     <arg       expr="concat('REMOTE_NET=', /GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[RPT_NDX]/remotenet/text())"
+          rptNdxName='RPT_NDX'
+               source="config" />
+     <arg expr="\n" />
+
+     <arg       expr="concat('TUNL_TTL=', /GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[RPT_NDX]/ttl/text())"
+          rptNdxName='RPT_NDX'
+               source="config" />
+     <arg expr="\n" />
+
+     <arg       expr="concat('ONBOOT=', /GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[RPT_NDX]/onboot/text())"
+          rptNdxName='RPT_NDX'
+               source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep     abort="y"
+              errmsg="Failed to move ipip tunnel configuration file(s)."
+                 name="SystemCommand"
+               repeat="/GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel"
+           rptNdxName="RPT_NDX">
+
+     <arg       expr="concat('mv -f /tmp/ifcfg-tunl', /GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[RPT_NDX]/id/text())"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+
+     <arg       expr="concat(' /etc/sysconfig/network-scripts/ifcfg-tunl', /GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[RPT_NDX]/id/text())"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+    </astep>
+Moved to prfhandler_ipip-->
+
+    <astep abort="y" errmsg="Failed to save the IPIP Tunnels configuration" name="SystemCommand">
+     <arg expr="'prfhandler_ipip Save'" source="config" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_ipip
+    <pre subsystem="ipiptunnel" action="Save" />
+
+    <astep   abort="y"
+            errmsg="Failed to remove orphaned Ipip interface config files."
+              name="SystemCommand">
+
+     <arg abort="y" expr="/home/httpd/jbmconfig/bin/DelOrphIpipIntfs" />
+    </astep>
+
+    <astep     abort="n"
+              errmsg="Settings applied, but one or more ipip interfaces could not be disabled."
+                 name="SystemCommand"
+               repeat="/GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="/GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[RPT_NDX]/enable/text() = 'No'"
+                expr="concat('/sbin/ifconfig tunl', /GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[RPT_NDX]/id/text(), ' 0.0.0.0 down')"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+    </astep>
+
+    <astep     abort="y"
+              errmsg="Settings applied, but one or more ipip interfaces could not be enabled."
+                 name="SystemCommand"
+               repeat="/GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="/GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[RPT_NDX]/enable/text() = 'Yes'"
+                expr="concat('/sbin/ifup tunl', /GAUCfg/vpn/ipip/ipiptunnels/ipiptunnel[RPT_NDX]/id/text())"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+    </astep>
+Moved to prfhandler_ipip-->
+
+    <astep abort="y" errmsg="Failed to apply the IPIP Tunnels configuration" name="SystemCommand">
+     <arg expr="'prfhandler_ipip Apply'" source="config" />
+    </astep>
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

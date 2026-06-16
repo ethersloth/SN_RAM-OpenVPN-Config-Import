@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>OpenVPN Import Utility</title>
+	<link rel="shortcut icon" href="images/favicon.ico" />
+	<link href="css/bootstrap.css" rel="stylesheet" media="screen">
+	<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+	<link href="css/toastr.min.css" rel="stylesheet">
+	<link href="css/extra.css" rel="stylesheet">
+	<style>
+		body {
+			background-color: #f4f4f4;
+		}
+
+		.ovpn-shell {
+			padding-bottom: 80px;
+		}
+
+		.ovpn-hero {
+			background: #fff;
+			border: 1px solid #d9d9d9;
+			border-radius: 4px;
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+			margin-top: 20px;
+			padding: 18px 22px 22px 22px;
+		}
+
+		.ovpn-title {
+			margin: 0;
+			text-align: center;
+		}
+
+		.ovpn-subtitle {
+			color: #666;
+			margin: 10px auto 0 auto;
+			max-width: 760px;
+			text-align: center;
+		}
+
+		.ovpn-dropzone {
+			background: #fafafa;
+			cursor: pointer;
+			display: block;
+			font-size: 18px;
+			margin: 24px auto 12px auto;
+			max-width: 760px;
+			padding: 28px 18px;
+			transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+		}
+
+		.ovpn-dropzone strong {
+			display: block;
+			font-size: 20px;
+			margin-bottom: 8px;
+		}
+
+		.ovpn-dropzone span {
+			color: #666;
+			display: block;
+			font-size: 13px;
+			line-height: 1.5;
+		}
+
+		.ovpn-dropzone.is-active {
+			background: #ffffc2;
+			border-color: #b7b76a;
+			box-shadow: inset 0 0 0 1px #d8d87c;
+		}
+
+		.ovpn-toolbar {
+			margin-top: 10px;
+			text-align: center;
+		}
+
+		.ovpn-toolbar .btn {
+			margin: 0 4px 6px 4px;
+		}
+
+		.ovpn-empty {
+			background: #fff;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			color: #666;
+			margin-top: 20px;
+			padding: 22px;
+			text-align: center;
+		}
+
+		.ovpn-card {
+			background: #fff;
+			border: 1px solid #d9d9d9;
+			border-radius: 4px;
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+			margin-top: 20px;
+			overflow: hidden;
+		}
+
+		.ovpn-card-header {
+			background: linear-gradient(#fbfbfb, #ececec);
+			border-bottom: 1px solid #d2d2d2;
+			padding: 12px 16px;
+		}
+
+		.ovpn-card-header h4 {
+			display: inline-block;
+			margin: 0;
+		}
+
+		.ovpn-card-actions {
+			float: right;
+		}
+
+		.ovpn-card-actions .btn {
+			margin-left: 6px;
+		}
+
+		.ovpn-card-body {
+			padding: 16px;
+		}
+
+		.ovpn-section {
+			margin-bottom: 18px;
+		}
+
+		.ovpn-section:last-child {
+			margin-bottom: 0;
+		}
+
+		.ovpn-section h5 {
+			border-bottom: 1px solid #e5e5e5;
+			margin: 0 0 10px 0;
+			padding-bottom: 6px;
+		}
+
+		.ovpn-grid {
+			display: grid;
+			gap: 10px 14px;
+			grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+		}
+
+		.ovpn-field {
+			background: #f8f8f8;
+			border: 1px solid #e4e4e4;
+			border-radius: 4px;
+			padding: 8px 10px;
+		}
+
+		.ovpn-field-label {
+			color: #777;
+			display: block;
+			font-size: 11px;
+			margin-bottom: 2px;
+			text-transform: uppercase;
+		}
+
+		.ovpn-field-value {
+			font-weight: bold;
+			word-break: break-word;
+		}
+
+		.ovpn-badges {
+			margin: -4px 0 0 -4px;
+		}
+
+		.ovpn-badge {
+			background: #eee;
+			border-radius: 3px;
+			display: inline-block;
+			margin: 4px 0 0 4px;
+			padding: 4px 8px;
+		}
+
+		.ovpn-badge.ovpn-badge-success {
+			background: #dff0d8;
+			color: #3c763d;
+		}
+
+		.ovpn-badge.ovpn-badge-warning {
+			background: #fcf8e3;
+			color: #8a6d3b;
+		}
+
+		.ovpn-badge.ovpn-badge-danger {
+			background: #f2dede;
+			color: #a94442;
+		}
+
+		.ovpn-list {
+			margin: 0;
+		}
+
+		.ovpn-list li {
+			margin-bottom: 6px;
+		}
+
+		.ovpn-list li:last-child {
+			margin-bottom: 0;
+		}
+
+		.ovpn-code {
+			background: #f7f7f7;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			font-family: monospace;
+			font-size: 12px;
+			max-height: 280px;
+			overflow: auto;
+			padding: 12px;
+			white-space: pre-wrap;
+			word-break: break-word;
+		}
+
+		@media (max-width: 767px) {
+			body {
+				padding-left: 10px;
+				padding-right: 10px;
+			}
+
+			.ovpn-card-actions {
+				float: none;
+				margin-top: 10px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="ovpn-shell">
+		<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<a href="ovpn_drop.html"><img class="brand" src="images/redlion_logo.png" /></a>
+					<ul class="nav">
+						<li class="active"><a href="ovpn_drop.html">OpenVPN Import Utility</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="ovpn-hero">
+				<h3 class="ovpn-title">OpenVPN Config Review</h3>
+				<p class="ovpn-subtitle">
+					Drag and drop one or more <strong>.ovpn</strong> or <strong>.conf</strong> files from an OpenVPN setup.
+					This page stays in the browser, parses the configuration locally, and summarizes the key settings,
+					embedded certificates, remotes, and possible migration warnings.
+				</p>
+
+				<input id="ovpn-file-input" type="file" accept=".ovpn,.conf,text/plain" multiple style="display: none;">
+				<label id="ovpn-dropzone" class="gw-file-drop ovpn-dropzone" for="ovpn-file-input">
+					<strong>Drop OpenVPN files here or click to browse</strong>
+					<span>Accepted extensions: .ovpn and .conf. Multiple files are supported. Embedded certificates and keys are detected automatically.</span>
+				</label>
+
+				<div class="ovpn-toolbar">
+					<button id="sample-button" class="btn btn-primary" type="button">Load Sample</button>
+					<button id="clear-button" class="btn" type="button">Clear Results</button>
+				</div>
+			</div>
+
+			<div id="empty-state" class="ovpn-empty">
+				No files loaded yet.
+			</div>
+
+			<div id="results"></div>
+		</div>
+	</div>
+
+	<script src="js/lib/jquery-1.11.1.min.js"></script>
+	<script src="js/lib/bootstrap.min.js"></script>
+	<script src="js/lib/toastr-2.1.3.min.js"></script>
+	<script>
+	(function () {
+		var fileInput = document.getElementById("ovpn-file-input");
+		var dropzone = document.getElementById("ovpn-dropzone");
+		var results = document.getElementById("results");
+		var emptyState = document.getElementById("empty-state");
+		var clearButton = document.getElementById("clear-button");
+		var sampleButton = document.getElementById("sample-button");
+
+		function escapeHtml(text) {
+			return String(text)
+				.replace(/&/g, "&amp;")
+				.replace(/</g, "&lt;")
+				.replace(/>/g, "&gt;")
+				.replace(/\"/g, "&quot;")
+				.replace(/'/g, "&#39;");
+		}
+
+		function splitDirective(line) {
+			var trimmed = line.replace(/^\s+|\s+$/g, "");
+			if (!trimmed || trimmed.charAt(0) === '#' || trimmed.charAt(0) === ';') {
+				return null;
+			}
+
+			var pieces = trimmed.match(/(?:"[^"]*"|'[^']*'|\S)+/g) || [];
+			return pieces.map(function (piece) {
+				return piece.replace(/^['"]|['"]$/g, "");
+			});
+		}
+
+		function unique(list) {
+			var out = [];
+			list.forEach(function (item) {
+				if (out.indexOf(item) === -1) {
+					out.push(item);
+				}
+			});
+			return out;
+		}
+
+		function directiveValue(values) {
+			if (!values.length) {
+				return "Present";
+			}
+			return values.join(" ");
+		}
+
+		function parseConfig(content) {
+			var lines = content.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+			var summary = {
+				client: false,
+				server: false,
+				dev: [],
+				proto: [],
+				port: [],
+				remote: [],
+				cipher: [],
+				dataCiphers: [],
+				auth: [],
+				compress: [],
+				redirectGateway: false,
+				authUserPass: false,
+				pkcs12: [],
+				ca: [],
+				cert: [],
+				key: [],
+				tlsAuth: [],
+				tlsCrypt: [],
+				setenv: [],
+				unknown: []
+			};
+			var embeddedBlocks = [];
+			var inlineCounts = {};
+			var inlineBlock = null;
+
+			lines.forEach(function (rawLine, index) {
+				var line = rawLine.replace(/\s+$/g, "");
+
+				if (inlineBlock) {
+					if (line.toLowerCase() === ("</" + inlineBlock.name + ">")) {
+						inlineCounts[inlineBlock.name] = (inlineCounts[inlineBlock.name] || 0) + 1;
+						embeddedBlocks.push({
+							name: inlineBlock.name,
+							lines: inlineBlock.lines.length
+						});
+						inlineBlock = null;
+					} else {
+						inlineBlock.lines.push(line);
+					}
+					return;
+				}
+
+				var openMatch = line.match(/^\s*<([a-z0-9-]+)>\s*$/i);
+				if (openMatch) {
+					inlineBlock = {name: openMatch[1].toLowerCase(), lines: []};
+					return;
+				}
+
+				var tokens = splitDirective(line);
+				if (!tokens) {
+					return;
+				}
+
+				var key = tokens[0].toLowerCase();
+				var args = tokens.slice(1);
+
+				switch (key) {
+				case "client":
+					summary.client = true;
+					break;
+				case "server":
+				case "server-bridge":
+					summary.server = true;
+					break;
+				case "dev":
+					summary.dev.push(directiveValue(args));
+					break;
+				case "proto":
+					summary.proto.push(directiveValue(args));
+					break;
+				case "port":
+					summary.port.push(directiveValue(args));
+					break;
+				case "remote":
+					summary.remote.push(args.join(" "));
+					break;
+				case "cipher":
+					summary.cipher.push(directiveValue(args));
+					break;
+				case "data-ciphers":
+				case "ncp-ciphers":
+					summary.dataCiphers.push(directiveValue(args));
+					break;
+				case "auth":
+					summary.auth.push(directiveValue(args));
+					break;
+				case "compress":
+				case "comp-lzo":
+					summary.compress.push(key + (args.length ? " " + args.join(" ") : ""));
+					break;
+				case "redirect-gateway":
+					summary.redirectGateway = true;
+					break;
+				case "auth-user-pass":
+					summary.authUserPass = true;
+					break;
+				case "pkcs12":
+					summary.pkcs12.push(directiveValue(args));
+					break;
+				case "ca":
+					summary.ca.push(directiveValue(args));
+					break;
+				case "cert":
+					summary.cert.push(directiveValue(args));
+					break;
+				case "key":
+					summary.key.push(directiveValue(args));
+					break;
+				case "tls-auth":
+					summary.tlsAuth.push(directiveValue(args));
+					break;
+				case "tls-crypt":
+					summary.tlsCrypt.push(directiveValue(args));
+					break;
+				case "setenv":
+				case "setenv-safe":
+					summary.setenv.push(args.join(" "));
+					break;
+				default:
+					summary.unknown.push({key: key, line: index + 1, value: args.join(" ")});
+				}
+			});
+
+			var warnings = [];
+			var dataCiphers = summary.dataCiphers.join(" ");
+			var cipherText = summary.cipher.join(" ");
+			var usesLegacyCipher = /aes-.*-cbc|bf-cbc|des|3des/i.test(cipherText);
+			var usesCompression = summary.compress.length > 0;
+			var hasInlineMaterial = Object.keys(inlineCounts).length > 0;
+			var isClient = summary.client || (!summary.server && summary.remote.length > 0);
+			var mode = isClient ? "Client" : (summary.server ? "Server" : "Unknown");
+
+			if (usesLegacyCipher && !dataCiphers) {
+				warnings.push("Legacy `cipher` setting found without `data-ciphers`. Modern OpenVPN may require `data-ciphers` for negotiation.");
+			}
+
+			if (usesCompression) {
+				warnings.push("Compression is enabled. That is often discouraged and can cause compatibility issues on newer OpenVPN versions.");
+			}
+
+			if (summary.tlsAuth.length && summary.tlsCrypt.length) {
+				warnings.push("Both `tls-auth` and `tls-crypt` were found. Verify only the intended control-channel protection is active.");
+			}
+
+			if (!summary.remote.length && isClient) {
+				warnings.push("This looks like a client profile but no `remote` directive was detected.");
+			}
+
+			if (summary.pkcs12.length && hasInlineMaterial) {
+				warnings.push("Both PKCS#12 and embedded key material were detected. Check which credential path the profile actually uses.");
+			}
+
+			return {
+				mode: mode,
+				dev: unique(summary.dev),
+				proto: unique(summary.proto),
+				port: unique(summary.port),
+				remote: unique(summary.remote),
+				cipher: unique(summary.cipher),
+				dataCiphers: unique(summary.dataCiphers),
+				auth: unique(summary.auth),
+				compress: unique(summary.compress),
+				redirectGateway: summary.redirectGateway,
+				authUserPass: summary.authUserPass,
+				pkcs12: unique(summary.pkcs12),
+				setenv: unique(summary.setenv),
+				embeddedBlocks: embeddedBlocks,
+				inlineCounts: inlineCounts,
+				warnings: warnings,
+				unknownCount: summary.unknown.length,
+				content: content
+			};
+		}
+
+		function badge(text, kind) {
+			var css = "ovpn-badge";
+			if (kind) {
+				css += " ovpn-badge-" + kind;
+			}
+			return '<span class="' + css + '">' + escapeHtml(text) + '</span>';
+		}
+
+		function field(label, value) {
+			return [
+				'<div class="ovpn-field">',
+					'<span class="ovpn-field-label">' + escapeHtml(label) + '</span>',
+					'<div class="ovpn-field-value">' + escapeHtml(value || "Not set") + '</div>',
+				'</div>'
+			].join("");
+		}
+
+		function listOrFallback(items, fallback) {
+			if (!items.length) {
+				return '<div class="muted">' + escapeHtml(fallback) + '</div>';
+			}
+			return '<ul class="ovpn-list">' + items.map(function (item) {
+				return '<li>' + escapeHtml(item) + '</li>';
+			}).join("") + '</ul>';
+		}
+
+		function renderCard(model) {
+			var summary = model.summary;
+			var blockBadges = summary.embeddedBlocks.length ? summary.embeddedBlocks.map(function (block) {
+				return badge(block.name + " inline (" + block.lines + " lines)", "success");
+			}).join("") : badge("No embedded blocks", "warning");
+			var warningHtml = summary.warnings.length ? summary.warnings.map(function (warning) {
+				return '<li>' + escapeHtml(warning) + '</li>';
+			}).join("") : '<li>No obvious migration warnings found.</li>';
+			var tags = [
+				badge(summary.mode, summary.mode === "Unknown" ? "warning" : "success"),
+				summary.redirectGateway ? badge("redirect-gateway", "success") : badge("no redirect-gateway", "warning"),
+				summary.authUserPass ? badge("auth-user-pass", "success") : badge("no auth-user-pass", "warning"),
+				summary.unknownCount ? badge(summary.unknownCount + " other directives", "warning") : badge("parsed cleanly", "success")
+			].join("");
+
+			return [
+				'<div class="ovpn-card">',
+					'<div class="ovpn-card-header">',
+						'<h4>' + escapeHtml(model.name) + '</h4>',
+						'<div class="ovpn-card-actions">',
+							'<button class="btn btn-small" data-action="copy" data-key="' + escapeHtml(model.id) + '">Copy Raw</button>',
+							'<button class="btn btn-small btn-primary" data-action="download" data-key="' + escapeHtml(model.id) + '">Download Copy</button>',
+						'</div>',
+						'<div style="clear: both"></div>',
+					'</div>',
+					'<div class="ovpn-card-body">',
+						'<div class="ovpn-section">',
+							'<div class="ovpn-badges">' + tags + '</div>',
+						'</div>',
+						'<div class="ovpn-section">',
+							'<h5>General</h5>',
+							'<div class="ovpn-grid">',
+								field("Device", summary.dev.join(", ") || "Not set"),
+								field("Protocol", summary.proto.join(", ") || "Not set"),
+								field("Port", summary.port.join(", ") || "Not set"),
+								field("Cipher", summary.cipher.join(", ") || "Not set"),
+								field("Data Ciphers", summary.dataCiphers.join(", ") || "Not set"),
+								field("Auth", summary.auth.join(", ") || "Not set"),
+							'</div>',
+						'</div>',
+						'<div class="row-fluid">',
+							'<div class="span6">',
+								'<div class="ovpn-section">',
+									'<h5>Remotes</h5>',
+									listOrFallback(summary.remote, "No remote endpoints found."),
+								'</div>',
+								'<div class="ovpn-section">',
+									'<h5>Embedded Material</h5>',
+									'<div class="ovpn-badges">' + blockBadges + '</div>',
+									'<div style="margin-top: 10px">' + listOrFallback(summary.pkcs12, "No PKCS#12 bundle detected.") + '</div>',
+								'</div>',
+							'</div>',
+							'<div class="span6">',
+								'<div class="ovpn-section">',
+									'<h5>Warnings</h5>',
+									'<ul class="ovpn-list">' + warningHtml + '</ul>',
+								'</div>',
+								'<div class="ovpn-section">',
+									'<h5>Environment / Flags</h5>',
+									'<div class="ovpn-badges">',
+										(summary.compress.length ? summary.compress.map(function (item) { return badge(item, "warning"); }).join("") : badge("No compression", "success")),
+										(summary.setenv.length ? summary.setenv.map(function (item) { return badge(item, "warning"); }).join("") : badge("No setenv", "success")),
+									'</div>',
+								'</div>',
+							'</div>',
+						'</div>',
+						'<div class="ovpn-section">',
+							'<h5>Raw Content</h5>',
+							'<div class="ovpn-code">' + escapeHtml(model.content) + '</div>',
+						'</div>',
+					'</div>',
+				'</div>'
+			].join("");
+		}
+
+		function setEmptyState() {
+			emptyState.style.display = results.children.length ? "none" : "block";
+		}
+
+		function downloadText(filename, content) {
+			var blob = new Blob([content], {type: "text/plain;charset=utf-8"});
+			var href = URL.createObjectURL(blob);
+			var anchor = document.createElement("a");
+			anchor.href = href;
+			anchor.download = filename;
+			document.body.appendChild(anchor);
+			anchor.click();
+			document.body.removeChild(anchor);
+			URL.revokeObjectURL(href);
+		}
+
+		function buildModel(name, content) {
+			return {
+				id: String(Date.now()) + Math.random().toString(16).slice(2),
+				name: name,
+				content: content,
+				summary: parseConfig(content)
+			};
+		}
+
+		function addModel(model) {
+			var wrapper = document.createElement("div");
+			wrapper.setAttribute("data-key", model.id);
+			wrapper.innerHTML = renderCard(model);
+			wrapper.__ovpnModel = model;
+			results.insertBefore(wrapper, results.firstChild);
+			setEmptyState();
+		}
+
+		function readFiles(fileList) {
+			Array.prototype.slice.call(fileList).forEach(function (file) {
+				if (!file.name.match(/\.(ovpn|conf)$/i)) {
+					toastr.error(file.name + " is not a .ovpn or .conf file.");
+					return;
+				}
+
+				var reader = new FileReader();
+				reader.onload = function (evt) {
+					addModel(buildModel(file.name, evt.target.result));
+					toastr.success("Loaded " + file.name);
+				};
+				reader.onerror = function () {
+					toastr.error("Failed to read " + file.name);
+				};
+				reader.readAsText(file);
+			});
+		}
+
+		fileInput.addEventListener("change", function () {
+			if (fileInput.files && fileInput.files.length) {
+				readFiles(fileInput.files);
+				fileInput.value = "";
+			}
+		});
+
+		["dragenter", "dragover"].forEach(function (eventName) {
+			dropzone.addEventListener(eventName, function (evt) {
+				evt.preventDefault();
+				dropzone.className = "gw-file-drop ovpn-dropzone is-active";
+			});
+		});
+
+		["dragleave", "drop"].forEach(function (eventName) {
+			dropzone.addEventListener(eventName, function (evt) {
+				evt.preventDefault();
+				dropzone.className = "gw-file-drop ovpn-dropzone";
+			});
+		});
+
+		dropzone.addEventListener("drop", function (evt) {
+			if (evt.dataTransfer && evt.dataTransfer.files && evt.dataTransfer.files.length) {
+				readFiles(evt.dataTransfer.files);
+			}
+		});
+
+		clearButton.addEventListener("click", function () {
+			results.innerHTML = "";
+			setEmptyState();
+			toastr.info("Results cleared");
+		});
+
+		sampleButton.addEventListener("click", function () {
+			var sample = [
+				"client",
+				"dev tun",
+				"proto udp",
+				"remote demo.example.net 1194",
+				"resolv-retry infinite",
+				"nobind",
+				"persist-key",
+				"persist-tun",
+				"auth SHA256",
+				"cipher AES-256-CBC",
+				"auth-user-pass",
+				"remote-cert-tls server",
+				"key-direction 1",
+				"comp-lzo no",
+				"<ca>",
+				"-----BEGIN CERTIFICATE-----",
+				"MIID...demo",
+				"-----END CERTIFICATE-----",
+				"</ca>",
+				"<tls-auth>",
+				"# 2048 bit OpenVPN static key",
+				"-----BEGIN OpenVPN Static key V1-----",
+				"abcd1234",
+				"-----END OpenVPN Static key V1-----",
+				"</tls-auth>"
+			].join("\n");
+			addModel(buildModel("sample-client.ovpn", sample));
+			toastr.success("Loaded sample profile");
+		});
+
+		results.addEventListener("click", function (evt) {
+			var action = evt.target.getAttribute("data-action");
+			var key = evt.target.getAttribute("data-key");
+			if (!action || !key) {
+				return;
+			}
+
+			var wrapper = results.querySelector('[data-key="' + key + '"]');
+			if (!wrapper || !wrapper.__ovpnModel) {
+				return;
+			}
+
+			if (action === "download") {
+				downloadText(wrapper.__ovpnModel.name.replace(/\.(ovpn|conf)$/i, "") + "-copy.txt", wrapper.__ovpnModel.content);
+				return;
+			}
+
+			if (action === "copy") {
+				if (navigator.clipboard && navigator.clipboard.writeText) {
+					navigator.clipboard.writeText(wrapper.__ovpnModel.content).then(function () {
+						toastr.success("Copied raw config to clipboard");
+					}, function () {
+						toastr.error("Clipboard write failed");
+					});
+				} else {
+					toastr.warning("Clipboard API not available in this browser");
+				}
+			}
+		});
+
+		setEmptyState();
+	}());
+	</script>
+</body>
+</html>

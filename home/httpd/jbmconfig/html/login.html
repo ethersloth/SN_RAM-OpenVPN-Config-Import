@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <title>Login</title>
+    <link rel="shortcut icon" href="images/favicon.ico" />
+    <link href="css/bootstrap.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="css/extra.css" rel="stylesheet">
+    <style>
+      #user-input, #pass-input {
+        height: 30px;
+      }
+      #login-button {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-horizontal">
+      <div class="control-group">
+        <label class="control-label">Username</label>
+        <input type="text" id="user-input"></input>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Password</label>
+        <input type="password" id="pass-input"></input>
+      </div>
+      <button class="btn btn-primary" id="login-button">Login</button>
+    </div>
+    <script src="/js/lib/jquery-1.11.1.min.js"></script>
+    <script src="/js/lib/bootstrap.min.js"></script>
+    <script>
+      var userInput = $('#user-input')[0];
+      var passInput = $('#pass-input')[0];
+      $('#login-button').click(function () {
+        if (! userInput.value) {
+          alert("Please enter a username");
+          return;
+        }
+        $.ajax({
+          async: false,
+          cache: false,
+          username: userInput.value,
+          password: passInput.value,
+          url: "/"
+        }).done(function () {
+          window.location.href = window.location.protocol + '//'
+              + userInput.value + ':'
+              + passInput.value + '@'
+              + window.location.host;
+        }).fail(function () {
+          alert("Username or password is invalid");
+        })
+      });
+    </script>
+    <script>
+      if (location.search.match(/[?&]logout=1(&|$)/)) {
+        // Don't leave the 'logout=1' query in the URL
+        // We can't clear "?" by using pushState with "login.html" because we
+        // supplied basic auth credentials in the URL and the browser rejects it
+        // as insecure
+        window.history.pushState({}, document.title, "?");
+        alert("Logout success. Please close your browser");
+      }
+    </script>
+  </body>
+</html>

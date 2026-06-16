@@ -1,0 +1,473 @@
+
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/gmuclient.prf" name="gmuclient">
+   <validation>
+    <vstep errmsg="Invalid Enable Flag value. Must be 'y' or 'n'." name="enable" test="isyorn(/input/enable/text())" />
+
+    <vstep errmsg="Invalid Primary Server Address. Must be IP Address of Fully qualified domain name."
+             name="priservaddr"
+             test="isipaddr(/input/priservaddr/text()) or isfqdn(/input/priservaddr/text())" />
+
+    <vstep errmsg="Invalid Secondary Server Address. Must be IP Address of Fully qualified domain name."
+             name="secservaddr"
+             test="string-length(/input/secservaddr/text()) = 0 or
+                   isipaddr(/input/secservaddr/text())          or
+                   isfqdn(/input/secservaddr/text())" />
+
+    <vstep errmsg="Invalid Address Mode. Must be either 'Primary Only', 'Secondary Only', 'Both' or 'Secondary when Primary Unavailable'"
+             name="useaddr"
+             test="/input/useaddr/text() = 'none'   or
+                   /input/useaddr/text() = 'secondaryonly'   or
+                   /input/useaddr/text() = 'both'  or
+                   /input/useaddr/text() = 'error'"   />
+
+    <vstep errmsg="Invalid Access Interval. Must be numeric" name="ainterval" test="isnumber(/input/ainterval/text())" />
+
+    <vstep errmsg="Invalid Error Interval. Must be numeric" name="einterval" test="isnumber(/input/einterval/text())" />
+
+    <vstep errmsg="Invalid Access Method. Must be either 'Unsecure (http)' or 'Secure (https)'"
+             name="accessmeth"
+             test="/input/accessmeth/text() = 'http' or /input/accessmeth/text() = 'https'" />
+
+    <vstep errmsg="Invalid Secure Server Port. Must be a number 1-65535."
+             name="servport"
+             test="isnumber(/input/secservport/text()) and /input/secservport/text() < 65536" />
+
+    <vstep errmsg="Invalid Server Port. Must be a number 1-65535."
+             name="servport"
+             test="isnumber(/input/servport/text()) and /input/servport/text() < 65536" />
+
+    <vstep errmsg="Invalid Interface. Must be either 'None' 'eth0', 'eth1', 'gre1-9' or 'ppp0'"
+             name="bindintf"
+             test="/input/bindintf/text() = 'None' or
+                   /input/bindintf/text() = 'eth0' or
+                   /input/bindintf/text() = 'eth1' or
+                   /input/bindintf/text() = 'gre1' or
+                   /input/bindintf/text() = 'gre2' or
+                   /input/bindintf/text() = 'gre3' or
+                   /input/bindintf/text() = 'gre4' or
+                   /input/bindintf/text() = 'gre5' or
+                   /input/bindintf/text() = 'gre6' or
+                   /input/bindintf/text() = 'gre7' or
+                   /input/bindintf/text() = 'gre8' or
+                   /input/bindintf/text() = 'gre9' or
+                   /input/bindintf/text() = 'wwan0' or
+                   /input/bindintf/text() = 'ppp0'" />
+   </validation>
+
+    <vstep errmsg="Invalid Rapid Check-in interval. Must be a number 0-65535."
+             name="rapidcheckin"
+             test="isnumber(/input/rapidcheckin/text()) and /input/rapidcheckin/text() < 65536" />
+
+   <configuration>
+    <cstep errmsg="Cannot save Enable to configuration file"             name="enable"      path="/GAUCfg/gmuclient/enable"      />
+    <cstep errmsg="Cannot save Primary Address to configuration file"    name="priservaddr" path="/GAUCfg/gmuclient/priservaddr" />
+    <cstep errmsg="Cannot save Secondary Address to configuration file"  name="secservaddr" path="/GAUCfg/gmuclient/secservaddr" />
+    <cstep errmsg="Cannot save Address mode to configuration file"       name="useaddr"     path="/GAUCfg/gmuclient/useaddr"     />
+    <cstep errmsg="Cannot save Access Interval to configuration file"    name="ainterval"   path="/GAUCfg/gmuclient/ainterval"   />
+    <cstep errmsg="Cannot save Error Interval to configuration file"     name="einterval"   path="/GAUCfg/gmuclient/einterval"   />
+    <cstep errmsg="Cannot save Access Method to configuration file"      name="accessmeth"  path="/GAUCfg/gmuclient/accessmeth"  />
+    <cstep errmsg="Cannot save Secure Server Port to configuration file" name="secservport" path="/GAUCfg/gmuclient/secservport" />
+    <cstep errmsg="Cannot save Server Port to configuration file"        name="servport"    path="/GAUCfg/gmuclient/servport"    />
+    <cstep errmsg="Cannot save Interface to configuration file"          name="bindintf"    path="/GAUCfg/gmuclient/bindintf"    />
+    <cstep errmsg="Cannot save Rapid Check-in interval"          name="rapidcheckin"    path="/GAUCfg/gmuclient/rapidcheckin"    />
+   </configuration>
+
+   <action name="Dummy" successmsg="SVM settings stored in xml."></action>
+
+   <action name="Save" successmsg="SVM Client settings saved.">
+
+<!--Moved to prfhandler_gmuclient
+    <astep  abort="y" errmsg="Failed to write SVM Client settings to firewall configuration file" name="WriteFormattedFile">
+
+     <arg expr="/tmp/svmclient.conf" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+     <arg expr="# This is the config file for the Sixnet SVM client" />
+     <arg expr="\n" />
+     <arg expr="# script svmclient.  Should be placed at /etc/jbm/svmclient.conf" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# Notes: The tables below are for reference and may not be accurate." />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# The script will use about 2Kb of data" />
+     <arg expr="\n" />
+     <arg expr="# when talking to the JBM HTTP (NON-SECURE) server for EACH HEARTBEAT." />
+     <arg expr="\n" />
+     <arg expr="# KEEP THIS IN MIND IF USING A LIMITED DATA PLAN." />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# A Check interval of :" />
+     <arg expr="#   1 :  will use about   92 MB data/month (31 days * 24 hours * 60/1 check-ins * 2048 bytes)" />
+     <arg expr="\n" />
+     <arg expr="#   5 :  will use about 18.2 MB data/month (31 days * 24 hours * 60/5 check-ins * 2048 bytes)" />
+     <arg expr="\n" />
+     <arg expr="#  15 :  will use about    6 MB data/month (31 days * 24 hours * 60/15 check-ins * 2048 bytes)" />
+     <arg expr="\n" />
+     <arg expr="#  30 :  will use about    3 MB data/month (31 days * 24 hours * 60/30 check-ins * 2048 bytes)" />
+     <arg expr="\n" />
+     <arg expr="#  60 :  will use about  1.5 MB data/month (31 days * 24 hours * 60/60 check-ins * 2048 bytes)" />
+     <arg expr="\n" />
+     <arg expr="# 120 :  will use about  760 Kb data/month (31 days * 24 hours * 60/120 check-ins * 2048 bytes)" />
+     <arg expr="\n" />
+     <arg expr="# 240 :  will use about  380 Kb data/month (31 days * 24 hours * 60/240 check-ins * 2048 bytes)" />
+     <arg expr="\n" />
+     <arg expr="# 480 :  will use about  190 Kb data/month (31 days * 24 hours * 60/480 check-ins * 2048 bytes)" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# The above numbers are ESTIMATES and may change.  The above numbers apply to HEARTBEAT messages" />
+     <arg expr="\n" />
+     <arg expr="# only and DO NOT account for downloads, patch updates, and other data." />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# The script will use about 6Kb of data" />
+     <arg expr="\n" />
+     <arg expr="# when talking to the JBM HTTPS (SECURE) server for EACH HEARTBEAT." />
+     <arg expr="\n" />
+     <arg expr="# This is higher than above due to the encryption key that is received each connection." />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# KEEP THIS IN MIND IF USING A LIMITED DATA PLAN." />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="#  A Check interval of :" />
+     <arg expr="\n" />
+     <arg expr="#   1 :  will use about  275 MB data/month (31 days * 24 hours * 60/1 check-ins * 6144 bytes)" />
+     <arg expr="\n" />
+     <arg expr="#   5 :  will use about   55 MB data/month (31 days * 24 hours * 60/5 check-ins * 6144 bytes)" />
+     <arg expr="\n" />
+     <arg expr="#  15 :  will use about 18.8 MB data/month (31 days * 24 hours * 60/15 check-ins * 6144 bytes)" />
+     <arg expr="\n" />
+     <arg expr="#  30 :  will use about    9 MB data/month (31 days * 24 hours * 60/30 check-ins * 6144 bytes)" />
+     <arg expr="\n" />
+     <arg expr="#  60 :  will use about  4.6 MB data/month (31 days * 24 hours * 60/60 check-ins * 6144 bytes)" />
+     <arg expr="\n" />
+     <arg expr="# 120 :  will use about  2.3 MB data/month (31 days * 24 hours * 60/120 check-ins * 6144 bytes)" />
+     <arg expr="\n" />
+     <arg expr="# 240 :  will use about  1.2 MB data/month (31 days * 24 hours * 60/240 check-ins * 6144 bytes)" />
+     <arg expr="\n" />
+     <arg expr="# 480 :  will use about  572 Kb data/month (31 days * 24 hours * 60/480 check-ins * 6144 bytes)" />;
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# The above numbers are ESTIMATES and may change.  The above numbers apply to HEARTBEAT messages" />
+     <arg expr="\n" />
+     <arg expr="# only and DO NOT account for downloads, patch updates, and other data." />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# This is the PRIMARY HTTP/HTTPS Server IP address or DNS name of the HTTP/HTTPS server" />
+     <arg expr="\n" />
+     <arg expr="# running the SVM Management software." />
+     <arg expr="\n" />
+     <arg expr="# Example:" />
+     <arg expr="\n" />
+     <arg expr="# JBM_SERVER_IP = 192.168.0.1" />
+     <arg expr="\n" />
+     <arg expr="concat('JBM_SERVER_IP = ', /GAUCfg/gmuclient/priservaddr/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# This is the SECONDARY HTTP/HTTPS Server IP address or DNS name of the HTTP/HTTPS server" />
+     <arg expr="\n" />
+     <arg expr="# running the SVM Management software." />
+     <arg expr="\n" />
+     <arg expr="# Example:" />
+     <arg expr="\n" />
+     <arg expr="# JBM_SERVER2_IP = 192.168.0.1" />
+     <arg expr="\n" />
+
+     <arg dependency="string-length(/GAUCfg/gmuclient/secservaddr/text()) > 0"
+                expr="concat('JBM_SERVER2_IP = ', /GAUCfg/gmuclient/secservaddr/text())"
+              source="config" />
+
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# Primary Only = 'none'." />
+     <arg expr="\n" />
+     <arg expr="# Secondary Only = 'secondaryonly'." />
+     <arg expr="\n" />
+     <arg expr="# Use both = 'both'." />
+     <arg expr="\n" />
+     <arg expr="# Use Secondary if Primary is unavailable = 'error'." />
+     <arg expr="\n" />
+     <arg expr="# JBM_SERVER_DUALMODE = both" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/gmuclient/useaddr/text() != 'sec'"
+                expr="concat('JBM_SERVER_DUALMODE = ', /GAUCfg/gmuclient/useaddr/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/gmuclient/useaddr/text()  = 'sec'"
+                expr="'JBM_SERVER_DUALMODE = secondaryonly'"
+              source="config" />
+
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# This is the port that the JBM Management HTTP server listens on" />
+     <arg expr="\n" />
+     <arg expr="# (NON-SECURE SERVER)  The default port on the server is 18080. This should" />
+     <arg expr="\n" />
+     <arg expr="# NOT be changed unless you are sure of the port number." />
+     <arg expr="\n" />
+     <arg expr="# Example:" />
+     <arg expr="\n" />
+     <arg expr="# JBM_SERVER_PORT = 18080" />
+     <arg expr="\n" />
+
+     <arg dependency="string-length(/GAUCfg/gmuclient/servport) = 0" expr="'JBM_SERVER_PORT = 18080'" source="config" />
+
+     <arg dependency="string-length(/GAUCfg/gmuclient/servport) > 0"
+                expr="concat('JBM_SERVER_PORT = ', /GAUCfg/gmuclient/servport/text())"
+              source="config" />
+
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# This is the port that the JBM Management HTTPS server listens on" />
+     <arg expr="\n" />
+     <arg expr="# (SECURE SERVER) The default port on the server is 18081. This should" />
+     <arg expr="\n" />
+     <arg expr="# NOT be changed unless you are sure of the port number." />
+     <arg expr="\n" />
+     <arg expr="# Example:" />
+     <arg expr="\n" />
+     <arg expr="# JBM_SERVER_SPORT = 18081" />
+     <arg expr="\n" />
+
+     <arg dependency="string-length(/GAUCfg/gmuclient/secservport/text()) = 0" expr="'JBM_SERVER_SPORT = 18081'" source="config" />
+
+     <arg dependency="string-length(/GAUCfg/gmuclient/secservport/text()) > 0"
+                expr="concat('JBM_SERVER_SPORT = ', /GAUCfg/gmuclient/secservport/text())"
+              source="config" />
+
+
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# This is the switch to tell the client to talk to a SECURE JBM HTTPS server" />
+     <arg expr="\n" />
+     <arg expr="# on the port listed with the above define JBM_SERVER_SPORT." />
+     <arg expr="\n" />
+     <arg expr="# The JBM HTTPS server but be running on the above JBM_SERVER_SPORT port" />
+     <arg expr="\n" />
+     <arg expr="# when setting this option to YES.  Using this option will INCREASE the" />
+     <arg expr="\n" />
+     <arg expr="# amount of DATA sent and received by the client.  Refer to the table at the top" />
+     <arg expr="\n" />
+     <arg expr="# this file for more information." />
+     <arg expr="\n" />
+     <arg expr="# Example:" />
+     <arg expr="\n" />
+     <arg expr="# JBM_USE_HTTPS = no" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/gmuclient/accessmeth/text() = 'http'"  expr="'JBM_USE_HTTPS = no'"  source="config" />
+
+     <arg dependency="/GAUCfg/gmuclient/accessmeth/text() = 'https'" expr="'JBM_USE_HTTPS = yes'" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# This is the path to the update_status.php script running on" />
+     <arg expr="\n" />
+     <arg expr="# the JBM Management web server located at the IP address above." />
+     <arg expr="\n" />
+     <arg expr="# This entry will most likely never change." />
+     <arg expr="\n" />
+     <arg expr="# Example:" />
+     <arg expr="\n" />
+     <arg expr="# JBM_SERVER_PATH = /jbm_mgmt/update_status.php" />
+     <arg expr="\n" />
+     <arg expr="JBM_SERVER_PATH = /jbm_mgmt/update_status.php" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# This is the interval for which the script will " />
+     <arg expr="quote()" source="config" />
+     <arg expr="check in" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+     <arg expr="# in MINUTES. Minimum is 1 minute." />
+     <arg expr="\n" />
+     <arg expr="# *************************************************************" />
+     <arg expr="\n" />
+     <arg expr="# *** WARNING: Lower numbers increase the amount of monthly ***" />
+     <arg expr="\n" />
+     <arg expr="# *** data transmitted and received.  See the Tables at the ***" />
+     <arg expr="\n" />
+     <arg expr="# *** top of this file for more information.                ***" />
+     <arg expr="\n" />
+     <arg expr="# *************************************************************" />
+     <arg expr="\n" />
+     <arg expr="# Example:" />
+     <arg expr="\n" />
+     <arg expr="# CHECK_INTERVAL = 240" />
+     <arg expr="\n" />
+     <arg expr="concat('CHECK_INTERVAL = ', /GAUCfg/gmuclient/ainterval/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# This is the interval for which to check if there is an error" />
+     <arg expr="\n" />
+     <arg expr="# talking to the server. Minimum is 30 minutes." />
+     <arg expr="\n" />
+     <arg expr="# If the next" />
+     <arg expr="quote()" source="config" />
+     <arg expr="check in" />
+     <arg expr="quote()" source="config" />
+     <arg expr=" has no error, the next check in will" />
+     <arg expr="\n" />
+     <arg expr="# be whatever is set in CHECK_INTERVAL (above)" />
+     <arg expr="\n" />
+     <arg expr="# Example:" />
+     <arg expr="\n" />
+     <arg expr="# ERROR_CHECK_INTERVAL = 240" />
+     <arg expr="\n" />
+     <arg expr="concat('ERROR_CHECK_INTERVAL = ', /GAUCfg/gmuclient/einterval/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="# This is the port that the TCP listener will listen on for a TCP connection" />
+     <arg expr="\n" />
+     <arg expr="# from the server to force a " />
+     <arg expr="quote()" source="config" />
+     <arg expr="check in" />
+     <arg expr="quote()" source="config" />
+     <arg expr="." />
+     <arg expr="\n" />
+     <arg expr="# DO NOT CHANGE unless instructed by JBM staff." />
+     <arg expr="\n" />
+     <arg expr="# Example:" />
+     <arg expr="\n" />
+     <arg expr="# LISTENER_PORT = 7785" />
+     <arg expr="\n" />
+     <arg expr="LISTENER_PORT = 7785" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="#The interface for the client to source the IP address from.  Useful for" />
+     <arg expr="\n" />
+     <arg expr="#pushing the information through a VPN connection." />
+     <arg expr="\n" />
+     <arg expr="# *** WARNING: Do not use this unless you are routing REAL IPs or" />
+     <arg expr="\n" />
+     <arg expr="# *** using Real routing, or a VPN tunnel.  Sourcing an IP through an ISPs" />
+     <arg expr="\n" />
+     <arg expr="# *** link can cause the ISP to TERMINATE the connection if the ISP does" />
+     <arg expr="\n" />
+     <arg expr="# *** not link the IP address being sourced." />
+     <arg expr="\n" />
+     <arg expr="#Example:" />
+     <arg expr="\n" />
+     <arg expr="#BIND_INTERFACE = eth0" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/gmuclient/bindintf/text() != 'None'"
+                expr="concat('BIND_INTERFACE = ', /GAUCfg/gmuclient/bindintf/text())"
+              source="config" />
+     <arg expr="\n" />
+
+     <arg     expr="concat('RAPIDRF_INTERVAL = ', /GAUCfg/gmuclient/rapidcheckin/text())"
+              source="config" />
+     <arg expr="\n" />
+
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="###################################################################################################" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move svmclient.conf" name="SystemCommand">
+     <arg expr="mv -f /tmp/svmclient.conf /etc/jbm/svmclient.conf" />
+    </astep>
+Moved to prfhandler_gmuclient-->
+
+    <astep abort="y" errmsg="Failed to save svm client configuration" name="SystemCommand">
+     <arg expr="'prfhandler_gmuclient Save'" source="config" />
+    </astep>
+   </action>
+
+   <action name="Apply" successmsg="SVM Client settings applied.">
+
+<!--Moved to prfhandler_gmuclient
+    <pre subsystem="gmuclient" action="Save" />
+
+    <astep abort="y" errmsg="Failed to stop SVM client" name="SystemCommand">
+     <arg dependency="/GAUCfg/gmuclient/enable/text() = 'n'" expr="'/bin/svmclient remove; killall -9 gmu_listener'" source="config"/>
+    </astep>
+
+    <astep abort="y" errmsg="Failed to start SVM client" name="SystemCommand">
+     <arg dependency="/GAUCfg/gmuclient/enable/text() = 'y'" expr="'/bin/svmclient'" source="config"/>
+    </astep>
+Moved to prfhandler_gmuclient-->
+
+    <astep abort="y" errmsg="Failed to apply svm client configuration" name="SystemCommand">
+     <arg expr="'prfhandler_gmuclient Apply'" source="config" />
+    </astep>
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

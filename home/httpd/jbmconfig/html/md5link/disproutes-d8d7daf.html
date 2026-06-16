@@ -1,0 +1,61 @@
+<form id="routingtbl-form" class="form-horizontal">
+  <table style="width: 100%;">
+    <tr>
+       <td style="text-align: center; vertical-align: middle;">
+            <h3>Routing Tables</h3>
+       </td>
+    </tr>
+  </table>
+
+  <span><hr/></span>
+
+  <table style="width: 100%;">
+    <tr>
+       <td style="text-align: center; vertical-align: middle;">
+            <h4><u>Standard System Routing Table</u></h4><br />
+       </td>
+    </tr>
+  </table>
+
+  <table align="center">
+     <tr>
+         <td style="text-align: left; vertical-align: middle;"><pre><span data-bind="text: standard"></span></pre></td> 
+     </tr>
+  </table>
+
+  <span><hr/></span>
+
+  <table style="width: 100%;">
+    <tr>
+       <td style="text-align: center; vertical-align: middle;">
+            <h4><u>Policy Routing Table</u></h4><br />
+       </td>
+    </tr>
+  </table>
+
+  <table align="center">
+     <tr>
+         <td style="text-align: left; vertical-align: middle;"><pre><span data-bind="text: policy"></span></pre></td> 
+     </tr>
+  </table>
+
+  <div class="control-group" data-bind="visible: definedHasResult">
+      <span><hr/></span>
+    
+      <table style="width: 100%;">
+        <tr>
+           <td style="text-align: center; vertical-align: middle;">
+                <h4><u>Statically Defined Routes</u></h4><br />
+           </td>
+        </tr>
+      </table>
+    
+      <table align="center">
+         <tr>
+             <td style="text-align: left; vertical-align: middle;"><pre><span data-bind="text: defined"></span></pre></td> 
+         </tr>
+      </table>
+  </div>
+  
+
+</form>

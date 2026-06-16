@@ -1,0 +1,152 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall.prf"
+             name="firewall" />
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall_gs.prf" name="firewall_gs">
+   <validation>
+    <vstep errmsg="Enable must be either 'n' or 'y'"              name="enable"  test="isyorn(/input/enable/text())"  />
+    <vstep errmsg="Allow PING must be either 'n' or 'y'"          name="ping"    test="isyorn(/input/ping/text())"    />
+    <vstep errmsg="Allow SSH must be either 'n' or 'y'"           name="ssh"     test="isyorn(/input/ssh/text())"     />
+    <vstep errmsg="Allow TELNET must be either 'n' or 'y'"        name="telnet"  test="isyorn(/input/telnet/text())"  />
+    <vstep errmsg="Allow Modbus must be either 'n' or 'y'"        name="modbus"  test="isyorn(/input/modbus/text())"  />
+    <vstep errmsg="Allow DNP3 must be either 'n' or 'y'"          name="dnp3"    test="isyorn(/input/dnp3/text())"    />
+    <vstep errmsg="Allow GAU must be either 'n' or 'y'"           name="gau"     test="isyorn(/input/gau/text())"     />
+    <vstep errmsg="Allow SNMP must be either 'n' or 'y'"          name="snmp"    test="isyorn(/input/snmp/text())"    />
+    <vstep errmsg="Allow IPSec must be either 'n' or 'y'"         name="ipsec"   test="isyorn(/input/ipsec/text())"   />
+    <vstep errmsg="Allow NAT must be either 'n' or 'y'"           name="natt"    test="isyorn(/input/natt/text())"    />
+    <vstep errmsg="Force Fragmentation must be either 'n' or 'y'" name="cleardf" test="isyorn(/input/cleardf/text())" />
+
+    <vstep errmsg="Invalid Output Restrictions flag. Must be either 'none' or 'whitelisted'"
+             name="outr"
+             test="/input/outr/text() = 'none' or /input/outr/text() = 'whitelisted'" />
+    <vstep errmsg="Invalid Packet Drop Logging. Must be either 'Normal' or 'Quieter' or 'Silent'"
+             name="pdlogging"
+             test="/input/pdlogging/text() = 'normal' or /input/pdlogging/text() = 'quieter' or /input/pdlogging/text() = 'silent'" />
+    <vstep errmsg="Invalid Trusted Interfaces List. Must be a well-formed XML document."
+             name="trustedintfs"
+             test="string-length(/input/trustedintfs/text()) > 0" />
+    <vstep errmsg="Invalid Untrusted Interfaces List. Must be a well-formed XML document."
+             name="untrustedintfs"
+             test="string-length(/input/untrustedintfs/text()) > 0" />
+    <vstep errmsg="Invalid Allow Rules Set. Must be a well-formed XML document."
+             name="allowrules"
+             test="string-length(/input/allowrules/text()) > 0" />
+    <vstep errmsg="Invalid Redirect Rules Set. Must be a well-formed XML document."
+             name="redirrules"
+             test="string-length(/input/redirrules/text()) > 0" />
+    <vstep errmsg="Invalid NAT Rules Set. Must be a well-formed XML document."
+             name="natrules"
+             test="string-length(/input/natrules/text()) > 0" />
+    <vstep errmsg="Invalid DMZ Rules Set. Must be a well-formed XML document."
+             name="dmzrules"
+             test="string-length(/input/dmzrules/text()) > 0" />
+    <vstep errmsg="Invalid Blacklist Set. Must be a well-formed XML document."
+             name="blacklistrules"
+             test="string-length(/input/blacklistrules/text()) > 0" />
+    <vstep errmsg="Invalid Masquerade Rules Set. Must be a well-formed XML document."
+             name="masqrules"
+             test="string-length(/input/masqrules/text()) > 0" />
+    <vstep errmsg="Invalid Filter Rules Set. Must be a well-formed XML document."
+             name="filterrules"
+             test="string-length(/input/filterrules/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Cannot save Enable to configuration file"              name="enable"  path="/GAUCfg/firewall/enable"  />
+    <cstep errmsg="Cannot save Allow PING to configuration file"          name="ping"    path="/GAUCfg/firewall/ping"    />
+    <cstep errmsg="Cannot save Allow SSH to configuration file"           name="ssh"     path="/GAUCfg/firewall/ssh"     />
+    <cstep errmsg="Cannot save Allow TELNET to configuration file"        name="telnet"  path="/GAUCfg/firewall/telnet"  />
+    <cstep errmsg="Cannot save Allow Modbus to configuration file"        name="modbus"  path="/GAUCfg/firewall/modbus"  />
+    <cstep errmsg="Cannot save Allow DNP3 to configuration file"          name="dnp3"    path="/GAUCfg/firewall/dnp3"    />
+    <cstep errmsg="Cannot save Allow GAU to configuration file"           name="gau"     path="/GAUCfg/firewall/gau"     />
+    <cstep errmsg="Cannot save Allow SNMP to configuration file"          name="snmp"    path="/GAUCfg/firewall/snmp"    />
+    <cstep errmsg="Cannot save Allow IPSec to configuration file"         name="ipsec"   path="/GAUCfg/firewall/ipsec"   />
+    <cstep errmsg="Cannot save Allow NAT to configuration file"           name="natt"    path="/GAUCfg/firewall/natt"    />
+    <cstep errmsg="Cannot save Output Restrictions to configuration file" name="outr"    path="/GAUCfg/firewall/outr"    />
+    <cstep errmsg="Cannot save Force Fragmentation to configuration file" name="cleardf" path="/GAUCfg/firewall/cleardf" />
+    <cstep errmsg="Cannot save Packet Drop Logging to configuration file" name="pdlogging" path="/GAUCfg/firewall/pdlogging" />
+
+    <cstep errmsg="Cannot save PING Whitelist name to configuration file"
+             name="pingwlname"
+             path="/GAUCfg/firewall/pingwlname" />
+
+    <cstep errmsg="Cannot save SSH Whitelist name to configuration file"
+             name="sshwlname"
+             path="/GAUCfg/firewall/sshwlname" />
+
+    <cstep errmsg="Cannot save TELNET Whitelist name to configuration file"
+             name="telnetwlname"
+             path="/GAUCfg/firewall/telnetwlname" />
+
+    <cstep errmsg="Cannot save Modbus Whitelist name to configuration file"
+             name="modbuswlname"
+             path="/GAUCfg/firewall/modbuswlname" />
+
+    <cstep errmsg="Cannot save DNP3 Whitelist name to configuration file"
+             name="dnp3wlname"
+             path="/GAUCfg/firewall/dnp3wlname" />
+
+    <cstep errmsg="Cannot save GAU Whitelist name to configuration file"
+             name="gauwlname"
+             path="/GAUCfg/firewall/gauwlname" />
+
+    <cstep errmsg="Cannot save SNMP Whitelist name to configuration file"
+             name="snmpwlname"
+             path="/GAUCfg/firewall/snmpwlname" />
+
+    <cstep errmsg="Cannot save PING Whitelist to configuration file"
+             name="pingwhitelist"
+             path="/GAUCfg/firewall/pingwhitelist" />
+
+    <cstep errmsg="Cannot save SSH Whitelist to configuration file"
+             name="sshwhitelist"
+             path="/GAUCfg/firewall/sshwhitelist" />
+
+    <cstep errmsg="Cannot save TELNET Whitelist to configuration file"
+             name="telnetwhitelist"
+             path="/GAUCfg/firewall/telnetwhitelist" />
+
+    <cstep errmsg="Cannot save Modbus Whitelist to configuration file"
+             name="modbuswhitelist"
+             path="/GAUCfg/firewall/modbuswhitelist" />
+
+    <cstep errmsg="Cannot save DNP3 Whitelist to configuration file"
+             name="dnp3whitelist"
+             path="/GAUCfg/firewall/dnp3whitelist" />
+
+    <cstep errmsg="Cannot save GAU Whitelist to configuration file"
+             name="gauwhitelist"
+             path="/GAUCfg/firewall/gauwhitelist" />
+
+    <cstep errmsg="Cannot save SNMP Whitelist to configuration file"
+             name="snmpwhitelist"
+             path="/GAUCfg/firewall/snmpwhitelist" />
+
+    <cstep errmsg="Cannot save Trusted Interfaces List to configuration file"
+             name="trustedintfs"
+             path="/GAUCfg/firewall/trustedintfs"
+             type="node" />
+
+    <cstep errmsg="Cannot save Untrusted Interfaces List to configuration file"
+             name="untrustedintfs"
+             path="/GAUCfg/firewall/untrustedintfs"
+             type="node" />
+
+   </configuration>
+
+   <action name="Save" successmsg="Firewall settings saved.">
+    <pre subsystem="firewall" action="Save" />
+
+   </action>
+
+   <action name="Apply" successmsg="Firewall settings applied.">
+    <pre subsystem="firewall" action="Apply" />
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

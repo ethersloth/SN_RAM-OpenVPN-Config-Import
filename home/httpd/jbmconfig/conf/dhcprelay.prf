@@ -1,0 +1,112 @@
+<profile>
+ <subsystems>
+                                                                                                                             <!--
+                Services -> DHCP Relay Section
+                                                                                                                               -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dhcprelay.prf" name="dhcprelay">
+   <validation>
+    <vstep errmsg="Invalid Enable value. Must be either 'No' or 'Yes'"
+             name="enable"
+             test="/input/enable/text() = 'No'  or /input/enable/text() = 'Yes'" />
+
+    <vstep errmsg="Invalid Onboot value. Must be either 'No' or 'Yes'"
+             name="onboot"
+             test="/input/onboot/text() = 'No'  or /input/onboot/text() = 'Yes'" />
+
+    <vstep errmsg="Interface Table is malformed."
+             name="intfs"
+             test="string-length(/input/intfs/text()) > 0" />
+
+    <vstep errmsg="Remote Servers list Table is malformed."
+             name="rmtsrvrs"
+             test="string-length(/input/rmtsrvrs/text()) > 0" />
+   </validation>
+
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable to system configuration file."
+             name="enable"
+             path="/GAUCfg/dhcprelay/enable" />
+
+    <cstep errmsg="Unable to save Onboot system configuration file."
+             name="onboot"
+             path="/GAUCfg/dhcprelay/onboot" />
+
+    <cstep errmsg="Unable to save Interface Table to system configuration file."
+             name="intfs"
+             path="/GAUCfg/dhcprelay/intfs"
+             type="node" />
+
+    <cstep errmsg="Unable to save Remote Servers list to system configuration file."
+             name="rmtsrvrs"
+             path="/GAUCfg/dhcprelay/rmtsrvrs"
+             type="node" />
+   </configuration>
+
+
+   <action name="Save" successmsg="DHCP Relay settings saved.">
+    <astep  abort="y"
+           errmsg="Failed to write DHCPD relay configuration file"
+             name="WriteFormattedFile">
+
+     <arg expr="/tmp/dhcrelay.conf" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="INTF=" />
+     <arg expr="quote()" source="config" />
+     <arg       expr="concat(/GAUCfg/dhcprelay/intfs/intf[RPT_NDX]/intf/text(), ' ')"
+              repeat="/GAUCfg/dhcprelay/intfs/intf"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+     <arg expr="RSERVERS=" />
+     <arg expr="quote()" source="config" />
+     <arg       expr="concat(/GAUCfg/dhcprelay/rmtsrvrs/rmtsrvr[RPT_NDX]/rmtsrvr/text(), ' ')"
+              repeat="/GAUCfg/dhcprelay/rmtsrvrs/rmtsrvr"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move DHCP Relay configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/dhcrelay.conf /etc/dhcrelay/dhcrelay.conf" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to enable DHCP relay" name="SystemCommand">
+     <arg dependency="/GAUCfg/dhcprelay/onboot/text() = 'No'"
+                expr="'chkconfig dhcrelay off'"
+              source="config" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to disable DHCP relay" name="SystemCommand">
+     <arg dependency="/GAUCfg/dhcprelay/onboot/text() = 'Yes'"
+                expr="'chkconfig dhcrelay on'"
+              source="config" />
+    </astep>
+   </action>
+
+   <action name="Apply" successmsg="DHCP Relay settings applied.">
+    <pre subsystem="dhcprelay" action="Save" />
+
+    <astep abort="n" errmsg="Failed to stop DHCP relay" name="SystemCommand">
+     <arg dependency="/GAUCfg/dhcprelay/enable/text() = 'No'"
+                expr="'service dhcrelay stop'"
+              source="config" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to start DHCP relay" name="SystemCommand">
+     <arg dependency="/GAUCfg/dhcprelay/enable/text() = 'Yes'"
+                expr="'service dhcrelay restart'"
+              source="config" />
+    </astep>
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

@@ -1,0 +1,257 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+#This Script builds the Binary Counter DNP End Points to be 
+#tagged on sxdnpdrv.ini driver configuration file.
+#Created By Moe on 11/16/2012.
+
+my $exceptCnt = 0;
+#Option flag to build the table 
+#'yes' = don't build, 'no' = build
+my $nodnpchecked;
+#Number of Registers to Build
+my $highestReg;
+#Default Class Assignment tables Parms.
+my $startReg;
+my $endReg;
+my $deadband;
+my $defobj21class;
+my $defobj22class;
+my $defobj23class;
+#Exception Class Assignment tables Parms.
+my %TableEntryList = ();
+my $startreg;
+my $endreg;
+my $exdeadband;
+my $exobj21class;
+my $exobj22class;
+my $exobj23class;
+#Default DNP Index Register
+my $DNPIndex = 0;
+#Traveling Start Register
+my $BaseReg = 0;
+#Snippet of Binary Counter DNP Mapping End Points Table 
+my $ini_snippet = "";
+#File name and Location of Binary Counter DNP Mapping End Points Table 
+my $temp_file_name = "/etc/stacfg/sxbinarycounter";
+#Temparary Holding File Contents
+my $TEMP_FILE;
+
+
+$CONFIG_FILE = '/etc/stacfg/binarycounter.conf';
+$JBMLIB_FILE = '/etc/jbm/jbm_lib.pl';
+
+#Include our standard perl library:
+
+require($JBMLIB_FILE);
+
+#Read the configuration file:
+
+%CONFIG = &read_config($CONFIG_FILE) or exit(-1);
+
+#Establish default values:
+
+$CONFIG{highestreg}    = 0  unless (exists($CONFIG{highestreg}));
+$CONFIG{nodnpchecked}  = "yes"  unless (exists($CONFIG{nodnpchecked}));
+$CONFIG{deadband}      = 0  unless (exists($CONFIG{deadband}));
+$CONFIG{defobj21class} = "None"  unless (exists($CONFIG{defobj21class}));
+$CONFIG{defobj22class} = "None"  unless (exists($CONFIG{defobj22class}));
+$CONFIG{defobj23class} = "None"  unless (exists($CONFIG{defobj23class}));
+$CONFIG{exceptCnt}     = 0  unless (exists($CONFIG{exceptCnt}));
+$CONFIG{EXC_RULES}     = [] unless (exists($CONFIG{EXC_RULES}));
+
+
+$highestReg    = $CONFIG{highestreg};
+$nodnpchecked  = $CONFIG{nodnpchecked};
+$deadband      = $CONFIG{deadband};
+$defobj21class = $CONFIG{defobj21class};
+$defobj22class = $CONFIG{defobj22class};
+$defobj23class = $CONFIG{defobj23class};
+$exceptCnt     = $CONFIG{exceptCnt};
+
+if ("None" eq $defobj21class) {
+   $defobj21class = "no";
+}
+if ("Class 0" eq $defobj21class) {
+   $defobj21class = "yes";
+}
+
+if ("None" eq $defobj22class) {
+   $defobj22class = 0;
+}
+if ("Class 1" eq $defobj22class) {
+   $defobj22class = 1;
+}
+if ("Class 2" eq $defobj22class) {
+   $defobj22class = 2;
+}
+if ("Class 3" eq $defobj22class) {
+   $defobj22class = 3;
+}
+
+if ("None" eq $defobj23class) {
+   $defobj23class = 0;
+}
+if ("Class 1" eq $defobj23class) {
+   $defobj23class = 1;
+}
+if ("Class 2" eq $defobj23class) {
+   $defobj23class = 2;
+}
+if ("Class 3" eq $defobj23class) {
+   $defobj23class = 3;
+}
+
+
+foreach my $exception (@{$CONFIG{EXC_RULES}})
+{
+    #Check configuration for syntax and minimum required values:
+
+    my $errStr = 'Incorrect syntax for Binarycounter Exception rule!' . "\n";
+
+    if ($exception !~ /^\{/)
+    {
+       print "$errStr\n";
+    }
+
+    my $href = eval($exception);
+
+    if (ref($href) ne 'HASH')
+    {
+        print "$errStr\n";
+    }
+
+    if (!exists($href->{startreg}) || !exists($href->{endreg}) || !exists($href->{exdeadband})|| !exists($href->{exobj21class})|| !exists($href->{exobj22class})|| !exists($href->{exobj23class}))
+    {
+       print "$errStr\n";
+    }
+
+    $startReg =  $href->{startreg};
+    $endReg = $href->{endreg};
+    $exdeadband = $href->{exdeadband};
+    $exobj21class = $href->{exobj21class};
+    $exobj22class = $href->{exobj22class};
+    $exobj23class = $href->{exobj23class};
+
+    if ("None" eq $exobj21class) {
+       $exobj21class = "no";
+    }
+    if ("Class 0" eq $exobj21class) {
+       $exobj21class = "yes";
+    }
+    
+    if ("None" eq $exobj22class) {
+       $exobj22class = 0;
+    }
+    if ("Class 1" eq $exobj22class) {
+       $exobj22class = 1;
+    }
+    if ("Class 2" eq $exobj22class) {
+       $exobj22class = 2;
+    }
+    if ("Class 3" eq $exobj22class) {
+       $exobj22class = 3;
+    }
+    
+    if ("None" eq $exobj23class) {
+       $exobj23class = 0;
+    }
+    if ("Class 1" eq $exobj23class) {
+       $exobj23class = 1;
+    }
+    if ("Class 2" eq $exobj23class) {
+       $exobj23class = 2;
+    }
+    if ("Class 3" eq $exobj23class) {
+       $exobj23class = 3;
+    }
+
+    push(@TableEntryList, {'startreg' => $startReg, 'endreg' => $endReg, 'exdeadband' => $exdeadband, 'exobj21class' => $exobj21class, 'exobj22class' => $exobj22class, 'exobj23class' => $exobj23class});
+}
+
+if (0 == $exceptCnt && "no" eq $nodnpchecked) {
+   for (my $Ndx=$BaseReg; $Ndx<=$highestReg; $Ndx++) {
+         my $DNPNdx = $DNPIndex + $Ndx;
+         $ini_snippet .= "[FrozenAndEvents_BCNT( $DNPNdx)]\n"; 
+         $ini_snippet .= "DNPIndex= $DNPNdx\n"; 
+         $ini_snippet .= "SxIOAddr= $Ndx\n"; 
+         $ini_snippet .= "SxIOType= LX\n"; 
+         $ini_snippet .= "SxTag= \n"; 
+         $ini_snippet .= "DeadBand= $deadband\n"; 
+         $ini_snippet .= "EventClass= $defobj22class\n"; 
+         $ini_snippet .= "Frozen= $defobj21class\n"; 
+         $ini_snippet .= "FrozenEventClass= $defobj23class\n"; 
+   }
+}
+else {
+  if ("no" eq $nodnpchecked) {
+    foreach my $entry (@TableEntryList) {
+       $startreg = $entry->{startreg};
+       $endreg = $entry->{endreg};
+       $exdeadband = $entry->{exdeadband};
+       $exobj21class = $entry->{exobj21class};
+       $exobj22class = $entry->{exobj22class};
+       $exobj23class = $entry->{exobj23class};
+       for (my $Ndx=$BaseReg; $Ndx<$startreg; $Ndx++) {
+          my $DNPNdx = $DNPIndex + $Ndx;
+          $ini_snippet .= "[FrozenAndEvents_BCNT( $DNPNdx)]\n"; 
+          $ini_snippet .= "DNPIndex= $DNPNdx\n"; 
+          $ini_snippet .= "SxIOAddr= $Ndx\n"; 
+          $ini_snippet .= "SxIOType= LX\n"; 
+          $ini_snippet .= "SxTag= \n"; 
+          $ini_snippet .= "DeadBand= $deadband\n"; 
+          $ini_snippet .= "EventClass= $defobj22class\n"; 
+          $ini_snippet .= "Frozen= $defobj21class\n"; 
+          $ini_snippet .= "FrozenEventClass= $defobj23class\n"; 
+       }
+       $BaseReg = $startreg;
+       for (my $Ndx=$BaseReg; $Ndx<=$endreg; $Ndx++) {
+          my $DNPNdx = $DNPIndex + $Ndx;
+          $ini_snippet .= "[FrozenAndEvents_BCNT( $DNPNdx)]\n"; 
+          $ini_snippet .= "DNPIndex= $DNPNdx\n"; 
+          $ini_snippet .= "SxIOAddr= $Ndx\n"; 
+          $ini_snippet .= "SxIOType= LX\n"; 
+          $ini_snippet .= "SxTag= \n"; 
+          $ini_snippet .= "DeadBand= $exdeadband\n"; 
+          $ini_snippet .= "EventClass= $exobj22class\n"; 
+          $ini_snippet .= "Frozen= $exobj21class\n"; 
+          $ini_snippet .= "FrozenEventClass= $exobj23class\n"; 
+       }
+       $BaseReg = $endreg + 1;
+    }
+    for (my $Ndx=$BaseReg; $Ndx<=$highestReg; $Ndx++) {
+       my $DNPNdx = $DNPIndex + $Ndx;
+       $ini_snippet .= "[FrozenAndEvents_BCNT( $DNPNdx)]\n"; 
+       $ini_snippet .= "DNPIndex= $DNPNdx\n"; 
+       $ini_snippet .= "SxIOAddr= $Ndx\n"; 
+       $ini_snippet .= "SxIOType= LX\n"; 
+       $ini_snippet .= "SxTag= \n"; 
+       $ini_snippet .= "DeadBand= $deadband\n"; 
+       $ini_snippet .= "EventClass= $defobj22class\n"; 
+       $ini_snippet .= "Frozen= $defobj21class\n"; 
+       $ini_snippet .= "FrozenEventClass= $defobj23class\n"; 
+    }
+  }
+}
+
+#We should now have a fully mapped DNP Points
+#for Binary Counter to be added to sxdnpdrv.ini 
+#driver configuration file.
+
+if( ! open $TEMP_FILE, '>', $temp_file_name )
+{
+    print "Can't open temporary file \'$temp_file_name\': $!";
+    return 1;
+}
+
+if( ! print $TEMP_FILE $ini_snippet )
+{
+    print "Can't write to file \'$temp_file_name\': $!";
+    close $TEMP_FILE;
+    return 2;
+}
+
+close $TEMP_FILE;
+exit(0);
+
+

@@ -1,0 +1,37 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+###############################################################################################################################
+#                                                                                                                             #
+# getiftfs - Get Interface List                                                                                               #
+#                                                                                                                             #
+# Obtain a (sorted) list of interfaces in the form of a list of html <option> elements from the system, filtered according to #
+# the command line arguments.                                                                                                 #
+#                                                                                                                             #
+# For the record . .                                                                                                          #
+#                                                                                                                             #
+# Copyright (c) 2008 by Sixnet, LLC.                                                                                          #
+#                                                                                                                             #
+# All rights reserved.  No part of this program may be reproduced, stored in a retrieval system or transmitted, in any form   #
+# or by any means, including but not limited to electronic, mechanical, photocopying, recording, or otherwise, without the    #
+# express prior written consent of Sixnet, 4645 LaGuardia, St. Louis, MO 63134.  (314) 426-7781, fx: (314) 426-0007.          #
+# Contact support@sixnet.com                                                                                                  #
+#                                                                                                                             #
+#                                                                                                                             #
+# This program was written by Art Surgant.                                                                                    #
+#                                                                                                                             #
+###############################################################################################################################
+
+
+if (-e "/tmp/flash.sh")
+  {
+   print "Y";
+  }
+ else
+     {
+      print "N";
+     }
+
+exit(0);
+
+

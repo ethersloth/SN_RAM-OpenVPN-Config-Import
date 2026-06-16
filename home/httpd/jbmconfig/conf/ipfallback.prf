@@ -1,0 +1,344 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/ipfallback.prf" name="ipfallback">
+   <validation>
+    <vstep errmsg="Invalid Enable value. Must be 'y' or 'n'." id="step1" name="enable" test="isyorn(/input/enable/text())" />
+
+    <vstep errmsg="Invalid Use Primary Gateway. Must be 'y' or 'n'." id="step4" name="usegw" test="isyorn(/input/usegw/text())" />
+
+    <vstep     id="step5"
+             name="usegw"
+           skipto="step7"
+             test="/input/usegw/text() = 'y'" />
+
+    <vstep errmsg=""
+               id="STEP_TSTENABLE"
+             name="enable"
+           skipto="step7"
+             test="/input/enable/text() = 'n'" />
+
+    <vstep errmsg="Invalid Primary Test IP Address, must be a properly formatted IPV4 address."
+               id="step6"
+             name="testip"
+             test="isipaddr(/input/testip/text())" />
+
+    <vstep errmsg="Invalid Test interval value, Must be an integer."
+               id="step7"
+             name="interval"
+             test="isnumber(/input/interval/text())" />
+
+    <vstep errmsg="Invalid Test Packets value. Must be an integer."
+               id="step8"
+             name="testpkts"
+             test="isnumber(/input/testpkts/text())" />
+
+    <vstep errmsg="Invalid Lost Packets value. Must be an integer."
+               id="step9"
+             name="lostpkts"
+             test="isnumber(/input/lostpkts/text())" />
+
+    <vstep errmsg="Invalid Debug Level. Must be either '0', '1' or '2'."
+               id="step10"
+             name="debug"
+             test="/input/debug/text() = '0' or /input/debug/text() = '1' or /input/debug/text() = '2'" />
+   </validation>
+
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable Flag to system configuration file." name="enable" path="/GAUCfg/ipfallback/enable" />
+
+    <cstep errmsg="Unable to save Primary Interface to system configuration file."
+             name="pintf"
+             path="/GAUCfg/ipfallback/pintf" />
+
+    <cstep errmsg="Unable to save Secondary Interface to system configuration file."
+             name="sintf"
+             path="/GAUCfg/ipfallback/sintf" />
+
+    <cstep errmsg="Unable to save Primary Command Script name to system configuration file."
+             name="pcmd"
+             path="/GAUCfg/ipfallback/pcmd" />
+
+    <cstep errmsg="Unable to save Secondary Command Script name to system configuration file."
+             name="scmd"
+             path="/GAUCfg/ipfallback/scmd" />
+
+    <cstep errmsg="Unable to save Use Gateway to system configuration file."  name="usegw"    path="/GAUCfg/ipfallback/usegw" />
+    <cstep errmsg="Unable to save Test IP to system configuration file."      name="testip"   path="/GAUCfg/ipfallback/testip" />
+    <cstep errmsg="Unable to save Interval to system configuration file."     name="interval" path="/GAUCfg/ipfallback/interval" />
+    <cstep errmsg="Unable to save Test Packets to system configuration file." name="testpkts" path="/GAUCfg/ipfallback/testpkts" />
+    <cstep errmsg="Unable to save Lost Packets to system configuration file." name="lostpkts" path="/GAUCfg/ipfallback/lostpkts" />
+    <cstep errmsg="Unable to save Ping Round Count to system configuration file." name="pingcount" path="/GAUCfg/ipfallback/pingcount" />
+    <cstep errmsg="Unable to save Switch Back Delay to system configuration file." name="switchdelay" path="/GAUCfg/ipfallback/switchdelay" />
+    <cstep errmsg="Unable to save Debug Level to system configuration file."  name="debug"    path="/GAUCfg/ipfallback/debug" />
+   </configuration>
+
+
+   <action name="Save" successmsg="IP Failover settings saved.">
+
+<!--Moved to prfhandler_ipfallback
+    <astep abort="y" errmsg="Failed to write IP Failover configuration file." name="WriteFormattedFile" >
+     <arg expr="'/tmp/ipfallback.conf'" source="config" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg expr="#This is the config file for the JBM Electronics" />
+     <arg expr="\n" />
+     <arg expr="#script ipfallback2.pl" />
+     <arg expr="\n" />
+     <arg expr="# This file should be at /etc/ipfallback2.conf" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#Lines beginning with # are comments" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#Script that uses this config file will attempt to:" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#Fallback from PRIMARY Ethernet to SECONDARY Ethernet (on same subnet)" />
+     <arg expr="\n" />
+     <arg expr="# when the PRIMARY ethernet gateway cannot be reached (like if the PRIMARY" />
+     <arg expr="\n" />
+     <arg expr="# Ethernet goes bad)." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#Fallback from PRIMARY ethernet to SECONDARY ethernet (on different subnets)" />
+     <arg expr="\n" />
+     <arg expr="# when the PRIMARY ethernet gateway cannot be reached. When the PRIMARY gateway" />
+     <arg expr="\n" />
+     <arg expr="# can be reached again, it will fallback to the original state." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#Fallback from PRIMARY ethernet to SECONDARY ppp dial when the PRIMARY ethernet" />
+     <arg expr="\n" />
+     <arg expr="# gateway cannot be reached." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#Fallback from PRIMARY ppp (wireless) dial to SECONDARY ppp dial ( to be implemented )" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# **** Main Note :" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# * This ipfallback2.pl script will only try to determine default routes and" />
+     <arg expr="\n" />
+     <arg expr="# * Move the routes accordingly.  It will no longer controll PPP processes." />
+     <arg expr="\n" />
+     <arg expr="# * It's job is to watch interfaces that exist on a JBM unit. If using a PPP (wireless)" />
+     <arg expr="\n" />
+     <arg expr="# * or other PPP interface, make sure it is already configured with the JBM GAU." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# Other Notes:" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# The script will attempt to control the PRIMARY and SECONDAY ethernet interfaces" />
+     <arg expr="\n" />
+     <arg expr="#  - bring interfaces up/down when on the same subnet" />
+     <arg expr="\n" />
+     <arg expr="#  - Add remove default routes when on different subnets" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# Configuration variables are below:" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#This is the primary interface to watch." />
+     <arg expr="\n" />
+
+     <arg expr="concat('PRIMARY_INT = ', /GAUCfg/ipfallback/pintf/text())" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#This is the secondary interface to watch." />
+     <arg expr="\n" />
+
+     <arg expr="concat('SECONDARY_INT = ', /GAUCfg/ipfallback/sintf/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/ipfallback/pcmd/text() != 'None'"
+                expr="concat('PRIMARY_COMMAND=/etc/common/', /GAUCfg/ipfallback/pcmd/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/ipfallback/pcmd/text() != 'None'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/ipfallback/pcmd/text() != 'None'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/ipfallback/scmd/text() != 'None'"
+                expr="concat('SECONDARY_COMMAND=/etc/common/', /GAUCfg/ipfallback/scmd/text())"
+              source="config" />
+
+     <arg dependency="/GAUCfg/ipfallback/scmd/text() != 'None'"
+                expr="'\n'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/ipfallback/scmd/text() != 'None'"
+                expr="'\n'"
+              source="config" />
+
+     <arg expr="\n" />
+     <arg expr="#PRIMARY_TEST_IP leave blank to use PRIMARY_INT gateway" />
+     <arg expr="\n" />
+     <arg expr="#DO NOT SET TO A RESOLVABLE DOMAIN NAME!! USE DOTTED IP only" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/ipfallback/usegw/text() = 'y'"
+                expr="'PRIMARY_TEST_IP ='"
+              source="config" />
+
+     <arg dependency="/GAUCfg/ipfallback/usegw/text() = 'n'"
+                expr="concat('PRIMARY_TEST_IP = ', /GAUCfg/ipfallback/testip/text())"
+              source="config" />
+
+     <arg expr="\n" />
+     <arg expr="#SECONDARY_TEST_IP - Not implemented yet" />
+     <arg expr="\n" />
+     <arg expr="SECONDARY_TEST_IP =" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#To be added VRRPD starting/stopping" />
+     <arg expr="\n" />
+     <arg expr="#Not implemented yet" />
+     <arg expr="\n" />
+     <arg expr="USE_VRRPD = no" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#Number of seconds to wait between checking an interface for problems" />
+     <arg expr="\n" />
+     <arg expr="#minimum of 10, max 600.  Needs to be 30 or higher for PPP connections (set to 30 if lower)" />
+     <arg expr="\n" />
+     <arg expr="#so the connections have time to come up ( dial, authenticate, get IP info, bind, etc...)" />
+     <arg expr="\n" />
+
+     <arg expr="concat('CHECK_INTERVAL = ', /GAUCfg/ipfallback/interval/text())" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="#PACKETS_TO_SEND = 2-10" />
+     <arg expr="\n" />
+     <arg expr="#The number of 0 byte packets to send out to test connectivity" />
+     <arg expr="\n" />
+     <arg expr="#If less than or = 1, then defaults to 2, if greater than 10 then defaults to 10" />
+
+     <arg expr="\n" />
+
+     <arg expr="concat('PACKETS_TO_SEND = ', /GAUCfg/ipfallback/testpkts/text())" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#PACKET_LOSS_ALLOWED" />
+     <arg expr="\n" />
+     <arg expr="#The number of allowable lost packets must be less than the number of packets to send" />
+     <arg expr="\n" />
+
+     <arg expr="concat('PACKET_LOSS_ALLOWED = ', /GAUCfg/ipfallback/lostpkts/text())" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#Ping Round Count" />
+     <arg expr="\n" />
+     <arg expr="#This is the number of ping rounds that must be successful in a row to switch back from the secondary interface to the primary" />
+     <arg expr="\n" />
+
+     <arg expr="concat('PING_ROUND_COUNT = ', /GAUCfg/ipfallback/pingcount/text())" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#Switch Back Delay" />
+     <arg expr="\n" />
+     <arg expr="#The minimum number of minutes to wait prior to switching from the secondary interface back to the primary interface" />
+     <arg expr="\n" />
+
+     <arg expr="concat('SWITCH_BACK_DELAY = ', /GAUCfg/ipfallback/switchdelay/text())" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg expr="#SNMP_HOST=x.x.x.x where x.x.x.x is a host running snmpd" />
+     <arg expr="\n" />
+     <arg expr="#SNMP_COMMUNITY=public where public is the community name" />
+     <arg expr="\n" />
+     <arg expr="#This might not work.  If the unit this script is running on has snmptrap" />
+     <arg expr="\n" />
+     <arg expr="#for generating traps, then this can be tried.  The script will use the command like:" />
+     <arg expr="\n" />
+     <arg expr="#This can only be enabled if the PRIMARY is ethernet.  The IP of the PRIMARY ethernet" />
+     <arg expr="\n" />
+     <arg expr="#will be sent in the trap" />
+
+     <arg expr="#/path/to/snmptrap -v 1 -c SNMP_COMMUNITY SNMP_HOST 1 PRIMARY_IP 2 0 '' 1 s " />
+     <arg expr="quote()" source="config" />
+     <arg expr="eth0 down, fallback to eth1" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+     <arg expr="#SNMP_HOST=x.x.x.x" />
+     <arg expr="\n" />
+     <arg expr="#SNMP_COMMUNITY=public" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#Debug level (set to 2 or higher for testing if wanted)" />
+     <arg expr="\n" />
+     <arg expr="# 0 for minimal ( goes to syslog via the 'logger' program if available)" />
+     <arg expr="\n" />
+     <arg expr="# 1 for more ( goes to syslog via the 'logger' program if available)" />
+     <arg expr="\n" />
+     <arg expr="# 2 or higher: more output, very noisy, logic tracing" />
+     <arg expr="\n" />
+
+     <arg expr="concat('DEBUG_LEVEL = ', /GAUCfg/ipfallback/debug/text())" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#end ipfallback.conf config file" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move IP Failover configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/ipfallback.conf /etc/jbm/ipfallback.conf" />
+    </astep>
+
+    <astep abort="n" name="SystemCommand">
+     <arg dependency="/GAUCfg/ipfallback/enable/text() = 'n'" expr="'chkconfig ipfallback off'" source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to enable IP Failover Service." name="SystemCommand">
+     <arg dependency="/GAUCfg/ipfallback/enable/text() = 'y'" expr="'chkconfig ipfallback on'" source="config" />
+    </astep>
+Moved to prfhandler_ipfallback-->
+
+    <astep abort="y" errmsg="Failed to save ipfallback configuration" name="SystemCommand">
+     <arg expr="'prfhandler_ipfallback Save'" source="config" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="IP Failover settings applied.">
+
+<!--Moved to prfhandler_ipfallback
+    <pre subsystem="ipfallback" action="Save" />
+
+    <astep abort="n" name="SystemCommand">
+     <arg dependency="/GAUCfg/ipfallback/enable/text() = 'n'" expr="'service ipfallback stop'" source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to start IP Failover Service." name="SystemCommand">
+     <arg dependency="/GAUCfg/ipfallback/enable/text() = 'y'" expr="'service ipfallback restart'" source="config" />
+    </astep>
+Moved to prfhandler_ipfallback-->
+
+    <astep abort="y" errmsg="Failed to apply ipfallback configuration" name="SystemCommand">
+     <arg expr="'prfhandler_ipfallback Apply'" source="config" />
+    </astep>
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

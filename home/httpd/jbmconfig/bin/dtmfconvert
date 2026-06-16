@@ -1,0 +1,1027 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+#dtmf.tty.conf and dtmf.tcp.conf config writer
+#Written by Joe Deakos
+#8/11/05
+#06/18/08 - DL - Rewritten to handle XML connecttable.xml file for new GAU.
+#              - and convert old style connecttable.conf file to xml format
+#              - used in new GAU. Now version 3.01 to coincide with new GAU.
+#
+# 01/29/09  tkb - Fixed logic parenthesis problem in port checking
+#  v3.05  
+#
+# 02/24/09  tkb - Adding chomp to get rid of cut&paste spacing
+#  v3.06
+
+# 03/19/09  tkb - Added a bunch of new options for TRANS and Visa modes
+#  v3.08
+
+
+my $processxmlfile = "FALSE";
+my $convert2xmlfile = "FALSE";
+my $xmlfilename = "";
+my $infilename = "";
+
+my %xmltaglist = (LEFTBRACKET=>"<",RIGHTBRACKET=>">",CLOSEBRACKET=>"<\/",OPENCLOSEBRACKET=>"\/>",
+                  CONNECTTABLE=>"<connecttable>",CONNECTTABLE_C=>"<\/connecttable>",
+                  GENERIC=>"<generic>",GENERIC_C=>"<\/generic>",
+                  FILEMODE=>"<filemode>",FILEMODE_C=>"<\/filemode>",
+                  CONNECTCFGS=>"<connectcfgs>",CONNECTCFGS_C=>"<\/connectcfgs>",
+                  NUMBEROFCFGS=>"<NumberOfconnectcfgs>",NUMBEROFCFGS_C=>"<\/NumberOfconnectcfgs>",
+                  CONNECTCFGREC=>"<connectcfg record=",CONNECTCFGREC_C=>"<\/connectcfg>",
+                  LABEL=>"<label>",LABEL_C=>"<\/label>",
+                  ATCMDDESCRIPT=>"<ATcmddescript>",ATCMDDESCRIPT_C=>"<\/ATcmddescript>",
+                  ATINIT=>"<ATcommand>",ATINIT_C=>"<\/ATcommand>",
+                  MODE=>"<answerdialmode>",MODE_C=>"<\/answerdialmode>",
+                  SECDIAL=>"<>",SECDIAL_C=>"<\/>",
+                  SECDIAL=>"<secondarydial>",SECDIAL_C=>"<\/secondarydial>",
+                  TIMER=>"<timer>",TIMER_C=>"<\/timer>",
+                  DATAMODE=>"<datamode>",DATAMODE_C=>"<\/datamode>",
+                  MSGMODE=>"<msgmode>",MSGMODE_C=>"<\/msgmode>",
+                  SPOOFENQ=>"<spoofenq>",SPOOFENQ_C=>"<\/spoofenq>",
+                  NORXB4TX=>"<norxb4tx>",NORXB4TX_C=>"<\/norxb4tx>",
+                  DISABLEACK=>"<disableack>",DISABLEACK_C=>"<\/disableack>",
+                  HOSTMSGFMT=>"<hostmsgfmt>",HOSTMSGFMT_C=>"<\/hostmsgfmt>",
+                  PASSTHRUACK=>"<passthruack>",PASSTHRUACK_C=>"<\/passthruack>",
+                  TCPHDR=>"<tcphdrtype>",TCPHDR_C=>"<\/tcphdrtype>",
+                  EARLY=>"<earlyconnect>",EARLY_C=>"<\/earlyconnect>",
+                  IP1=>"<ipaddr1>",IP1_C=>"<\/ipaddr1>",
+                  PORT1=>"<port1>",PORT1_C=>"<\/port1>",
+                  IP2=>"<ipaddr2>",IP2_C=>"<\/ipaddr2>",
+                  PORT2=>"<port2>",PORT2_C=>"<\/port2>",
+                  IP3=>"<ipaddr3>",IP3_C=>"<\/ipaddr3>",
+                  PORT3=>"<port3>",PORT3_C=>"<\/port3>",
+                  SPACE2=>"  ",SPACE4=>"    ",SPACE6=>"      ",SPACE8=>"        "
+                 );
+
+$| = 1;
+
+$version = "3.08t";
+
+print "\n\nWSBU dtmf/dnis Configuration Writer v$version\n";
+
+$argc = @ARGV;
+
+if ($argc)
+{
+   my $argCnt = $#ARGV;
+
+   my %argList;
+
+   foreach my $argnum (0 .. $#ARGV)
+          {
+           if ("-h" eq $ARGV[$argnum])
+             {
+              Usage();
+
+              exit(0);
+             }
+
+           my ($argName, $argVal) = split(/=/, $ARGV[$argnum]);
+
+           $argList{$argName} = $argVal;
+          }
+
+   if ($argList{"--x"})
+     {
+      $xmlfilename = $argList{'--x'};
+      $convert2xmlfile = "TRUE";
+     }
+
+   $infilename = $ARGV[0];
+   chomp($infilename);
+
+   my @vars = &parseFile($infilename);
+
+   if ($convert2xmlfile eq "TRUE")
+     {
+      exit(0);
+     }
+
+   &verifyValues(\@vars);
+
+}
+else
+{
+   print "\n\nError: Configuration file required\n\n";
+   Usage();
+   exit(1);
+}
+
+#main exit point
+exit(0);
+
+sub parseFile
+{
+   my $file = $_[0];
+
+   my $fileout = "";       # Holds converted connecttable in xml file format.
+   my $recordlist = "";    # Holds xml records to be added to xml file format.
+   my $recordcount = 0;    # Number of records for xml format.
+
+   open(FILE, $file) or die "\nCannot open configuration file, \"$file\"!\n\n";;
+   my @temp = <FILE>;
+   close(FILE);
+
+   chomp(@temp);
+
+   my %vars = ();
+   my @entry = ();
+
+   $line = $temp[0];
+
+
+   if ($line =~ /^GENERIC=/)
+     {
+      print "Detected '$file' as old style connecttable\n";
+      if ($convert2xmlfile eq "TRUE")
+        {
+         print "Converting '$file' to '$xmlfilename' xml format.\n";
+
+         $fileout .= "$xmltaglist{CONNECTTABLE}\n";
+        }
+     }
+   elsif ($line =~ /<connecttable/)
+     {
+      print "Detected '$file' as xml style connecttable\n";
+      $processxmlfile = "TRUE";
+     }
+   else
+     {
+        print "\n\nError: Do not recognize this file format.\n";
+        exit(1);
+     }
+
+   foreach my $line (@temp)
+   {
+    $line =~ s/\s*$//g;
+    if ($processxmlfile eq "TRUE")
+      {
+      if ($line =~ /<generic>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         push(@entry, $tagdata[0]);
+        }
+      elsif ($line =~ /<filemode>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         push(@entry, $tagdata[0]);
+        }
+      elsif ($line =~ /<connectcfg record=/)
+        {
+         $label = "";
+         $atinit = "";
+         $mode = "";
+         $secdial = "";
+         $timer = "";
+         $msgmode = "";
+         $datamode = "";
+         $spoof = "";
+         $norxb4tx = "";
+         $disableack = "";
+         $hostmsgfmt = "";
+         $passthruack = "";
+         $ip1 = "";
+         $port1 = "";
+         $ip2 = "";
+         $port2 = "";
+         $ip3 = "";
+         $port3 = "";
+         $header = "";
+         $early = "";
+        }
+      elsif ($line =~ /<\/connectcfg>/)
+        {
+           push(@entry, {label=>$label,atinit=>$atinit,mode=>$mode,secdial=>$secdial,timer=>$timer,ip1=>$ip1,port1=>$port1,
+                         spoof=>$spoof,msgmode=>$msgmode,datamode=>$datamode,norxb4tx=>$norxb4tx,disableack=>$disableack,hostmsgfmt=>$hostmsgfmt,passthruack=>$passthruack,
+                         ip2=>$ip2,port2=>$port2,ip3=>$ip3,port3=>$port3,header=>$header,early=>$early});
+        }
+      elsif ($line =~ /<label>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $label = $tagdata[0];
+        }
+      elsif ($line =~ /<ATcommand>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $atinit = $tagdata[0];
+        }
+      elsif ($line =~ /<answerdialmode>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $mode = $tagdata[0];
+        }
+      elsif ($line =~ /<secondarydial>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $secdial = $tagdata[0];
+        }
+      elsif ($line =~ /<timer>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $timer = $tagdata[0];
+        }
+      elsif ($line =~ /<datamode>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $datamode = $tagdata[0];
+        }
+      elsif ($line =~ /<msgmode>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $msgmode = $tagdata[0];
+        }
+      elsif ($line =~ /<spoofenq>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $spoof = $tagdata[0];
+        }
+      elsif ($line =~ /<norxb4tx>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $norxb4tx = $tagdata[0];
+        }
+      elsif ($line =~ /<disableack>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $disableack = $tagdata[0];
+        }
+      elsif ($line =~ /<hostmsgfmt>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $hostmsgfmt = $tagdata[0];
+        }
+      elsif ($line =~ /<passthruack>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $passthruack = $tagdata[0];
+        }
+      elsif ($line =~ /<ipaddr1>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $ip1 = $tagdata[0];
+        }
+      elsif ($line =~ /<port1>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $port1 = $tagdata[0];
+        }
+      elsif ($line =~ /<ipaddr2>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $ip2 = $tagdata[0];
+        }
+      elsif ($line =~ /<port2>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $port2 = $tagdata[0];
+        }
+      elsif ($line =~ /<ipaddr3>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $ip3 = $tagdata[0];
+        }
+      elsif ($line =~ /<port3>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $port3 = $tagdata[0];
+        }
+      elsif ($line =~ /<tcphdrtype>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $header = $tagdata[0];
+        }
+      elsif ($line =~ /<earlyconnect>/)
+        {
+         my @tagdata;
+         @tagdata = split (/>/,$line);
+         $line = $tagdata[1];
+         @tagdata = split (/</,$line);
+         $early = $tagdata[0];
+        }
+      } #end parsing XML file
+    else
+    { #begin parsing old style connecttable.conf
+      if ($line =~ /^GENERIC=/)
+      {
+         $line =~ s/^GENERIC=//;
+         push(@entry, $line);
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $fileout .= "$xmltaglist{SPACE2}$xmltaglist{GENERIC}$line$xmltaglist{GENERIC_C}\n";
+         }
+      }
+      elsif ($line =~ /^FILEMODE=/)
+      {
+         $line =~ s/^FILEMODE=//;
+         push(@entry, $line);
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $fileout .= "$xmltaglist{SPACE2}$xmltaglist{FILEMODE}$line$xmltaglist{FILEMODE_C}\n";
+         }
+      }
+      elsif ($line =~ /^\[ENT/)
+      {
+         $label = "";
+         $atinit = "";
+         $mode = "";
+         $secdial = "";
+         $timer = "";
+         $ip1 = "";
+         $port1 = "";
+         $ip2 = "";
+         $port2 = "";
+         $ip3 = "";
+         $port3 = "";
+         $msgmode = "";
+         $datamode = "";
+         $spoof = "";
+         $header = "";
+         $early = "";
+         $norxb4tx = "";
+         $disableack = "";
+         $hostmsgfmt = "";
+         $passthruack = "";
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordcount++;
+
+            $recordlist .= "$xmltaglist{SPACE4}$xmltaglist{CONNECTCFGREC}\"$recordcount\"$xmltaglist{RIGHTBRACKET}\n";
+         }
+      }
+      elsif ($line =~ /^\[\/ENT/)
+      {
+         push(@entry, {label=>$label,atinit=>$atinit,mode=>$mode,secdial=>$secdial,timer=>$timer,
+                       spoof=>$spoof,msgmode=>$msgmode,datamode=>$datamode,
+                       norxb4tx=>$norxb4tx,disableack=>$disableack,hostmsgfmt=>$hostmsgfmt,passthruack=>$passthruack,
+                       ip1=>$ip1,port1=>$port1,ip2=>$ip2,port2=>$port2,ip3=>$ip3,port3=>$port3,header=>$header,early=>$early});
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE4}$xmltaglist{CONNECTCFGREC_C}\n";
+         }
+      }
+      elsif ($line =~ /^LABEL=/)
+      {
+         ($label = $line) =~ s/^LABEL=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{LABEL}$label$xmltaglist{LABEL_C}\n";
+         }
+      }
+      elsif ($line =~ /^ATINIT=/)
+      {
+         ($atinit = $line) =~ s/^ATINIT=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{ATCMDDESCRIPT}User_Defined$xmltaglist{ATCMDDESCRIPT_C}\n";
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{ATINIT}$atinit$xmltaglist{ATINIT_C}\n";
+         }
+      }
+      elsif ($line =~ /^MODE=/)
+      {
+         ($mode = $line) =~ s/^MODE=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{MODE}$mode$xmltaglist{MODE_C}\n";
+         }
+      }
+      elsif ($line =~ /^MSGMODE=/)
+      {
+         ($msgmode = $line) =~ s/^MSGMODE=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{MSGMODE}$msgmode$xmltaglist{MSGMODE_C}\n";
+         }
+      }
+      elsif ($line =~ /^DATAMODE=/)
+      {
+         ($datamode = $line) =~ s/^DATAMODE=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{DATAMODE}$datamode$xmltaglist{DATAMODE_C}\n";
+         }
+      }
+      elsif ($line =~ /^TCPHDR=/)
+      {
+         ($header = $line) =~ s/^TCPHDR=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{TCPHDR}$header$xmltaglist{TCPHDR_C}\n";
+         }
+      }
+      elsif ($line =~ /^EARLY=/)
+      {
+         ($early = $line) =~ s/^EARLY=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{EARLY}$early$xmltaglist{EARLY_C}\n";
+         }
+      }
+      elsif ($line =~ /^SPOOFENQ=/)
+      {
+         ($spoof = $line) =~ s/^SPOOFENQ=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{SPOOFENQ}$spoof$xmltaglist{SPOOFENQ_C}\n";
+         }
+      }
+      elsif ($line =~ /^SECDIAL=[^na]/)
+      {
+         ($secdial = $line) =~ s/^SECDIAL=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{SECDIAL}$secdial$xmltaglist{SECDIAL_C}\n";
+         }
+      }
+      elsif ($line =~ /^TIMER=/)
+      {
+         ($timer = $line) =~ s/^TIMER=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{TIMER}$timer$xmltaglist{TIMER_C}\n";
+         }
+      }
+      elsif ($line =~ /^NORXB4TX=/) # Y or N
+      {
+         ($norxb4tx = $line) =~ s/^NORXB4TX=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{NORXB4TX}$norxb4tx$xmltaglist{NORXB4TX_C}\n";
+         }
+
+      }
+      elsif ($line =~ /^DISABLEACK=/) # Y or N
+      {
+         ($disableack = $line) =~ s/^DISABLEACK=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{DISABLEACK}$disableack$xmltaglist{DISABLEACK_C}\n";
+         }
+
+      }
+      elsif ($line =~ /^HOSTMSGFMT=/) # various options
+      {
+         ($hostmsgfmt = $line) =~ s/^HOSTMSGFMT=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{HOSTMSGFMT}$hostmsgfmt$xmltaglist{HOSTMSGFMT_C}\n";
+         }
+
+      }
+      elsif ($line =~ /^PASSTHRUACK=/) # Y or N
+      {
+         ($passthruack = $line) =~ s/^PASSTHRUACK=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{PASSTHRUACK}$passthruack$xmltaglist{PASSTHRUACK_C}\n";
+         }
+
+      }
+      elsif ($line =~ /^IP1=/)
+      {
+         ($ip1 = $line) =~ s/^IP1=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{IP1}$ip1$xmltaglist{IP1_C}\n";
+         }
+      }
+      elsif ($line =~ /^PORT1=/)
+      {
+         ($port1 = $line) =~ s/^PORT1=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{PORT1}$port1$xmltaglist{PORT1_C}\n";
+         }
+      }
+      elsif ($line =~ /^IP2=/)
+      {
+         ($ip2 = $line) =~ s/^IP2=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{IP2}$ip2$xmltaglist{IP2_C}\n";
+         }
+      }
+      elsif ($line =~ /^PORT2=/)
+      {
+         ($port2 = $line) =~ s/^PORT2=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{PORT2}$port2$xmltaglist{PORT2_C}\n";
+         }
+      }
+      elsif ($line =~ /^IP3=/)
+      {
+         ($ip3 = $line) =~ s/^IP3=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{IP3}$ip3$xmltaglist{IP3_C}\n";
+         }
+      }
+      elsif ($line =~ /^PORT3=/)
+      {
+         ($port3 = $line) =~ s/^PORT3=//;
+
+         if ($convert2xmlfile eq "TRUE")
+         {
+            $recordlist .= "$xmltaglist{SPACE6}$xmltaglist{PORT3}$port3$xmltaglist{PORT3_C}\n";
+         }
+      }
+    } #end parsing old style connecttable.conf
+
+   }
+
+   if ($convert2xmlfile eq "TRUE")
+     {
+      print "Finished converting '$file' to '$xmlfilename' xml format.\n";
+
+      $fileout .= "$xmltaglist{SPACE2}$xmltaglist{CONNECTCFGS}\n";
+      $fileout .= "$xmltaglist{SPACE4}$xmltaglist{NUMBEROFCFGS}$recordcount$xmltaglist{NUMBEROFCFGS_C}\n";    
+      $fileout .= $recordlist;
+      $fileout .= "$xmltaglist{SPACE2}$xmltaglist{CONNECTCFGS_C}\n";      
+      $fileout .= "$xmltaglist{CONNECTTABLE_C}\n";
+
+      open(XMLFILE, "+>$xmlfilename");
+      print XMLFILE $fileout;
+      close(XMLFILE);
+     }
+
+   return @entry;
+
+}
+
+sub verifyValues
+{
+
+   my $entry = $_[0];
+   
+   my $generic = shift(@$entry);
+   my $filemode = shift(@$entry);
+
+
+   my $error = "";
+
+
+   if ($filemode !~ /^(DNIS|DTMF)/)
+   {
+      $error .= "Invalid FILEMODE entered: $filemode\n\tMust be DNIS|DTMF\n";
+
+   }
+
+   
+
+   foreach my $i (@$entry)
+   {
+           
+      if ($i->{'label'} !~ /^default$/)
+      {     
+
+         if ($generic eq "Y")
+         {
+            if ($i->{'label'} !~ /^\d{1}$/)
+            {
+               $error .= "Invalid LABEL entered: $i->{'label'}\n\tMust be only one digit or default in Generic mode\n"
+            }      
+         }
+         elsif ($i->{'label'} !~ /^\d+$/) 
+         {
+            $error .= "Invalid LABEL entered: $i->{'label'}\n\tMust be digits or default\n"
+         }
+
+      }
+      
+      if (($i->{'ip1'} !~ /^.+$/ && $i->{'mode'} !~ /DIAL/) || (!&checkIP($i->{'ip1'}) && $i->{'ip1'} =~ /^.+$/ && $i->{'ip1'} !~ /^\w+(-|\.|\w)*/g))
+      {
+         $error .= "Invalid IP1 entered: $i->{'ip1'}\n\tMust be not blank with a valid IP or hostname\n";
+      }
+   
+      if (($i->{'port1'} !~ /^.+$/ && $i->{'mode'} !~ /DIAL/) || ( $i->{'ip1'} =~ /^.+$/ &&  ($i->{'port1'} < 1 || $i->{'port1'} > 65534)  ))
+      {
+         $error .= "Invalid PORT1 entered: $i->{'port1'}\n\tMust be not blank and a Port Number between 1 and 65534\n";
+      }
+   
+   
+      if ($i->{'atinit'} !~ /^AT/)
+      {
+         $error .= "Invalid ATINIT entered: $i->{'atinit'}, must starte with 'AT'\n";
+      }
+   
+      
+   
+      if ($i->{'mode'} !~ /^(ANSWEROLD|ANSWER|DIALNOTIFY|DIAL|SECONDARYDIAL)/)
+      {
+         $error .= "Invalid MODE entered: $i->{'mode'}\n\tMust be ANSWEROLD|ANSWER|DIALNOTIFY|DIAL|SECONDARYDIAL\n";
+      }
+   
+      if ($i->{'mode'} =~ /^SECONDARYDIAL/)
+      {
+         if ($i->{'secdial'} !~ /^.+$/)
+         {
+            $error .= "Invalid SECDIAL entered: $i->{'secdial'}\n\tMust be completed when mode=SECONDARYDIAL\n";
+         }
+      }
+      
+      if ($i->{'mode'} =~ /^ANSWER_TRITON_CONNECT/)
+      {
+         if ($i->{'timer'} !~ /^\d+$/)
+         {
+            #default to 150 if not given
+            $i->{'timer'} = 150;
+         }
+         elsif($i->{'timer'} < 10 || $i->{'timer'} > 5000)
+         {
+            $error .= "Invalid TIMER entered: $i->{'timer'}\n\tMust be a value 10 - 5000\n";
+         }
+      }
+   
+      if ($i->{'ip2'} =~ /^.+$/ && !&checkIP($i->{'ip2'}) && $i->{'ip2'} !~ /^\w+(-|\.|\w)*/g)
+      {
+         $error .= "Invalid IP2 entered: $i->{'ip2'}\n\tMust be not blank and a valid IP or valid hostname\n";
+      }
+   
+      if ($i->{'port2'} =~ /^.+$/ && ($i->{'port2'} < 1 || $i->{'port2'} > 65534))
+      {
+         $error .= "Invalid PORT2 entered: $i->{'port2'}\n\tPort Number must be between 1 and 65534\n";
+      }
+   
+      if ($i->{'ip3'} =~ /^.+$/ && !&checkIP($i->{'ip3'}) && $i->{'ip3'} !~ /^\w+(-|\.|\w)*/g)
+      {
+         $error .= "Invalid IP3 entered: $i->{'ip3'}\n\tMust be a valid IP or valid hostname\n";
+      }
+   
+      if ($i->{'port3'} =~ /^.+$/ && ($i->{'port3'} < 1 || $i->{'port3'} > 65534))
+      {
+         $error .= "Invalid PORT3 entered: $i->{'port3'}\n\tPort Number must be between 1 and 65534\n";
+      }
+      
+   }
+
+   
+
+   if ($error ne "")
+   {
+
+      print "\n\nErrors:\n$error";
+      exit(1);
+   }
+   else
+   {
+      &writeFiles($generic, $filemode, $entry);
+   }
+
+  
+
+}
+
+sub writeFiles
+{
+
+   my $generic = $_[0];
+   my $filemode = $_[1];
+   my $vars = $_[2];
+   $tty = "";
+   $tcp = "";
+
+
+
+   if ($generic eq "Y")
+   {
+
+      $tty = "$$vars[0]->{'label'};$$vars[0]->{'atinit'};+;$$vars[0]->{'label'};N\n";
+      $tcp = "$$vars[0]->{'label'}^$$vars[0]->{'ip1'} $$vars[0]->{'port1'}^NO";
+
+      if ($$vars[0]->{'header'} ne "DEFAULT")
+      {
+         $tcp .= "^$$vars[0]->{'header'}\n";
+      }
+      else
+      {
+         $tcp .= "\n";
+      }
+
+   }
+   else
+   {
+
+      foreach my $i (@$vars)
+      {
+   
+         my $sign = "+";
+         my $key = "$i->{'label'}";
+         my $early = $i->{'early'};
+         my $tcpyes = "NO";
+         my $label = $i->{'label'};
+         my $end = "";
+         my $extra_timer = 0;
+      
+         
+         if ($i->{'mode'} eq "DIAL")
+         {
+            $sign = "-";
+            $key = "-";
+            $extra_timer = 1;
+         }
+         elsif ($i->{'mode'} eq "ANSWEROLD")
+         {
+            $sign = $i->{'ip1'};
+            $key = $i->{'port1'};
+   
+         }
+         elsif ($i->{'mode'} eq "SECONDARYDIAL")
+         {
+            $early = "Y";
+            $tcpyes = "YES";
+            $key = $i->{'secdial'};
+            $label = $key;
+            $extra_timer = 1;
+         }         
+         elsif ($i->{'mode'} eq "DIALNOTIFY")
+         {
+            $key = "CONNECT";
+            $extra_timer = 1;
+         }
+         elsif ($i->{'mode'} eq "ANSWER_TRITON_TRANS")
+         {
+            #none
+         }
+         elsif ($i->{'mode'} eq "ANSWER_TRITON_CONNECT")
+         {
+            $extra_timer = 1;
+         }
+         elsif ($i->{'mode'} eq "ANSWER")
+         {
+            #none
+         }
+         
+         
+
+         $xxxx = "MULTI";
+         
+         if ($i->{'msgmode'} eq "TRANSPARENT")
+         {
+            $xxxx = "TRANS";
+         }
+         elsif ($i->{'msgmode'} eq "VISA")
+         {
+            $xxxx = "SINGLE";
+         }
+         elsif ($i->{'msgmode'} eq "VISA2")
+         {
+            $xxxx = "MULTI";
+         }
+
+         $yyyy = $i->{'datamode'};
+         $z = "";
+
+         if ($extra_timer)
+         {
+            if ($i->{'timer'} =~ /^\d+$/ )
+            {
+               $tim_val = $i->{'timer'};
+            }
+            else
+            {
+               $tim_val = 150;
+            }
+
+            if ($i->{'spoof'} =~ /N/)
+            {
+               $z = ";$tim_val;0";
+            }
+            else
+            {
+               $z = ";$tim_val;1";
+            } 
+
+            if ($i->{'norxb4tx'} =~ /N/)  #No RX before TX
+            {
+               $z .= ";N";
+            }
+            elsif ($i->{'norxb4tx'} =~ /Y/)
+            {
+               $z .= ";Y";
+            }
+            else
+            {
+               $z .= ";N";  #default for dtmf without values
+            }
+
+            if ($i->{'disableack'} =~ /N/)  #Disable VISA Ack
+            {
+               $z .= ";N";
+            }
+            elsif ($i->{'disableack'} =~ /Y/)
+            {
+               $z .= ";Y";
+            }
+            else
+            {
+               $z .= ";x"; #default for dtmf without values
+            }
+
+
+            if ($i->{'hostmsgfmt'} eq "PAYLOAD")
+            {
+               $z .= ";PAYLOAD";
+            }
+            elsif ($i->{'hostmsgfmt'} eq "ETXONLY")
+            {
+               $z .= ";ETXONLY";
+            }
+            elsif ($i->{'hostmsgfmt'} eq "STXETXNOLRC")
+            {
+               $z .= ";STXETXNOLRC";
+            }
+            elsif ($i->{'hostmsgfmt'} eq "STXETXLRC")
+            {
+               $z .= ";STXETXLRC";
+            }
+            else 
+            {
+               $z .= ";DEFAULT";
+            }
+
+            if ($i->{'passthruack'} =~ /N/)  #Allow Passthru to HOST
+            {
+               $z .= ";N";
+            }
+            elsif ($i->{'passthruack'} =~ /Y/)
+            {
+               $z .= ";Y";
+            }
+            else
+            {
+               $z .= ";x"; #default for dtmf without values
+            }
+
+         }
+         
+
+         $end = ";$xxxx;$yyyy$z";
+   
+   
+         $tty .= "$i->{'label'};$i->{'atinit'};$sign;$key;$early$end\n";
+   
+         $tcp .= "$label^$i->{'ip1'} $i->{'port1'}";         
+            
+         for (my $j = 2; $j <= 3; $j++)
+         {
+            my $tip = "ip$j";
+            my $tport = "port$j";
+   
+            if ($i->{$tip} !~ /^.+$/)
+            {
+               last;
+            }
+   
+            $tcp .= ";$i->{$tip} $i->{$tport}";
+         }
+   
+         $tcp .= "^$tcpyes";
+
+         if ($i->{'header'} ne "DEFAULT")
+         {
+            $tcp .= "^$i->{'header'}\n";
+         }
+         else
+         {
+            $tcp .= "\n";
+         }
+         
+   
+      }
+
+   }
+
+   #print "\n\nTTY:\n$tty\n\n";
+   #print "TCP:\n$tcp\n\n";
+
+   print " - SUCCESS\n\n";
+
+   my $filelowercase = lc($filemode);
+
+   my $filetty = "";
+   my $filetcp = "";
+
+   $filetty = "/home/jbmgatew/" . $filelowercase . "tty.conf";
+   $filetcp = "/home/jbmgatew/" . $filelowercase . "tcp.conf";
+
+   open(TTY, "+>$filetty");
+   print TTY $tty;
+   close(TTY);
+
+   open(TCP, "+>$filetcp");
+   print TCP $tcp;
+   close(TCP);
+
+   print "Restarting Application\n\n";
+
+   system("/usr/bin/killall gwlnx");
+}
+
+sub checkIP
+{
+      return $_[0] =~ /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/  &&
+      $1 >= 0 && $1 <= 255 && $1 !~ /^0\d+$/ &&
+      $2 >= 0 && $2 <= 255 && $2 !~ /^0\d+$/ &&
+      $3 >= 0 && $3 <= 255 && $3 !~ /^0\d+$/ &&
+      $4 >= 0 && $4 <= 255 && $4 !~ /^0\d+$/;
+}
+
+sub Usage
+   {
+     print "\nUsage:\n\n"                                                                                           .
+           "dtmfconvert <filename1> [{-h}{--x=<filename2>}]\n\n"                                                    .                                                                                                         
+           "Creates dtmf/dnis configuration files for gwlnx.\n"                                                     .                                     
+           "<filename> - Connect table configuration file used to create dtmf/dnis configuration files.\n\n"        .
+           "Options:\n"                                                                                             .
+           "        --x=<filename2> - Convert old style connecttable.conf file to xml formatted file, <filename2>.\n"       .
+           "        -h - Displays the usage information summary you are now reading.\n";
+
+   }

@@ -1,0 +1,268 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                              <!--
+               Admin -> System Time Settings Section
+
+  V2.20 behaviors (taken from cfg_adm.cpp - ApplySysTimeSettings()):
+
+  +==========+================================================================================================+============+
+  |  ACTION  |                           STEP                                                                 | ON FAILURE |
+  +==========+================================================================================================+============+
+  |    Apply | Verify month, day, year, hour, minute, second, timezone, ntpenable, ntphost, ntpupdateinterval | Abort      |
+  |          | present in POST data.                                                                          |            |
+  |          +------------------------------------------------------------------------------------------------+------------+
+  |          | Verify ntpenable = 'y' or 'n'                                                                  | Abort      |
+  |          +------------------------------------------------------------------------------------------------+------------+
+  |          | Verify ntpupdateinterval = 'hourly', 'daily' or 'monthly'                                      | Abort      |
+  |          +------------------------------------------------------------------------------------------------+------------+
+  |          | Verify month, day, year, hour, minute, second are numeric                                      | Abort      |
+  |          +------------------------------------------------------------------------------------------------+------------+
+  |          | Build script '/tmp/systime.sh' to set date/time:                                               | Abort      |
+  |          |                                                                                                |            |
+  |          | rm -f /etc/localtime                                                                           |            |
+  |          | ln -sf /etc/timezones/{timezone} /etc/localtime                                                |            |
+  |          |                                                                                                |            |
+  |          | if ("yes" == ntpenable)                                                                        |            |
+  |          |   {                                                                                            |            |
+  |          |    /bin/itime {ntphost}                                                                        |            |
+  |          |                                                                                                |            |
+  |          |    if (/var/cron/tabs/root readable)                                                           |            |
+  |          |      {                                                                                         |            |
+  |          |       if (file contains '/bin/itime {ntphost}')                                                |            |
+  |          |         {                                                                                      |            |
+  |          |          comment out line                                                                      |            |
+  |          |         }                                                                                      |            |
+  |          |        else                                                                                    |            |
+  |          |            {                                                                                   |            |
+  |          |             if ("daily" == ntpinterval)                                                        |            |
+  |          |               {                                                                                |            |
+  |          |                append '0 0 * * * /bin/itime {ntphost}' to /var/cron/tabs/root                  |            |
+  |          |               }                                                                                |            |
+  |          |                                                                                                |            |
+  |          |             if ("hourly" == ntpinterval)                                                       |            |
+  |          |               {                                                                                |            |
+  |          |                append '0 * * * * /bin/itime {ntphost}' to /var/cron/tabs/root                  |            |
+  |          |               }                                                                                |            |
+  |          |                                                                                                |            |
+  |          |             if ("weekly" == ntpinterval)                                                       |            |
+  |          |               {                                                                                |            |
+  |          |                append '0 0 * * 0 /bin/itime {ntphost}' to /var/cron/tabs/root                  |            |
+  |          |               }                                                                                |            |
+  |          |   }                                                                                            |            |
+  |          |  else                                                                                          |            |
+  |          |      {                                                                                         |            |
+  |          |       date {month} {day} {hour} {minute} {year}                                                |            |
+  |          |       hwclock --systohc                                                                        |            |
+  |          |                                                                                                |            |
+  |          |       if (/var/cron/tabs/root readable)                                                        |            |
+  |          |         {                                                                                      |            |
+  |          |          if (file contains 'itime')                                                            |            |
+  |          |            {                                                                                   |            |
+  |          |             comment out line                                                                   |            |
+  |          |            }                                                                                   |            |
+  |          |         }                                                                                      |            |
+  |          |      }                                                                                         |            |
+  |          |                                                                                                |            |
+  |          | exit                                                                                           |            |
+  |          +------------------------------------------------------------------------------------------------+------------+
+  |          | chmod u+rx /tmp/systime.sh                                                                     | Abort      |
+  |          +------------------------------------------------------------------------------------------------+------------+
+  |          | /tmp/systime.sh > /dev/null 2>&1 &                                                             | Abort      |
+  +==========+================================================================================================+============+  -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/systime.prf" name="systime">
+   <validation>
+    <!-- Current time settings moved to systime.cgi
+    <vstep errmsg="Invalid Month. Must be a two-digit number from 01-12."
+             name="month"
+             test="isnumber(/input/month/text()) and string-length(/input/month/text()) = 2 and
+                 /input/month/text() < 13 and /input/month/text() > 0" />
+    <vstep errmsg="Invalid Day. Must be a two-digit number from 01-31."
+             name="day"
+             test="isnumber(/input/day/text()) and string-length(/input/day/text()) = 2 and
+                  /input/day/text() < 32 and /input/day/text() > 0" />
+    <vstep errmsg="Invalid Year. Must be a four-digit number."
+             name="year"
+             test="isnumber(/input/year/text()) and string-length(/input/year/text()) = 4" />
+    <vstep errmsg="Invalid Hour. Must be a two-digit number less than 24."
+             name="hour"
+             test="isnumber(/input/hour/text())                   and
+                             string-length(/input/hour/text())= 2 and
+                             /input/hour/text() < 24" />
+    <vstep errmsg="Invalid Minute. Must be a two-digit number less than 60."
+             name="minute"
+             test="isnumber(/input/minute/text())                   and
+                            string-length(/input/minute/text()) = 2 and
+                            /input/minute/text() < 60" />
+    <vstep errmsg="Invalid Second. Must be a two-digit number less than 60."
+             name="second"
+             test="isnumber(/input/second/text())                   and
+                            string-length(/input/second/text()) = 2 and
+                            /input/second/text() < 60" />
+    -->
+    <vstep errmsg="Invalid NTP Server Address. Must be a valid IPv4 address or FQDN."
+             name="ntphost"
+             test="/input/ntp/text() = 'n'; /input/ntp/text()='y'           and
+                   isipaddr(/input/ntphost/text()); /input/ntp/text() = 'y' and
+                   isfqdn(/input/ntphost/text())" />
+    <vstep errmsg="Invalid NTP Interval. Must be either 'Hourly', 'Daily' or 'Weekly'."
+             name="ntpinterval"
+              test="/input/ntp/text() = 'n'; /input/ntp/text() = 'y'         and
+                    /input/ntpinterval/text() = 'h'; /input/ntp/text() = 'y' and
+                    /input/ntpinterval/text() = 'd'; /input/ntp/text() = 'y' and
+                    /input/ntpinterval/text() = 'w'" />
+    <vstep errmsg="Invalid Time Zone."
+             name="timezone"
+             test="string-length(/input/timezone/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <!-- Current time settings moved to systime.cgi
+    <cstep errmsg="Unable to save Month to system configuration file."
+             name="month"
+             path="/GAUCfg/systime/month" />
+    <cstep errmsg="Unable to save Day to system configuration file."
+             name="day"
+             path="/GAUCfg/systime/day" />
+    <cstep errmsg="Unable to save Year to system configuration file."
+             name="year"
+             path="/GAUCfg/systime/year" />
+    <cstep errmsg="Unable to save Hour to system configuration file."
+             name="hour"
+             path="/GAUCfg/systime/hour" />
+    <cstep errmsg="Unable to save Minute to system configuration file."
+             name="minute"
+             path="/GAUCfg/systime/minute" />
+    <cstep errmsg="Unable to save Second to system configuration file."
+             name="second"
+             path="/GAUCfg/systime/second" />
+    -->
+    <cstep errmsg="Unable to save Time Zone to system configuration file."
+             name="timezone"
+             path="/GAUCfg/systime/timezone" />
+    <cstep errmsg="Unable to save NTP to system configuration file."
+             name="ntp"
+             path="/GAUCfg/systime/ntp" />
+    <cstep errmsg="Unable to save NTP Host to system configuration file."
+             name="ntphost"
+             path="/GAUCfg/systime/ntphost" />
+    <cstep errmsg="Unable to save NTP Interval to system configuration file."
+             name="ntpinterval"
+             path="/GAUCfg/systime/ntpinterval" />
+   </configuration>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+
+    <!-- Set the timezone -->
+
+    <astep abort="y" dependency="true()" errmsg="Failed to set timezone" name="SystemCommand">
+     <arg   expr="concat('ln -sf /etc/timezones/', /GAUCfg/systime/timezone/text(), ' /etc/localtime')"
+          source="config" />
+    </astep>
+
+
+    <!-- Remove any itime jobs from cron.hourly,daily,weekly -->
+
+    <astep abort="y" dependency="true()" errmsg="Failed to disable existing NTP updates" name="SystemCommand">
+     <arg expr="rm -f /etc/cron.hourly/itime /etc/cron.daily/itime /etc/cron.weekly/itime" />
+    </astep>
+
+
+    <!-- Set current system time, if applicable -->
+
+    <!-- Current time settings moved to systime.cgi
+    <astep      abort="y"
+               errmsg="Failed to set current system time" name="SystemCommand"
+           dependency="/GAUCfg/systime/ntp/text() = 'n'">
+     <arg   expr="concat(
+                         'date -s ',
+                         quote(),
+                         /GAUCfg/systime/month/text(),
+                         '/',
+                         /GAUCfg/systime/day/text(),
+                         '/',
+                         /GAUCfg/systime/year/text(),
+                         ' ',
+                         /GAUCfg/systime/hour/text(),
+                         ':',
+                         /GAUCfg/systime/minute/text(),
+                         ':',
+                         /GAUCfg/systime/second/text(),
+                         quote()
+                        )"
+          source="config" />
+    </astep>
+
+    <astep      abort="n"
+               errmsg="" name="SystemCommand"
+           dependency="/GAUCfg/systime/ntp/text() = 'n'">
+            <arg expr="hwclock &#45;&#45;systohc" />
+    </astep>
+    -->
+
+
+    <!-- Setup itime job in correct directory, if applicable -->
+
+    <astep      abort="y"
+           dependency="/GAUCfg/systime/ntp/text() = 'y'"
+               errmsg="Failed to create NTP update task"
+                 name="WriteFile">
+     <arg expr="/tmp/itime" />
+     <arg expr="#!/bin/bash" />
+     <arg expr="concat('itime ', /GAUCfg/systime/ntphost/text())" source="config" />
+    </astep>
+
+    <astep      abort="y"
+           dependency="/GAUCfg/systime/ntp/text() = 'y'"
+               errmsg="Failed to set permissions for NTP update task"
+                 name="SystemCommand">
+     <arg expr="chmod 500 /tmp/itime" />
+    </astep>
+
+
+    <astep      abort="y"
+           dependency="/GAUCfg/systime/ntp/text() = 'y' and /GAUCfg/systime/ntpinterval/text() = 'h'"
+               errmsg="Failed to enable hourly NTP updates"
+                 name="SystemCommand">
+     <arg expr="cp -f /tmp/itime /etc/cron.hourly" />
+    </astep>
+
+    <astep      abort="y"
+           dependency="/GAUCfg/systime/ntp/text() = 'y' and /GAUCfg/systime/ntpinterval/text() = 'd'"
+               errmsg="Failed to enable daily NTP updates"
+                 name="SystemCommand">
+     <arg expr="cp -f /tmp/itime /etc/cron.daily" />
+    </astep>
+
+    <astep      abort="y"
+           dependency="/GAUCfg/systime/ntp/text() = 'y' and /GAUCfg/systime/ntpinterval/text() = 'w'"
+               errmsg="Failed to enable weekly NTP updates"
+                 name="SystemCommand">
+     <arg expr="cp -f /tmp/itime /etc/cron.weekly" />
+    </astep>
+
+    <astep      abort="n"
+           dependency="/GAUCfg/systime/ntp/text() = 'y'"
+               errmsg="Named NTP host appears to be not responding."
+                 name="SystemCommand">
+
+     <arg expr="/tmp/itime" />
+    </astep>
+
+    <astep abort="n"
+            name="SystemCommand">
+     <arg expr="rm -f /tmp/itime" />
+    </astep>
+
+   </action>
+
+   <action name="Save" successmsg="">
+    <pre subsystem="systime" action="Apply" />
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

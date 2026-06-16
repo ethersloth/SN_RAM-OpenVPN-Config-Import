@@ -1,0 +1,15 @@
+<h4>Description</h4>
+<p>
+The Master API Key is used to automatically register a device to the cloud.
+<br></br>
+After device registration is complete, the Device API Key and Device ID will be
+added to the RAMQTT configuration and the Master API Key will be removed.
+<h4>Auto Registration Across Mulitple Devices</h4>
+The Master API Key can be reused to allow auto registration across multiple
+devices. Once the desired configuration is finished, instead of clicking Apply,
+click the Save button. The configuration will be saved and the RAMQTT service will
+not be started. This avoids RAMQTT starting the registration process and removing
+the Master API Key from the configuration. Navigate to Configuration Manager page
+and export the RAMQTT subsystem. Once the subsystem is exported, this
+configuration can be reused to auto register other devices.
+</p>

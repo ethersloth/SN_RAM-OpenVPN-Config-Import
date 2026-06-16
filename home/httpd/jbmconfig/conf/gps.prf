@@ -1,0 +1,314 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                             <!--
+                Network -> GPS Settings Section                                                            -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/gps.prf" name="gps">
+   <validation>
+    <vstep errmsg="Invalid Data Source. Must be either 'gpsd' or 'tty'"
+               id="step1"
+             name="datasrc"
+             test="/input/datasrc/text() = 'gpsd' or /input/datasrc/text() = 'tty'" />
+
+    <vstep     id="step2"
+             name="datasrc1"
+           skipto="step4"
+             test="/input/datasrc/text() = 'gpsd'" />
+
+    <vstep errmsg="No tty port specified."
+               id="step3"
+             name="ttyport"
+             test="string-length(/input/ttyport/text()) > 0" />
+
+    <vstep errmsg="Lockdown Radius Multiplier must be specified."
+               id="step4"
+             name="lrm"
+             test="string-length(/input/lrm/text()) > 0" />
+
+    <vstep errmsg="Minimum Accuracy must be specified and must be a number."
+               id="step5"
+             name="ma"
+             test="string-length(/input/ma/text()) > 0 and isnumber(/input/ma/text())" />
+
+    <vstep errmsg="Fixed Lockdown Radius must be specified and must be a number."
+               id="step6"
+             name="flr"
+             test="string-length(/input/flr/text()) > 0" />
+
+    <vstep errmsg="Number of Violations to ignore must be specified and must be a number."
+               id="step7"
+             name="nvi"
+             test="string-length(/input/nvi/text()) > 0 and isnumber(/input/nvi/text())" />
+
+    <vstep errmsg="Violation Grace Period must be specified and must be a number."
+               id="step8"
+             name="vgp"
+             test="string-length(/input/vgp/text()) > 0 and isnumber(/input/vgp/text())" />
+
+    <vstep errmsg="Maximum Loss-of-data time must be specified and must be a number."
+               id="step9"
+             name="mlod"
+             test="string-length(/input/mlod/text()) > 0 and isnumber(/input/mlod/text())" />
+
+    <vstep errmsg="Invalid Violation Action. Must be either 'blockall', 'blocknetwork', 'custom', or 'reportonly'"
+               id="step10"
+             name="va"
+             test="/input/va/text() = 'blockall'    or
+                   /input/va/text() = 'blocknetwork' or
+                   /input/va/text() = 'custom'       or
+                   /input/va/text() = 'reportonly'" />
+
+    <vstep errmsg="Required Valid Entries must be specified and must be a number."
+               id="step11"
+             name="rve"
+             test="string-length(/input/rve/text()) > 0 and isnumber(/input/rve/text())" />
+
+    <vstep errmsg="Distance Reporting Threshold must be specified and must be a number."
+               id="step12"
+             name="drt"
+             test="string-length(/input/drt/text()) > 0 and isnumber(/input/drt/text())" />
+
+    <vstep errmsg="Invalid Require User Cleared Violations. Must be 'y' or 'n'."
+               id="step14"
+             name="rucv"
+             test="isyorn(/input/rucv/text())" />
+
+    <vstep     id="step15"
+             name="datasrc1"
+           skipto="step17"
+             test="/input/datasrc/text() = 'gpsd'" />
+
+    <vstep errmsg="Invalid Serial Port Speed. Must be either '1200', '2400', '4800', or '9600'"
+               id="step16"
+             name="sps"
+             test="/input/sps/text() = '1200' or
+                   /input/sps/text() = '2400' or
+                   /input/sps/text() = '4800' or
+                   /input/sps/text() = '9600'" />
+
+    <vstep errmsg="Maximum log entries must be specified and must be a number."
+               id="step17"
+             name="mlog"
+             test="string-length(/input/mlog/text()) > 0 and isnumber(/input/mlog/text())" />
+
+    <vstep errmsg="Discardable # outlier points must be specified and must be a number."
+               id="step18"
+             name="mlog"
+             test="string-length(/input/ibp/text()) > 0 and isnumber(/input/ibp/text())" />
+
+    <vstep errmsg="Log Update Interval must be a number."
+               id="step19"
+             name="si"
+             test="isnumber(/input/si/text())" />
+
+    <vstep errmsg="Invalid notify to svm server option. Must be 'y' or 'n'."
+               id="step20"
+             name="notifysvm"
+             test="isyorn(/input/notifysvm/text())" />
+
+   </validation>
+
+
+   <configuration>
+    <cstep errmsg="Unable to save Data Source to system configuration file."
+             name="datasrc"
+             path="/GAUCfg/gps/datasrc" />
+
+    <cstep errmsg="Unable to save tty port to system configuration file."
+             name="ttyport"
+             path="/GAUCfg/gps/ttyport" />
+
+    <cstep errmsg="Unable to save Lockdown Radius Multiplier to system configuration file."
+             name="lrm"
+             path="/GAUCfg/gps/lrm" />
+
+    <cstep errmsg="Unable to save Minimum Accuracy to system configuration file."
+             name="ma"
+             path="/GAUCfg/gps/ma" />
+
+    <cstep errmsg="Unable to save Fixed Lockdown Radius to system configuration file."
+             name="flr"
+             path="/GAUCfg/gps/flr" />
+
+    <cstep errmsg="Unable to save Number of Violations to ignore to system configuration file."
+             name="nvi"
+             path="/GAUCfg/gps/nvi" />
+
+    <cstep errmsg="Unable to save Violation Grace Period to system configuration file."
+             name="vgp"
+             path="/GAUCfg/gps/vgp" />
+
+    <cstep errmsg="Unable to save Maximum Loss-of-data time to system configuration file."
+             name="mlod"
+             path="/GAUCfg/gps/mlod" />
+
+    <cstep errmsg="Unable to save Violation Action to system configuration file."
+             name="va"
+             path="/GAUCfg/gps/va" />
+
+    <cstep errmsg="Unable to save Latitude to system configuration file."
+             name="lat"
+             path="/GAUCfg/gps/lat" />
+
+    <cstep errmsg="Unable to save Longitude to system configuration file."
+             name="lon"
+             path="/GAUCfg/gps/lon" />
+
+    <cstep errmsg="Unable to save Required Valid Entries to system configuration file."
+             name="rve"
+             path="/GAUCfg/gps/rve" />
+
+    <cstep errmsg="Unable to save Distance Reporting Threshold to system configuration file."
+             name="drt"
+             path="/GAUCfg/gps/drt" />
+
+    <cstep errmsg="Unable to save Require User Cleared Violations to system configuration file."
+             name="rucv"
+             path="/GAUCfg/gps/rucv" />
+
+    <cstep errmsg="Unable to save Serial Port Speed to system configuration file."
+             name="sps"
+             path="/GAUCfg/gps/sps" />
+
+    <cstep errmsg="Unable to save Maximum log entries to system configuration file."
+             name="mlog"
+             path="/GAUCfg/gps/mlog" />
+
+    <cstep errmsg="Unable to save Discardable # outlier points to system configuration file."
+             name="ibp"
+             path="/GAUCfg/gps/ibp" />
+
+    <cstep errmsg="Unable to save Log Update Interval to system configuration file."
+             name="si"
+             path="/GAUCfg/gps/si" />
+
+    <cstep errmsg="Unable to save the notify to svm server option to system configuration file."
+             name="notifysvm"
+             path="/GAUCfg/gps/notifysvm" />
+
+   </configuration>
+
+
+   <action name="Apply" successmsg="GPS settings saved and applied.">
+
+<!--Moved to prfhandler_gps
+    <pre subsystem="gps" action="Save" />
+Moved to prfhandler_gps-->
+
+    <astep abort="y" errmsg="Failed to apply gps configuration" name="SystemCommand">
+     <arg expr="'prfhandler_gps Apply'" source="config" />
+    </astep>
+   </action>
+
+   <action name="Save" successmsg="GPS settings saved.">
+
+<!--Moved to prfhandler_gps
+    <astep  abort="y"
+           errmsg="Failed to write GPS configuration file"
+             name="WriteFormattedFile">
+
+     <arg expr="/tmp/gpsc.conf" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/gps/datasrc/text() = 'gpsd'"
+                expr="'UseSerialPort = gpsd'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/gps/datasrc/text() = 'tty'"
+                expr="'UseSerialPort = '"
+              source="config" />
+
+     <arg dependency="/GAUCfg/gps/datasrc/text() = 'tty'"
+                expr="substring(/GAUCfg/gps/ttyport/text(), 5)"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg expr="concat('SerialPortSpeed = ', /GAUCfg/gps/sps/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="concat('SecondsOutsideBeforeViolation = ', /GAUCfg/gps/vgp/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="concat('IntervalToSaveGPSLocation = ', /GAUCfg/gps/si/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="concat('SecondsAllowedOfNoData = ', /GAUCfg/gps/mlod/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="concat('ViolationActionType = ', /GAUCfg/gps/va/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="concat('USER_FIXED_LAT = ', /GAUCfg/gps/lat/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="concat('USER_FIXED_LONG = ', /GAUCfg/gps/lon/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="concat('LockdownRadiusMultiplier = ', /GAUCfg/gps/lrm/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="concat('RequiredNumbOfValidEntriesForLockdown = ', /GAUCfg/gps/rve/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="concat('RequiredNumbOfSatForValid = ', /GAUCfg/gps/rnsv/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="concat('FixedLockdownRadius = ', /GAUCfg/gps/flr/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="concat('MinimumAccuracyFT = ', /GAUCfg/gps/ma/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="concat('DistanceReportingThreshold = ', /GAUCfg/gps/drt/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="concat('NumbViolationPtsToIgnore = ', /GAUCfg/gps/nvi/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="concat('NumbOutlierPointsToDiscard = ', /GAUCfg/gps/ibp/text())" source="config" />"
+     <arg expr="\n" />
+
+     <arg expr="'RequireUserToClearViolation = '" source="config" />"
+
+     <arg dependency="/GAUCfg/gps/rucv/text() = 'n'"
+                expr="'N'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/gps/rucv/text() = 'y'"
+                expr="'Y'"
+              source="config" />
+     <arg expr="\n" />
+
+     <arg expr="'NotifySvmServer = '" source="config" />"
+
+     <arg dependency="/GAUCfg/gps/notifysvm/text() = 'n'"
+                expr="'no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/gps/notifysvm/text() = 'y'"
+                expr="'yes'"
+              source="config" />
+     <arg expr="\n" />
+
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move gpsc.conf" name="SystemCommand">
+     <arg expr="mv -f /tmp/gpsc.conf /etc/jbm/gps/gpsc.conf" />
+    </astep>
+Moved to prfhandler_gps-->
+
+    <astep abort="y" errmsg="Failed to save gps configuration" name="SystemCommand">
+     <arg expr="'prfhandler_gps Save'" source="config" />
+    </astep>
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

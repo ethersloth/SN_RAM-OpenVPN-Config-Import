@@ -1,0 +1,80 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dnp3.prf"
+             name="dnp3" />
+                                                                                                                                                          
+                <!-- Advanced -> DNP3 Data Link Layer Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dnp3_datalink.prf" name="dnp3_datalink">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save DNP3 Enable option to system configuration file."
+             name="enable"
+             path="/GAUCfg/dnp3/enable" />
+
+    <cstep errmsg="Unable to save DNP3 This Station DNP Address to system configuration file."
+             name="stationdnpaddr"
+             path="/GAUCfg/dnp3/stationdnpaddr" />
+
+    <cstep errmsg="Unable to save DNP3 Enable option to system configuration file."
+             name="enable"
+             path="/GAUCfg/dnp3/enable" />
+
+    <cstep errmsg="Unable to save DNP3 Min Response Delay to system configuration file."
+             name="responsedelay"
+             path="/GAUCfg/dnp3/responsedelay" />
+
+    <cstep errmsg="Unable to save DNP3 Data Link Retries to system configuration file."
+             name="datalinkretries"
+             path="/GAUCfg/dnp3/datalinkretries" />
+
+    <cstep errmsg="Unable to save DNP3 Retry Timeout to system configuration file."
+             name="retrytimeout"
+             path="/GAUCfg/dnp3/retrytimeout" />
+
+    <cstep errmsg="Unable to save DNP3 Same Station Number to system configuration file."
+             name="samestationnumchecked"
+             path="/GAUCfg/dnp3/samestationnumchecked" />
+
+    <cstep errmsg="Unable to save DNP3 Enable Self Address to system configuration file."
+             name="selfaddrchecked"
+             path="/GAUCfg/dnp3/selfaddrchecked" />
+
+    <cstep errmsg="Unable to save DNP3 Enable Data Link Confirmation to system configuration file."
+             name="enabledataconfchecked"
+             path="/GAUCfg/dnp3/enabledataconfchecked" />
+
+    <cstep errmsg="Unable to save DNP3 Application Link Retries to system configuration file."
+             name="applinkretries"
+             path="/GAUCfg/dnp3/applinkretries" />
+
+    <cstep errmsg="Unable to save DNP3 Application Retry TimeOut to system configuration file."
+             name="appretrytimeout"
+             path="/GAUCfg/dnp3/appretrytimeout" />
+
+    <cstep errmsg="Unable to save DNP3 Enable Application Layer Confirm to system configuration file."
+             name="appconfchecked"
+             path="/GAUCfg/dnp3/appconfchecked" />
+
+    <cstep errmsg="Unable to save DNP3 Use Different SEQ numbers for Confirm/Response to system configuration file."
+             name="seqnumconfchecked"
+             path="/GAUCfg/dnp3/seqnumconfchecked" />
+
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+    <pre subsystem="dnp3" action="Save" />
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+    <pre subsystem="dnp3" action="Apply" />
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

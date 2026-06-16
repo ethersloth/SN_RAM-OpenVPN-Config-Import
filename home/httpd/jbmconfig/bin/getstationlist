@@ -1,0 +1,85 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+$ENV{PATH} .= ":/home/httpd/jbmconfig/bin:/sbin:/usr/bin";
+
+my $PARSEABLE = 0;
+my $nameCnt = 0;
+
+foreach my $argnum (0 .. $#ARGV)                             
+{                                                            
+  if ("--parseable" eq $ARGV[$argnum])                  
+  {                                                        
+     $PARSEABLE = 1;                                      
+  }                                                        
+}                                                            
+                                                                                                                                                                                                                                                       
+
+if (open(FILE, "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/config.xml --xpath=\"/GAUCfg/modbus/remoteStations/NumberOfremoteStations/text()\" |"))
+  {
+   while (<FILE>)
+        {
+         $nameCnt = $_;
+
+         chomp($nameCnt);
+        }
+
+   close(FILE);
+  }
+
+my $optCnt = 0;
+
+my @StationNamesList;
+
+for (my $nameNdx=1; $nameNdx<=$nameCnt; $nameNdx++)
+   {
+    my $stationName;
+
+    if (open(FILE, "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/config.xml --xpath=\"/GAUCfg/modbus/remoteStations/remoteStation[" . $nameNdx ."]/name/text()\" |"))
+      {
+       while (<FILE>)
+            {
+             $stationName = $_;
+
+             chomp($stationName);
+            }
+       
+       close(FILE);
+      }
+
+       $optCnt++;
+
+       push(@StationNamesList, $stationName);
+
+   }
+
+my @sortedStationName = sort { lc($a) cmp lc($b) } @StationNamesList;
+
+$none = "-Not Configured-";
+
+foreach my $stationName (@sortedStationName)
+       {
+         if ($PARSEABLE)
+         {
+            print $stationName . "\n";
+         }
+         else
+         {
+            print "<option value=\"" . $stationName . "\">" .$stationName . "</option>\n";
+         }   
+       }
+
+if (0 == $optCnt)
+{
+  if ($PARSEABLE)
+  {
+     print $none . "\n";
+  }
+  else
+  {
+     print "<option value=\"" . $none . "\">" . $none . "</option>\n";
+  }
+}
+
+exit(0);
+

@@ -1,0 +1,1335 @@
+
+<profile>
+    <subsystems>
+
+        <!-- Advanced -> DNP3 All Screens Settings Section -->
+
+        <subsystem file="/home/httpd/jbmconfig/conf/dnp3.prf" name="dnp3">
+            <validation>
+            </validation>
+
+            <configuration>
+              <cstep errmsg="Unable to save DNP3 Enable option to system configuration file."
+                       name="enable"
+                       path="/GAUCfg/dnp3/enable" />
+
+              <cstep errmsg="Unable to save DNP3 Common IP Address to system configuration file."
+                       name="commip"
+                       path="/GAUCfg/dnp3/commip" />
+
+              <cstep errmsg="Unable to save DNP3 Common Subnet Address to system configuration file."
+                       name="commsubmask"
+                       path="/GAUCfg/dnp3/commsubmask" />
+
+              <cstep errmsg="Unable to save DNP3 Common IP 2 Address to system configuration file."
+                       name="commip2"
+                       path="/GAUCfg/dnp3/commip2" />
+
+              <cstep errmsg="Unable to save DNP3 Common Subnet 2 Address to system configuration file."
+                       name="commsubmask2"
+                       path="/GAUCfg/dnp3/commsubmask2" />
+
+              <cstep errmsg="Unable to save DNP3 Compatibility Mode to system configuration file."
+                       name="level"
+                       path="/GAUCfg/dnp3/level" />
+
+              <cstep errmsg="Unable to save DNP3 Compatibility Mode Level1 to system configuration file."
+                       name="dnplevel1checked"
+                       path="/GAUCfg/dnp3/dnplevel1checked" />
+          
+              <cstep errmsg="Unable to save DNP3 Compatibility Mode Level2 to system configuration file."
+                       name="dnplevel2checked"
+                       path="/GAUCfg/dnp3/dnplevel2checked" />
+          
+              <cstep errmsg="Unable to save DNP3 Event Queue Full Oldest condition to system configuration file."
+                       name="throwOldestEventOnBufferFull" 
+                       path="/GAUCfg/dnp3/throwOldestEventOnBufferFull" />
+          
+              <cstep errmsg="Unable to save DNP3 Event Queue Full Newest condition to system configuration file."
+                       name="throwNewestEventOnBufferFull" 
+                       path="/GAUCfg/dnp3/throwNewestEventOnBufferFull" />
+          
+              <cstep errmsg="Unable to save DNP3 Enable Unsolicited Responses to system configuration file."
+                       name="enableInitialUnsolResp" 
+                       path="/GAUCfg/dnp3/enableInitialUnsolResp" />
+          
+              <cstep errmsg="Unable to save DNP3 address to system configuration file."
+                       name="dnpaddr" 
+                       path="/GAUCfg/dnp3/dnpaddr" />
+          
+              <cstep errmsg="Unable to save DNP3 Event Report Queue Timeout to system configuration file."
+                       name="eventrptquetimeout" 
+                       path="/GAUCfg/dnp3/eventrptquetimeout" />
+          
+              <cstep errmsg="Unable to save DNP3 Event Report Queue Threshold to system configuration file."
+                       name="eventrptquethreshold" 
+                       path="/GAUCfg/dnp3/eventrptquethreshold" />
+          
+              <cstep errmsg="Unable to save DNP3 Max. Number of Events to system configuration file."
+                       name="maxunsolevents" 
+                       path="/GAUCfg/dnp3/maxunsolevents" />
+          
+              <cstep errmsg="Unable to save DNP3 Event Detection Rate to system configuration file."
+                       name="eventdetrate" 
+                       path="/GAUCfg/dnp3/eventdetrate" />
+          
+              <cstep errmsg="Unable to save DNP3 Max. Time Events in Queue to system configuration file."
+                       name="maxtimeevents" 
+                       path="/GAUCfg/dnp3/maxtimeevents" />
+          
+              <cstep errmsg="Unable to save DNP3 Device to system configuration file."
+                       name="device" 
+                       path="/GAUCfg/dnp3/device" />
+          
+              <cstep errmsg="Unable to save DNP3 Number of Traces to system configuration file."
+                       name="numtraces" 
+                       path="/GAUCfg/dnp3/numtraces" />
+
+              <cstep errmsg="Unable to save DNP3 Time Synchronization to system configuration file."
+                       name="timesync" 
+                       path="/GAUCfg/dnp3/timesync" />
+
+              <cstep errmsg="Unable to save DNP3 Oldest Event to system configuration file."
+                       name="oldesteventchecked" 
+                       path="/GAUCfg/dnp3/oldesteventchecked" />
+          
+              <cstep errmsg="Unable to save DNP3 Newest Event to system configuration file."
+                       name="newesteventchecked" 
+                       path="/GAUCfg/dnp3/newesteventchecked" />
+          
+              <cstep errmsg="Unable to save DNP3 EnableUnResp to system configuration file."
+                       name="EnableUnRespchecked" 
+                       path="/GAUCfg/dnp3/EnableUnRespchecked" />
+          
+              <cstep errmsg="Unable to save DNP3 EnableIniUnResp to system configuration file."
+                       name="EnableIniUnRespchecked" 
+                       path="/GAUCfg/dnp3/EnableIniUnRespchecked" />
+          
+              <cstep errmsg="Unable to save DNP3 Event Rate Auto to system configuration file."
+                       name="eventrateautochecked" 
+                       path="/GAUCfg/dnp3/eventrateautochecked" />
+          
+              <cstep errmsg="Unable to save DNP3 Event Time Enable to system configuration file."
+                       name="eventtimeenablechecked" 
+                       path="/GAUCfg/dnp3/eventtimeenablechecked" />
+
+              <cstep errmsg="Unable to save DNP3 Enable Real Time to system configuration file."
+                       name="enablerealtimechecked" 
+                       path="/GAUCfg/dnp3/enablerealtimechecked" />
+
+              <cstep errmsg="Unable to save DNP3 Communication Mode to system configuration file."
+                       name="commMode"
+                       path="/GAUCfg/dnp3/commMode" />
+          
+              <cstep errmsg="Unable to save DNP3 Serial Port Device to system configuration file."
+                       name="serialport"
+                       path="/GAUCfg/dnp3/serialport" />
+          
+              <cstep errmsg="Unable to save DNP3 Max. Random Delay to system configuration file."
+                       name="randomdelay"
+                       path="/GAUCfg/dnp3/randomdelay" />
+          
+              <cstep errmsg="Unable to save DNP3 TCP Host IP Address to system configuration file."
+                       name="hostip"
+                       path="/GAUCfg/dnp3/hostip" />
+          
+              <cstep errmsg="Unable to save DNP3 TCP/UDP Port Number to system configuration file."
+                       name="port"
+                       path="/GAUCfg/dnp3/port" />
+          
+              <cstep errmsg="Unable to save DNP3 UDP Host IP Address to system configuration file."
+                       name="udphostip"
+                       path="/GAUCfg/dnp3/udphostip" />
+
+              <cstep errmsg="Unable to save DNP3 Serial Check Box to system configuration file."
+                       name="serialchecked"
+                       path="/GAUCfg/dnp3/serialchecked" />
+           
+              <cstep errmsg="Unable to save DNP3 Collision Check Box to system configuration file."
+                       name="collisionchecked"
+                       path="/GAUCfg/dnp3/collisionchecked" />
+           
+              <cstep errmsg="Unable to save DNP3 TCP Check Box to system configuration file."
+                       name="tcpchecked"
+                       path="/GAUCfg/dnp3/tcpchecked" />
+           
+              <cstep errmsg="Unable to save DNP3 UDP Check Box to system configuration file."
+                       name="udpchecked"
+                       path="/GAUCfg/dnp3/udpchecked" />
+           
+              <cstep errmsg="Unable to save DNP3 Client Check Box to system configuration file."
+                       name="clientchecked"
+                       path="/GAUCfg/dnp3/clientchecked" />
+           
+              <cstep errmsg="Unable to save DNP3 Server Check Box to system configuration file."
+                       name="serverchecked"
+                       path="/GAUCfg/dnp3/serverchecked" />
+
+              <cstep errmsg="Unable to save DNP3 This Station DNP Address to system configuration file."
+                       name="stationdnpaddr"
+                       path="/GAUCfg/dnp3/stationdnpaddr" />
+          
+              <cstep errmsg="Unable to save DNP3 Min Response Delay to system configuration file."
+                       name="responsedelay"
+                       path="/GAUCfg/dnp3/responsedelay" />
+          
+              <cstep errmsg="Unable to save DNP3 Data Link Retries to system configuration file."
+                       name="datalinkretries"
+                       path="/GAUCfg/dnp3/datalinkretries" />
+          
+              <cstep errmsg="Unable to save DNP3 Retry Timeout to system configuration file."
+                       name="retrytimeout"
+                       path="/GAUCfg/dnp3/retrytimeout" />
+          
+              <cstep errmsg="Unable to save DNP3 Same Station Number to system configuration file."
+                       name="samestationnumchecked"
+                       path="/GAUCfg/dnp3/samestationnumchecked" />
+          
+              <cstep errmsg="Unable to save DNP3 Enable Self Address to system configuration file."
+                       name="selfaddrchecked"
+                       path="/GAUCfg/dnp3/selfaddrchecked" />
+          
+              <cstep errmsg="Unable to save DNP3 Enable Data Link Confirmation to system configuration file."
+                       name="enabledataconfchecked"
+                       path="/GAUCfg/dnp3/enabledataconfchecked" />
+
+              <cstep errmsg="Unable to save DNP3 Application Link Retries to system configuration file."
+                       name="applinkretries"
+                       path="/GAUCfg/dnp3/applinkretries" />
+          
+              <cstep errmsg="Unable to save DNP3 Application Retry TimeOut to system configuration file."
+                       name="appretrytimeout"
+                       path="/GAUCfg/dnp3/appretrytimeout" />
+          
+              <cstep errmsg="Unable to save DNP3 Enable Application Layer Confirm to system configuration file."
+                       name="appconfchecked"
+                       path="/GAUCfg/dnp3/appconfchecked" />
+          
+              <cstep errmsg="Unable to save DNP3 Use Different SEQ numbers for Confirm/Response to system configuration file."
+                       name="seqnumconfchecked"
+                       path="/GAUCfg/dnp3/seqnumconfchecked" />
+
+              <cstep errmsg="Unable to save DNP3 Binary Input to system configuration file."
+                       name="bininput"
+                       path="/GAUCfg/dnp3/bininput" />
+          
+              <cstep errmsg="Unable to save DNP3 Binary Input Change to system configuration file."
+                       name="bininputchange"
+                       path="/GAUCfg/dnp3/bininputchange" />
+          
+              <cstep errmsg="Unable to save DNP3 Binary Output Status to system configuration file."
+                       name="binoutputstatus"
+                       path="/GAUCfg/dnp3/binoutputstatus" />
+
+              <cstep errmsg="Unable to save DNP3 Binary Output Status 1 to system configuration file."
+                       name="binoutputstatus1"
+                       path="/GAUCfg/dnp3/binoutputstatus1" />
+
+              <cstep errmsg="Unable to save DNP3 Analog Input to system configuration file."
+                       name="analoginput"
+                       path="/GAUCfg/dnp3/analoginput" />
+          
+              <cstep errmsg="Unable to save DNP3 Analog Input 1 to system configuration file."
+                       name="analoginput1"
+                       path="/GAUCfg/dnp3/analoginput1" />
+          
+              <cstep errmsg="Unable to save DNP3 Frozen Analog Input to system configuration file."
+                       name="frozenanaloginput"
+                       path="/GAUCfg/dnp3/frozenanaloginput" />
+          
+              <cstep errmsg="Unable to save DNP3 Analog Change Event to system configuration file."
+                       name="analogchangeevent"
+                       path="/GAUCfg/dnp3/analogchangeevent" />
+          
+              <cstep errmsg="Unable to save DNP3 Analog Change Event 1 to system configuration file."
+                       name="analogchangeevent1"
+                       path="/GAUCfg/dnp3/analogchangeevent1" />
+          
+              <cstep errmsg="Unable to save DNP3 Frozen Analog Event to system configuration file."
+                       name="frozenanalogevent"
+                       path="/GAUCfg/dnp3/frozenanalogevent" />
+          
+              <cstep errmsg="Unable to save DNP3 Analog Output Status to system configuration file."
+                       name="analogoutputstatus"
+                       path="/GAUCfg/dnp3/analogoutputstatus" />
+          
+              <cstep errmsg="Unable to save DNP3 Analog Output Status 1 to system configuration file."
+                       name="analogoutputstatus1"
+                       path="/GAUCfg/dnp3/analogoutputstatus1" />
+          
+              <cstep errmsg="Unable to save DNP3 Binary Counter to system configuration file."
+                       name="bincounter"
+                       path="/GAUCfg/dnp3/bincounter" />
+          
+              <cstep errmsg="Unable to save DNP3 Frozen Counter to system configuration file."
+                       name="frozencounter"
+                       path="/GAUCfg/dnp3/frozencounter" />
+          
+              <cstep errmsg="Unable to save DNP3 Frozen Counter 1 to system configuration file."
+                       name="frozencounter1"
+                       path="/GAUCfg/dnp3/frozencounter1" />
+          
+              <cstep errmsg="Unable to save DNP3 Binary Counter Change to system configuration file."
+                       name="bincounterchange"
+                       path="/GAUCfg/dnp3/bincounterchange" />
+          
+              <cstep errmsg="Unable to save DNP3 Binary Counter Change 1 to system configuration file."
+                       name="bincounterchange1"
+                       path="/GAUCfg/dnp3/bincounterchange1" />
+          
+              <cstep errmsg="Unable to save DNP3 Frozen Counter Change to system configuration file."
+                       name="frozencounterchange"
+                       path="/GAUCfg/dnp3/frozencounterchange" />
+
+              <cstep errmsg="Unable to save DNP3 Binary Input Exception Class Assignments Table to system configuration file."
+                       name="exceptions" path="/GAUCfg/binaryinput/exceptions"
+                       type="node" />
+             
+              <cstep errmsg="Unable to save DNP3 Binary Output Exception Class Assignments Table to system configuration file."
+                       name="exceptions" path="/GAUCfg/binaryoutput/exceptions"
+                       type="node" />
+
+              <cstep errmsg="Unable to save DNP3 Analog Input Exception Class Assignments Table to system configuration file."
+                       name="exceptions" path="/GAUCfg/analoginput/exceptions"
+                       type="node" />
+             
+              <cstep errmsg="Unable to save DNP3 Analog Output Exception Class Assignments Table to system configuration file."
+                       name="exceptions" path="/GAUCfg/analogoutput/exceptions"
+                       type="node" />
+
+              <cstep errmsg="Unable to save DNP3 Float Input Exception Class Assignments Table to system configuration file."
+                       name="exceptions" path="/GAUCfg/floatinput/exceptions"
+                       type="node" />
+
+              <cstep errmsg="Unable to save DNP3 Float Output Exception Class Assignments Table to system configuration file."
+                       name="exceptions" path="/GAUCfg/floatoutput/exceptions"
+                       type="node" />
+
+              <cstep errmsg="Unable to save DNP3 Long Input Exception Class Assignments Table to system configuration file."
+                       name="exceptions" path="/GAUCfg/longinput/exceptions"
+                       type="node" />
+
+              <cstep errmsg="Unable to save DNP3 Long Output Exception Class Assignments Table to system configuration file."
+                       name="exceptions" path="/GAUCfg/longoutput/exceptions"
+                       type="node" />
+
+              <cstep errmsg="Unable to save DNP3 Binary Counter Exception Class Assignments Table to system configuration file."
+                       name="exceptions" path="/GAUCfg/binarycounter/exceptions"
+                       type="node" />
+
+            </configuration>
+
+            <action name="Save" successmsg="Save Operation Succeeded.">
+
+                <!-- Start writing the binaryinput.conf file and calling binaryinput script. -->
+
+                <astep  abort="y"
+                       errmsg="Failed to write default settings to binaryinput configuration file"
+                         name="WriteFormattedFile">
+            
+                      <arg expr="/tmp/binaryinput.conf" />
+                      <arg expr="\n" />
+                      <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+                      <arg expr="\n" />
+                      <arg expr="#configfile for /etc/stacfg/sxbinaryinput" />
+                      <arg expr="\n" />
+                </astep>
+            
+                <astep  abort="y"
+                       errmsg="Failed to append global parameters to binaryinput configuration file"
+                         name="AppendFormatted2File">
+        
+                      <arg expr="/tmp/binaryinput.conf" />
+                      <arg expr="\n" />
+                      <arg expr="concat('highestreg = ', /GAUCfg/binaryinput/highestreg/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('nodnpchecked = ', /GAUCfg/binaryinput/nodnpchecked/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('defobj2class = ', /GAUCfg/binaryinput/defobj2class/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('exceptCnt = ', /GAUCfg/binaryinput/exceptions/NumberOfexceptions/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="\n" />
+                </astep>                  
+          
+                <astep      abort="y"
+                       dependency="/GAUCfg/binaryinput/exceptions/NumberOfexceptions/text() != '0'"
+                           errmsg="Failed to append Binaryinput Exceptions to binaryinput configuration file"
+                             name="AppendFormatted2File"
+                           repeat="/GAUCfg/binaryinput/exceptions/exception"
+                       rptNdxName="RPT_NDX">
+            
+                      <arg expr="/tmp/binaryinput.conf" />
+                      
+                      <arg expr="concat('EXC_RULES', 'RPT_NDX', ' = {startreg => ')" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/binaryinput/exceptions/exception[RPT_NDX]/startreg/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      
+                      <arg expr="', endreg => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/binaryinput/exceptions/exception[RPT_NDX]/endreg/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      
+                      <arg expr="', exobj2class => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/binaryinput/exceptions/exception[RPT_NDX]/obj2class/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="}"  />
+                      <arg expr="\n" />
+                </astep>
+        
+                <astep abort="y" errmsg="Failed to move binaryinput.conf" name="SystemCommand">
+                      <arg expr="mv -f /tmp/binaryinput.conf /etc/stacfg/binaryinput.conf" />
+                </astep>
+
+                <!-- Start writing the analoginput.conf file and calling analoginput script. -->
+
+                <astep  abort="y"
+                       errmsg="Failed to write default settings to analoginput configuration file"
+                         name="WriteFormattedFile">
+            
+                      <arg expr="/tmp/analoginput.conf" />
+                      <arg expr="\n" />
+                      <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+                      <arg expr="\n" />
+                      <arg expr="#configfile for /etc/stacfg/sxanaloginput" />
+                      <arg expr="\n" />
+                </astep>
+            
+                <astep  abort="y"
+                       errmsg="Failed to append global parameters to analoginput configuration file"
+                         name="AppendFormatted2File">
+        
+                      <arg expr="/tmp/analoginput.conf" />
+                      <arg expr="\n" />
+                      <arg expr="concat('highestreg = ', /GAUCfg/analoginput/highestreg/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('nodnpchecked = ', /GAUCfg/analoginput/nodnpchecked/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('deadband = ', /GAUCfg/analoginput/deadband/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('defobj31class = ', /GAUCfg/analoginput/defobj31class/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('defobj32class = ', /GAUCfg/analoginput/defobj32class/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('defobj33class = ', /GAUCfg/analoginput/defobj33class/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('exceptCnt = ', /GAUCfg/analoginput/exceptions/NumberOfexceptions/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="\n" />
+                </astep>                  
+          
+                <astep      abort="y"
+                       dependency="/GAUCfg/analoginput/exceptions/NumberOfexceptions/text() != '0'"
+                           errmsg="Failed to append Binaryinput Exceptions to analoginput configuration file"
+                             name="AppendFormatted2File"
+                           repeat="/GAUCfg/analoginput/exceptions/exception"
+                       rptNdxName="RPT_NDX">
+            
+                      <arg expr="/tmp/analoginput.conf" />
+                      
+                      <arg expr="concat('EXC_RULES', 'RPT_NDX', ' = {startreg => ')" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/analoginput/exceptions/exception[RPT_NDX]/startreg/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      
+                      <arg expr="', endreg => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/analoginput/exceptions/exception[RPT_NDX]/endreg/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+      
+                      <arg expr="', exdeadband => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/analoginput/exceptions/exception[RPT_NDX]/exdeadband/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="', exobj31class => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/analoginput/exceptions/exception[RPT_NDX]/obj31class/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="', exobj32class => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/analoginput/exceptions/exception[RPT_NDX]/obj32class/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="', exobj33class => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/analoginput/exceptions/exception[RPT_NDX]/obj33class/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="}"  />
+                      <arg expr="\n" />
+                </astep>
+        
+                <astep abort="y" errmsg="Failed to move analoginput.conf" name="SystemCommand">
+                      <arg expr="mv -f /tmp/analoginput.conf /etc/stacfg/analoginput.conf" />
+                </astep>
+
+                <!-- Start writing the floatinput.conf file and calling floatinput script. -->
+
+                <astep  abort="y"
+                       errmsg="Failed to write default settings to floatinput configuration file"
+                         name="WriteFormattedFile">
+            
+                      <arg expr="/tmp/floatinput.conf" />
+                      <arg expr="\n" />
+                      <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+                      <arg expr="\n" />
+                      <arg expr="#configfile for /etc/stacfg/sxfloatinput" />
+                      <arg expr="\n" />
+                </astep>
+            
+                <astep  abort="y"
+                       errmsg="Failed to append global parameters to floatinput configuration file"
+                         name="AppendFormatted2File">
+        
+                      <arg expr="/tmp/floatinput.conf" />
+                      <arg expr="\n" />
+                      <arg expr="concat('highestreg = ', /GAUCfg/floatinput/highestreg/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('nodnpchecked = ', /GAUCfg/floatinput/nodnpchecked/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('deadband = ', /GAUCfg/floatinput/deadband/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('defobj31class = ', /GAUCfg/floatinput/defobj31class/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('defobj32class = ', /GAUCfg/floatinput/defobj32class/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('defobj33class = ', /GAUCfg/floatinput/defobj33class/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('exceptCnt = ', /GAUCfg/floatinput/exceptions/NumberOfexceptions/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="\n" />
+                </astep>                  
+          
+                <astep      abort="y"
+                       dependency="/GAUCfg/floatinput/exceptions/NumberOfexceptions/text() != '0'"
+                           errmsg="Failed to append Binaryinput Exceptions to floatinput configuration file"
+                             name="AppendFormatted2File"
+                           repeat="/GAUCfg/floatinput/exceptions/exception"
+                       rptNdxName="RPT_NDX">
+            
+                      <arg expr="/tmp/floatinput.conf" />
+                      
+                      <arg expr="concat('EXC_RULES', 'RPT_NDX', ' = {startreg => ')" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/floatinput/exceptions/exception[RPT_NDX]/startreg/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      
+                      <arg expr="', endreg => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/floatinput/exceptions/exception[RPT_NDX]/endreg/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+      
+                      <arg expr="', exdeadband => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/floatinput/exceptions/exception[RPT_NDX]/exdeadband/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="', exobj31class => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/floatinput/exceptions/exception[RPT_NDX]/obj31class/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="', exobj32class => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/floatinput/exceptions/exception[RPT_NDX]/obj32class/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="', exobj33class => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/floatinput/exceptions/exception[RPT_NDX]/obj33class/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="}"  />
+                      <arg expr="\n" />
+                </astep>
+        
+                <astep abort="y" errmsg="Failed to move floatinput.conf" name="SystemCommand">
+                      <arg expr="mv -f /tmp/floatinput.conf /etc/stacfg/floatinput.conf" />
+                </astep>
+
+                <!-- Start writing the longinput.conf file and calling longinput script. -->
+
+                <astep  abort="y"
+                       errmsg="Failed to write default settings to longinput configuration file"
+                         name="WriteFormattedFile">
+            
+                      <arg expr="/tmp/longinput.conf" />
+                      <arg expr="\n" />
+                      <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+                      <arg expr="\n" />
+                      <arg expr="#configfile for /etc/stacfg/sxlonginput" />
+                      <arg expr="\n" />
+                </astep>
+            
+                <astep  abort="y"
+                       errmsg="Failed to append global parameters to longinput configuration file"
+                         name="AppendFormatted2File">
+        
+                      <arg expr="/tmp/longinput.conf" />
+                      <arg expr="\n" />
+                      <arg expr="concat('highestreg = ', /GAUCfg/longinput/highestreg/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('nodnpchecked = ', /GAUCfg/longinput/nodnpchecked/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('deadband = ', /GAUCfg/longinput/deadband/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('defobj31class = ', /GAUCfg/longinput/defobj31class/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('defobj32class = ', /GAUCfg/longinput/defobj32class/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('defobj33class = ', /GAUCfg/longinput/defobj33class/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('exceptCnt = ', /GAUCfg/longinput/exceptions/NumberOfexceptions/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="\n" />
+                </astep>                  
+          
+                <astep      abort="y"
+                       dependency="/GAUCfg/longinput/exceptions/NumberOfexceptions/text() != '0'"
+                           errmsg="Failed to append Binaryinput Exceptions to longinput configuration file"
+                             name="AppendFormatted2File"
+                           repeat="/GAUCfg/longinput/exceptions/exception"
+                       rptNdxName="RPT_NDX">
+            
+                      <arg expr="/tmp/longinput.conf" />
+                      
+                      <arg expr="concat('EXC_RULES', 'RPT_NDX', ' = {startreg => ')" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/longinput/exceptions/exception[RPT_NDX]/startreg/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      
+                      <arg expr="', endreg => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/longinput/exceptions/exception[RPT_NDX]/endreg/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+      
+                      <arg expr="', exdeadband => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/longinput/exceptions/exception[RPT_NDX]/exdeadband/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="', exobj31class => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/longinput/exceptions/exception[RPT_NDX]/obj31class/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="', exobj32class => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/longinput/exceptions/exception[RPT_NDX]/obj32class/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="', exobj33class => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/longinput/exceptions/exception[RPT_NDX]/obj33class/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="}"  />
+                      <arg expr="\n" />
+                </astep>
+        
+                <astep abort="y" errmsg="Failed to move longinput.conf" name="SystemCommand">
+                      <arg expr="mv -f /tmp/longinput.conf /etc/stacfg/longinput.conf" />
+                </astep>
+
+                <!-- Start writing the binarycounter.conf file and calling binarycounter script. -->
+
+                <astep  abort="y"
+                       errmsg="Failed to write default settings to binarycounter configuration file"
+                         name="WriteFormattedFile">
+            
+                      <arg expr="/tmp/binarycounter.conf" />
+                      <arg expr="\n" />
+                      <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+                      <arg expr="\n" />
+                      <arg expr="#configfile for /etc/stacfg/sxbinarycounter" />
+                      <arg expr="\n" />
+                </astep>
+            
+                <astep  abort="y"
+                       errmsg="Failed to append global parameters to binarycounter configuration file"
+                         name="AppendFormatted2File">
+        
+                      <arg expr="/tmp/binarycounter.conf" />
+                      <arg expr="\n" />
+                      <arg expr="concat('highestreg = ', /GAUCfg/binarycounter/highestreg/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('nodnpchecked = ', /GAUCfg/binarycounter/nodnpchecked/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('deadband = ', /GAUCfg/binarycounter/deadband/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('defobj21class = ', /GAUCfg/binarycounter/defobj21class/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('defobj22class = ', /GAUCfg/binarycounter/defobj22class/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('defobj23class = ', /GAUCfg/binarycounter/defobj23class/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="concat('exceptCnt = ', /GAUCfg/binarycounter/exceptions/NumberOfexceptions/text())"
+                         source="config" />
+                      <arg expr="\n" />
+                      <arg expr="\n" />
+                </astep>                  
+          
+                <astep      abort="y"
+                       dependency="/GAUCfg/binarycounter/exceptions/NumberOfexceptions/text() != '0'"
+                           errmsg="Failed to append Binaryinput Exceptions to binarycounter configuration file"
+                             name="AppendFormatted2File"
+                           repeat="/GAUCfg/binarycounter/exceptions/exception"
+                       rptNdxName="RPT_NDX">
+            
+                      <arg expr="/tmp/binarycounter.conf" />
+                      
+                      <arg expr="concat('EXC_RULES', 'RPT_NDX', ' = {startreg => ')" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/binarycounter/exceptions/exception[RPT_NDX]/startreg/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      
+                      <arg expr="', endreg => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/binarycounter/exceptions/exception[RPT_NDX]/endreg/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+      
+                      <arg expr="', exdeadband => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/binarycounter/exceptions/exception[RPT_NDX]/exdeadband/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="', exobj21class => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/binarycounter/exceptions/exception[RPT_NDX]/obj21class/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="', exobj22class => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/binarycounter/exceptions/exception[RPT_NDX]/obj22class/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="', exobj23class => '"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="/GAUCfg/binarycounter/exceptions/exception[RPT_NDX]/obj23class/text()" rptNdxName="RPT_NDX" source="config" />
+                      <arg expr="tick()" rptNdxName="RPT_NDX" source="config"  />
+                      
+                      <arg expr="}"  />
+                      <arg expr="\n" />
+                </astep>
+        
+                <astep abort="y" errmsg="Failed to move binarycounter.conf" name="SystemCommand">
+                      <arg expr="mv -f /tmp/binarycounter.conf /etc/stacfg/binarycounter.conf" />
+                </astep>
+
+                <!-- Start building the Object Mapping DNP points for all I/O types. -->
+
+                <astep  abort="n" errmsg="Failed to Build the Object Mapping DNP points for all I/O types." name="SystemCommand">          
+                      <arg expr="'/home/httpd/jbmconfig/bin/dnpbuild.sh'" source="config" />
+                </astep>                  
+
+                <!-- Start writing the general.config file. -->
+
+                <astep errmsg="Failed to write the DNP3 general.config configuration file." name="WriteFormattedFile" abort="y">
+                    <arg expr="'/tmp/general.config'" source="config" />
+                    <arg expr="\n" />
+                </astep>
+
+                <astep abort="y" errmsg="Failed to write the ports settings for configuration file." name="AppendFormatted2File">
+                    <arg expr="'/tmp/general.config'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'# This file contains station configuration settings.'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'#'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'[station settings]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'Freeze enable=0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'comm loss watchdog=0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'disable i/o bus=0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'disable read physical inputs=0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'enable ftp=1'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'enable manual control=0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'enable telnet=1'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'enable www=0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'heartbeat register=0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'heartbeat watchdog=0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'manual control register low=-1'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'manual control register=-1'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'opt adv=1'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'opt ws=0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('station name=', /GAUCfg/modbus/localname/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('station number=', /GAUCfg/modbus/localStationNum/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'watchdog action=0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'watchdog alarm reg=0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'watchdog time sec=5'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                    <arg expr="'[tcp]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'timeout=1'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'timeout_sec=60'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                    <arg expr="'[IEC60870-5-101-104]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'reg='" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                    <arg expr="'[ppp]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'ports='" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                    <arg expr="'[aga]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'reg=02B8-C4B8-FBA'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                    <arg expr="'[dnp3]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'reg=02B5-8E0C-BF9'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                    <arg expr="'[isagraf]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'eventReg=-1'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'statusReg=-1'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'typeReg=-1'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                    <arg expr="'[redundancy settings]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'Other_Active=4'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'Other_Heartbeat=3'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'Other_Status=5'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'Redundancy_Role=7'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'Self_Active=1'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'Self_Backup=2'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'Self_Heartbeat=0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'Self_Status=6'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('common ip=', /GAUCfg/dnp3/commip/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('common subnet=', /GAUCfg/dnp3/commsubmask/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('common ip2=', /GAUCfg/dnp3/commip2/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('common subnet2=', /GAUCfg/dnp3/commsubmask2/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'enable=0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'heartbeat period sec=0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'type=st'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                    <arg expr="'[sntp]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'ntp_interval=5'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'ntp_server='" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                    <arg expr="'[spfeat]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'sleep=20'" source="config" />
+                    <arg expr="\n" />
+                </astep>
+
+                <astep abort="y" errmsg="Failed to write the general.config configuration file to /etc/stacfg/ directory." name="SystemCommand">
+                    <arg   expr="mv -f /tmp/general.config /etc/stacfg/general.config" />
+                </astep>
+
+                <!-- Start writing the ports.config file. -->
+
+                <astep errmsg="Failed to write the DNP3 ports.config configuration file." name="WriteFormattedFile" abort="y">
+                    <arg expr="'/tmp/ports.config'" source="config" />
+                    <arg expr="\n" />
+                </astep>
+
+                <astep abort="y" errmsg="Failed to write the ports settings for configuration file." name="AppendFormatted2File">
+                    <arg expr="'/tmp/ports.config'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'# The [available ports] section lists the communication ports '" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'# available on this station. Each port is assigned to a '" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'# given /dev device. Do not manually edit values in this section.'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'#'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'[available ports]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'/dev/eth0=Ethernet1'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'/dev/ttyS1=RS232 Port A'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'[configuration files]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'/dev/eth0=/etc/stacfg/porteth0.config'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'/dev/ttyS1=/etc/stacfg/portS1.config'" source="config" />
+                    <arg expr="\n" />
+                </astep>
+
+                <astep abort="y" errmsg="Failed to write the ports.config configuration file to /etc/stacfg/ directory." name="SystemCommand">
+                    <arg   expr="mv -f /tmp/ports.config /etc/stacfg/ports.config" />
+                </astep>
+                
+                <!-- Start writing the portS1.config file. -->
+
+                <astep errmsg="Failed to write the DNP3 portS1.config configuration file." name="WriteFormattedFile" abort="y">
+                    <arg expr="'/tmp/portS1.config'" source="config" />
+                    <arg expr="\n" />
+                </astep>
+
+                <astep abort="y" errmsg="Failed to write the portS1 settings for configuration file." name="AppendFormatted2File">
+                    <arg expr="'/tmp/portS1.config'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'# This file contains communications port settings for /dev/ttyS1.'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'# You should be using the Modbus Serial configuration to edit these settings.'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'#'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'[settings]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'activity_enable=y'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('baud=', /GAUCfg/modbus/serials/serial[1]/baudRate/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('daniel=', /GAUCfg/modbus/serials/serial[1]/danielMode/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('data_bits=', /GAUCfg/modbus/serials/serial[1]/dataBits/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('flow_control=', /GAUCfg/modbus/serials/serial[1]/flowControl/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'hardware_term=none'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'lag_time=2'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'lead_time=10'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('modbus_float_word_order=', /GAUCfg/modbus/serials/serial[1]/floatWordOrder/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('modbus_word_order=', /GAUCfg/modbus/serials/serial[1]/floatWordOrder/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'modem_init='" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'modem_init_enable=n'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('parity=', /GAUCfg/modbus/serials/serial[1]/parity/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'passthru_port=none'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'ppp=disabled,none'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('protocol=', /GAUCfg/modbus/serials/serial[1]/protocol/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('stop_bits=', /GAUCfg/modbus/serials/serial[1]/stopBits/text())" source="config" />
+                    <arg expr="\n" />
+                </astep>
+
+                <astep abort="y" errmsg="Failed to write the portS1.config configuration file to /etc/stacfg/ directory." name="SystemCommand">
+                    <arg   expr="mv -f /tmp/portS1.config /etc/stacfg/portS1.config" />
+                </astep>
+
+                <!-- Start writing the sxdnpdrv.ini file. -->
+
+                <astep errmsg="Failed to write the DNP3 sxdnpdrv.ini configuration file." name="WriteFormattedFile" abort="y">
+                    <arg expr="'/tmp/sxdnpdrv.ini'" source="config" />
+                    <arg expr="\n" />
+                </astep>
+
+                <astep abort="y" errmsg="Failed to write the sxdnpdrv settings for configuration file." name="AppendFormatted2File">
+                    <arg expr="'/tmp/sxdnpdrv.ini'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'[General]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('IPmStation= ', /GAUCfg/modbus/localname/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                    <arg expr="'[SxIPmStation]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('DNPLevel=', /GAUCfg/dnp3/level/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('EnableUnResp=', /GAUCfg/dnp3/EnableUnRespchecked/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('TimeSynch=', /GAUCfg/dnp3/timesync/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('EnableDataTraces=', /GAUCfg/dnp3/enablerealtimechecked/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('DeviceDataTraces=', /GAUCfg/dnp3/device/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('NumberTraces=', /GAUCfg/dnp3/numtraces/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('EnableInitialUnsolResp=', /GAUCfg/dnp3/EnableIniUnRespchecked/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('UnsolTimer=', /GAUCfg/dnp3/eventrptquetimeout/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('UnsolQueueThreshold=', /GAUCfg/dnp3/eventrptquethreshold/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('MaxUnsolEvents=', /GAUCfg/dnp3/maxunsolevents/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('throwOldestEventOnBufferFull=', /GAUCfg/dnp3/throwOldestEventOnBufferFull/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('EventDetectRate=', /GAUCfg/dnp3/eventdetrate/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('inactiveEventsInQueueTimeout=', /GAUCfg/dnp3/maxtimeevents/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                    <arg expr="'[ApplicationLayer]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('AppLayerConfirms=', /GAUCfg/dnp3/appconfchecked/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('AppLayerConfirmRetries=', /GAUCfg/dnp3/applinkretries/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('AppLayerConfirmTimeout=', /GAUCfg/dnp3/appretrytimeout/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('AppIncrRespSEQNumAfterCONFIRM=', /GAUCfg/dnp3/seqnumconfchecked/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                    <arg expr="'[DataLinkLayer]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('ThisStationAddress= ', /GAUCfg/dnp3/stationdnpaddr/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('EnableDataLinkConf= ', /GAUCfg/dnp3/enabledataconfchecked/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('RetriesDataLinkConf= ', /GAUCfg/dnp3/datalinkretries/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('TimeOutDataLinkConf= ', /GAUCfg/dnp3/retrytimeout/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('EnableSelfAddress= ', /GAUCfg/dnp3/selfaddrchecked/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('MinResponseDelay= ', /GAUCfg/dnp3/responsedelay/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                    <arg expr="'[PhysicalLinkLayer]'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('CommMode= ', /GAUCfg/dnp3/commMode/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = 'serial'"
+                               expr="concat('SerialPort= /dev/', /GAUCfg/dnp3/serialport/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != 'serial'"
+                               expr="'SerialPort= '" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'ModemDisconnectTimeout= '" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('EnableCollAvoid= ', /GAUCfg/dnp3/collisionchecked/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = 'serial'"
+                               expr="concat('CollAvoidMaxRandomDelay= ', /GAUCfg/dnp3/randomdelay/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != 'serial'"
+                               expr="'CollAvoidMaxRandomDelay='" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/clientchecked/text() = 'yes' and /GAUCfg/dnp3/commMode/text() = 'tcp'"
+                         expr="concat('TCPDialHost= ', /GAUCfg/dnp3/hostip/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = 'udp'"
+                         expr="concat('TCPDialHost= ', /GAUCfg/dnp3/hostip/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/serverchecked/text() = 'yes' and /GAUCfg/dnp3/commMode/text() = 'tcp'"
+                         expr="'TCPDialHost= '" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = 'serial'"
+                         expr="'TCPDialHost= '" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('TCPUDPPort= ', /GAUCfg/dnp3/port/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = 'udp'"
+                         expr="concat('UDPUnsollHost= ', /GAUCfg/dnp3/udphostip/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != 'udp'"
+                         expr="'UDPUnsollHost= '" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('DNPUnsollDestAddr= ', /GAUCfg/dnp3/dnpaddr/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                </astep>
+
+                <astep abort="y" errmsg="Failed to write the sxdnpdrv settings for DNPBinaryInputsCfg configuration file." name="AppendFormatted2File">
+                    <arg expr="'/tmp/sxdnpdrv.ini'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'[DNPBinaryInputsCfg]'" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/binaryinput/nodnpchecked/text() = 'yes'"
+                               expr="'XMappedToDNP= no'" source="config" />
+                    <arg dependency="/GAUCfg/binaryinput/nodnpchecked/text() = 'no'"
+                               expr="'XMappedToDNP= yes'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('HighestSxRegAddrX=', /GAUCfg/binaryinput/highestreg/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('DefaultVariation=', /GAUCfg/dnp3/bininput/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('DefaultEventVariation=', /GAUCfg/dnp3/bininputchange/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                </astep>
+
+                <astep abort="y" errmsg="Failed to write the sxdnpdrv settings for DNPBinaryOutputsCfg configuration file." name="AppendFormatted2File">
+                    <arg expr="'/tmp/sxdnpdrv.ini'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'[DNPBinaryOutputsCfg]'" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/binaryoutput/nodnpchecked/text() = 'yes'"
+                               expr="'YMappedToDNP= no'" source="config" />
+                    <arg dependency="/GAUCfg/binaryoutput/nodnpchecked/text() = 'no'"
+                               expr="'YMappedToDNP= yes'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('HighestSxRegAddrY=', /GAUCfg/binaryoutput/highestreg/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = '2'"
+                               expr="concat('DefaultVariation=', /GAUCfg/dnp3/binoutputstatus/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != '2'"
+                               expr="concat('DefaultVariation=', /GAUCfg/dnp3/binoutputstatus1/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                </astep>
+
+                <astep abort="y" errmsg="Failed to write the sxdnpdrv settings for DNPAnalogInputsCfg configuration file." name="AppendFormatted2File">
+                    <arg expr="'/tmp/sxdnpdrv.ini'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'[DNPAnalogInputsCfg]'" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/analoginput/nodnpchecked/text() = 'yes'"
+                               expr="'AXMappedToDNP= no'" source="config" />
+                    <arg dependency="/GAUCfg/analoginput/nodnpchecked/text() = 'no'"
+                               expr="'AXMappedToDNP= yes'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'LowestSxRegAddrAX= 0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('HighestSxRegAddrAX= ', /GAUCfg/analoginput/highestreg/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = '2'"
+                               expr="concat('DefaultVariationAX=', /GAUCfg/dnp3/analoginput/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != '2'"
+                               expr="concat('DefaultVariationAX=', /GAUCfg/dnp3/analoginput1/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = '2'"
+                               expr="concat('DefaultEventVariationAX=', /GAUCfg/dnp3/analogchangeevent/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != '2'"
+                               expr="concat('DefaultEventVariationAX=', /GAUCfg/dnp3/analogchangeevent1/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('DefaultFrozenVariationAX=', /GAUCfg/dnp3/frozenanaloginput/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('DefaultFrozenEventVariationAX=', /GAUCfg/dnp3/frozenanalogevent/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/floatinput/nodnpchecked/text() = 'yes'"
+                               expr="'FXMappedToDNP= no'" source="config" />
+                    <arg dependency="/GAUCfg/floatinput/nodnpchecked/text() = 'no'"
+                               expr="'FXMappedToDNP= yes'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'LowestSxRegAddrFX= 0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('HighestSxRegAddrFX= ', /GAUCfg/floatinput/highestreg/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = '2'"
+                               expr="concat('DefaultVariationFX=', /GAUCfg/dnp3/analoginput/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != '2'"
+                               expr="concat('DefaultVariationFX=', /GAUCfg/dnp3/analoginput1/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = '2'"
+                               expr="concat('DefaultEventVariationFX=', /GAUCfg/dnp3/analogchangeevent/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != '2'"
+                               expr="concat('DefaultEventVariationFX=', /GAUCfg/dnp3/analogchangeevent1/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('DefaultFrozenVariationFX=', /GAUCfg/dnp3/frozenanaloginput/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('DefaultFrozenEventVariationFX=', /GAUCfg/dnp3/frozenanalogevent/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/longinput/nodnpchecked/text() = 'yes'"
+                               expr="'LXMappedToDNP= no'" source="config" />
+                    <arg dependency="/GAUCfg/longinput/nodnpchecked/text() = 'no'"
+                               expr="'LXMappedToDNP= yes'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'LowestSxRegAddrLX= 512'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('HighestSxRegAddrLX= ', /GAUCfg/longinput/highestreg/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = '2'"
+                               expr="concat('DefaultVariationLX=', /GAUCfg/dnp3/analoginput/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != '2'"
+                               expr="concat('DefaultVariationLX=', /GAUCfg/dnp3/analoginput1/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = '2'"
+                               expr="concat('DefaultEventVariationLX=', /GAUCfg/dnp3/analogchangeevent/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != '2'"
+                               expr="concat('DefaultEventVariationLX=', /GAUCfg/dnp3/analogchangeevent1/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('DefaultFrozenVariationLX=', /GAUCfg/dnp3/frozenanaloginput/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('DefaultFrozenEventVariationLX=', /GAUCfg/dnp3/frozenanalogevent/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                </astep>
+
+                <astep abort="y" errmsg="Failed to write the sxdnpdrv settings for DNPAnalogOutputsCfg configuration file." name="AppendFormatted2File">
+                    <arg expr="'/tmp/sxdnpdrv.ini'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'[DNPAnalogOutputsCfg]'" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/analogoutput/nodnpchecked/text() = 'yes'"
+                               expr="'AYMappedToDNP=no'" source="config" />
+                    <arg dependency="/GAUCfg/analogoutput/nodnpchecked/text() = 'no'"
+                               expr="'AYMappedToDNP=yes'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'LowestSxRegAddrAY= 0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('HighestSxRegAddrAY= ', /GAUCfg/analogoutput/highestreg/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = '2'"
+                               expr="concat('DefaultVariationAY=', /GAUCfg/dnp3/analogoutputstatus/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != '2'"
+                               expr="concat('DefaultVariationAY=', /GAUCfg/dnp3/analogoutputstatus1/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/floatoutput/nodnpchecked/text() = 'yes'"
+                               expr="'FYMappedToDNP= no'" source="config" />
+                    <arg dependency="/GAUCfg/floatoutput/nodnpchecked/text() = 'no'"
+                               expr="'FYMappedToDNP= yes'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'LowestSxRegAddrFY= 0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('HighestSxRegAddrFY= ', /GAUCfg/floatoutput/highestreg/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = '2'"
+                               expr="concat('DefaultVariationFY=', /GAUCfg/dnp3/analogoutputstatus/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != '2'"                                                       
+                               expr="concat('DefaultVariationFY=', /GAUCfg/dnp3/analogoutputstatus1/text())" source="config" /> 
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/longoutput/nodnpchecked/text() = 'yes'"
+                               expr="'LYMappedToDNP= no'" source="config" />
+                    <arg dependency="/GAUCfg/longoutput/nodnpchecked/text() = 'no'"
+                               expr="'LYMappedToDNP= yes'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'LowestSxRegAddrLY= 0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('HighestSxRegAddrLY= ', /GAUCfg/longoutput/highestreg/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = '2'"
+                               expr="concat('DefaultVariationLY=', /GAUCfg/dnp3/analogoutputstatus/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != '2'"
+                               expr="concat('DefaultVariationLY=', /GAUCfg/dnp3/analogoutputstatus1/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                </astep>
+                
+                <astep abort="y" errmsg="Failed to write the sxdnpdrv settings for DNPBinaryCountersCfg configuration file." name="AppendFormatted2File">
+                    <arg expr="'/tmp/sxdnpdrv.ini'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'[DNPBinaryCountersCfg]'" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/binarycounter/nodnpchecked/text() = 'yes'"
+                               expr="'LXMappedToDNP= no'" source="config" />
+                    <arg dependency="/GAUCfg/binarycounter/nodnpchecked/text() = 'no'"
+                               expr="'LXMappedToDNP= yes'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="'LowestSxRegAddrLX= 0'" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('HighestSxRegAddrLX= ', /GAUCfg/binarycounter/highestreg/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('DefaultVariation=', /GAUCfg/dnp3/bincounter/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = '2'"
+                               expr="concat('DefaultEventVariation=', /GAUCfg/dnp3/bincounterchange/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != '2'"
+                               expr="concat('DefaultEventVariation=', /GAUCfg/dnp3/bincounterchange1/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() = '2'"
+                               expr="concat('DefaultFrozenVariation=', /GAUCfg/dnp3/frozencounter/text())" source="config" />
+                    <arg dependency="/GAUCfg/dnp3/commMode/text() != '2'"
+                               expr="concat('DefaultFrozenVariation=', /GAUCfg/dnp3/frozencounter1/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="concat('DefaultFrozenEventVariation=', /GAUCfg/dnp3/frozencounterchange/text())" source="config" />
+                    <arg expr="\n" />
+                    <arg expr="\n" />
+                </astep>
+
+                <astep abort="y" errmsg="Failed to write the sxdnpdrv.ini configuration file to /etc/stacfg/ directory." name="SystemCommand">
+                    <arg   expr="mv -f /tmp/sxdnpdrv.ini /etc/stacfg/sxdnpdrv.ini" />
+                </astep>
+
+                <astep  abort="n" errmsg="Failed to Build the Binary Input Object DNP Points." name="SystemCommand">          
+                      <arg expr="'/home/httpd/jbmconfig/bin/dnpappend.sh'" source="config" />
+                </astep>                  
+
+                <astep abort="n" errmsg="Failed to enable sxdnpdrv service" name="SystemCommand">
+                        <arg dependency="/GAUCfg/dnp3/enable/text() = 'yes'" expr="'chkconfig sxdnpdrv on'" source="config" />
+                </astep>
+
+                <astep abort="n" errmsg="Failed to disable sxdnpdrv service" name="SystemCommand">
+                        <arg dependency="/GAUCfg/dnp3/enable/text() = 'no'" expr="'chkconfig sxdnpdrv off'" source="config" />
+                </astep>
+
+            </action>
+
+            <action name="Apply" successmsg="Apply Operation Succeeded.">
+                <pre subsystem="dnp3" action="Save" />
+
+                <astep abort="n" errmsg="Failed to start the sxdnpdrv service" name="SystemCommand">
+                        <arg dependency="/GAUCfg/dnp3/enable/text() = 'yes'" expr="'service sxdnpdrv restart'" source="config" />
+                </astep>
+
+                <astep abort="n" errmsg="Failed to stop the sxdnpdrv service" name="SystemCommand">
+                        <arg dependency="/GAUCfg/dnp3/enable/text() = 'no'" expr="'service sxdnpdrv stop'" source="config" />
+                </astep>
+
+            </action>
+
+        </subsystem>
+    </subsystems>
+</profile>

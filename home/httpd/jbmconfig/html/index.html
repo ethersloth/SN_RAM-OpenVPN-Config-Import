@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>RLC Administration Utility</title>
+	<link rel="shortcut icon" href="images/favicon.ico" />
+	<link href="css/bootstrap.css" rel="stylesheet" media="screen">
+	<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+	<link href="css/toastr.min.css" rel="stylesheet">
+	<link href="css/extra.css" rel="stylesheet">
+	<script type="text/javascript">
+	//<!-- We should not be nested in any iframes
+		if (window.top.location !== window.location) {
+			window.top.location.href = window.location.href;
+		}
+	//-->
+	</script>
+	<script data-main="md5link/main-524c665.js" type="text/javascript" src="js/lib/require-2.1.11.min.js"></script>
+</head>
+<body>
+	<div id="wrap">
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a href="#!/start"><img class="brand" src="images/redlion_logo.png" /></a>
+				<div class="nav-collapse collapse" style="display: none" data-bind="visible: true">
+					<ul id="navigation" class="nav">
+						<!-- ko foreach: navBarTabs -->
+						<!-- ko if: showInMenu -->
+						<!-- ko if: hasOwnProperty('pages') -->
+						<li class="dropdown" >
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span data-bind="text: title"></span><b class="caret"></b></a>
+							<ul class="dropdown-menu" data-bind="foreach: pages">
+								<!-- ko if: showInMenu -->
+								<!-- ko ifnot: hasOwnProperty('pages') -->
+								<li>
+									<a data-bind="attr: {href: '#!/' + id}, text: title" data-toggle="collapse" data-target=".nav-collapse"></a>
+								</li>
+								<!-- /ko -->
+								<!-- ko if: hasOwnProperty('pages') -->
+								<li class="dropdown-submenu">
+									<a data-bind="text: title"></a>
+									<ul class="dropdown-menu" data-bind="foreach: pages">
+										<!-- ko if: showInMenu -->
+										<li>
+											<a data-bind="attr: {href: '#!/' + id}, text: title" data-toggle="collapse" data-target=".nav-collapse"></a>
+										</li>
+										<!-- /ko -->
+									</ul>
+								</li>
+								<!-- /ko -->
+								<!-- /ko -->
+							</ul>
+						</li>
+						<!-- /ko -->
+						<!-- ko ifnot: hasOwnProperty('pages') -->
+						<li>
+							<a data-bind="attr: {href: '#!/' + id}" style="padding: 0px"><button class="btn btn-primary" data-bind="text: title"></button></a>
+						</li>
+						<!-- /ko -->
+						<!-- /ko -->
+						<!-- /ko -->
+						<li class="dropdown" data-bind="visible: customTabs().length > 0" style="display: none">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+								<span>Extensions</span><b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu" data-bind="foreach: customTabs">
+								<li>
+									<a data-bind="attr: {href: href}, text: title" data-toggle="collapse" data-target=".nav-collapse"></a>
+								</li>
+							</ul>
+						</li>
+						<li><div style="padding:10px">
+							<span style="color: red" name="watermark-header" data-bind="text: watermark"></span>
+						</div></li>
+					</ul>
+					<ul class="nav" style="float: right">
+						<li>
+							<button class="btn btn-primary" name="logout-button" data-bind="click: clickLogout">Logout</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container" style="margin-bottom: 30px">
+		<div data-bind="foreach: availablePages">
+			<div data-bind="page: $data">
+			</div>
+		</div>
+	</div>
+	<div style="text-align: center" id="JsPlaceholder">
+		<b style="display: block; margin: 20px">Waiting for javascript to load</b>
+		<img src="images/ajax-loader.gif" />
+	</div>
+	<div id="footer">
+		<div class="container">
+			<div class="row">
+				<div class="span3">
+					<p class="credit pull-left" style="margin-top: 5px">
+						<span data-bind="text: deviceModelNumber"></span>
+						<span style="color: red" name="watermark-footer" data-bind="text: watermark"></span>
+						<span style="display: block" data-bind="text: serialNumber"></span>
+					</p>
+				</div>
+				<div class="span6">
+					<div style="text-align: center; padding-top: 10px" data-bind="foreach: actions">
+						<button style="margin-right: 5px; display: none" class="btn" data-bind="
+							visible: hasOwnProperty('visible') ? visible : hasOwnProperty('vsbl') ? vsbl : true,
+							enable: hasOwnProperty('enable') ? enable : true,
+							text: hasOwnProperty('text') ? text : btxt,
+							css: {
+								'gw-warning': hasOwnProperty('hlgt') ? (hlgt() === 'warning') : false,
+								'gw-highlight': hasOwnProperty('hlgt') ? (hlgt() === 'highlight') : false,
+								'btn-success': hasOwnProperty('color') ? (color() === 'success') : false,
+								'btn-warning': hasOwnProperty('color') ? (color() === 'yellow') : false,
+								'btn-danger': hasOwnProperty('color') ? (color() === 'danger') : false,
+								'btn-primary': hasOwnProperty('color') ? (color() === 'primary') : prim
+							},
+							attr: {
+								name: hasOwnProperty('name') ? name : ''
+							},
+							click: hasOwnProperty('click') ? click : clik
+						"></button>
+					</div>
+				</div>
+				<div class="span2">
+					<p style="text-align: center; padding-top: 10px" data-bind="visible: showToggle">
+						<!-- ko template: {name: 'toggle-template', data: iodb.baseToggle} --><!-- /ko -->
+					</p>
+				</div>
+				<div class="span1">
+					<p style="text-align: center; padding-top: 5px; margin-left: -30px; width: 140px; display: none" data-bind="visible: staleTimer() !== ''">
+						Last Refresh:<br /><span data-bind="text: staleTimer"></span>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="global-help-dialog" data-bind="dialog: helpDialog">
+		<div data-bind="html: helpContent"></div>
+		<a style="cursor: pointer" data-bind="click: toggleMore, visible: haveMore, text: moreText"></a>
+	</div>
+	<div id="notification-dialog" style="display:none" data-bind="dialog: notifyDialog">
+		<p style="margin-top: 10px; white-space: pre-wrap" data-bind="text: notifyContent"></p>
+		<div style="width: 100%; text-align: right">
+			<button style="margin-left: auto" class="btn" data-bind="click: notifyClose">Ok</button>
+		</div>
+	</div>
+	<div id="confirmation-modal" data-backdrop="static" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true" data-bind="with: confirmation">
+		<div style="text-align: center" class="modal-header">
+			<h3 id="confirmation-title" data-bind="text: title"></h3>
+		</div>
+		<div style="text-align: center" class="modal-body">
+			<p data-bind="html: body"></p>
+			<button name="clickOk" data-bind="click: clickOk, text: okText, css: {'btn-primary': okPrimary}" class="btn"></button>
+			<button name="clickCancel" data-bind="click: clickCancel, text: cancelText, visible: showCancel, css: {'btn-primary': ! okPrimary()}" class="btn"></button>
+		</div>
+	</div>
+	<div style="width: 450px; margin-left: -250px; margin-top: 10px" id="transaction-modal" data-keyboard="false" data-backdrop="static" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true" data-bind="with: loader">
+		<div style="text-align: center" class="modal-header">
+			<h3 data-bind="text: title">Loading Page</h3>
+		</div>
+		<div style="text-align: center" class="modal-body">
+			<img src="images/ajax-loader.gif" />
+			<div style="margin-top: 10px">
+				<span data-bind="html: comment"></span>
+			</div>
+		</div>
+	</div>
+	<div id="eula-modal" data-backdrop="static" data-keyboard="false" class="modal hide gw-modal-wide" role="dialog" aria-hidden="true">
+		<div style="text-align: center" class="modal-body">
+			<div class="gw-row" id="cookie notice">
+				<h3>Cookies</h3>
+				<p>
+					This site uses a <b>cookie</b> to indicate your acceptance of the
+					following End User License Agreement. This cookie contains no
+					identifying personal information and is only used to allow access to
+					this device's web user interface.
+				</p>
+			</div>
+			<div class="gw-row" id="eulaText">
+			</div>
+		</div>
+		<div style="text-align: center" class="modal-footer">
+			<p>By clicking Accept, you agree to our use of cookies and the terms and conditions of the license agreement above.</p>
+			<button name="eulaAccept" id="eulaAccept" class="btn btn-primary">Accept</button>
+		</div>
+	</div>
+	</div>
+	<script type="text/html" id="smart-input-text-template">
+		<input data-bind="value: value, css:{'gw-highlight': hasOwnProperty('highlight') ? highlight : false}, style: {width: hasOwnProperty('width') ? width : ''}, validate: {type: hasOwnProperty('type') ? type : 'none', optional: hasOwnProperty('optional') ? optional : true}, event: {change: hasOwnProperty('ochg') ? ochg : function () {}}, attr: {name: hasOwnProperty('name') ? name : ''}" type="text"></input>
+	</script>
+	<script type="text/html" id="smart-select-template">
+		<select data-bind="value: value, options: options, css:{'gw-highlight': hasOwnProperty('highlight') ? highlight : false}, style: {width: hasOwnProperty('width') ? width : ''}, event: {change: hasOwnProperty('ochg') ? ochg : function () {}}, optionsText: hasOwnProperty('optionsText') ? optionsText : 't', optionsValue: hasOwnProperty('optionsValue') ? optionsValue : 'v', attr: {name: hasOwnProperty('name') ? name : ''}"></select>
+	</script>
+	<script type="text/html" id="title-template">
+		<div style="width: 100%; text-align: center">
+			<!-- ko if: hasOwnProperty('title') -->
+				<h3 style="display: inline-block" data-bind="'text': title"></h3>
+				<!-- ko if: hasOwnProperty('helpLink') -->
+					<a tabindex="-1" class="btn" style="margin-top: -5px; margin-right: 5px" data-bind="help: {'title': title, 'link': helpLink}"><i class="icon-question-sign"></i></a>
+				<!-- /ko -->
+				<!-- ko if: hasOwnProperty('helpClick') -->
+					<a tabindex="-1" class="btn" style="margin-top: -5px; margin-right: 5px" data-bind="click: helpClick"><i class="icon-question-sign"></i></a>
+				<!-- /ko -->
+			<!-- /ko -->
+			<!-- ko ifnot: hasOwnProperty('title') -->
+				<h3 data-bind="'text': $data"></h3>
+			<!-- /ko -->
+		</div>
+		<hr />
+	</script>
+	<script type="text/html" id="h4-template">
+		<div style="width: 100%; text-align: center" data-bind="visible: hasOwnProperty('vsbl') ? vsbl : true">
+			<!-- ko if: hasOwnProperty('title') -->
+				<h4 style="display: inline-block" data-bind="text: title"></h4>
+				<!-- ko if: hasOwnProperty('helpLink') -->
+					<a tabindex="-1" class="btn" style="margin-top: -5px; margin-right: 5px" data-bind="help: {title: title, link: helpLink}"><i class="icon-question-sign"></i></a>
+				<!-- /ko -->
+			<!-- /ko -->
+			<!-- ko ifnot: hasOwnProperty('title') -->
+				<h4 data-bind="text: $data"></h4>
+			<!-- /ko -->
+		</div>
+	</script>
+	<script type="text/html" id="help-template">
+		<!-- ko if: hasOwnProperty('htxt') -->
+		<!-- ko if: hasOwnProperty('hlnk') -->
+		<a data-bind="help: {'title': htxt, 'link': hlnk}, attr: {name: hasOwnProperty('name') ? name + '-help' : ''}" tabindex="-1" class="btn"><i class="icon-question-sign"></i></a>
+		<!-- /ko -->
+		<!-- /ko -->
+	</script>
+	<script type="text/html" id="long-help-template">
+		<!-- ko if: hasOwnProperty('helpLink') -->
+		<a tabindex="-1" class="btn" data-bind="
+			help: {
+				'title': hasOwnProperty('helpTitle') ? helpTitle : hasOwnProperty('label') ? label : 'Help',
+				'link': helpLink
+			},
+			attr: {
+				name: hasOwnProperty('name') ? name + '-help' : ''
+			}"
+		><i class="icon-question-sign"></i></a>
+		<!-- /ko -->
+	</script>
+	<script type="text/html" id="note-template">
+		<!-- ko if: hasOwnProperty('note') -->
+		<span class="add-on"><font color="#000000" data-bind="text: note"></font></span>
+		<!-- /ko -->
+	</script>
+	<script type="text/html" id="password-template">
+		<div class="control-group" data-bind="style:{width: hasOwnProperty('wdth') ? wdth : ''}, visible: hasOwnProperty('vsbl') ? vsbl : true, css: {error: hasOwnProperty('vlid') ? ! vlid() : false}">
+			<label class="control-label" data-bind="text: labl"></label>
+			<div class="controls">
+				<div class="input-append">
+					<input data-bind="style:{width: hasOwnProperty('wdth') ? wdth : ''}, value: ival, validate: {type: vtyp, optional: hasOwnProperty('reqd') ? ! reqd() : true}, enable: hasOwnProperty('iena') ? iena : true, css: {'gw-highlight': hasOwnProperty('hlgt') ? hlgt : false}, attr: {name: hasOwnProperty('name') ? name : ''}" type="password" />
+					<!-- ko template: {name: 'note-template'} --><!-- /ko -->
+					<!-- ko template: {name: 'help-template'} --><!-- /ko -->
+					<!-- ko if: hasOwnProperty('reqd') -->
+					<!-- ko if: reqd -->
+					<span class="add-on"><font color="#FF0000">Required</font></span>
+					<!-- /ko -->
+					<!-- /ko -->
+				</div>
+			</div>
+		</div>
+	</script>
+	<script type="text/html" id="text-template">
+		<div class="control-group" data-bind="visible: hasOwnProperty('vsbl') ? vsbl : true, css: {error: hasOwnProperty('vlid') ? ! vlid() : false}">
+			<label class="control-label" data-bind="text: labl"></label>
+			<div class="controls">
+				<div class="input-append">
+					<input data-bind="style:{width: hasOwnProperty('wdth') ? wdth : ''}, value: ival, validate: {type: vtyp, optional: hasOwnProperty('reqd') ? ! reqd() : true}, event: {change: hasOwnProperty('ochg') ? ochg : function () {}}, enable: hasOwnProperty('iena') ? iena : true, css: {'gw-highlight': hasOwnProperty('hlgt') ? hlgt : false}, attr: {name: hasOwnProperty('name') ? name : ''}" type="text" />
+					<!-- ko template: {name: 'note-template'} --><!-- /ko -->
+					<!-- ko template: {name: 'help-template'} --><!-- /ko -->
+					<!-- ko if: hasOwnProperty('reqd') -->
+					<!-- ko if: reqd -->
+					<span class="add-on"><font color="#FF0000">Required</font></span>
+					<!-- /ko -->
+					<!-- /ko -->
+				</div>
+			</div>
+		</div>
+	</script>
+	<script type="text/html" id="select-template">
+		<div class="control-group" data-bind="visible: hasOwnProperty('vsbl') ? vsbl : true">
+			<label class="control-label" data-bind="text: labl"></label>
+			<div class="controls">
+				<div class="input-append">
+					<select data-bind="style:{width: hasOwnProperty('wdth') ? wdth : ''}, value: ival, options: iopt, optionsText: 'otxt', optionsValue: 'oval', event: {change: hasOwnProperty('ochg') ? ochg : function () {}}, enable: hasOwnProperty('iena') ? iena : true, css: {'gw-highlight': hasOwnProperty('hlgt') ? hlgt : false}, attr: {name: hasOwnProperty('name') ? name : ''}">
+					</select>
+					<!-- ko template: {name: 'note-template'} --><!-- /ko -->
+					<!-- ko template: {name: 'help-template'} --><!-- /ko -->
+				</div>
+			</div>
+		</div>
+	</script>
+	<script type="text/html" id="select-template-bool">
+			<div class="control-group" data-bind="visible: hasOwnProperty('vsbl') ? vsbl : true">
+			<label class="control-label" data-bind="text: labl"></label>
+			<div class="controls">
+				<div class="input-append">
+					<select data-bind="style:{width: hasOwnProperty('wdth') ? wdth : ''}, value: ival, event: {change: hasOwnProperty('ochg') ? ochg : function () {}}, enable: hasOwnProperty('iena') ? iena : true, css: {'gw-highlight': hasOwnProperty('hlgt') ? hlgt : false}, attr: {name: hasOwnProperty('name') ? name : ''}">
+						<option value="y">Yes</option>
+						<option value="n">No</option>
+					</select>
+					<!-- ko template: {name: 'note-template'} --><!-- /ko -->
+					<!-- ko template: {name: 'help-template'} --><!-- /ko -->
+				</div>
+			</div>
+		</div>
+	</script>
+	<script type="text/html" id="savable-input-template">
+		<input data-bind="
+			value: value,
+			valueUpdate: hasOwnProperty('valueUpdate') ? valueUpdate : 'afterkeydown',
+			autotag: hasOwnProperty('autotag') ? autotag : undefined,
+			enable: hasOwnProperty('enable') ? enable : true,
+			event: {
+				change: hasOwnProperty('change') ? change : undefined,
+				blur: hasOwnProperty('blur') ? blur : undefined
+			},
+			css: {
+				'gw-error': hasOwnProperty('error') ? error : false,
+				'gw-highlight': hasOwnProperty('changed') ? changed : false
+			},
+			style: hasOwnProperty('style') ? style : {
+				'text-align': hasOwnProperty('textAlign') ? textAlign : 'left',
+				width: hasOwnProperty('width') ? width : ''
+			},
+			attr: {
+				title: hasOwnProperty('title') ? title : undefined,
+				type: hasOwnProperty('type') ? type : 'text',
+				readonly: hasOwnProperty('readonly') ? readonly : undefined,
+				placeholder: hasOwnProperty('placeholder') ? placeholder : '',
+				name: hasOwnProperty('name') ? name : ''
+			}"
+		/>
+	</script>
+	<script type="text/html" id="savable-password-template">
+		<!-- ko template: {name: 'savable-input-template', data: $.extend({
+				'type': 'password'
+			}, $data)} -->
+		<!-- /ko -->
+	</script>
+	<script type="text/html" id="savable-autotag-template">
+		<!-- ko template: {name: 'savable-input-template', data: $.extend({
+				'autotag': $data.value
+			}, $data)} -->
+		<!-- /ko -->
+	</script>
+	<script type="text/html" id="savable-expanding-template">
+		<textarea style="overflow: hidden" data-bind="
+			value: value,
+			valueUpdate: 'afterkeydown',
+			enable: hasOwnProperty('enable') ? enable : true,
+			css: {
+				'gw-error': hasOwnProperty('error') ? error : false,
+				'gw-highlight': hasOwnProperty('changed') ? changed : false
+			},
+			style: hasOwnProperty('style') ? style : {
+				height: expand() ? '90px' : '20px',
+				resize: expand() ? 'both' : 'none',
+				'border-bottom-right-radius': expand() ? '4px': '0px',
+				'text-align': hasOwnProperty('textAlign') ? textAlign : 'left',
+				width: hasOwnProperty('width') ? width : undefined
+			},
+			attr: {
+				title: hasOwnProperty('title') ? title : undefined,
+				readonly: hasOwnProperty('readonly') ? readonly : undefined,
+				placeholder: hasOwnProperty('placeholder') ? placeholder : '',
+				name: hasOwnProperty('name') ? name : undefined
+			},
+			hasFocus: hasFocus"
+		/>
+	</script>
+	<script type="text/html" id="savable-select-template">
+		<select data-bind="
+			value: value,
+			enable: hasOwnProperty('enable') ? enable : true,
+			options: options,
+			optionsText: hasOwnProperty('optionsText') ? optionsText : undefined,
+			optionsValue: hasOwnProperty('optionsValue') ? optionsValue : undefined,
+			optionsCaption: hasOwnProperty('placeholder') ? placeholder : undefined,
+			css: {
+				'gw-error': hasOwnProperty('error') ? error : false,
+				'gw-highlight': hasOwnProperty('changed') ? changed : false
+			},
+			event: {
+				change: hasOwnProperty('change') ? change : undefined
+			},
+			style: hasOwnProperty('style') ? style : {
+				border: hasOwnProperty('border') ? border : undefined,
+				margin: hasOwnProperty('margin') ? margin : undefined,
+				width: hasOwnProperty('width') ? width : ''
+			},
+			attr: {
+				title: hasOwnProperty('title') ? title : undefined,
+				name: hasOwnProperty('name') ? name : ''
+			}"
+		></select>
+	</script>
+	<script type="text/html" id="savable-bool-template">
+		<!-- ko template: {name: 'savable-select-template', data: $.extend({
+			options: ['y', 'n'],
+			optionsText: function (v){return v==='y'?'Yes':v==='n'?'No':'???'}
+		}, $data)} --><!-- /ko -->
+	</script>
+	<script type="text/html" id="full-savable-template">
+		<div class="form-horizontal">
+		<div class="control-group" data-bind="visible: hasOwnProperty('visible') ? visible : true, css: {'gw-error': hasOwnProperty('error') ? error : false}">
+			<label class="control-label" data-bind="text: label, style: {color: hasOwnProperty('color') ? color : 'black'}"></label>
+			<div class="controls">
+				<div class="input-append">
+					<!-- ko template: {name: 'savable-' + templateType + '-template'} --><!-- /ko -->
+					<!-- ko template: {name: 'note-template'} --><!-- /ko -->
+					<!-- ko template: {name: 'long-help-template'} --><!-- /ko -->
+					<!-- ko if: hasOwnProperty('required') -->
+					<span class="add-on" data-bind="visible: required"><font color="#FF0000">Required</font></span>
+					<!-- /ko -->
+				</div>
+			</div>
+		</div>
+		</div>
+	</script>
+	<script type="text/html" id="full-savable-input-template">
+		<!-- ko template: {name: 'full-savable-template', data: $.extend({'templateType': 'input'}, $data)} -->
+		<!-- /ko -->
+	</script>
+	<script type="text/html" id="full-savable-autotag-template">
+		<!-- ko template: {name: 'full-savable-template', data: $.extend({'templateType': 'autotag'}, $data)} -->
+		<!-- /ko -->
+	</script>
+	<script type="text/html" id="full-savable-password-template">
+		<!-- ko template: {name: 'full-savable-template', data: $.extend({'templateType': 'password'}, $data)} -->
+		<!-- /ko -->
+	</script>
+	<script type="text/html" id="full-savable-expanding-template">
+		<!-- ko template: {name: 'full-savable-template', data: $.extend({'templateType': 'expanding'}, $data)} -->
+		<!-- /ko -->
+	</script>
+	<script type="text/html" id="full-savable-select-template">
+		<!-- ko template: {name: 'full-savable-template', data: $.extend({'templateType': 'select'}, $data)} -->
+		<!-- /ko -->
+	</script>
+	<script type="text/html" id="full-savable-bool-template">
+		<!-- ko template: {name: 'full-savable-template', data: $.extend({'templateType': 'bool'}, $data)} -->
+		<!-- /ko -->
+	</script>
+	<script type="text/html" id="file-input-template">
+		<div class="input-append">
+			<input type="file" style="display: none" data-bind="fileOnChange: file, attr: {id: id, name: id}"></input>
+			<label style="min-width: 300px" class="gw-file-drop" data-bind="style: {color: error() ? '#b94a48' : 'black', 'border-color': error() ? '#b75d5b' : '#ccc'}, fileDrop: file, attr: {for: id, title: error}, text: text">
+		</div>
+	</script>
+	<script type="text/html" id="file-icon-template">
+		<div class="input-append">
+			<input type="file" style="display: none" data-bind="fileOnChange: file, attr: {id: id, name: id}"></input>
+			<label class="gw-icon-drop" style="padding: 5px; width: 20px" data-bind="style: {color: error() ? '#b94a48' : 'black', 'border-color': error() ? '#b75d5b' : '#ccc'}, fileDrop: file, attr: {for: id, title: text}"><span class="icon-file"></span></label>
+		</div>
+	</script>
+	<script type="text/html" id="table-template">
+		<div class="row" data-bind="visible: hasOwnProperty('vsbl') ? vsbl : true">
+			<div class="span11">
+				<table class="table table-bordered table-hover" data-bind="attr: {name: name}">
+					<thead>
+						<tr data-bind="foreach: columns">
+							<th data-bind="style: {width: hasOwnProperty('width') ? width : undefined}">
+								<a style="cursor: pointer" data-bind="click: $parent.sortBy(name),  text: text"></a>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- ko foreach: records -->
+						<tr data-bind="click: $parent.toggleSelected, css: {info: $data === $parent.selectedRecord()}, foreach: $parent.columns">
+							<!--ko if: $parent.hasOwnProperty(name)-->
+							<td data-bind="text: $parent[name].value, css: {'gw-highlight': $parent[name].changed}"></td>
+							<!--/ko-->
+							<!--ko ifnot: $parent.hasOwnProperty(name)-->
+							<td></td>
+							<!--/ko-->
+						</tr>
+						<!--/ko-->
+						<!--ko foreach:blanks-->
+						<tr data-bind="foreach: $parent.columns"><td></td></tr>
+						<!--/ko-->
+					</tbody>
+				</table>
+			</div>
+			<div class="span1">
+				<a class="btn btn-block btn-success gw-table" data-bind="attr: {name: name + '-add'}, click: clickAdd"><i class="icon-plus-sign icon-white" /> Add</a>
+				<a class="btn btn-block gw-table" data-bind="attr: {name: name + '-edit'}, click: clickEdit, css: {'btn-primary': hasSelected}"><i class="icon-edit icon-white" /> Edit</a>
+				<a class="btn btn-block gw-table" data-bind="attr: {name: name + '-remove'}, click: clickRemove, css: {'btn-danger': hasSelected}"><i class="icon-minus-sign icon-white" /> Delete</a>
+				<a class="btn btn-block gw-table" data-bind="attr: {name: name + '-copy'}, click: clickCopy, css: {'btn-warning': hasSelected}, visible: showCopy"><i class="icon-tags icon-white" /> Copy</a>
+				<br />
+				<a class="btn btn-block gw-table" data-bind="attr: {name: name + '-up'}, click: moveUp, css: {'btn-primary': hasSelected}"><i class="icon-circle-arrow-up icon-white" /> Up</a>
+				<a class="btn btn-block gw-table" data-bind="attr: {name: name + '-down'}, click: moveDown, css: {'btn-primary': hasSelected}"><i class="icon-circle-arrow-down icon-white" /> Down</a>
+			</div>
+		</div>
+	</script>
+	<script type="text/html" id="textarea-template">
+		<div class="gw-row" data-bind="visible: hasOwnProperty('vsbl') ? vsbl : true">
+			<textarea data-bind="text: hasOwnProperty('text') ? text : '', value: hasOwnProperty('value') ? value : '', attr: {id: hasOwnProperty('id') ? id : '', rows: hasOwnProperty('rows') ? rows : '20', name: hasOwnProperty('name') ? name : ''}, style: {width: hasOwnProperty('width') ? width : '600px'}" style="font-family:monospace">
+			</textarea>
+		</div>
+	</script>
+	<script type="text/html" id="textarea-template-ro">
+		<div class="gw-row" data-bind="visible: hasOwnProperty('vsbl') ? vsbl : true">
+			<textarea data-bind="text: hasOwnProperty('text') ? text : '', value: hasOwnProperty('value') ? value : '', attr: {id: hasOwnProperty('id') ? id : '', rows: hasOwnProperty('rows') ? rows : '20', name: hasOwnProperty('name') ? name : ''}, style: {width: hasOwnProperty('width') ? width : '600px'}" style="font-family:monospace" readonly>
+			</textarea>
+		</div>
+	</script>
+	<script type="text/html" id="savable-textarea-template">
+		<div class="gw-row" data-bind="visible: hasOwnProperty('visible') ? visible : true">
+			<textarea style="font-family:monospace" data-bind="
+				text: hasOwnProperty('text') ? text : '',
+				value: hasOwnProperty('value') ? value : '',
+				tabbable: hasOwnProperty('tabbable') ? tabbable : false,
+				attr: {
+					readonly: hasOwnProperty('readonly') ? readonly : undefined,
+					id: hasOwnProperty('id') ? id : '',
+					rows: hasOwnProperty('rows') ? rows : '20',
+					name: hasOwnProperty('name') ? name : ''
+				},
+				style: hasOwnProperty('style') ? style : {
+					width: hasOwnProperty('width') ? width : '600px'
+				}"
+			></textarea>
+		</div>
+	</script>
+	<script type="text/html" id="savable-textarea-template-ro">
+		<!-- ko template: {name: 'savable-textarea-template', data: $.extend({
+			'readonly': true
+		}, $data)} --><!-- /ko -->
+	</script>
+	<script type="text/html" id="indented-browser-entry">
+		<!-- ko if: hasOwnProperty("contents") -->
+			<div class="gw-selectable" data-bind="click: select, style: {'padding-left': indent * 30 + 5 + 'px'}, attr: {name: hasOwnProperty('idname') ? idname : name}">
+				<span style="font-weight: bold; margin-right: 5px" data-bind="text: (selected() ? '[-] ' : '[+] ') + name"></span>
+			</div>
+		<!-- /ko -->
+		<!-- ko ifnot: hasOwnProperty("contents") -->
+			<div class="gw-selectable" data-bind="click: select, style: {'padding-left': indent * 30 + 5 + 'px', 'background-color': selected() ? 'lightblue' : ''}, attr: {name: hasOwnProperty('idname') ? idname : name}">
+				<span data-bind="text: name"></span>
+			</div>
+		<!-- /ko -->
+		<!-- ko if: hasOwnProperty("contents") -->
+		<div data-bind="visible: selected">
+		<!-- ko foreach: contents -->
+		<!-- ko template: {name: 'indented-browser-entry', data: $.extend({'indent': $parent.indent + 1, idname:$parent.hasOwnProperty('idname') ? $parent.idname + '/' + name : parent.name + '/' + name}, $data)} -->
+		<!-- /ko -->
+		<!-- /ko -->
+		</div>
+		<!-- /ko -->
+	</script>
+	<script type="text/html" id="browser-entry-template">
+		<!-- ko template: {name: 'indented-browser-entry', data: $.extend({'indent': 0}, $data)} --><!-- /ko -->
+	</script>
+	<script type="text/html" id="file-browser-template">
+		<div class="gw-auto-margin gw-border" style="margin-top: 10px; width: 600px; text-align: left" data-bind="foreach: root, attr {name: name}">
+			<!-- ko template: {name: 'browser-entry-template', data: $.extend({idname:$parent.name + '/' + name}, $data)} --><!-- /ko -->
+		</div>
+	</script>
+	<script type="text/html" id="picker-template">
+		<div data-backdrop="static" class="modal hide" data-bind="attr: {name: name}, css: {'gw-modal-wide': hasOwnProperty('wide')}">
+			<div class="modal-header">
+				<table style="width: 100%">
+					<tr>
+						<td data-bind="style: {width: hasOwnProperty('prefix') ? '30%' : '10%'}">
+							<!-- ko if: hasOwnProperty("prefix") -->
+							<div class="gw-rounded-border" style="text-align: center; background-color: lightblue;">
+								<b><span data-bind="text: prefix"></span></b>
+							</div>
+							<!-- /ko -->
+						</td>
+						<td><h3 data-bind="text: hasOwnProperty('header') ? header : 'Make a Selection'"></h3></td>
+						<td data-bind="style: {width: hasOwnProperty('prefix') ? '30%' : '10%'}"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button></td>
+					</tr>
+				</table>
+			</div>
+			<div class="gw-modal-body-long">
+				<div>
+					<div style="display: inline-block; text-align: center; width: 50%">
+						<h4 data-bind="text: availableHeader"></h4>
+					</div><!--
+					--><div style="display: inline-block; text-align: center; width: 50%">
+						<h4 data-bind="text: selectedHeader"></h4>
+					</div>
+					<div style="width: 100%; text-align: center" data-bind="visible: hasOwnProperty('showFilter') ? showFilter : true">
+						<input type="text" placeholder="Filter" data-bind="value: filter, valueUpdate: 'afterkeydown'"></input>
+					</div>
+				</div>
+				<div>
+					<div style="display: inline-block; text-align: center; width: 45%">
+						<div name="availablePickables" class="gw-picker-list" style="min-height: 100px; max-height: 313px" data-bind="foreach: filteredList">
+							<!-- ko ifnot: selected -->
+							<div class="gw-selectable gw-picker-item" style="text-align: center" data-bind="attr: {name: name}, click: select, text: text">
+							</div>
+							<!-- /ko -->
+						</div>
+					</div><!--
+					--><div style="display: inline-block; vertical-align: top; text-align: center; width: 10%; padding-top: 30px">
+						<button style="display: block; margin-bottom: 10px" class="btn gw-auto-margin" data-bind="click: clickSelectAll, visible: showSelectAll" title="Select All">
+							<i class="icon-arrow-right" />
+						</button>
+						<button style="display: block" class="btn gw-auto-margin" data-bind="click: clickSelectNone, visible: showSelectNone" title="Select None">
+							<i class="icon-arrow-left" />
+						</button>
+					</div><!--
+					--><div style="display: inline-block; vertical-align: top; text-align: center; width: 45%">
+						<div name="selectedPickables" class="gw-picker-list" style="min-height: 100px; max-height: 273px" data-bind="foreach: filteredList">
+							<!-- ko if: selected -->
+							<div class="gw-selectable gw-picker-item" style="text-align: center" data-bind="attr: {name: name}, click: select, text: text">
+							</div>
+							<!-- /ko -->
+
+						</div>
+					</div>
+				</div>
+				<div style="padding-top: 15px; text-align: center">
+					<button name="pickerDone" class="btn btn-primary" data-bind="click: submit, text: hasOwnProperty('buttonText') ? buttonText : 'Select'"></button>
+				</div>
+			</div>
+		</div>
+	</script>
+	<script type="text/html" id="toggle-template">
+		<div class="gw-toggle input-append">
+			<!-- ko if: hasOwnProperty("label") -->
+			<span class="add-on" data-bind="text: label"></span>
+			<!-- /ko -->
+			<button class="btn" data-bind="text: trueText, css: {'btn-primary': value}, click: setTrue, attr: {name: name + '-1'}"></button>
+			<button class="btn" data-bind="text: falseText, css: {'btn-primary': ! value()}, click: setFalse, attr: {name: name + '-0'}"></button>
+			<!-- ko template: {name: 'long-help-template'} --><!-- /ko -->
+		</div>
+	</script>
+</body>
+</html>

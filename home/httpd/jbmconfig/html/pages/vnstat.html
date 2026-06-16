@@ -1,0 +1,30 @@
+<form id="vnstat-form" class="form-horizontal">
+	<!--ko template:{name:'title-template',data:'Traffic'}--><!-- /ko -->
+	<table class="gw-auto-margin" style="margin-bottom: 10px" data-bind="visible: showEnable() || showStart()">
+		<tr>
+			<td style="width: 300px; text-align: right">vnStat is <b data-bind="visible: chkconfig() === 'off'">NOT </b>enabled</td>
+			<td style="width: 300px; text-align: left; padding-left: 20px" rowspan="2">
+				<button class="btn" data-bind="visible: showEnable, click: chkconfigEnable">Enable</button>
+				<button class="btn" data-bind="visible: showStart, click: forceStart">Force Start</button>
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 300px; text-align: right">vnStat is <b data-bind="visible: serviceStatus() === 'stopped'">NOT </b>running</td>
+		</tr>
+	</table>
+	<!--ko template:{name:'select-template',data:vntype}--><!-- /ko -->
+	<!-- ko with: vnintf -->
+	<div class="control-group" data-bind="visible: vsbl">
+		<label class="control-label" data-bind="text: labl"></label>
+		<div class="controls">
+			<div class="input-append">
+				<select data-bind="value: ival, options: iopt, event: {change: ochg}">
+				</select>
+				<!-- ko template: {name: 'note-template'} --><!-- /ko -->
+				<!-- ko template: {name: 'help-template'} --><!-- /ko -->
+			</div>
+		</div>
+	</div>
+	<!-- /ko -->
+	<!--ko template:{name:'textarea-template-ro',data:vnstatdata}--><!-- /ko -->
+</form>

@@ -1,0 +1,48 @@
+<form id="floatinput-form" class="form-horizontal">
+	<!--ko template: {name:'title-template',data:'Object 30 - Floating Inputs'}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Define Highest Register Address'}--><!--/ko-->
+    <!--ko template: {name: 'select-template-bool', data: nodnp}--><!--/ko-->
+	<!-- ko if: isNoDNPChecked -->
+        <!--ko template: {name: 'text-template', data: highestreg}--><!--/ko-->
+	<!-- /ko -->
+	<!--ko template: {name:'h4-template',data:'Default DeadBand'}--><!--/ko-->
+    <!--ko template: {name: 'text-template', data: deadband}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Default Class Assignment'}--><!--/ko-->
+    <!--ko template: {name: 'select-template', data: defobj31class}--><!--/ko-->
+    <!--ko template: {name: 'select-template', data: defobj32class}--><!--/ko-->
+    <!--ko template: {name: 'select-template', data: defobj33class}--><!--/ko-->
+	<!-- ko if: isNoDNPChecked -->
+        <hr />
+        <table align="center" style="text-align: center; vertical-align: middle;">
+            <tr>
+                <td align="left" nowrap="nowrap"><h4><u>Exception DeadBand and Class Assignments Table</u></h4></td>
+                <td>&#160;</td>
+                <td align="left" nowrap="nowrap"><a tabindex="-1" data-bind="help: {'title': 'Exception Table Overview', 'link': '/h_dnp3_floatinputhelp.html'}" class="btn"><i class="icon-question-sign"></i></a></td>
+            </tr>
+        </table>
+        <!--ko template: {name:'table-template',data: floatinputsTable}--><!--/ko-->
+	<!-- /ko -->
+    <hr />
+    <div style="text-align: center">
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_object')">Object Mapping</a>
+    </div>
+</form>
+
+<div id="fiexception-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Exception Class Assignment Settings</h3>
+    </div>
+    <div class="gw-modal-body-long">
+        <form>
+            <!--ko template: {name: 'text-template', data: startreg}--><!--/ko-->
+            <!--ko template: {name: 'text-template', data: endreg}--><!--/ko-->
+            <!--ko template: {name: 'text-template', data: exdeadband}--><!--/ko-->
+            <!--ko template: {name: 'select-template', data: obj31class}--><!--/ko-->
+            <!--ko template: {name: 'select-template', data: obj32class}--><!--/ko-->
+            <!--ko template: {name: 'select-template', data: obj33class}--><!--/ko-->
+            <a class="btn btn-primary pull-right" data-bind="click: floatinputsWizardFinish">Finish</a>
+        </form>
+    </div>
+</div>
+

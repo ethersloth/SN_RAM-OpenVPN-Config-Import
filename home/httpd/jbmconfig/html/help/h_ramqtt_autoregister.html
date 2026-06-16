@@ -1,0 +1,12 @@
+<h4>Description</h4>
+<p>This option determines whether RAMQTT will attempt to create a device instance
+on the Cloud and obtain generated credentials or use existing credentials for
+an already existing device instance.</p>
+<p><b>Auto Registration</b> - RAMQTT will attempt to create a device instance on
+the Cloud and obtain generated credentials for the newly created device.
+If the device already exists, the creation of a new device will be skipped and
+the credentials for the existing device will be used.<p>
+<p><b>Already Registered</b> - RAMQTT will not attempt to automatically create
+the device instance on the Cloud or obtain generated credentials. It will
+instead connect using the credentials provided. This option assumes that the
+device instance on the Cloud already exists.

@@ -1,0 +1,34 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/modbus.prf"
+             name="modbus" />
+                                                                                                                                                          
+                <!-- Advanced -> Modbus Remote Station Table Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/modbus_remotestation.prf" name="modbus_remoteStation">
+   <validation>
+    <vstep errmsg="Invalid Modbus Station Table Record Set. Must be a well-formed XML document."
+             name="remoteStations"
+             test="string-length(/input/remoteStations/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Modbus Station Table to system configuration file."
+             name="remoteStations" path="/GAUCfg/modbus/remoteStations"
+             type="node" />
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+    <pre subsystem="modbus" action="Save" />
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+    <pre subsystem="modbus" action="Apply" />
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

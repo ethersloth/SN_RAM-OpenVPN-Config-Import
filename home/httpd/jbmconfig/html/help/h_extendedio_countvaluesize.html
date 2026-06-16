@@ -1,0 +1,10 @@
+<h4>Description</h4>
+<p>
+<b><u>Count Value Size:</u></b><br /> 
+This is a plain counter mode that is either 16 or 32-bits in size, which counts on positive edge or negative edge depending on the polarity bit. 
+When the <b>16-bit Count Returned</b> option is selected, the count will increment in a single register from 0 to 65535, 
+then roll over to 1 and continue to count upward again. Select <b>32-bit Count Returned</b> to use two consecutive 16-bit registers as one 32-bit register. 
+When the first register rolls over to 1, the second register begins counting at 65536 (second register is most significant) and continue counting upward in 32 bit mode.
+<br />
+<b>Note:</b> Two consecutive registers are always allocated in the "CNT Modbus Address" column whether set for 16-bit or 32-bit mode. Therefore, when using "16-bit Count Returned" mode the second register should be ignored. 
+</p>

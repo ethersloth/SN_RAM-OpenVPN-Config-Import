@@ -1,0 +1,69 @@
+<!--ko template: {name:'title-template',data:'Certificate Manager'}--><!--/ko-->
+<!--ko template: {name:'h4-template',data:'Certificate Manager Table Properties'}--><!--/ko-->
+<!--ko template: {name:'table-template',data: certTable}--><!--/ko-->
+<div style="width: 100%; text-align: center">
+	<!--ko template: {name: 'file-input-template', data: certFileDrop}--><!--/ko-->
+</div>
+<div id="certificate-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Add Certificate</h3>
+	</div>
+	<div class="gw-modal-body-long">
+		<!--ko template: {name:'full-savable-input-template',data: $.extend({name:'certname'},certname)}--><!--/ko-->
+		<!--ko template: {name:'full-savable-select-template',data: $.extend({name:'certtype'},certtype)}--><!--/ko-->
+		<!--ko template: {name:'full-savable-select-template',data: certfile}--><!--/ko-->
+		<!-- ko with: upcertf -->
+		<form class="form-horizontal" action="/cgi-bin/gau" method="post" enctype="multipart/form-data" data-bind="visible: hasOwnProperty('vsbl') ? vsbl : true, attr:{id:fmid}">
+			<!-- ko if: hasOwnProperty('inpt') -->
+			<!-- ko foreach: inpt -->
+			<input type="hidden" data-bind="attr: {name: inam}, value: ival" />
+			<!-- /ko -->
+			<!-- /ko -->
+			<input type="hidden" name="json" value="true" />
+			<div class="control-group" data-bind="
+				css: {
+					'gw-error': hasOwnProperty('error') ? error : false
+				}"
+			>
+				<label class="control-label" data-bind="text: labl"></label>
+				<div class="fileupload fileupload-new" data-provides="fileupload">
+					<div class="input-append">
+						<div class="uneditable-input span3"><i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span></div><span class="btn btn-file"><span class="fileupload-new">Select File</span><span class="fileupload-exists">Change</span><input type="file" data-bind="
+							validate: {
+								type: hasOwnProperty('vtyp') ? vtyp : 'none',
+								optional: true
+							},
+							value: ival,
+							attr: {
+								name: inam
+							}"
+						/></span><a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+						<!-- ko template: {name: 'note-template'} --><!-- /ko -->
+						<!-- ko template: {name: 'help-template'} --><!-- /ko -->
+					</div>
+				</div>
+			</div>
+		</form>
+		<!-- /ko -->
+		<a class="btn btn-primary pull-right" data-bind="click: certWizardFinish">Finish</a>
+		<a class="btn pull-right" data-bind="click: uploadCert">Upload</a>
+	</div>
+</div>
+<div id="cert-drop-modal" data-bind="modal: certDropModal" class="hide gw-modal-extra-wide">
+	<div class="modal-header">
+		<button class="close" data-bind="click: certDropModal.hide">&times;</button>
+		<h3>Add Certificate</h3>
+	</div>
+	<div class="modal-body">
+		<!--ko template: {name:'full-savable-input-template',data: $.extend({name:'cfd-certname'},certname)}--><!--/ko-->
+		<!--ko template: {name:'full-savable-select-template',data: $.extend({name:'cfd-certtype'},certtype)}--><!--/ko-->
+		<a class="btn btn-primary pull-right" data-bind="click: submitCert">Upload</a>
+	</div>
+</div>
+<div id="certmgr-details-modal" class="modal hide gw-modal-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="gw-modal-body-long">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true" name="certmgr-details-close">&times;</button>
+		<!-- ko template: {name: 'savable-textarea-template', data: detailsText} --><!--/ko-->
+	</div>
+</div>

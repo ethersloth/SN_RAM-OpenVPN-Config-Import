@@ -1,0 +1,18 @@
+<h4>Description</h4>
+<p>Select desired Reverse Path Filter (rp_filter) option.<br /><br /></p>
+<p class="gw-auto-margin" style="width: 600px; text-align: center"><h4><b>What is reverse path filtering?</b></h4></p>
+<p>Reverse path filtering is a mechanism adopted by the Linux kernel, as well as most of the networking devices out there to check whether a receiving packet source address is routable.<br /><br />
+In other words, when a device with reverse path filtering enabled receives a packet, the device will first check whether the source of the received packet is reachable through the interface it came in.<br /><br />
+<ul>
+	<li>If the received packet's source address is routable through any of the interfaces on the device, the device will <b>accept the packet</b>.</li>
+	<li>If the received packet's source address is not routable through any of the interfaces on the device, the device will <b>drop that packet</b>.</li>
+</ul>
+<br />
+</p>
+<p class="gw-auto-margin" style="width: 600px; text-align: center"><h4><b>Available options</b></h4></p>
+<ul>
+	<li>0 - No source validation.</li>
+	<li>1 - Strict mode as defined in RFC3704 Strict Reverse Path Each incoming packet is tested against the FIB and if the interface is not the best reverse path the packet check will fail. By default failed packets are discarded.</li>
+	<li>2 - Loose mode as defined in RFC3704 Loose Reverse Path Each incoming packet's source address is also tested against the FIB and if the source address is not reachable via any interface the packet check will fail.</li>
+</ul>
+<p>Current recommended practice in RFC3704 is to enable strict mode to prevent IP spoofing from DDos attacks. If using asymmetric routing or other complicated routing, then loose mode is recommended.</p>

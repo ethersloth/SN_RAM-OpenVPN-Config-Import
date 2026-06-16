@@ -1,0 +1,101 @@
+
+<profile>
+ <subsystems>
+                                                                                                                                                          
+                <!-- Services -> Skkynet Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/skkynet.prf" name="skkynet">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Skkynet Enable option to system configuration file."
+             name="enable"
+             path="/GAUCfg/skkynet/enable" />
+    <cstep errmsg="Unable to save Skkynet Server option to system configuration file."
+             name="server"
+             path="/GAUCfg/skkynet/server" />
+    <cstep errmsg="Unable to save Skkynet User Name option to system configuration file."
+             name="username"
+             path="/GAUCfg/skkynet/username" />
+    <cstep errmsg="Unable to save Skkynet Password option to system configuration file."
+             name="password"
+             path="/GAUCfg/skkynet/password" />
+    <cstep errmsg="Unable to save Skkynet Domain option to system configuration file."
+             name="domain"
+             path="/GAUCfg/skkynet/domain" />
+    <cstep errmsg="Unable to save Skkynet Serial Number to Domain option to system configuration file."
+             name="serialdomain"
+             path="/GAUCfg/skkynet/serialdomain" />
+    <cstep errmsg="Unable to save Skkynet Serial Number to All Points option to system configuration file."
+             name="serialpoint"
+             path="/GAUCfg/skkynet/serialpoint" />
+    <cstep errmsg="Unable to save DSP IP address to system configuration file."
+             name="dspipaddr"
+             path="/GAUCfg/skkynet/dspipaddr" />
+    <cstep errmsg="Unable to save Skkynet Gamma Script name to system configuration file."
+             name="gammaname"
+             path="/GAUCfg/skkynet/gammaname" />
+    <cstep errmsg="Unable to save Skkynet SCADAlisp Config name to system configuration file."
+             name="scadaname"
+             path="/GAUCfg/skkynet/scadaname" />
+
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+
+       <!-- Start writing the /etc/skkynet/etkscript.conf file. -->                                                                    
+                                                                                                                        
+       <astep errmsg="Failed to write the etkscript configuration file." name="WriteFormattedFile" abort="y"> 
+           <arg expr="'/tmp/etkscript.conf'" source="config" />                                                         
+       </astep>                                                                                                        
+
+       <astep abort="y" errmsg="Failed to write the etkscript.conf file for Skkynet configuration file." name="AppendFormatted2File">
+           <arg expr="'/tmp/etkscript.conf'" source="config" />
+           <arg expr="# This is a GUI generated file, subsequent edits are not guaranteed to be retained." />
+           <arg expr="\n" />
+           <arg expr="\n" />
+           <arg expr="concat('CONF_FILE=', tick(), /GAUCfg/skkynet/gammaname/text(), tick())" source="config" />
+           <arg expr="\n" />
+       </astep>
+
+       <astep abort="y" errmsg="Failed to write the etkscript.conf file to /etc/skkynet/ directory." name="SystemCommand">
+           <arg   expr="mv -f /tmp/etkscript.conf /etc/skkynet/etkscript.conf" />
+       </astep>
+
+       <astep abort="n" name="SystemCommand"> 
+        <arg dependency="/GAUCfg/skkynet/enable/text() = 'n'"
+                   expr="'chkconfig etkscript off'"
+                 source="config" />
+       </astep>
+   
+       <astep abort="n" name="SystemCommand"> 
+        <arg dependency="/GAUCfg/skkynet/enable/text() = 'y'"
+                   expr="'chkconfig etkscript on'"
+                 source="config" />
+       </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+
+    <pre subsystem="skkynet" action="Save" />
+
+       <astep abort="n" name="SystemCommand"> 
+        <arg dependency="/GAUCfg/skkynet/enable/text() = 'n'"
+                   expr="'service etkscript stop'"
+                 source="config" />
+       </astep>
+   
+       <astep abort="n" name="SystemCommand"> 
+        <arg dependency="/GAUCfg/skkynet/enable/text() = 'y'"
+                   expr="'service etkscript restart'"
+                 source="config" />
+       </astep>
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

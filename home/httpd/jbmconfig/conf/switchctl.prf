@@ -1,0 +1,43 @@
+
+<profile>
+ <subsystems>
+                                                                                                                                                          
+                <!-- Advanced -> Switch Control Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/switchctl.prf" name="switchctl">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Split Lan Option to system configuration file."
+             name="splitlan"
+             path="/GAUCfg/switchctl/splitlan" />
+
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+
+       <astep abort="n" name="SystemCommand">
+        <arg dependency="/GAUCfg/switchctl/splitlan/text() = 'n'"
+                   expr="'rm -f /etc/switch/.swmodeon;touch /etc/switch/.swmodeoff'"
+                 source="config" />
+       </astep>
+
+       <astep abort="n" name="SystemCommand">
+        <arg dependency="/GAUCfg/switchctl/splitlan/text() = 'y'"
+                   expr="'rm -f /etc/switch/.swmodeoff;touch /etc/switch/.swmodeon'"
+                 source="config" />
+       </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+
+    <pre subsystem="switchctl" action="Save" />
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

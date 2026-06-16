@@ -1,0 +1,25 @@
+<h4>Description</h4>
+<p>
+<b>Object 30 - Long Inputs</b> Web UI screen provides configuration of Mapping Long Input I/O's Reg/Index to DNP points for generating events
+based on configured DeadBand and Class Assignments when the status of any Long Input I/O's changes.
+</p>
+<p>
+<b>Default</b> DeadBand and Class Assignments are applied to all the Reg/Index defined by Highest Register Address
+except Reg/Index entries that are defined in <b>Exception</b> DeadBand and Class Assignments Table.
+</p>
+<p>
+The <b>Exception</b> table provides you with the ability to define Reg/Index ranges that are needed to be configured different
+than Default DeadBand and Class Assignments.
+</p>
+<p>
+<b>Example:</b> The Stating Reg/Index for Long Input is 512, and if the Highest Register Address is set to <b>522</b> and Reg/Index <b>514</b>, <b>516</b>, <b>518-519</b> are needed to be set for different DeadBand and Class Assignments than Default, then the final result for all 10 registers would be as follows:
+</p>
+<p>
+Reg/Index <b>512-513</b>, <b>515</b>, <b>517</b> and <b>520-522</b> will be set to <b>Default</b> DeadBand and Class Assignments.
+</p>
+<p>
+Reg/Index <b>514</b>, <b>516</b>, and <b>518-519</b> will be set to <b>Exception</b> DeadBand and Class Assignments.
+</p>
+<p>
+<b>Important Note:</b> The Starting Reg/Index and Ending Reg/Index of Exception table entries for a single Reg/Index such as Reg/Index <b>514</b> and <b>516</b> in above example has to be the same address.
+</p>

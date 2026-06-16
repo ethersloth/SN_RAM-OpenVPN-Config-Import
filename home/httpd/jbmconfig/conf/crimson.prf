@@ -1,0 +1,51 @@
+
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/crimson.prf" name="crimson">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save SMS option to system configuration file."
+              name="sms"
+              path="/GAUCfg/crimson/sms" />
+    <cstep errmsg="Unable to save Server option to system configuration file."
+              name="server"
+              path="/GAUCfg/crimson/server" />
+    <cstep errmsg="Unable to save local interface option to system configuration file."
+              name="intf"
+              path="/GAUCfg/crimson/intf" />
+    <cstep errmsg="Unable to save Filter option to system configuration file."
+              name="filter"
+              path="/GAUCfg/crimson/filter" />
+    <cstep errmsg="Unable to save Security Filter option to system configuration file."
+              name="secfilter"
+              path="/GAUCfg/crimson/secfilter" />
+    <cstep errmsg="Unable to save crimson IP option to system configuration file."
+              name="crip"
+              path="/GAUCfg/crimson/crip" />
+    <cstep errmsg="Unable to save crimson port option to system configuration file."
+              name="crport"
+              path="/GAUCfg/crimson/crport" />
+    <cstep errmsg="Unable to save crimson access time option to system configuration file."
+              name="craccesstime"
+              path="/GAUCfg/crimson/craccesstime" />
+   </configuration>
+
+   <action name="Save" successmsg="Operation Succeeded.">
+    <!-- Begin saving crimson configuration -->
+    <!--
+     This action is intentionally left empty since crimson settings are used for display presentation
+     and crimsoncontrol.cgi when Remote Link Start button is clicked.
+    -->
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+    <!-- Begin applying crimson configuration -->
+    <pre subsystem="crimson" action="Save" />
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

@@ -1,0 +1,296 @@
+<div class="container-fluid">
+    <!--ko template: {name: 'title-template', data: 'OpenVPN Profile Import'}--><!--/ko-->
+    
+    <div class="form-group">
+        <h4>Select OpenVPN File</h4>
+        <p class="text-muted">Upload .ovpn or .conf files to import as device OpenVPN profiles</p>
+        <!--ko template: {name: 'file-input-template', data: cfgdata}--><!--/ko-->
+    </div>
+
+    <!-- Local Profile Summary -->
+    <div class="form-group" data-bind="visible: parsedConfig">
+        <h4>Profile Summary</h4>
+        <table class="table table-condensed table-bordered" style="font-size: 12px;">
+            <tbody>
+                <tr>
+                    <td><strong>Mode:</strong></td>
+                    <td data-bind="text: parsedConfig() ? parsedConfig().mode : ''"></td>
+                </tr>
+                <tr>
+                    <td><strong>Device/Proto:</strong></td>
+                    <td data-bind="text: parsedConfig() ? (parsedConfig().device + ' / ' + parsedConfig().proto) : ''"></td>
+                </tr>
+                <tr>
+                    <td><strong>Remote Server:</strong></td>
+                    <td data-bind="text: parsedConfig() ? (parsedConfig().remote + ':' + parsedConfig().port) : ''"></td>
+                </tr>
+                <tr>
+                    <td><strong>Cipher / Auth:</strong></td>
+                    <td data-bind="text: parsedConfig() ? (parsedConfig().cipher + ' / ' + parsedConfig().auth) : ''"></td>
+                </tr>
+                <tr>
+                    <td><strong>TLS Version:</strong></td>
+                    <td data-bind="text: parsedConfig() ? parsedConfig().tls : 'Not specified'"></td>
+                </tr>
+                <tr>
+                    <td><strong>Compression:</strong></td>
+                    <td data-bind="text: parsedConfig() ? (parsedConfig().compress || 'None') : ''"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Detected Directives -->
+        <div data-bind="visible: detectedDirectives().length > 0">
+            <h5>Additional Directives</h5>
+            <ul class="list-unstyled" style="font-size: 12px;">
+                <!--ko foreach: detectedDirectives-->
+                <li><code data-bind="text: $data"></code></li>
+                <!--/ko-->
+            </ul>
+        </div>
+
+        <!-- Embedded Content -->
+        <div data-bind="visible: embeddedBlocks().length > 0">
+            <h5>Embedded Content</h5>
+            <ul class="list-unstyled" style="font-size: 12px;">
+                <!--ko foreach: embeddedBlocks-->
+                <li><span class="label label-info" data-bind="text: $data"></span></li>
+                <!--/ko-->
+            </ul>
+        </div>
+
+        <!-- Compatibility Notes -->
+        <div data-bind="visible: compatibilityNotes().length > 0">
+            <h5 style="color: #ff6600;">⚠ Compatibility Notes</h5>
+            <div class="alert alert-warning" style="font-size: 12px;">
+                <!--ko foreach: compatibilityNotes-->
+                <div data-bind="text: $data"></div>
+                <!--/ko-->
+            </div>
+        </div>
+
+        <!-- Raw Config -->
+        <div>
+            <h5>Raw Configuration</h5>
+            <textarea class="form-control" rows="8" data-bind="value: rawConfig" readonly style="font-family: monospace; font-size: 11px;"></textarea>
+        </div>
+    </div>
+
+    <!-- Installation Controls -->
+    <div class="form-group" data-bind="visible: parsedConfig">
+        <hr />
+        <button type="button" class="btn btn-primary" data-bind="click: installProfile, disable: isInstalling()">
+            <span data-bind="visible: !isInstalling()">Install to Device</span>
+            <span data-bind="visible: isInstalling">Installing...</span>
+        </button>
+        
+        <div data-bind="visible: installStatus, css: {'alert-success': installSuccess(), 'alert-danger': !installSuccess()}" class="alert" style="margin-top: 10px;">
+            <strong data-bind="visible: installSuccess()">Success:</strong>
+            <strong data-bind="visible: !installSuccess()">Error:</strong>
+            <span data-bind="text: installStatus"></span>
+        </div>
+    </div>
+
+    <!-- Installed Profiles -->
+    <div class="form-group">
+        <hr />
+        <h4>Installed Profiles</h4>
+        <button type="button" class="btn btn-xs btn-default" data-bind="click: loadInstalledProfiles">Refresh List</button>
+        
+        <table class="table table-condensed table-striped" data-bind="visible: installedProfiles().length > 0" style="font-size: 12px; margin-top: 10px;">
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Size</th>
+                    <th>Mode</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--ko foreach: installedProfiles-->
+                <tr>
+                    <td data-bind="text: filename"></td>
+                    <td data-bind="text: size"></td>
+                    <td data-bind="text: mode"></td>
+                    <td>
+                        <span class="label" data-bind="text: connected ? 'Connected' : 'Disconnected', css: connected ? 'label-success' : 'label-default'"></span>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-xs btn-success" data-bind="click: $parent.connectProfile, enable: !connected && !$parent.isProfileBusy($data, 'connect')">
+                            <span data-bind="visible: !$parent.isProfileBusy($data, 'connect')">Connect</span>
+                            <span data-bind="visible: $parent.isProfileBusy($data, 'connect')">Connecting...</span>
+                        </button>
+                        <button type="button" class="btn btn-xs btn-warning" style="margin-left: 6px;" data-bind="click: $parent.disconnectProfile, enable: connected && !$parent.isProfileBusy($data, 'disconnect')">
+                            <span data-bind="visible: !$parent.isProfileBusy($data, 'disconnect')">Disconnect</span>
+                            <span data-bind="visible: $parent.isProfileBusy($data, 'disconnect')">Disconnecting...</span>
+                        </button>
+                        <button type="button" class="btn btn-xs btn-danger" style="margin-left: 6px;" data-bind="click: $parent.deleteProfile, enable: !$parent.isProfileBusy($data, 'delete')">
+                            <span data-bind="visible: !$parent.isProfileBusy($data, 'delete')">Delete</span>
+                            <span data-bind="visible: $parent.isProfileBusy($data, 'delete')">Deleting...</span>
+                        </button>
+                    </td>
+                </tr>
+                <!--/ko-->
+            </tbody>
+        </table>
+        <div data-bind="visible: installedProfiles().length === 0" class="text-muted">
+            No profiles currently installed
+        </div>
+    </div>
+
+    <!-- OpenVPN Management Port -->
+    <div class="form-group" data-bind="visible: !hasRunningServerProfile()">
+        <hr />
+        <div class="alert alert-info" style="margin-bottom: 0;">
+            OpenVPN management controls are available only when a server profile is connected/running on this device.
+        </div>
+    </div>
+
+    <div class="form-group" data-bind="visible: hasRunningServerProfile">
+        <hr />
+        <h4>OpenVPN Management Port</h4>
+        <p class="text-muted">Send management commands to the running OpenVPN daemon on this unit.</p>
+
+        <div class="row">
+            <div class="col-sm-4">
+                <label>Host</label>
+                <input type="text" class="form-control" data-bind="value: mgmtHost" />
+            </div>
+            <div class="col-sm-2">
+                <label>Port</label>
+                <input type="text" class="form-control" data-bind="value: mgmtPort" />
+            </div>
+            <div class="col-sm-6">
+                <label>Management Password (optional)</label>
+                <input type="password" class="form-control" data-bind="value: mgmtPassword" />
+            </div>
+        </div>
+
+        <div style="margin-top: 10px;">
+            <button type="button" class="btn btn-info" data-bind="click: connectManagement, disable: isMgmtBusy()">
+                <span data-bind="visible: !isMgmtBusy()">Connect</span>
+                <span data-bind="visible: isMgmtBusy">Connecting...</span>
+            </button>
+            <button type="button" class="btn btn-default" style="margin-left: 6px;" data-bind="click: disconnectManagement, enable: mgmtConnected() && !isMgmtBusy()">Disconnect</button>
+            <span class="label" style="margin-left: 10px;" data-bind="text: mgmtConnected() ? 'Connected' : 'Disconnected', css: mgmtConnected() ? 'label-success' : 'label-default'"></span>
+        </div>
+
+        <div style="margin-top: 10px;" data-bind="visible: mgmtStatus">
+            <div class="alert" data-bind="css: {'alert-success': mgmtSuccess(), 'alert-danger': !mgmtSuccess()}" style="margin-bottom: 8px;">
+                <span data-bind="text: mgmtStatus"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-9">
+                <label>Management Command</label>
+                <input type="text" class="form-control" data-bind="value: mgmtCommand" placeholder="status 3" />
+            </div>
+            <div class="col-sm-3" style="padding-top: 24px;">
+                <button type="button" class="btn btn-primary" data-bind="click: runManagementCommand, disable: isMgmtBusy() || !mgmtConnected()">Run Command</button>
+            </div>
+        </div>
+
+        <div style="margin-top: 8px;">
+            <button type="button" class="btn btn-xs btn-default" data-bind="click: function(){ runManagementCommand('status 3'); }, disable: isMgmtBusy() || !mgmtConnected()">Status 3</button>
+            <button type="button" class="btn btn-xs btn-default" style="margin-left: 6px;" data-bind="click: function(){ runManagementCommand('state'); }, disable: isMgmtBusy() || !mgmtConnected()">State</button>
+            <button type="button" class="btn btn-xs btn-default" style="margin-left: 6px;" data-bind="click: function(){ runManagementCommand('version'); }, disable: isMgmtBusy() || !mgmtConnected()">Version</button>
+            <button type="button" class="btn btn-xs btn-default" style="margin-left: 6px;" data-bind="click: function(){ runManagementCommand('log 50'); }, disable: isMgmtBusy() || !mgmtConnected()">Log 50</button>
+        </div>
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3">
+                <label>
+                    <input type="checkbox" data-bind="checked: mgmtPollingEnabled" />
+                    Realtime Polling
+                </label>
+            </div>
+            <div class="col-sm-3">
+                <label>Poll Seconds</label>
+                <input type="text" class="form-control" data-bind="value: mgmtPollSeconds" />
+            </div>
+            <div class="col-sm-3" style="padding-top: 24px;">
+                <button type="button" class="btn btn-info" data-bind="click: applyMgmtPolling, disable: isMgmtBusy()">Apply Stream Settings</button>
+            </div>
+        </div>
+
+        <div style="margin-top: 10px;" data-bind="visible: mgmtConnected()">
+            <h5>Connected Clients (from status 3)</h5>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-sm-4">
+                    <div class="well well-sm" style="margin-bottom: 0;">
+                        <div class="text-muted">Connected Clients</div>
+                        <div style="font-size: 22px; font-weight: bold;" data-bind="text: mgmtClientCount"></div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="well well-sm" style="margin-bottom: 0;">
+                        <div class="text-muted">Total RX</div>
+                        <div style="font-size: 22px; font-weight: bold;" data-bind="text: formatBytes(mgmtTotalRx())"></div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="well well-sm" style="margin-bottom: 0;">
+                        <div class="text-muted">Total TX</div>
+                        <div style="font-size: 22px; font-weight: bold;" data-bind="text: formatBytes(mgmtTotalTx())"></div>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-default btn-sm" style="margin-bottom: 10px;" data-bind="click: refreshMgmtClients, disable: isMgmtBusy() || !mgmtConnected()">Refresh Clients</button>
+            <table class="table table-condensed table-striped" style="font-size: 12px;">
+                <thead>
+                    <tr>
+                        <th>Common Name</th>
+                        <th>Real Address</th>
+                        <th>Virtual Address</th>
+                        <th>RX</th>
+                        <th>TX</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--ko foreach: mgmtClients-->
+                    <tr>
+                        <td data-bind="text: commonName"></td>
+                        <td data-bind="text: realAddress"></td>
+                        <td data-bind="text: virtualAddress"></td>
+                        <td data-bind="text: bytesReceived"></td>
+                        <td data-bind="text: bytesSent"></td>
+                        <td>
+                            <button type="button" class="btn btn-xs btn-danger" data-bind="click: $parent.killMgmtClient, enable: !$parent.isMgmtBusy() && !$parent.isMgmtClientBusy($data)">
+                                <span data-bind="visible: !$parent.isMgmtClientBusy($data)">Kill</span>
+                                <span data-bind="visible: $parent.isMgmtClientBusy($data)">Killing...</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <!--/ko-->
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 10px;">
+            <label>Response</label>
+            <textarea class="form-control" rows="8" readonly data-bind="value: mgmtOutput" style="font-family: monospace; font-size: 11px;"></textarea>
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;" data-bind="visible: activeServerHasCcd">
+            <h5>CCD File Upload</h5>
+            <p class="text-muted">Upload per-client CCD files to /etc/openvpn/ccd (directory is auto-created if missing).</p>
+            <!--ko template: {name: 'file-input-template', data: ccdFileData}--><!--/ko-->
+            <button type="button" class="btn btn-primary" style="margin-top: 8px;" data-bind="click: uploadCcdFile, disable: isCcdUploading()">
+                <span data-bind="visible: !isCcdUploading()">Upload CCD File</span>
+                <span data-bind="visible: isCcdUploading">Uploading...</span>
+            </button>
+            <div class="alert" style="margin-top: 10px;" data-bind="visible: ccdStatus, css: {'alert-success': ccdSuccess(), 'alert-danger': !ccdSuccess()}">
+                <span data-bind="text: ccdStatus"></span>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;" data-bind="visible: hasRunningServerProfile() && !activeServerHasCcd()">
+            <div class="alert alert-warning" style="margin-bottom: 0;">
+                Running server profile detected, but no 'client-config-dir ccd' directive found. CCD upload is disabled.
+            </div>
+        </div>
+    </div>
+</div>

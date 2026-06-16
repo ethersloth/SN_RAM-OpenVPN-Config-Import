@@ -1,0 +1,22 @@
+#!/bin/bash
+# (C)2017 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+#checkgwlnx_sms - Get the gwlnx process and verify the running config is for SMS
+
+#config=`ps ax | grep -v grep | grep gwlnx | awk '{print$6}'`
+config="/home/jbmgatew/`ps -e -o pid,cmd | grep -v grep | grep $(pidof gwlnx) 2>/dev/null | awk '{print $3}'`"
+
+if [ -f "$config" ]
+then
+    if grep --quiet "Send SMS Message - Download/Upload" $config
+    then
+        echo success
+    elif grep --quiet "SMS MSG-Down/Up via TCP/Serial" $config
+    then
+        echo success
+    else
+        echo failure
+    fi
+else
+    echo failure
+fi

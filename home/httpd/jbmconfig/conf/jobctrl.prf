@@ -1,0 +1,48 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/jobctrl.prf" name="jobctrl">
+
+   <validation>
+    <vstep errmsg="Invalid Mode. Must be either 'disabled' or 'hourly' or 'daily' or 'weekly' or 'monthly'"
+             name="preinterval"
+             test="/input/preinterval/text() = 'disabled'  or
+                   /input/preinterval/text() = 'hourly' or
+                   /input/preinterval/text() = 'daily' or
+                   /input/preinterval/text() = 'weekly' or
+                   /input/preinterval/text() = 'monthly'" />
+   </validation>
+
+   <configuration>
+
+    <cstep errmsg="Unable to save periodic job interval option to system configuration file."
+             name="preinterval"
+             path="/GAUCfg/jobctrl/preinterval" />
+    <cstep errmsg="Unable to save job option to system configuration file."
+             name="prejob"                      
+             path="/GAUCfg/jobctrl/prejob" />
+                                 
+   </configuration>
+
+
+   <action name="Apply" successmsg="Job Control Configuration Saved And Applied.">
+    <pre subsystem="jobctrl" action="Save" />
+   </action>
+   
+   <action name="Save" successmsg="Job Control Configuration Saved.">
+    <astep abort="n" errmsg="Failed to remove hourly, daily, weekly and monthly job from destination directory." name="SystemCommand">
+        <arg expr="concat('/usr/bin/find /etc/jobcontrol -name $(basename ',/GAUCfg/jobctrl/prejob/text(),') -exec rm -f {} \;')" source="config" />
+    </astep>                                       
+
+    <astep errmsg="Failed to link job script." name="SystemCommand" abort="y"
+       dependency="/GAUCfg/jobctrl/prejob/text() != 'None' and /GAUCfg/jobctrl/preinterval/text() != 'disabled'">
+     <arg expr="concat('/bin/ln -s /etc/common/', /GAUCfg/jobctrl/prejob/text(), ' /etc/jobcontrol/', /GAUCfg/jobctrl/preinterval/text())" source="config" />
+    </astep>
+
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

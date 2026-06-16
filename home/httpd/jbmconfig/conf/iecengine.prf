@@ -1,0 +1,35 @@
+
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/iecengine.prf" name="iecengine">
+   <validation>
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Filter option to system configuration file."
+              name="filter"
+              path="/GAUCfg/iecengine/filter" />
+    <cstep errmsg="Unable to save Security Filter option to system configuration file."
+              name="secfilter"
+              path="/GAUCfg/iecengine/secfilter" />
+    <cstep errmsg="Unable to save iec engine access time option to system configuration file."
+              name="accesstime"
+              path="/GAUCfg/iecengine/accesstime" />
+   </configuration>
+
+   <action name="Save" successmsg="Operation Succeeded.">
+    <!-- Begin saving iec engine configuration -->
+    <!--
+     This action is intentionally left empty since it is not yet part of production and it has not been publically released to the world.
+    -->
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+    <!-- Begin applying iec engine configuration -->
+    <pre subsystem="iecengine" action="Save" />
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

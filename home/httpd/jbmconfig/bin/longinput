@@ -1,0 +1,257 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+#This Script builds the Long Input DNP End Points to be 
+#tagged on sxdnpdrv.ini driver configuration file.
+#Created By Moe on 11/16/2012.
+
+my $exceptCnt = 0;
+#Option flag to build the table 
+#'yes' = don't build, 'no' = build
+my $nodnpchecked;
+#Number of Registers to Build
+my $highestReg;
+#Default Class Assignment tables Parms.
+my $startReg;
+my $endReg;
+my $deadband;
+my $defobj31class;
+my $defobj32class;
+my $defobj33class;
+#Exception Class Assignment tables Parms.
+my %TableEntryList = ();
+my $startreg;
+my $endreg;
+my $exdeadband;
+my $exobj31class;
+my $exobj32class;
+my $exobj33class;
+#Default DNP Index Register
+my $DNPIndex = 9216;
+#Traveling Start Register
+my $BaseReg = 512;
+#Snippet of Long Input DNP Mapping End Points Table 
+my $ini_snippet = "";
+#File name and Location of Long Input DNP Mapping End Points Table 
+my $temp_file_name = "/etc/stacfg/sxlonginput";
+#Temparary Holding File Contents
+my $TEMP_FILE;
+
+
+$CONFIG_FILE = '/etc/stacfg/longinput.conf';
+$JBMLIB_FILE = '/etc/jbm/jbm_lib.pl';
+
+#Include our standard perl library:
+
+require($JBMLIB_FILE);
+
+#Read the configuration file:
+
+%CONFIG = &read_config($CONFIG_FILE) or exit(-1);
+
+#Establish default values:
+
+$CONFIG{highestreg}    = 0  unless (exists($CONFIG{highestreg}));
+$CONFIG{nodnpchecked}  = "yes"  unless (exists($CONFIG{nodnpchecked}));
+$CONFIG{deadband}      = 0  unless (exists($CONFIG{deadband}));
+$CONFIG{defobj31class} = "None"  unless (exists($CONFIG{defobj31class}));
+$CONFIG{defobj32class} = "None"  unless (exists($CONFIG{defobj32class}));
+$CONFIG{defobj33class} = "None"  unless (exists($CONFIG{defobj33class}));
+$CONFIG{exceptCnt}     = 0  unless (exists($CONFIG{exceptCnt}));
+$CONFIG{EXC_RULES}     = [] unless (exists($CONFIG{EXC_RULES}));
+
+
+$highestReg    = $CONFIG{highestreg};
+$nodnpchecked  = $CONFIG{nodnpchecked};
+$deadband      = $CONFIG{deadband};
+$defobj31class = $CONFIG{defobj31class};
+$defobj32class = $CONFIG{defobj32class};
+$defobj33class = $CONFIG{defobj33class};
+$exceptCnt     = $CONFIG{exceptCnt};
+
+if ("None" eq $defobj31class) {
+   $defobj31class = "no";
+}
+if ("Class 0" eq $defobj31class) {
+   $defobj31class = "yes";
+}
+
+if ("None" eq $defobj32class) {
+   $defobj32class = 0;
+}
+if ("Class 1" eq $defobj32class) {
+   $defobj32class = 1;
+}
+if ("Class 2" eq $defobj32class) {
+   $defobj32class = 2;
+}
+if ("Class 3" eq $defobj32class) {
+   $defobj32class = 3;
+}
+
+if ("None" eq $defobj33class) {
+   $defobj33class = 0;
+}
+if ("Class 1" eq $defobj33class) {
+   $defobj33class = 1;
+}
+if ("Class 2" eq $defobj33class) {
+   $defobj33class = 2;
+}
+if ("Class 3" eq $defobj33class) {
+   $defobj33class = 3;
+}
+
+
+foreach my $exception (@{$CONFIG{EXC_RULES}})
+{
+    #Check configuration for syntax and minimum required values:
+
+    my $errStr = 'Incorrect syntax for Longinput Exception rule!' . "\n";
+
+    if ($exception !~ /^\{/)
+    {
+       print "$errStr\n";
+    }
+
+    my $href = eval($exception);
+
+    if (ref($href) ne 'HASH')
+    {
+        print "$errStr\n";
+    }
+
+    if (!exists($href->{startreg}) || !exists($href->{endreg}) || !exists($href->{exdeadband})|| !exists($href->{exobj31class})|| !exists($href->{exobj32class})|| !exists($href->{exobj33class}))
+    {
+       print "$errStr\n";
+    }
+
+    $startReg =  $href->{startreg};
+    $endReg = $href->{endreg};
+    $exdeadband = $href->{exdeadband};
+    $exobj31class = $href->{exobj31class};
+    $exobj32class = $href->{exobj32class};
+    $exobj33class = $href->{exobj33class};
+
+    if ("None" eq $exobj31class) {
+       $exobj31class = "no";
+    }
+    if ("Class 0" eq $exobj31class) {
+       $exobj31class = "yes";
+    }
+    
+    if ("None" eq $exobj32class) {
+       $exobj32class = 0;
+    }
+    if ("Class 1" eq $exobj32class) {
+       $exobj32class = 1;
+    }
+    if ("Class 2" eq $exobj32class) {
+       $exobj32class = 2;
+    }
+    if ("Class 3" eq $exobj32class) {
+       $exobj32class = 3;
+    }
+    
+    if ("None" eq $exobj33class) {
+       $exobj33class = 0;
+    }
+    if ("Class 1" eq $exobj33class) {
+       $exobj33class = 1;
+    }
+    if ("Class 2" eq $exobj33class) {
+       $exobj33class = 2;
+    }
+    if ("Class 3" eq $exobj33class) {
+       $exobj33class = 3;
+    }
+
+    push(@TableEntryList, {'startreg' => $startReg, 'endreg' => $endReg, 'exdeadband' => $exdeadband, 'exobj31class' => $exobj31class, 'exobj32class' => $exobj32class, 'exobj33class' => $exobj33class});
+}
+
+if (0 == $exceptCnt && "no" eq $nodnpchecked) {
+   for (my $Ndx=$BaseReg; $Ndx<=$highestReg; $Ndx++) {
+         my $DNPNdx = $DNPIndex + ($Ndx - 512);
+         $ini_snippet .= "[FrozenAndEvents_AIN( $DNPNdx)]\n"; 
+         $ini_snippet .= "DNPIndex= $DNPNdx\n"; 
+         $ini_snippet .= "SxIOAddr= $Ndx\n"; 
+         $ini_snippet .= "SxIOType= LX\n"; 
+         $ini_snippet .= "SxTag= \n"; 
+         $ini_snippet .= "DeadBand= $deadband\n"; 
+         $ini_snippet .= "EventClass= $defobj32class\n"; 
+         $ini_snippet .= "Frozen= $defobj31class\n"; 
+         $ini_snippet .= "FrozenEventClass= $defobj33class\n"; 
+   }
+}
+else {
+  if ("no" eq $nodnpchecked) {
+    foreach my $entry (@TableEntryList) {
+       $startreg = $entry->{startreg};
+       $endreg = $entry->{endreg};
+       $exdeadband = $entry->{exdeadband};
+       $exobj31class = $entry->{exobj31class};
+       $exobj32class = $entry->{exobj32class};
+       $exobj33class = $entry->{exobj33class};
+       for (my $Ndx=$BaseReg; $Ndx<$startreg; $Ndx++) {
+          my $DNPNdx = $DNPIndex + ($Ndx - 512);
+          $ini_snippet .= "[FrozenAndEvents_AIN( $DNPNdx)]\n"; 
+          $ini_snippet .= "DNPIndex= $DNPNdx\n"; 
+          $ini_snippet .= "SxIOAddr= $Ndx\n"; 
+          $ini_snippet .= "SxIOType= LX\n"; 
+          $ini_snippet .= "SxTag= \n"; 
+          $ini_snippet .= "DeadBand= $deadband\n"; 
+          $ini_snippet .= "EventClass= $defobj32class\n"; 
+          $ini_snippet .= "Frozen= $defobj31class\n"; 
+          $ini_snippet .= "FrozenEventClass= $defobj33class\n"; 
+       }
+       $BaseReg = $startreg;
+       for (my $Ndx=$BaseReg; $Ndx<=$endreg; $Ndx++) {
+          my $DNPNdx = $DNPIndex + ($Ndx - 512);
+          $ini_snippet .= "[FrozenAndEvents_AIN( $DNPNdx)]\n"; 
+          $ini_snippet .= "DNPIndex= $DNPNdx\n"; 
+          $ini_snippet .= "SxIOAddr= $Ndx\n"; 
+          $ini_snippet .= "SxIOType= LX\n"; 
+          $ini_snippet .= "SxTag= \n"; 
+          $ini_snippet .= "DeadBand= $exdeadband\n"; 
+          $ini_snippet .= "EventClass= $exobj32class\n"; 
+          $ini_snippet .= "Frozen= $exobj31class\n"; 
+          $ini_snippet .= "FrozenEventClass= $exobj33class\n"; 
+       }
+       $BaseReg = $endreg + 1;
+    }
+    for (my $Ndx=$BaseReg; $Ndx<=$highestReg; $Ndx++) {
+       my $DNPNdx = $DNPIndex + ($Ndx - 512);
+       $ini_snippet .= "[FrozenAndEvents_AIN( $DNPNdx)]\n"; 
+       $ini_snippet .= "DNPIndex= $DNPNdx\n"; 
+       $ini_snippet .= "SxIOAddr= $Ndx\n"; 
+       $ini_snippet .= "SxIOType= LX\n"; 
+       $ini_snippet .= "SxTag= \n"; 
+       $ini_snippet .= "DeadBand= $deadband\n"; 
+       $ini_snippet .= "EventClass= $defobj32class\n"; 
+       $ini_snippet .= "Frozen= $defobj31class\n"; 
+       $ini_snippet .= "FrozenEventClass= $defobj33class\n"; 
+    }
+  }
+}
+
+#We should now have a fully mapped DNP Points
+#for Long Input to be added to sxdnpdrv.ini 
+#driver configuration file.
+
+if( ! open $TEMP_FILE, '>', $temp_file_name )
+{
+    print "Can't open temporary file \'$temp_file_name\': $!";
+    return 1;
+}
+
+if( ! print $TEMP_FILE $ini_snippet )
+{
+    print "Can't write to file \'$temp_file_name\': $!";
+    close $TEMP_FILE;
+    return 2;
+}
+
+close $TEMP_FILE;
+exit(0);
+
+

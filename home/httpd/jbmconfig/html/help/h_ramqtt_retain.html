@@ -1,0 +1,8 @@
+<h4>Description</h4>
+<p>The Retain Messages option determines whether the latest message sent will be saved by the Broker.</p>
+<p><b>Yes</b> - This sets the retain flag so that the latest message sent by RAMQTT will be saved
+by the Broker. Any new subscribers will receive this message upon subscribing. This enables newly
+connected subscribers to receive the latest data immediately without having to wait for RAMQTT to
+publish the next message. This is particularly useful if RAMQTT has a very long publish interval
+and subscribers need to know the latest data as soon as possible.</p>
+<p><b>No</b> - The latest message sent by RAMQTT will not be saved by the Broker.

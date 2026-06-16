@@ -1,0 +1,57 @@
+<form id="general-form" class="form-horizontal">
+<!-- ko ifnot: isram -->
+    <!--ko template: {name:'title-template',data:'Upgrade to RAM is required in order to load this page'}--><!--/ko-->
+    <div style="text-align: center">
+        <a class="btn btn-primary" href="#!/ram_unlock">Upgrade to RAM</a>
+    </div>
+    <br />
+    <h5><p class="gw-auto-margin" style="width: 600px; text-align: center">Please contact <span data-bind="text: manufacturer"></span> support at <span><font color="red" data-bind="text: contactemail"></font></span> or <span><font color="red" data-bind="text: contactphone"></font></span></h5>
+<!-- /ko -->
+<!-- ko if: isram -->
+	<!--ko template: {name:'title-template',data:'DNP3 General Configuration'}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Define General Properties'}--><!--/ko-->
+	<!--ko template: {name: 'select-template', data: enable}--><!--/ko-->
+	<!--ko template: {name:'select-template',data: level}--><!--/ko-->
+	<!--ko template: {name:'select-template',data: eventqueue}--><!--/ko-->
+    <hr />
+	<!--ko template: {name:'h4-template',data:'Unsolicited Responses'}--><!--/ko-->
+	<!--ko template: {name:'select-template-bool',data: EnableUnResp}--><!--/ko-->
+    <!-- ko if: isEnableUnResp -->
+	    <!--ko template: {name:'select-template-bool',data: EnableIniUnResp}--><!--/ko-->
+	    <!--ko template: {name:'text-template',data: dnpaddr}--><!--/ko-->
+	    <!--ko template: {name:'text-template',data: eventrptquetimeout}--><!--/ko-->
+	    <!--ko template: {name:'text-template',data: eventrptquethreshold}--><!--/ko-->
+	    <!--ko template: {name:'text-template',data: maxunsolevents}--><!--/ko-->
+	<!-- /ko -->
+    <hr />
+	<!--ko template: {name:'h4-template',data:'Event Detection'}--><!--/ko-->
+    <!--ko template: {name:'select-template-bool',data: eventrateauto}--><!--/ko-->
+	<!-- ko if: isEventRateAuto -->
+	    <!--ko template: {name:'text-template',data: eventdetrate}--><!--/ko-->
+	<!-- /ko -->
+    <!--ko template: {name:'select-template-bool',data: eventtimeenable}--><!--/ko-->
+	<!-- ko if: isEnableEventTime -->
+	    <!--ko template: {name:'text-template',data: maxtimeevents}--><!--/ko-->
+	<!-- /ko -->
+    <hr />
+	<!--ko template: {name:'h4-template',data:'Real Time Data Trace'}--><!--/ko-->
+    <!--ko template: {name:'select-template-bool',data: enablerealtime}--><!--/ko-->
+	<!-- ko if: isEnableRealTime -->
+	    <!--ko template: {name:'text-template',data: device}--><!--/ko-->
+	    <!--ko template: {name:'text-template',data: numtraces}--><!--/ko-->
+	<!-- /ko -->
+   	<!--ko template: {name:'h4-template',data:'Synchronization'}--><!--/ko-->
+    <!--ko template: {name:'select-template',data: timesync}--><!--/ko-->
+    <hr />
+    <div style="text-align: center">
+        <a class="btn btn-small" data-bind="click: switchPage('#!/localstation')">Local Station</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/serial')">Serial Ports</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_physicallink')">Physical Link Layer</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_datalink')">Data Link and Application Layer</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_object')">Object Mapping</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_default')">Default Variation</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_config')">Display Config File</a>
+    </div>
+<!-- /ko -->
+</form>
+

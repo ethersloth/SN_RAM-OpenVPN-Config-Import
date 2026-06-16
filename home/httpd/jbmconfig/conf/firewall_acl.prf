@@ -1,0 +1,43 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall.prf"
+             name="firewall" />
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall_acl.prf" name="firewall_acl">
+   <validation>
+    <vstep errmsg="Invalid Outbound Restictions value."
+             name="outr"
+             test="/input/outr/text() = 'none' or /input/outr/text() = 'whitelisted'" />
+
+    <vstep errmsg="Invalid Firewall Subnet Whitelist Rules Set. Must be a well-formed XML document."
+             name="whitelistdefs"
+             test="string-length(/input/whitelistdefs/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Outbound Restrictions to system configuration file."
+             name="outr"
+             path="/GAUCfg/firewall/outr" />
+
+    <cstep errmsg="Unable to save Firewall Whitelist Rule(s) to system configuration file."
+             name="whitelistdefs"
+             path="/GAUCfg/firewall/whitelistrules/whitelistdefs"
+             type="node" />
+   </configuration>
+
+   <action name="Dummy" successmsg="Firewall ACL rules saved.">
+   </action>
+
+   <action name="Save" successmsg="Firewall settings saved.">
+    <pre action="Save" subsystem="firewall" />
+   </action>
+
+   <action name="Apply" successmsg="Firewall settings applied.">
+    <pre action="Apply" subsystem="firewall" />
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

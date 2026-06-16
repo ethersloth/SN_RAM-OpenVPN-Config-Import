@@ -1,0 +1,91 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+#Process ID code with process name to search for active process.
+my %processlist = (sslserver=>"stunnelsrv.conf", sslclient=>"stunnelcli.conf",
+                    jbmcntl=>"jbmcontrol",g_app=>"gwlnx");
+
+my $processstatus  = "Stopped";
+my $validprocessID = "FALSE";
+my $processID      = "";
+my $processIDcode  = "";
+my $processText    = "Process status:";
+
+my $version = "1.01";
+
+my %argList;
+
+foreach my $argnum (0 .. $#ARGV)
+       {
+        if ("-h" eq $ARGV[$argnum])
+          {
+           Usage();
+
+           exit(0);
+          }
+
+        my ($argName, $argVal) = split(/=/, $ARGV[$argnum]);
+
+        $argList{$argName} = $argVal;
+       }
+
+if (@ARGV < 1)
+  {
+   print "Too few arguments\n";
+
+   Usage();
+
+   exit(1);
+  }
+
+if ($argList{"--id"})
+  {
+   $processIDcode = $argList{'--id'};
+  }
+
+if ($argList{"--text"})
+  {
+   $processText = $argList{'--text'};
+  }
+
+for (keys %processlist)
+   {
+     if ($_ eq $processIDcode)
+       {
+        $processID = $processlist{$processIDcode};
+
+        $validprocessID = "TRUE";
+       }
+   }
+
+if ($validprocessID eq "FALSE")
+  {
+   print "Invalid process ID code supplied.\n";
+   exit(1);
+  }
+
+my @psdata = "";
+
+@psdata = readpipe("ps ax");
+
+foreach my $i (@psdata) {
+   if ( $i =~ /$processID/)
+     {
+       $processstatus = "Running";
+   }
+}
+print "$processText $processstatus";
+
+exit(0);
+
+sub Usage
+   {
+     print "\ngetprocstatus v$version\n"                                                                        .
+           "\nUsage:\n\n"                                                                                       .
+           "getprocstatus <-id=processIDcode> [{<-text=IDtext>}{-h}]\n\n"                                       .                                                                                                         
+           "Checks and returns whether process ID code name is running or stopped .\n"                          .                                     
+           "--id   - where <processIDcode> is 'sslserver','sslclient','jbmcntl', and 'g_app' are valid codes.\n" .
+           "--text - where <IDtext> is text to display with process ID code.\n\n"                                .
+           "Options:\n"                                                                                         .
+           "        -h - Displays the usage information summary you are now reading.\n";
+   }

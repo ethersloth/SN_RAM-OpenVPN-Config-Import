@@ -1,0 +1,17 @@
+<form id="installcfg-form" class="form-horizontal" action="/cgi-bin/gau" method="post" enctype="multipart/form-data">
+	<!--ko template:{name:'title-template',data:'Install/Manage GWLNX Configuration'}--><!--/ko-->
+	<!--ko template:{name:'h4-template',data:'Install GWLNX Configuration File'}--><!--/ko-->
+	<div class="gw-row">
+		<!--ko template: {name: 'file-input-template', data: cfgdata}--><!--/ko-->
+	</div>
+    <div style="text-align: center">
+        <a type="button" class="btn btn-primary" data-bind="click: install">Install</a>
+    </div>
+    <hr />
+	<!--ko template:{name:'h4-template',data:'Manage GWLNX Configuration File'}--><!--/ko-->
+	<!--ko template: {name: 'select-template', data: gwlnxcfgmgr}--><!--/ko-->
+    <div style="text-align: center">
+        <a class="btn" data-bind="click: deletecfg">Delete</a>
+        <a class="btn btn-primary" data-bind="click: installcfg">Install</a>
+    </div>
+</form>

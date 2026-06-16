@@ -1,0 +1,488 @@
+#!/usr/bin/perl -w -I /home/httpd/jbmconfig/bin
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+use JBM_System;
+
+# duct-taped management tab handler for the GAU
+
+#Handle the following args:
+# - GetGMUStatus
+# - GetGMUServerAddress
+# - GetGMUNextCheckIn
+#
+# - GetCellSignalStrength
+# - GetCellConnectionStatus
+# - GetCellInterfaceAddress
+# - GetCellPeerAddress
+# - GetCellUsage
+#
+# - GetDHCPServerStatus
+#
+# - GetEth0ConnectionStatus
+# - GetEth0InterfaceAddress
+#
+# - GetEth1ConnectionStatus
+# - GetEth1InterfaceAddress
+#
+# - GetFirewallServiceStatus
+# - GetIptablesDump
+# 
+# - GetIPSECServiceStatus
+# - GetIPSECTunnelStatus
+# - GetIPSECTunnelStatuses
+#
+# - GetRootFilesystemSizeAndUsage
+# - GetVarFilesystemSizeAndUsage
+# - GetTmpFilesystemSizeAndUsage
+#
+# - GetSyslogOutput
+
+
+# Write output (HTML format) to a file
+
+my $USAGE = "$0 <command>";
+my $RESULT_FILE = "/tmp/mgtmgr.out";
+my $SYSTEM = JBM_System->new();
+
+die "No args provided!\n$USAGE\n" unless (scalar(@ARGV));
+
+if ($ARGV[0] =~ /^GetGMUStatus$/i)
+{
+   $SYSTEM->Syslog("GetGMUStatus()");
+   # Get something from the system, and write it to the output file.
+   my $enabled = $SYSTEM->IsProcessRunning('svmclient');
+   WriteDataToFile($enabled ? "ENABLED" : "DISABLED");
+}
+elsif ($ARGV[0] =~ /^GetGMUServerAddress$/i)
+{
+   $SYSTEM->Syslog("GetGMUServerAddress()");
+   # Get something from the system, and write it to the output file.
+   my $host = $SYSTEM->GetConfigValue("/etc/jbm/svmclient.conf","JBM_SERVER_IP");
+   WriteDataToFile($host);
+}
+elsif ($ARGV[0] =~ /^GetGMUNextCheckIn$/i)
+{
+   $SYSTEM->Syslog("GetGMUNextCheckIn()");
+   # Get something from the system, and write it to the output file.
+   my $next_checkin = $SYSTEM->IsProcessRunning('svmclient') ? "Currently Running" : "N/A";
+
+   my (@args) = $SYSTEM->GetProcessArgs("svmclient");
+   my $string = join(" ",@args);
+
+   if ($string =~ /sleeping/)
+   {
+      $string =~ s/^\: sleeping for //;
+      $next_checkin = "$string";
+   }
+
+   WriteDataToFile($next_checkin);
+}
+elsif ($ARGV[0] =~ /^GetCellSignalStrength$/i)
+{
+   $SYSTEM->Syslog("GetCellSignalStrength()");
+   # Get something from the system, and write it to the output file.
+   my $signal = $SYSTEM->GetCellSignalStrength();
+   my $image  = '<img src="/images/signalq.gif" alt="Signal Strength" />'; 
+
+   if ($signal =~ /^\-?\d+$/)
+   {
+      if (-1 == $signal)
+      {
+         $image = '<img src="/images/signalx.gif" alt="Signal Strength" />'; 
+      }
+      else
+      {
+         $image = '<img src="/images/signal' . $signal . '.gif" alt="Signal Strength" />'; 
+      }
+   }
+
+   WriteDataToFile($image);
+}
+elsif ($ARGV[0] =~ /^GetCellConnectionStatus$/i)
+{
+   # Get something from the system, and write it to the output file.
+   my $status = "Disabled";
+
+   if ($SYSTEM->IsProcessRunning("pppd"))
+   {
+      # Status will be either connected, NOT connected
+      $status = ($SYSTEM->IsPPPConnected() ? "Connected" : "Disconnected");
+   }
+
+   WriteDataToFile($status);
+}
+elsif ($ARGV[0] =~ /^GetCellInterfaceAddress$/i)
+{
+   $SYSTEM->Syslog("GetCellInterfaceAddress()");
+   # Get something from the system, and write it to the output file.
+   my $addr = "N/A";
+
+   if ($SYSTEM->IsPPPConnected())
+   {
+      $addr = $SYSTEM->GetInterfaceAddress("ppp0");
+   }
+
+   WriteDataToFile($addr ? $addr : "Unknown");
+}
+elsif ($ARGV[0] =~ /^GetCellPeerAddress$/i)
+{
+   $SYSTEM->Syslog("GetCellPeerAddress()");
+   # Get something from the system, and write it to the output file.
+   my $addr = "N/A";
+
+   if ($SYSTEM->IsPPPConnected())
+   {
+      $addr = $SYSTEM->GetInterfacePeerAddress("ppp0");
+   }
+
+   WriteDataToFile($addr ? $addr : "Unknown");
+}
+#elsif ($ARGV[0] =~ /^GetCellUsage$/i)
+#{
+#   $SYSTEM->Syslog("GetCellUsage()");
+#   # usage - number of bytes transferred in current session (plus any from syslog)
+#   my $usage = 0;
+#   my $date  = 'Last Boot';
+#
+#   if ($SYSTEM->IsPPPConnected())
+#   {
+#      # ADD any bytes transferred for CURRENT connection:
+#      $usage += $SYSTEM->GetInterfaceRXBytes("ppp0");
+#      $usage += $SYSTEM->GetInterfaceTXBytes("ppp0");
+#   }
+#
+#   # Get any connection stats from syslog:
+#   if (open(FILE,"/var/log/messages"))
+#   {
+#      $/ = undef;
+#      my $contents = <FILE>;
+#      close(FILE);
+#      $/ = "\n";
+#
+#      my @lines = reverse(split(/\n/,$contents));
+#
+#      foreach my $line (@lines)
+#      {
+#         # Looking for lines like:
+#         # 'May 25 14:34:07 pppd[24559]: Sent 0 bytes, received 0 bytes.'
+#         my ($mo,$dom,$time,$proc,@msg) = split(/\s+/,$line);
+#
+#         if ($proc =~ /^pppd/)
+#         {
+#            if ($msg[0] =~ /sent/i && $msg[1] =~ /^\d+$/ && $msg[2] =~ /^bytes/i &&
+#                $msg[3] =~ /received/i && $msg[4] =~ /^\d+$/ && $msg[5] =~ /^bytes/i)
+#            {
+#               $usage += $msg[1];
+#               $usage += $msg[4];
+#               $date   = "$mo $dom \@ $time";
+#            }
+#         }
+#      }
+#   }
+#
+#   # usage_since - date/time of last syslog entry of usage, or (current time-uptime to calculate it)
+#   if (!$date)
+#   {
+#      my $uptime = $SYSTEM->GetSystemUptime();
+#      my $timenow = time;
+#
+#      my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(int($timenow - $uptime));
+#
+#      $mon = (0==$mon?'January':
+#              1==$mon?'February':
+#              2==$mon?'March':
+#              3==$mon?'April':
+#              4==$mon?'May':
+#              5==$mon?'June':
+#              6==$mon?'July':
+#              7==$mon?'August':
+#              8==$mon?'September':
+#              9==$mon?'October':
+#              10==$mon?'November':
+#              11==$mon?'December':'December');
+#
+#      $date = "$mon $mday \@ $hour:$min:$sec";
+#   }
+#
+#   WriteDataToFile("$usage Bytes since $date");
+#}
+elsif ($ARGV[0] =~ /^GetDHCPServerStatus$/i)
+{
+   $SYSTEM->Syslog("GetDHCPServerStatus()");
+   # Get something from the system, and write it to the output file.
+   my $status = $SYSTEM->IsServiceEnabled("dhcpd") ? 'ENABLED' : 'DISABLED';
+   WriteDataToFile($status);
+}
+elsif ($ARGV[0] =~ /^GetEth0ConnectionStatus$/i)
+{
+   $SYSTEM->Syslog("GetEth0ConnectionStatus()");
+   # Get something from the system, and write it to the output file.
+   my $status = $SYSTEM->IsInterfaceUp("eth0") ? "UP" : "DOWN";
+   WriteDataToFile($status);
+}
+elsif ($ARGV[0] =~ /^GetEth0InterfaceAddress$/i)
+{
+   $SYSTEM->Syslog("GetEth0InterfaceAddress()");
+   # Get something from the system, and write it to the output file.
+   my $address = "N/A";
+   if ($SYSTEM->IsInterfaceUp("eth0"))
+   {
+      $address = $SYSTEM->GetInterfaceAddress("eth0");
+   }
+   WriteDataToFile($address ? $address : "Unknown");
+}
+elsif ($ARGV[0] =~ /^GetEth1ConnectionStatus$/i)
+{
+   $SYSTEM->Syslog("GetEth1ConnectionStatus()");
+   # Get something from the system, and write it to the output file.
+   my $status = $SYSTEM->IsInterfaceUp("eth1") ? "UP" : "DOWN";
+   WriteDataToFile($status);
+}
+elsif ($ARGV[0] =~ /^GetEth1InterfaceAddress$/i)
+{
+   $SYSTEM->Syslog("GetEth1InterfaceAddress()");
+   # Get something from the system, and write it to the output file.
+   my $address = "N/A";
+   if ($SYSTEM->IsInterfaceUp("eth1"))
+   {
+      $address = $SYSTEM->GetInterfaceAddress("eth1");
+   }
+   WriteDataToFile($address ? $address : "Unknown");
+}
+elsif ($ARGV[0] =~ /^GetFirewallServiceStatus$/i)
+{
+   $SYSTEM->Syslog("GetFirewallServiceStatus()");
+   # Get something from the system, and write it to the output file.
+   my $status = $SYSTEM->IsServiceEnabled("iptables") ? 'ENABLED' : 'DISABLED';
+   WriteDataToFile($status);
+}
+elsif ($ARGV[0] =~ /^GetIptablesDump$/i)
+{
+   $SYSTEM->Syslog("GetIptablesDump()");
+   # Get something from the system, and write it to the output file.
+   $/ = undef;
+   WriteDataToFile(`/sbin/iptables -L -n -v ; echo -e "----------" ; /sbin/iptables -L -n -v -t nat`);
+   $/ = "\n";
+}
+elsif ($ARGV[0] =~ /^GetChkconfigList$/i)
+{
+   $SYSTEM->Syslog("GetChkconfigList()");
+   # Get something from the system, and write it to the output file.
+   $/ = undef;
+   WriteDataToFile(`/sbin/chkconfig --list`);
+   $/ = "\n";
+}
+elsif ($ARGV[0] =~ /^GetIPSECServiceStatus$/i)
+{
+   $SYSTEM->Syslog("GetIPSECServiceStatus()");
+   # Get something from the system, and write it to the output file.
+   my $status = $SYSTEM->IsServiceEnabled("ipsec") ? 'ENABLED' : 'DISABLED';
+   WriteDataToFile($status);
+}
+elsif ($ARGV[0] =~ /^GetIPSECTunnelStatus$/i)
+{
+   $SYSTEM->Syslog("GetIPSECTunnelStatus()");
+   # Get something from the system, and write it to the output file.
+   my $enabled = $SYSTEM->GetConfigValue('/etc/ipsec/ipsec.conf','auto');
+   my $status  = 'UNKNOWN';
+
+   if ($SYSTEM->IsProcessRunning("pluto"))
+   {
+      $status = 'DOWN';
+
+      my @output = `ipsec auto --status`;
+
+      foreach my $line (reverse(@output))
+      {
+         if ($line =~ /tunnel1/)# FIXME: GET THE REAL TUNNEL NAME!!!
+         {
+            # Found a line pertaining to this tunnel.
+            if ($line =~ /established/i)
+            {
+               $status = 'UP';
+            }
+
+            last;
+         }
+      }
+   }
+
+   WriteDataToFile($status);
+}
+elsif ($ARGV[0] =~ /^GetIPSECTunnelStatuses$/i)
+{
+   $SYSTEM->Syslog("GetIPSECTunnelStatuses()");
+   # Get a list of tunnel names and enabled statuses from gau.conf:
+   # Build a table containing:
+   # +-------------+----------+
+   # | Tunnel Name |  Status  |
+   # +-------------+----------+
+   # | Corpnet1    | UP       |
+   # +-------------+----------+
+   # | Corpnet2    | Disabled |
+   # +-------------+----------+
+   my $tunnel_count = `/home/httpd/jbmconfig/bin/xmlget /home/httpd/jbmconfig/CFG/gau.conf NumberOfIPSECTunnelRecords`;
+   my $output = "<div style=\"text-align: center;\">\n";
+
+   chomp($tunnel_count);
+
+   if ($tunnel_count =~ /^\d+$/ && $tunnel_count > 0)
+   {
+      $output .= "<table id=\"IPSECTunnelsStatusTable\" class=\"simple\">\n";
+      $output .= "<tr class=\"title\"><td>Tunnel Name</td><td>Tunnel Status</td><td>Action</td></tr>\n";
+
+      for (my $i=1;$i<=$tunnel_count;$i++)
+      {
+         # Get the name of this tunnel
+         my $tunnel_name   = `/home/httpd/jbmconfig/bin/xmlget /home/httpd/jbmconfig/CFG/gau.conf IPSECTunnelRecord+record=$i.name`;
+
+         my $status_output = `ipsec auto --status | grep "\\"$tunnel_name\\"" 2>&1`;
+
+         chomp($status_output);
+
+         #system("logger -t mgtmgr \"Status line for IPSEC Tunnel '$tunnel_name' is: '$status_output'.\"");
+
+         $output .= "<tr><td>$tunnel_name</td>";
+
+         if (0 == length($status_output))
+         {
+            $output .= "<td style=\"color: white; background-color: #000000;\">DISABLED</td><td><input type=\"button\" name=\"Connect$i\" value=\"Connect\" /></td>";
+         }
+         else
+         {
+            if ($status_output =~ /IPsec\s+SA\s+established/i)
+            {
+               $output .= "<td style=\"color: white; background-color: #00aa00;\">UP</td><td><input type=\"button\" name=\"Disconnect$i\" value=\"Disconnect\" /></td>";
+            }
+            else
+            {
+               $output .= "<td style=\"color: white; background-color: #cc0000;\">DOWN</td><td><input type=\"button\" name=\"Disable$i\" value=\"Disable\" /></td>";
+            }
+         }
+
+         $output .= "</tr>\n";
+      }
+
+      $output .= "</table>\n";
+   }
+   else
+   {
+      $SYSTEM->Syslog("Unable to retrieve NumberOfIPSECTunnelRecords variable (got $tunnel_count) from gau.conf.");
+      $output .= "No Tunnels Found."
+   }
+
+   $output .= "</div>\n";
+
+   WriteDataToFile($output);
+}
+elsif ($ARGV[0] =~ /^GetRootFilesystemSizeAndUsage$/i)
+{
+   $SYSTEM->Syslog("GetRootFilesystemSizeAndUsage()");
+   # Get something from the system, and write it to the output file.
+   # Filesystem                Size      Used Available Use% Mounted on
+   # /dev/mtdblock1           14.9M     11.1M      3.8M  74% /
+   # /dev/ram0              1003.0k     79.0k    924.0k   8% /var
+   # /dev/ram1                17.4M      1.0k     17.4M   0% /tmp
+   my $root_size = 0;
+   my $root_used = 0; 
+   my @lines = `df -h`;
+
+   foreach my $line (@lines)
+   {
+      my ($fs,$size,$used,$free,$pct,$mnt) = split(/\s+/,$line);
+      next unless ($fs =~ /^\//);
+
+      if ($mnt eq '/')
+      {
+         $root_size = $size;
+         $root_used = $pct;
+         last;
+      }
+   }
+
+   WriteDataToFile("$root_size/$root_used");
+}
+elsif ($ARGV[0] =~ /^GetVarFilesystemSizeAndUsage$/i)
+{
+   $SYSTEM->Syslog("GetVarFilesystemSizeAndUsage()");
+   # Get something from the system, and write it to the output file.
+   my $var_size  = 0;
+   my $var_used  = 0;
+   my @lines = `df -h`;
+
+   foreach my $line (@lines)
+   {
+      my ($fs,$size,$used,$free,$pct,$mnt) = split(/\s+/,$line);
+
+      if ($mnt eq '/var')
+      {
+         $var_size = $size;
+         $var_used = $pct;
+         last;
+      }
+   }
+
+   WriteDataToFile("$var_size/$var_used");
+}
+elsif ($ARGV[0] =~ /^GetTmpFilesystemSizeAndUsage$/i)
+{
+   $SYSTEM->Syslog("GetTmpFilesystemSizeAndUsage()");
+   # Get something from the system, and write it to the output file.
+   my $tmp_size  = 0;
+   my $tmp_used  = 0;
+   my @lines = `df -h`;
+
+   foreach my $line (@lines)
+   {
+      my ($fs,$size,$used,$free,$pct,$mnt) = split(/\s+/,$line);
+
+      if ($mnt eq '/tmp')
+      {
+         $tmp_size = $size;
+         $tmp_used = $pct;
+         last;
+      }
+   }
+
+   WriteDataToFile("$tmp_size/$tmp_used");
+}
+elsif ($ARGV[0] =~ /^GetSyslogOutput$/i)
+{
+   $SYSTEM->Syslog("GetSyslogOutput()");
+   # Go get the number of lines to display:
+   my $num_lines = `/home/httpd/jbmconfig/bin/xmlget /home/httpd/jbmconfig/CFG/gau.conf GAUCfg.syslog.maxlines`;
+
+   chomp($num_lines);
+
+   if ($num_lines !~ /^\d+$/)
+   {
+      $SYSTEM->Syslog->("Unable to retrieve maxlines variable (got $num_lines) from gau.conf. Proceeding with default value (200).");
+      $num_lines = 200;
+   }
+
+   $/ = undef;
+
+   WriteDataToFile(`tail -n $num_lines /var/log/messages`);
+
+   $/ = "\n";
+}
+else
+{
+   $SYSTEM->Syslog("Unrecognized sub-system - $ARGV[0]");
+   # Write error message to file.
+   WriteDataToFile("INTERNAL&nbsp;ERROR!");
+}
+
+sub WriteDataToFile
+{
+   my ($data) = @_;
+
+   if (open(FILE,">$RESULT_FILE"))
+   {
+      #print $data;
+      print FILE $data;
+      close(FILE);
+   }
+}
+ 
+      

@@ -1,0 +1,127 @@
+<div style="width: 100%; text-align: center">
+    <h3 data-bind="text: unitname; visible: unitname"></h3>
+</div>
+<div class="control-group">
+  <div class="controls">
+     <a type="button" class="btn btn-primary pull-right" href="#!/easyconfig">Easy Config Wizard</a>
+  </div>
+</div>
+<h3>System Information</h3>
+<table class="table">
+    <tbody>
+        <tr>
+            <td>Device Model Number</td>
+            <td data-bind="text: modelNumber"></td>
+        </tr>
+        <tr>
+            <td>Device Serial Number</td>
+            <td data-bind="text: serialNumber"></td>
+        </tr>
+        <tr>
+            <td>Installed Firmware Version</td>
+            <td data-bind="text: firmwareVersion"></td>
+        </tr>
+        <tr>
+            <td>Current System Uptime</td>
+            <td data-bind="text: systemUptime"></td>
+        </tr>
+    </tbody>
+</table>
+<h3>Physical Interface Status</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <td>Interface Name</td>
+            <td>Configuration</td>
+            <td>IP Address</td>
+            <td>Link Status</td>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: physicalInterfaces">
+        <tr>
+            <td data-bind="text: name"></td>
+            <td data-bind="text: state"></td>
+            <td data-bind="text: ip"></td>
+            <td data-bind="html: link"></td>
+        </tr>
+    </tbody>
+</table>
+<!--ko if: hasWifi-->
+<h3>Wi-Fi Interface Status</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <td>Interface Name</td>
+            <td>Configuration</td>
+            <td>SSID</td>
+            <td>IP Address</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr data-bind="with: wifiInterface">
+            <td data-bind="text: name"></td>
+            <td data-bind="text: state"></td>
+            <td data-bind="text: ssid"></td>
+            <td data-bind="text: ip"></td>
+        </tr>
+    </tbody>
+</table>
+<!-- /ko -->
+<!--ko if:isCellModel-->
+<h3>Cellular Interface Status</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <td>Interface Name</td>
+            <td>Activation Status</td>
+            <td>Connection</td>
+            <td>Uptime</td>
+            <td>IP Address</td>
+            <td>Signal Strength</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-bind="text: cellularInterface"></td>
+            <td data-bind="text: cellularActivation"></td>
+            <td data-bind="text: cellularConnection"></td>
+            <td data-bind="text: cellularUptime"></td>
+            <td data-bind="text: cellularIPAddress, visible: isCellModel() && !isIPTEnabled()"></td>
+            <td data-bind="visible: isCellModel() && isIPTEnabled()"><a class="btn btn-link" href="#!/iptrans">IP Transparency Enabled</a></td>
+            <td><span data-bind="text: cellularNetwork"></span> <img data-bind="attr: {src: cellSignalImage}"/> <!--ko if: showRoaming --><img src="/images/roam.gif" /><!--/ko--><span data-bind="text: displayQuality"></span></td>
+        </tr>
+    </tbody>
+</table>
+<!--/ko-->
+<div id="start-notice-modal" class="modal hide fade gw-modal-wide" style="margin-top: 15px" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Notice</h3>
+	</div>
+	<div class="gw-modal-body-long">
+		<div>
+			<p style="text-align: left" data-bind="visible: badCombination">Your SIM card is reporting carrier <b><span data-bind="text: sim"></span></b> and your module is reporting carrier <b><span data-bind="text: module"></span></b>.
+				This is <font color="red">not a recommended</font> combination, and you may experience issues with connection stability, SMS functionality, roaming and fallback to alternate technologies.
+			</p>
+			<p style="text-align: left" data-bind="visible: showMismatch">Your SIM card is reporting carrier <b><span data-bind="text: sim"></span></b> and your module is reporting carrier <b><span data-bind="text: module"></span></b>.
+				If this is not a compatible combination, then you may experience issues with connection stability, SMS functionality, roaming and fallback to alternate technologies.
+			</p>
+			<br />
+			<p style="text-align: left">
+				To change your module firmware, please visit the Cellular Provisioning page to learn more about reflashing your module. The generic version is widely compatible,
+				globally PTCRB and GCF certified, and recommended for use when a carrier specific option is not available. If you know your combination is acceptable for use,
+				feel free to ignore this message.
+			</p>
+			<br />
+			<div class="control-group"><div class="controls"><label class="checkbox">
+				<input type="checkbox" data-bind="checked: ignoreMismatch">Don't show this notice again</input>
+			</label></div></div>
+			<br />
+			<div style="text-align: center">
+				<a class="btn" data-bind="click: acknowledge">Acknowledge</a>
+				<a class="btn btn-primary" data-bind="click: provision">Visit Provisioning</a>
+			</div>
+			</div>
+		</div>
+	</div>
+</div>

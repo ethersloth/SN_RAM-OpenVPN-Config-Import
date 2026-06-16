@@ -1,0 +1,166 @@
+
+<profile>
+ <subsystems>
+
+
+                                                                                                                              <!--
+                Admin -> Gather Stats Section
+
+  V2.20 behaviors (taken from cfg_adm.cpp - GatherStats()):
+
+  +==========+================================================================================+============+
+  |  ACTION  |                           STEP                                                 | ON FAILURE |
+  +==========+================================================================================+============+
+  |   Gather | Try to get value of GAUCfg/gatherstats/network  from Master Configuration file | Abort      |
+  |          +--------------------------------------------------------------------------------+------------+
+  |          | Try to get value of GAUCfg/gatherstats/gwlnx    from Master Configuration file | Abort      |
+  |          +--------------------------------------------------------------------------------+------------+
+  |          | Try to get value of GAUCfg/gatherstats/prefix   from Master Configuration file | Abort      |
+  |          +--------------------------------------------------------------------------------+------------+
+  |          | Try to get value of GAUCfg/gatherstats/method   from Master Configuration file | Abort      |
+  |          +--------------------------------------------------------------------------------+------------+
+  |          | Verify GAUCfg/gatherstats/network = "yes" or "no"                              | Abort      |
+  |          +--------------------------------------------------------------------------------+------------+
+  |          | Verify GAUCfg/gatherstats/gwlnx   = "yes" or "no"                              | Abort      |
+  |          +--------------------------------------------------------------------------------+------------+
+  |          | Verify GAUCfg/gatherstats/method  = "ftp" or "download"                        | Abort      |
+  |          +--------------------------------------------------------------------------------+------------+
+  |          | Verify GAUCfg/gatherstats/prefix contains no whitespace                        | Abort      |
+  |          +--------------------------------------------------------------------------------+------------+
+  |          | Build command string:                                                          |            |
+  |          |                                                                                |            |
+  |          | [                                                                              |            |
+  |          |  "/bin/gatherstats"                                                            |            |
+  |          | ]                                                                              |            |
+  |          |                                                                                |            |
+  |          | if ("yes" == GAUCfg/gatherstats/network)                                       |            |
+  |          |   {                                                                            |            |
+  |          |    ["..."] += " -i"                                                            |            |
+  |          |   }                                                                            |            |
+  |          |                                                                                |            |
+  |          | if ("yes" == GAUCfg/gatherstats/gwlnx)                                         |            |
+  |          |   {                                                                            |            |
+  |          |    ["..."] += " -l"                                                            |            |
+  |          |   }                                                                            |            |
+  |          |                                                                                |            |
+  |          | if ("download" == GAUCfg/gatherstats/method)                                   |            |
+  |          |   {                                                                            |            |
+  |          |    ["..."] += " -o gstats.zip"                                                 |            |
+  |          |   }                                                                            |            |
+  |          |  else                                                                          |            |
+  |          |      {                                                                         |            |
+  |          |       ["..."] += " -s " + GAUCfg/gatherstats/prefix                            |            |
+  |          |      }                                                                         |            |
+  |          +--------------------------------------------------------------------------------+------------+
+  |          | Try to execute command string:                                                 |            |
+  |          |                                                                                |            |
+  |          | '{command string} &> /dev/null'                                                | Abort      |
+  |          +--------------------------------------------------------------------------------+------------+
+  |          | if ("download" == GAUCfg/gatherstats/method)                                   |            |
+  |          |   {                                                                            |            |
+  |          |    Try to set /GAUcfg/gatherstats/current = "/tmp/gstats.zip"                  | Abort      |
+  |          |   }                                                                            |            |
+  |          |  else                                                                          |            |
+  |          |      {                                                                         |            |
+  |          |       Try to set /GAUcfg/gatherstats/current = ""                              | Abort      |
+  |          |      }                                                                         |            |
+  |          +--------------------------------------------------------------------------------+------------+
+  |          | Try to save Master Configuration file                                          | Abort      |
+  +==========+================================================================================+============+                   -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/gatherstats.prf" name="gatherstats">
+   <validation>
+    <vstep     id="method"
+             name="method"
+           skipto="all"
+             test="/input/method/text() = 'file'" />
+
+    <vstep     id="ftpdest"
+             name="ftpdest"
+           skipto="project"
+             test="/input/ftpdest/text() = 'jbm'" />
+
+    <vstep errmsg="FTP Server Address required when FTP method is chosen without WSBU FTP server as destination."
+               id="userver"
+             name="userver"
+           skipto="all"
+             test="string-length(/input/userver/text()) > 0" />
+
+    <vstep errmsg="FTP Project Name required when FTP method is chosen with WSBU FTP server as destination."
+               id="project"
+             name="project"
+             test="string-length(/input/project/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Method to system configuration file."
+             name="method"
+             path="/GAUCfg/gatherstats/method" />
+
+    <cstep errmsg="Unable to save FTP Destination to system configuration file."
+             name="ftpdest"
+             path="/GAUCfg/gatherstats/ftpdest" />
+
+    <cstep errmsg="Unable to save FTP Server to system configuration file."
+             name="userver"
+             path="/GAUCfg/gatherstats/userver" />
+
+    <cstep errmsg="Unable to save vpn to system configuration file."
+             name="vpn"
+             path="/GAUCfg/gatherstats/vpn" />
+
+    <cstep errmsg="Unable to save gwlnx to system configuration file."
+             name="gwlnx"
+             path="/GAUCfg/gatherstats/gwlnx" />
+
+    <cstep errmsg="Unable to save project to system configuration file."
+             name="project"
+             path="/GAUCfg/gatherstats/project" />
+
+    <cstep errmsg="Unable to save dlfname to system configuration file."
+             name="dlfname"
+             path="/GAUCfg/gatherstats/dlfname" />
+
+    <cstep errmsg="Unable to save sd card option to system configuration file."
+             name="ssdc"
+             path="/GAUCfg/gatherstats/ssdc" />
+
+   </configuration>
+
+   <action name="Gather" successmsg="Operation Succeeded.\n\nIf you selected the DOWNLOAD method you may click the link when the page refreshes.\n\nOtherwise the file has been sent via FTP.">
+
+    <astep abort="y" errmsg="Failed to execute Gather Stats." name="SystemCommand" >
+     <arg   expr="'/bin/gatherstats -p'"
+          source="config"  />
+
+     <arg cfgdependency="/GAUCfg/gatherstats/vpn/text() = 'y'"
+                   expr="' -i'"
+                 source="config" />
+
+     <arg cfgdependency="/GAUCfg/gatherstats/gwlnx/text() = 'y'"
+                   expr="' -l'"
+                 source="config" />
+
+     <arg cfgdependency="/GAUCfg/gatherstats/ssdc/text() = 'y'"
+                   expr="' -c'"
+                 source="config" />
+
+     <arg cfgdependency="/GAUCfg/gatherstats/method/text() = 'ftp' and /GAUCfg/gatherstats/ftpdest/text() = 'other'"
+                   expr="concat(' -f ', /GAUCfg/gatherstats/userver/text(), ' -o ', /GAUCfg/gatherstats/dlfname/text())"
+                 source="config" />
+
+     <arg cfgdependency="/GAUCfg/gatherstats/method/text() = 'ftp' and /GAUCfg/gatherstats/ftpdest/text() = 'jbm'"
+                   expr="concat(' -s ', /GAUCfg/gatherstats/project/text(), ' -o ', /GAUCfg/gatherstats/dlfname/text())"
+                 source="config" />
+
+     <!--<arg cfgdependency="/GAUCfg/gatherstats/method/text() = 'file'"
+     		   expr="concat(' -o ', /GAUCfg/gatherstats/dlfname/text())"
+                 source="config" />-->
+    </astep>
+   </action>
+
+  </subsystem>
+
+
+ </subsystems>
+</profile>

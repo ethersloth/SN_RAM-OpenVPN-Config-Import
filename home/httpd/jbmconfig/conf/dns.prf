@@ -1,0 +1,212 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                              <!--
+                Networking -> DNS Settings Section
+
+  V2.20 behaviors (taken from cfg_net.cpp - ApplyDNSSettings()):
+
+  +==========+=====================================================================================+============+
+  |  ACTION  |                           STEP                                                      | ON FAILURE |
+  +==========+=====================================================================================+============+
+  |    Apply | Append '127.0.0.1\localhost' to /etc/hosts                                          | Abort      |
+  |          +-------------------------------------------------------------------------------------+------------+
+  |          | Try to get value of GAUCfg/dns/domain from Master Configuration file                | Abort      |
+  |          +-------------------------------------------------------------------------------------+------------+
+  |          | Try to get value of GAUCfg/dns/primary from Master Configuration file               | Abort      |
+  |          +-------------------------------------------------------------------------------------+------------+
+  |          | Try to get value of GAUCfg/dns/backup1 from Master Configuration file               | Abort      |
+  |          +-------------------------------------------------------------------------------------+------------+
+  |          | Try to get value of GAUCfg/dns/backup2 from Master Configuration file               | Abort      |
+  |          +-------------------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/dns/domain != "" and is a valid domain name                          | Abort      |
+  |          +-------------------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/dns/primary != "" and ia a valid IP Address                          | Abort      |
+  |          +-------------------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/dns/backup1 != "" and is a valid IP Address                          | Abort      |
+  |          +-------------------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/dns/backup2 != "" and is a valid IP Address                          | Abort      |
+  |          +-------------------------------------------------------------------------------------+------------+
+  |          | Try to write "domain "   + /GAUCfg/dns/domain  + "\n" +                             |            |
+  |          |              "nameserver + /GAUCfg/dns/primary + "\n" +                             |            |
+  |          |              "nameserver + /GAUCfg/dns/backup1 + "\n" +                             |            |
+  |          |              "nameserver + /GAUCfg/dne/backup2 + "\n" +                             |            |
+  |          |              "#"         +                       "\n"                               |            |
+  |          |                                                                                     |            |
+  |          |              to '/etc/resolve.conf'                                                 | Abort      |
+  |          +-------------------------------------------------------------------------------------+------------+
+  |          | Try to get value of GAUCfg/dns/hosts/NumberOfHosts from Master Configuration file   | Abort      |
+  |          +-------------------------------------------------------------------------------------+------------+
+  |          | foreach (host record)                                                               |            |
+  |          |        {                                                                            |            |
+  |          |         Try to read /GAUCfg/dns/hosts/host from Master Configuration file           | Abort      |
+  |          |                                                                                     |            |
+  |          |         Verify /GAUCfg/dns/hosts/host != "" and is valid host name                  | Abort      |
+  |          |                                                                                     |            |
+  |          |         Try to read /GAUCfg/dns/hosts/domain from Master Configuration file         | Abort      |
+  |          |                                                                                     |            |
+  |          |         Verify /GAUCfg/dns/hosts/domain != "" and is valid domain name              | Abort      |
+  |          |                                                                                     |            |
+  |          |         Try to read /GAUCfg/dns/hosts/addr from Master Configuration file           | Abort      |
+  |          |                                                                                     |            |
+  |          |         Verify /GAUCfg/dns/hosts/addr != "" and is valid IP Address                 | Abort      |
+  |          |                                                                                     |            |
+  |          |         Try to append /GAUCfg/dns/hosts/addr + "\t" + /GAUCfg/dns/hosts/host + "\t" |            |
+  |          |                       /GAUCfg/dns/hosts/domain + "\n"                               |            |
+  |          |                                                                                     | Abort      |
+  |          |             to '/etc/hosts'                                                         |            |
+  |          |        }                                                                            |            |
+  |          |                                                                                     |            |
+  |          | Try to append "#\n" to '/etc/hosts'                                                 | Abort      |
+  +==========+=====================================================================================+============+             -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dns.prf" name="dns">
+   <validation>
+    <vstep     id="step0"
+             name="domain"
+           skipto="step2"
+             test="string-length(/input/domain/text()) = 0" />
+
+    <vstep errmsg="Invalid Primary DNS Server. Must be properly formatted IPv4 address."
+               id="step2"
+             name="primary"
+             test="isipaddr(/input/primary/text())" />
+
+    <vstep     id="step3"
+             name="backup1"
+           skipto="step5"
+             test="string-length(/input/backup1/text()) = 0" />
+
+    <vstep errmsg="Invalid Alternate DNS Server #1. Must be properly formatted IPv4 address."
+               id="step4"
+             name="backup1"
+           skipto="step5"
+             test="isipaddr(/input/backup1/text())" />
+
+    <vstep     id="step5"
+             name="backup2"
+           skipto="step7"
+             test="string-length(/input/backup2/text()) = 0" />
+
+    <vstep errmsg="Invalid Alternate DNS Server #2. Must be properly formatted IPv4 address."
+               id="step6"
+             name="backup2"
+           skipto="step7"
+             test="isipaddr(/input/backup2/text())" />
+
+    <vstep errmsg="Invalid Host Record Set. Must be a well-formed XML document."
+               id="step7"
+             name="hosts"
+             test="string-length(/input/hosts/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Search Domain to system configuration file."
+             name="domain"
+            path="/GAUCfg/dns/domain" />
+    <cstep errmsg="Unable to save Primary DNS to system configuration file."
+             name="primary"
+             path="/GAUCfg/dns/primary" />
+    <cstep errmsg="Unable to save Backup DNS 1 to system configuration file."
+             name="backup1"
+             path="/GAUCfg/dns/backup1" />
+    <cstep errmsg="Unable to save Backup DNS 2 to system configuration file."
+             name="backup2"
+             path="/GAUCfg/dns/backup2" />
+    <cstep errmsg="Unable to save Host Names to system configuration file."
+             name="hosts"
+             path="/GAUCfg/dns/hosts" type="node" />
+   </configuration>
+
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_dns
+    <pre subsystem="dns" action="Save" />
+
+    <astep abort="y" errmsg="Failed to restart DNSMASQ" name="SystemCommand">
+     <arg expr="service dnsmasq restart" />
+    </astep>
+Moved to prfhandler_dns-->
+
+    <astep abort="y" errmsg="Failed to Apply the DNS configuration" name="SystemCommand">
+     <arg expr="'prfhandler_dns Apply'" source="config" />
+    </astep>
+   </action>
+
+   <action name="Save" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_dns
+    <astep abort="y" errmsg="Failed to write to DNS Server configuration" name="WriteFormattedFile">
+     <arg expr="/tmp/resolv.conf" />
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg dependency="(string-length(/GAUCfg/dns/domain/text()) > 0)" expr="'search '" source="config" />
+     <arg dependency="(string-length(/GAUCfg/dns/domain/text()) > 0)" expr="/GAUCfg/dns/domain/text()" source="config" />
+     <arg expr="\n" />
+     <arg expr="nameserver 127.0.0.1" />
+     <arg expr="\n" />
+    </astep>
+    <astep abort="y" errmsg="Failed to install DNS Server configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/resolv.conf /etc/resolv.conf" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to write to DNSMASQ Server configuration" name="WriteFormattedFile">
+     <arg expr="/tmp/dnsmasq.servers.conf" />
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg dependency="(string-length(/GAUCfg/dns/primary/text()) > 0)" expr="'server='" source="config" />
+     <arg dependency="(string-length(/GAUCfg/dns/primary/text()) > 0)" expr="/GAUCfg/dns/primary/text()" source="config" />
+     <arg expr="\n" />
+     <arg dependency="(string-length(/GAUCfg/dns/backup1/text()) > 0)" expr="'server='" source="config" />
+     <arg dependency="(string-length(/GAUCfg/dns/backup1/text()) > 0)" expr="/GAUCfg/dns/backup1/text()" source="config" />
+     <arg expr="\n" />
+     <arg dependency="(string-length(/GAUCfg/dns/backup2/text()) > 0)" expr="'server='" source="config" />
+     <arg dependency="(string-length(/GAUCfg/dns/backup2/text()) > 0)" expr="/GAUCfg/dns/backup2/text()" source="config" />
+     <arg expr="\n" />
+    </astep>
+    <astep abort="y" errmsg="Failed to install DNSMASQ Server configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/dnsmasq.servers.conf /etc/dnsmasq/dnsmasq.servers.conf" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to write hosts file" name="WriteFile">
+     <arg expr="/tmp/hosts" />
+     <arg   expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="::1     ip6-localhost ip6-loopback" />
+     <arg expr="fe00::0 ip6-localnet" />
+     <arg expr="ff00::0 ip6-mcastprefix" />
+     <arg expr="ff02::1 ip6-allnodes" />
+     <arg expr="ff02::2 ip6-allrouters" />
+     <arg expr="127.0.0.1 localhost" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to write hosts file" repeat="/GAUCfg/dns/hosts/host" rptNdxName="RPT_NDX" name="Append2File">
+     <arg expr="/tmp/hosts" />
+
+     <arg dependency="(string-length(/GAUCfg/dns/hosts/host[RPT_NDX]/domain/text()) > 0)"
+                expr="concat(/GAUCfg/dns/hosts/host[RPT_NDX]/addr/text(), ' ', /GAUCfg/dns/hosts/host[RPT_NDX]/host/text(), '.', /GAUCfg/dns/hosts/host[RPT_NDX]/domain/text(), ' ', /GAUCfg/dns/hosts/host[RPT_NDX]/host/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/dns/hosts/host[RPT_NDX]/domain/text()) = 0)"
+                expr="concat(/GAUCfg/dns/hosts/host[RPT_NDX]/addr/text(), ' ', /GAUCfg/dns/hosts/host[RPT_NDX]/host/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to install hosts file" name="SystemCommand">
+     <arg expr="mv -f /tmp/hosts /etc/hosts" />
+    </astep>
+Moved to prfhandler_dns-->
+
+    <astep abort="y" errmsg="Failed to save the DNS configuration" name="SystemCommand">
+     <arg expr="'prfhandler_dns Save'" source="config" />
+    </astep>
+   </action>
+
+  </subsystem>
+ </subsystems>
+</profile>

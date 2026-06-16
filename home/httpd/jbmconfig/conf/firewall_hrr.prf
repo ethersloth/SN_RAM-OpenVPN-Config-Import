@@ -1,0 +1,37 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall.prf"
+             name="firewall" />
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall_hrr.prf" name="firewall_hrr">
+   <validation>
+    <vstep errmsg="Invalid Firewall Redirect Rules Set. Must be a well-formed XML document."
+             name="redirrules"
+             test="string-length(/input/redirrules/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Firewall Redirect Rule(s) to system configuration file."
+             name="redirrules"
+             path="/GAUCfg/firewall/redirrules"
+             type="node" />
+   </configuration>
+
+   <action name="Dummy" successmsg="Firewall Redirect rules saved.">
+   </action>
+
+   <action name="Apply" successmsg="Firewall settings applied.">
+    <pre subsystem="firewall" action="Apply" />
+
+   </action>
+
+   <action name="Save" successmsg="Firewall settings saved.">
+    <pre subsystem="firewall" action="Save" />
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

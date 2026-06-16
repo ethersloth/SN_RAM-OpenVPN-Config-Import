@@ -1,0 +1,7 @@
+<!--ko template: {name:'title-template',data:'IPv6 Configuration'}--><!--/ko-->
+<!--ko template: {name:'h4-template',data:'Define IPv6 Routing Options'}--><!--/ko-->
+<!--ko template: {name: 'full-savable-select-template', data: enable}--><!--/ko-->
+<!-- ko if: enable.value() === 'yes'-->
+	<!--ko template: {name: 'full-savable-select-template', data: wanintf}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: lanintf}--><!--/ko-->
+<!-- /ko -->

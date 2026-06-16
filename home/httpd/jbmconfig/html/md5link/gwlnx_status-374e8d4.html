@@ -1,0 +1,15 @@
+<form class="form-horizontal">
+	<!--ko template:{name:'title-template',data:'GWLNX Status'}--><!--/ko-->
+	<div class="gw-row">
+		<span data-bind="text: gwlnxstat"></span>
+	</div>
+	<br />
+	<div class="control-group">
+		<div class="controls">
+			<span class="field">
+				<textarea id="output" readonly style="width: 90%; font-family: monospace;" data-bind="value: gwlnxps" rows="20" wrap="off"></textarea>
+			</span>
+		</div>
+	</div>
+	<!--ko template:{name:'select-template',data:gwlnxpid}--><!--/ko-->
+</form>

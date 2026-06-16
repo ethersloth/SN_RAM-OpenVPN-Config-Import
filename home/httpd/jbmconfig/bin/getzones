@@ -1,0 +1,286 @@
+#!/usr/bin/perl -w
+# (c)2016 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet
+# are registered trademarks of Red Lion Controls, Inc. All other company and product names are
+# trademarks of their respective owners.
+
+###############################################################################################################################
+#                                                                                                                             #
+# getzones - Get Time Zones                                                                                                   #
+#                                                                                                                             #
+# Obtain a list of timezones from /etc/timezones (and Canada, Europe and US subdirectories) and return a list of html         #
+# <option> elements for each.  If a match is found in /home/http/jbmconfig/conf/config.xml for /GAUCfg/systime/timezone via   #
+# xpeval, then set the 'selected' attribute.                                                                                  #
+#                                                                                                                             #
+# This program was written by Art Surgant, based on original code by Joe Deakos.                                              #
+#                                                                                                                             #
+###############################################################################################################################
+
+my $PARSABLE = 0;
+if (@ARGV)
+{
+    if ("--parsable" eq $ARGV[0])
+    {
+        $PARSABLE = 1;
+    }
+}
+
+
+# Read contents of timezone directories, sorted, into arrays of strings for each:
+my (@zones, @asia, @australia, @canada, @europe, @usa, @posix, @atlantic);
+
+
+if ( opendir(DIR, "/etc/timezones/") )
+{
+    @zones = sort(readdir(DIR));
+    closedir(DIR);
+}
+
+if ( opendir(DIR, "/etc/timezones/POSIX/") )
+{
+    @posix= sort(readdir(DIR));
+    closedir(DIR);
+}
+
+
+if ( opendir(DIR, "/etc/timezones/Atlantic/") )
+{
+    @atlantic = sort(readdir(DIR));
+    closedir(DIR);
+}
+
+
+if ( opendir(DIR, "/etc/timezones/Asia/") )
+{
+    @asia = sort(readdir(DIR));
+    closedir(DIR);
+}
+
+
+if ( opendir(DIR, "/etc/timezones/Australia/") )
+{
+    @australia = sort(readdir(DIR));
+    closedir(DIR);
+}
+
+if ( opendir(DIR, "/etc/timezones/Canada/") )
+{
+    @canada = sort(readdir(DIR));
+    closedir(DIR);
+}
+
+if ( opendir(DIR, "/etc/timezones/Europe/") )
+{
+    @europe = sort(readdir(DIR));
+    closedir(DIR);
+}
+
+
+if ( opendir(DIR, "/etc/timezones/US/") )
+{
+    @usa = sort(readdir(DIR));
+    closedir(DIR);
+}
+
+
+# Get the currently selected time zone (/GAUCfg/system/timezone) from the GAU Master Configuration file config.xml in
+# /home/httpd/jbmconfig/home using the xpeval program:
+
+my $curSelTZ;
+
+if (open(FILE, "/home/httpd/jbmconfig/bin/xpeval -s --in=/home/httpd/jbmconfig/conf/config.xml --xpath=\"/GAUCfg/systime/timezone/text()\" |"))
+{
+    while (<FILE>)
+    {
+        $curSelTZ = $_;
+
+        chomp($curSelTZ);
+    }
+
+    close(FILE);
+}
+
+
+
+# Using each array of strings previously created, generate an html <option> element for each item in the array.  If an
+# array item matches the timezone currently selected in the GAU Master Configuration File (previously determined) set
+# the 'selected' attribute to 'selected':
+
+my $first = 1;
+
+foreach my $tz (@zones)
+{
+    if ($tz !~ /^(\.|Asia|Australia|Europe|Canada|US|Atlantic|POSIX)/)
+    {
+        if ($PARSABLE)
+        {
+            if ($first)
+            {
+                print $tz;
+                $first = 0;
+            }
+            else
+            {
+                print "|" . $tz;
+            }
+            next;
+        }
+
+        print "<option value=\"" . $tz . "\"";
+
+        if ($tz eq $curSelTZ)
+        {
+            print " selected=\"selected\"";
+        }
+
+        print ">" . $tz . "</option>\n";
+    }
+}
+
+
+foreach my $tz (@posix)
+{
+    if ($tz !~ /^\./)
+    {
+        if ($PARSABLE)
+        {
+            print "|POSIX/" . $tz;
+            next;
+        }
+        print "<option value=\"POSIX/" . $tz . "\"";
+        my $tz1 = "POSIX/" . $tz;
+        if ($tz1 eq $curSelTZ)
+        {
+            print " selected=\"selected\"";
+        }
+        print ">" . $tz . " (POSIX)</option>\n";
+    }
+}
+
+foreach my $tz (@atlantic)
+{
+    if ($tz !~ /^\./)
+    {
+        if ($PARSABLE)
+        {
+            print "|Atlantic/" . $tz;
+            next;
+        }
+        print "<option value=\"Atlantic/" . $tz . "\"";
+        my $tz1 = "Atlantic/" . $tz;
+        if ($tz1 eq $curSelTZ)
+        {
+            print " selected=\"selected\"";
+        }
+        print ">" . $tz . " (Atlantic)</option>\n";
+    }
+}
+
+foreach my $tz (@asia)
+{
+    if ($tz !~ /^\./)
+    {
+        if ($PARSABLE)
+        {
+            print "|Asia/" . $tz;
+            next;
+        }
+        print "<option value=\"Asia/" . $tz . "\"";
+        my $tz1 = "Asia/" . $tz;
+        if ($tz1 eq $curSelTZ)
+        {
+            print " selected=\"selected\"";
+        }
+        print ">" . $tz . " (Asia)</option>\n";
+    }
+}
+
+
+foreach my $tz (@australia)
+{
+    if ($tz !~ /^\./)
+    {
+        if ($PARSABLE)
+        {
+            print "|Australia/" . $tz;
+            next;
+        }
+        print "<option value=\"Australia/" . $tz . "\"";
+        my $tz1 = "Asia/" . $tz;
+        if ($tz1 eq $curSelTZ)
+        {
+            print " selected=\"selected\"";
+        }
+        print ">" . $tz . " (Australia)</option>\n";
+    }
+}
+
+foreach my $tz (@canada)
+{
+    if ($tz !~ /^\./)
+    {
+        if ($PARSABLE)
+        {
+            print "|Canada/" . $tz;
+            next;
+        }
+
+        print "<option value=\"Canada/" . $tz . "\"";
+
+        my $tz1 = "Canada/" . $tz;
+
+        if ($tz1 eq $curSelTZ)
+        {
+            print " selected=\"selected\"";
+        }
+
+        print ">" . $tz . " (Canada)</option>\n";
+    }
+}
+
+
+foreach my $tz (@europe)
+{
+    if ($tz !~ /^\./)
+    {
+        if ($PARSABLE)
+        {
+            print "|Europe/" . $tz;
+            next;
+        }
+
+        print "<option value=\"Europe/" . $tz . "\"";
+
+        my $tz1 = "Europe/" . $tz;
+
+        if ($tz1 eq $curSelTZ)
+        {
+            print " selected=\"selected\"";
+        }
+
+        print ">" . $tz . " (Europe)</option>\n";
+    }
+}
+
+
+foreach my $tz (@usa)
+{
+    if ($tz !~ /^\./)
+    {
+        if ($PARSABLE)
+        {
+            print "|US/" . $tz;
+            next;
+        }
+
+        print "<option value=\"US/" . $tz . "\"";
+
+        my $tz1 = "US/" . $tz;
+
+        if ($tz1 eq $curSelTZ)
+        {
+            print " selected=\"selected\"";
+        }
+
+        print ">" . $tz . " (US)</option>\n";
+    }
+}

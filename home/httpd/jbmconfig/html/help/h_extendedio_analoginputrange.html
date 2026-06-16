@@ -1,0 +1,16 @@
+<h4>Description</h4>
+<p>
+<b><u>Input Range:</u></b><br /> 
+Select the range that will be connected to the input channel.<br /><br /> 
+<b>0-5VDC</b> and <b>0-10VDC</b> will be available when the <b>Voltage Range</b> option is selected. In these modes the value will be scaled from the 
+selected range (0-5VDC and 0-10VDC) to 0-32767 (decimal).<br /> 
+<b>0-20mA Positive Results Only</b> and <b>4-20mA Positive Results Only</b> will be available when the <b>Current Range</b> option is selected. In these modes 
+the value will be scaled from the selected range (0-20mA and 4-20mA) to 0-32767 (decimal). No negative results will be displayed.  If no signal is connected 
+the analog input value reported will be 0 (decimal).<br /> 
+When the <b>4-20mA Negative below 4mA</b> is selected the 4-20mA range will be scaled from 0-32767 (decimal).  A negative value will be displayed when nothing 
+is connected to the input or the instrument is no longer supplying a current.  This setting can be used to detect a failed or disconnected instrument.<br /><br /> 
+<b>Note:</b> Negative numbers are determined by using the most significant bit in the 16-bit decimal value as a signed bit.  
+When the most significant bit is 0 the value is positive. When that bit is 1 the value is negative. Therefore, the value 
+read from the channel may be displayed differently depending on the device that is reading that value. For example, negative 
+values may also be read as any decimal value above 32767. 
+</p>

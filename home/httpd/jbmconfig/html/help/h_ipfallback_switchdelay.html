@@ -1,0 +1,19 @@
+<h4>Description</h4>
+<p>
+  The minimum number of minutes to wait prior to switching from the secondary
+  interface back to the primary interface.
+  <br />
+  The purpose is to prevent rapid flipping in an unstable environment. A larger
+  value will force the secondary link to be used for a longer period of time,
+  even if the primary becomes available.
+  <br />
+  Must be a number from 0 to 10
+</p>
+<p>
+  <b>Example:</b> Setting this value to 5  will set a minimum delay of 300
+  seconds (5 minutes). If the process switches to the secondary due to a
+  failure, and after 2 minutes the primary interface is determined to be good
+  (based on the configuration), there will still be an extra 3 minute delay
+  prior to switching back to the primary interface.
+  <b>Default: 0 (disabled)</b>
+</p>

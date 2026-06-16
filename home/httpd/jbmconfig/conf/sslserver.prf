@@ -1,0 +1,185 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                              <!--
+               Services -> SSL Connections -> SSL Server
+                                                                                                                                -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/sslserver.prf" name="sslserver">
+   <validation>
+
+    <vstep errmsg="Invalid Enable SSL Flag value. Must be 'y' or 'n'."
+               id="step1"
+             name="enablessl"
+             test="isyorn(/input/enablessl/text())" />
+
+    <vstep     id="step2"
+             name="enablessl"
+           skipto="STEP_EXIT"
+             test="/input/enablessl/text() = 'n'" />
+
+    <vstep errmsg="Invalid Activity Log Level value. Must be 'Summary' or 'Full'."
+               id="step3"
+             name="activityloglvl"
+             test="isnumber(/input/activityloglvl/text())" />
+
+    <vstep errmsg="Invalid Wait for Connection value. Must be '20','40','60'."
+               id="step4"
+             name="wait4connection"
+             test="isnumber(/input/wait4connection/text())" />
+
+    <vstep errmsg="Invalid Idle Timeout. Must be a number in the range, 1-1440."
+               id="step5"
+             name="idletimeout"
+             test="isnumber(/input/idletimeout/text()) and /input/idletimeout/text() < 1441 and /input/idletimeout/text() > 0" />
+
+    <vstep errmsg="Invalid ciphers list. Must enter a cipher."
+               id="step6"
+             name="ciphers"
+             test="string-length(/input/ciphers/text()) > 0" />
+
+    <vstep errmsg="Invalid Keepalive. Must be either 'None', 'All', 'Accept', 'Local' or 'Remote'"
+               id="step7"
+             name="sslskeepalive"
+             test="/input/sslskeepalive/text() = 'None'  or
+                   /input/sslskeepalive/text() = 'All'   or
+                   /input/sslskeepalive/text() = 'Accept'  or
+                   /input/sslskeepalive/text() = 'Local' or
+                  /inpur/sslskeepalive() = 'Remote'"  />
+
+    <vstep id="STEP_EXIT" />
+   </validation>
+
+   <configuration>
+
+
+    <cstep errmsg="Unable to save Enable SSL to system configuration file."
+             name="enablessl"
+             path="/GAUCfg/sslserver/enablessl" />
+
+    <cstep errmsg="Unable to save Activity Log Level to system configuration file."
+             name="activityloglvl"
+             path="/GAUCfg/sslserver/activityloglevel" />
+
+    <cstep errmsg="Unable to save Wait for Connection to system configuration file."
+             name="wait4connection"
+             path="/GAUCfg/sslserver/wait4connection" />
+
+    <cstep errmsg="Unable to save Idle Timeout to system configuration file."
+             name="idletimeout"
+             path="/GAUCfg/sslserver/idletimeout" />
+
+    <cstep errmsg="Unable to save Certificate filename to system configuration file."
+             name="certfile"
+             path="/GAUCfg/sslserver/certfile" />
+
+    <cstep errmsg="Unable to save Advance Setup to system configuration file."
+             name="advancesetup"
+             path="/GAUCfg/sslserver/advancesetup" />
+
+    <cstep errmsg="Unable to save Bind Interface for accepting TCP connections to system configuration file."
+             name="acceptintf"
+             path="/GAUCfg/sslserver/bindacceptintf" />
+
+    <cstep errmsg="Unable to save Bind Interface for outgoing SSL connections to system configuration file."
+             name="outgoingintf"
+             path="/GAUCfg/sslserver/bindoutgoingintf" />
+
+    <cstep errmsg="Unable to save Ciphers to system configuration file."
+             name="ciphers"
+             path="/GAUCfg/sslserver/ciphers" />
+
+    <cstep errmsg="Unable to save Keepalive to system configuration file."
+             name="sslskeepalive"
+             path="/GAUCfg/sslserver/sslskeepalive" />
+
+
+    <cstep errmsg="Unable to save Connection Table configuration to system configuration file."
+             name="connectcfgs"
+             path="/GAUCfg/sslserver/connectcfgs" type="node" />
+
+   </configuration>
+
+   <action name="Save" successmsg="SSL Server configuration saved.">
+
+    <astep abort="y" errmsg="Failed to save sslserver configuration" name="SystemCommand">
+     <arg expr="'prfhandler_sslserver Save'" source="config" />
+    </astep>
+
+<!--Moved to prfhandler_sslserver
+    <astep abort="y" errmsg="(Save)Failed to create xml SSL Server configuration file" name="SystemCommand">
+     <arg expr="'/home/httpd/jbmconfig/bin/getcfgsec --infile=/home/httpd/jbmconfig/conf/config.xml --outfile=/tmp/sslservercfg.xml --xpath=/GAUCfg/sslserver'"
+         dependency="/GAUCfg/sslserver/enablessl/text() = 'y' and /GAUCfg/sslserver/connectcfgs/NumberOfconnectcfgs/text() > 0"
+          source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="(Save)Failed to create SSL Server configuration file" name="SystemCommand">
+     <arg expr="'/home/httpd/jbmconfig/bin/sslconvert /tmp/sslservercfg.xml'"
+         dependency="/GAUCfg/sslserver/enablessl/text() = 'y' and /GAUCfg/sslserver/connectcfgs/NumberOfconnectcfgs/text() > 0"
+          source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="(Save)Failed to delete temporary SSL Server configuration file" name="SystemCommand">
+     <arg expr="'rm -f /tmp/sslservercfg.xml'"
+         dependency="/GAUCfg/sslserver/enablessl/text() = 'y' and /GAUCfg/sslserver/connectcfgs/NumberOfconnectcfgs/text() > 0"
+          source="config" />
+    </astep>
+
+    <astep errmsg="(Save)Failed to enable SSL Server process." name="SystemCommand" abort="y">
+     <arg expr="'setstunnel stunnelsrv.conf -c'"
+         dependency="/GAUCfg/sslserver/enablessl/text() = 'y' and /GAUCfg/sslserver/connectcfgs/NumberOfconnectcfgs/text() > 0"
+          source="config" />
+    </astep>
+Moved to prfhandler_sslserver-->
+
+   </action>
+
+   <action name="Apply" successmsg="SSL Server configuration applied.">
+
+    <astep abort="y" errmsg="Failed to apply sslserver configuration" name="SystemCommand">
+     <arg expr="'prfhandler_sslserver Apply'" source="config" />
+    </astep>
+
+<!--Moved to prfhandler_sslserver
+    <astep abort="n" name="SystemCommand">
+     <arg expr="unsetstunnel stunnelsrv.conf" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to create xml SSL Server configuration file" name="SystemCommand">
+     <arg expr="'/home/httpd/jbmconfig/bin/getcfgsec --infile=/home/httpd/jbmconfig/conf/config.xml --outfile=/tmp/sslservercfg.xml --xpath=/GAUCfg/sslserver'"
+         dependency="/GAUCfg/sslserver/enablessl/text() = 'y' and /GAUCfg/sslserver/connectcfgs/NumberOfconnectcfgs/text() > 0"
+          source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to create SSL Server configuration file" name="SystemCommand">
+     <arg expr="'/home/httpd/jbmconfig/bin/sslconvert /tmp/sslservercfg.xml'"
+         dependency="/GAUCfg/sslserver/enablessl/text() = 'y' and /GAUCfg/sslserver/connectcfgs/NumberOfconnectcfgs/text() > 0"
+          source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to delete temporary SSL Server configuration file" name="SystemCommand">
+     <arg expr="'rm -f /tmp/sslservercfg.xml'"
+         dependency="/GAUCfg/sslserver/enablessl/text() = 'y' and /GAUCfg/sslserver/connectcfgs/NumberOfconnectcfgs/text() > 0"
+          source="config" />
+    </astep>
+
+    <astep errmsg="Failed to enable SSL Server process." name="SystemCommand" abort="y">
+     <arg expr="'setstunnel stunnelsrv.conf'"
+         dependency="/GAUCfg/sslserver/enablessl/text() = 'y' and /GAUCfg/sslserver/connectcfgs/NumberOfconnectcfgs/text() > 0"
+          source="config" />
+    </astep>
+
+    <astep errmsg="Failed to allow SSL Server process to start." name="SystemCommand" abort="n">
+     <arg expr="'sleep 5'"
+         dependency="/GAUCfg/sslserver/enablessl/text() = 'y' and /GAUCfg/sslserver/connectcfgs/NumberOfconnectcfgs/text() > 0"
+          source="config" />
+    </astep>
+Moved to prfhandler_sslserver-->
+
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

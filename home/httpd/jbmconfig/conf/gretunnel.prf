@@ -1,0 +1,219 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                              <!--
+                Networking -> VPN Settings -> GRE Tunnel Settings Section
+                                                                                                                               -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/gretunnel.prf" name="gretunnel">
+   <validation>
+    <vstep errmsg="Invalid Tunnel Record Set. Must be a well-formed XML document."
+             name="gretunnels"
+             test="string-length(/input/gretunnels/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Tunnels to system configuration file."
+             name="gretunnels" path="/GAUCfg/vpn/gre/gretunnels"
+             type="node" />
+   </configuration>
+
+
+   <action name="Save" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_gre
+    <astep         abort="y"
+           cfgdependency="/GAUCfg/vpn/gre/gretunnels/NumberOfgretunnels/text() = '0'"
+                  errmsg="No tunnels to be configured, no action taken."
+                    name="SystemCommand" >
+
+     <arg       expr="'/home/httpd/jbmconfig/bin/DelOrphGreIntfs ; test 0 -eq 1'"
+              source="config" />
+    </astep>
+
+    <astep         abort="y"
+                  errmsg="Failed to write gre tunnel configuration file(s)"
+                    name="WriteFormattedFile"
+                  repeat="/GAUCfg/vpn/gre/gretunnels/gretunnel"
+              rptNdxName="RPT_NDX">
+
+     <arg       expr="concat('/tmp/ifcfg-', /GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/name/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg       expr="concat('DEVICE=', /GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/name/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg       expr="concat('LOCAL_IP=', /GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/localip/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg expr="\n" />
+
+     <arg       expr="concat('LOCAL_NET=', /GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/localnet/text())"
+          rptNdxName="RPT_NDX"
+               source="config" />
+     <arg expr="\n" />
+
+     <arg       expr="concat('REMOTE_IP=', /GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/remoteip/text())"
+          rptNdxName="RPT_NDX"
+               source="config" />
+     <arg expr="\n" />
+
+     <arg       expr="concat('REMOTE_NET=', /GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/remotenet/text())"
+          rptNdxName="RPT_NDX"
+               source="config" />
+     <arg expr="\n" />
+
+     <arg expr="GRE_KEY=" />
+     <arg expr="\n" />
+
+     <arg       expr="concat('GRE_IKEY=', /GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/ikey/text())"
+          rptNdxName="RPT_NDX"
+               source="config" />
+     <arg expr="\n" />
+
+     <arg       expr="concat('GRE_OKEY=', /GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/okey/text())"
+          rptNdxName="RPT_NDX"
+               source="config" />
+     <arg expr="\n" />
+
+     <arg       expr="concat('GRE_TTL=', /GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/ttl/text())"
+          rptNdxName="RPT_NDX"
+               source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/usemulticast/text() = 'No'"
+                expr="'USE_MULTICAST=N'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/usemulticast/text() = 'Yes'"
+                expr="'USE_MULTICAST=Y'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/usearp/text() = 'No'"
+                expr="'USE_ARP=N'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/usearp/text() = 'Yes'"
+                expr="'USE_ARP=Y'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/onboot/text() = 'n'"
+                expr="'ONBOOT=no'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/onboot/text() = 'y'"
+                expr="'ONBOOT=yes'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/checkdns/text() = 'n'"
+                expr="'CHECKDNS=n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/checkdns/text() = 'y'"
+                expr="'CHECKDNS=y'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg expr="\n" />
+    </astep>
+
+    <astep     abort="y"
+              errmsg="Failed to move gre tunnel configuration file(s)"
+                 name="SystemCommand"
+               repeat="/GAUCfg/vpn/gre/gretunnels/gretunnel"
+           rptNdxName="RPT_NDX">
+
+     <arg       expr="concat('mv -f /tmp/ifcfg-', /GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/name/text())"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+
+     <arg       expr="concat(' /etc/sysconfig/network-scripts/ifcfg-', /GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/name/text())"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+    </astep>
+Moved to prfhandler_gre-->
+
+    <astep abort="y" errmsg="Failed to save the GRE Tunnels configuration" name="SystemCommand">
+     <arg expr="'prfhandler_gre Save'" source="config" />
+    </astep>
+
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_gre
+    <pre subsystem="gretunnel" action="Save" />
+
+    <astep   abort="y"
+            errmsg="Failed to remove orphaned gre interface config files."
+              name="SystemCommand">
+
+     <arg abort="y" expr="/home/httpd/jbmconfig/bin/DelOrphGreIntfs" />
+    </astep>
+
+    <astep         abort="y"
+           cfgdependency="/GAUCfg/vpn/gre/gretunnels/NumberOfgretunnels/text() = '0'"
+                  errmsg="No tunnels to be configured, no action taken."
+                    name="SystemCommand" >
+
+     <arg       expr="'test 0 -eq 1'"
+              source="config" />
+
+    </astep>
+
+    <astep     abort="n"
+              errmsg="Settings applied, but one or more interfaces could not be disabled."
+                 name="SystemCommand"
+               repeat="/GAUCfg/vpn/gre/gretunnels/gretunnel"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="/GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/enable/text() = 'No'"
+                expr="concat('/sbin/ifdown ', /GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/name/text())"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+    </astep>
+
+    <astep     abort="y"
+              errmsg="Settings applied, but one or more interfaces could not be enabled."
+                 name="SystemCommand"
+               repeat="/GAUCfg/vpn/gre/gretunnels/gretunnel"
+           rptNdxName="RPT_NDX">
+
+     <arg dependency="/GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/enable/text() = 'Yes'"
+                expr="concat('/sbin/ifup ', /GAUCfg/vpn/gre/gretunnels/gretunnel[RPT_NDX]/name/text())"
+          rptNdxName="RPT_NDX"
+              source="config"/>
+    </astep>
+Moved to prfhandler_gre-->
+
+    <astep abort="y" errmsg="Failed to apply the GRE Tunnels configuration" name="SystemCommand">
+     <arg expr="'prfhandler_gre Apply'" source="config" />
+    </astep>
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

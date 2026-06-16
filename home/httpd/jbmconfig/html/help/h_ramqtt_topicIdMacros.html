@@ -1,0 +1,25 @@
+<h4>Description</h4>
+<p>The Base Topic is the user defined topic that all RAMQTT's endpoint topics will be appended to.<br>
+&lt;BaseTopic&gt;/iodb<br>
+&lt;BaseTopic&gt;/deviceInfo<br>
+&lt;BaseTopic&gt;/cmd<br>
+&lt;BaseTopic&gt;/cmdResponse<br>
+&lt;BaseTopic&gt;/lwt<br>
+</p>
+<p>Base Topics support topic macros that can reference unique information about the device
+within the topic itself.<br>
+<b>%c</b> - clientId<br/>
+<b>%m</b> - mac address of eth0 (alphanumeric, no special characters)<br/>
+<b>%i</b> - imei<br/>
+<b>%s</b> - serial number<br/>
+<b>%j</b> - iccid<br/>
+<b>%p</b> - ip address of eth0<br/>
+</p>
+<p>
+<b>Examples:</b> <br>
+<b>test/topic/%s</b><br>
+test/topic/971X12345678912
+<br><br>
+<b>company/%i/%c</b><br>
+company/123456789123456/test_client
+</p>

@@ -1,0 +1,16 @@
+<!-- ko template: {name: 'title-template', data: 'SSH/TELNET Server'}--><!-- /ko -->
+<!-- ko template: {name: 'h4-template', data: 'SSH Server'}--><!-- /ko -->
+<!--ko template: {name: 'full-savable-bool-template', data: ensshdata}--><!--/ko-->
+<!-- ko if: ensshdata.value() === 'y'-->
+	<!--ko template: {name: 'full-savable-bool-template', data: advdata}--><!--/ko-->
+	<!-- ko if: advdata.value() === 'y'-->
+		<!--ko template: {name: 'full-savable-input-template', data: laddrdata}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: lportdata}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: gracedata}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: mcncrdata}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-bool-template', data: allowdata}--><!--/ko-->
+	<!-- /ko -->
+<!-- /ko -->
+<hr/>
+<!-- ko template: {name: 'h4-template', data: 'Telnet Server'}--><!-- /ko -->
+<!--ko template: {name: 'full-savable-bool-template', data: enteldata}--><!--/ko-->

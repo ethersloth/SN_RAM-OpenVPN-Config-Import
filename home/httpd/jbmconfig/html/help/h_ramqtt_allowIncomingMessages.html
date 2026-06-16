@@ -1,0 +1,9 @@
+<h4>Description</h4>
+<p>Communication Mode determines if RAMQTT will receive data in addition to sending data.
+<p><b>Send and Receive</b> - RAMQTT will both publish data and subscribe to topics
+to receive data. The subscription topics enable RAMQTT to receive special commands, such as installing packages and updating configurations. Choose this option if RAMQTT should support Broker to Device communication and commands in addition to publishing data.
+<p><b>Send Only</b> - RAMQTT will not subscribe to any topics and therefore will not
+receive any messages from the Broker. This prevents any unwanted communication to the device if
+RAMQTT should only publish data. However, RAMQTT will no longer be able to support commands
+without the ability to receive messages. Choose this option if RAMQTT should only publish
+data.</p>

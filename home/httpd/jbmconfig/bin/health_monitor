@@ -1,0 +1,14 @@
+#!/usr/bin/perl -w
+# ©2015 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company and product names are trademarks of their respective owners.
+
+#health_monitor - Get the ExtendedIo I/O board Serial number, ProductInfo and Firmware values
+
+my $serialno = `cat /var/log/iocontrol.status | grep "I/O board serial#:" 2>&1`;
+my $board = `cat /var/log/iocontrol.status | grep "ProductInfo_Read=" 2>&1`;
+my $firmware = `cat /var/log/iocontrol.status | grep "Firmware_Read=" 2>&1`;
+
+print $serialno . "\n";
+print $board . "\n";
+print $firmware . "\n";
+exit(0);
+

@@ -1,0 +1,1135 @@
+
+<profile>
+ <subsystems>
+                                                                                                                              <!--
+                Networking -> IPSec Tunnels Section
+
+  (Comments re: V2.20 behaviors (taken from cfg_sec.cpp - ApplyVPNSettings() & SaveVPNSettings(), removed)                     -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/ipsectunnel.prf" name="ipsectunnel">
+   <validation>
+    <vstep errmsg="Invalid Tunnel Record Set. Must be a well-formed XML document."
+             name="ipsectunnels"
+             test="string-length(/input/ipsectunnels/text()) > 0" />
+   </validation>
+
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable to system configuration file."
+              name="enableipsec"
+              path="/GAUCfg/vpn/ipsec/enableipsec" />
+    <cstep errmsg="Unable to save Nat to system configuration file."
+              name="natt"
+              path="/GAUCfg/vpn/ipsec/natt" />
+    <cstep errmsg="Unable to save Wireless PPP coordination to system configuration file."
+              name="wpppconnect"
+              path="/GAUCfg/vpn/ipsec/wpppconnect" />
+    <cstep errmsg="Unable to save PPPoE coordination to system configuration file."
+              name="pppoeconnect"
+              path="/GAUCfg/vpn/ipsec/pppoeconnect" />
+    <cstep errmsg="Unable to save Dial-up PPP coordination to system configuration file."
+              name="pppdialconnect"
+              path="/GAUCfg/vpn/ipsec/pppdialconnect" />
+    <cstep errmsg="Unable to save Wireless PPP coordination to system configuration file."
+              name="wpppdisconnect"
+              path="/GAUCfg/vpn/ipsec/wpppdisconnect" />
+    <cstep errmsg="Unable to save PPPoE coordination to system configuration file."
+              name="pppoedisconnect"
+              path="/GAUCfg/vpn/ipsec/pppoedisconnect" />
+    <cstep errmsg="Unable to save Dial-up PPP coordination to system configuration file."
+              name="pppdialdisconnect"
+              path="/GAUCfg/vpn/ipsec/pppdialdisconnect" />
+
+    <cstep errmsg="Unable to save Tunnels to system configuration file."
+              name="ipsectunnels" path="/GAUCfg/vpn/ipsec/ipsectunnels"
+              type="node" />
+   </configuration>
+
+
+   <action name="Save" successmsg="Operation Succeeded.">
+
+    <astep abort="n" errmsg="Failed to save ipsec configuration" name="SystemCommand">
+     <arg expr="'prfhandler_ipsec Save'" source="config" />
+    </astep>
+
+                                                                                                                              <!--
+    Build ipsec.conf file preamble:                                                                                           -->
+
+<!--Moved to prfhandler_ipsec
+    <astep abort="y" errmsg="Failed to write ipsec.conf file" name="WriteFormattedFile">
+     <arg expr="/tmp/ipsec.conf" />
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="version 2.0     # conforms to second version of ipsec.conf" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# Basic configuration" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="config setup" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="# plutodebug / klipsdebug = " />
+     <arg expr="quote()" source="config" />
+     <arg expr="all" />
+     <arg expr="quote()" source="config" />
+     <arg expr=", " />
+     <arg expr="quote()" source="config" />
+     <arg expr="none" />
+     <arg expr="quote()" source="config" />
+     <arg expr=" or a combination" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="# " />
+     <arg expr="quote()" source="config" />
+     <arg expr="raw crypt parsing emitting control kips pfkey x509 private" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="# eg:" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="# pluto debug=" />
+     <arg expr="quote()" source="config" />
+     <arg expr="control parsing" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="# Only enable klipsdebug=all if you are a developer" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="# NAT-TRAVERSAL support, see README.NAT_Traversal" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/natt/text() = 'y'" expr="'\t'"                source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/natt/text() = 'y'" expr="'nat_traversal=yes'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/natt/text() = 'y'" expr="'\n'"                source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/natt/text() = 'y'" expr="'\t'"                  source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/natt/text() = 'y'" expr="'force_keepalive=yes'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/natt/text() = 'y'" expr="'\n'"                  source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/natt/text() = 'y'" expr="'\t'"              source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/natt/text() = 'y'" expr="'keep_alive=6600'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/natt/text() = 'y'" expr="'\n'"              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/natt/text() = 'n'" expr="'\t'"                  source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/natt/text() = 'n'" expr="'# nat_traversal=yes'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/natt/text() = 'n'" expr="'\n'"                  source="config" />
+
+     <arg expr="\t" />
+     <arg expr="# virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep      abort="y"
+                break="pass"
+               errmsg="Failed to append to ipsec.conf file."
+                 name="AppendFormatted2File"
+               repeat="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel"
+           rptNdxName="RPT_NDX">
+
+     <arg expr="/tmp/ipsec.conf" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/aggrmode/text() = 'y'"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/aggrmode/text() = 'y'"
+                expr="'nhelpers=0'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/aggrmode/text() = 'y'"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+    </astep>
+
+    <astep      abort="y"
+                break="pass"
+               errmsg="Failed to append to ipsec.conf file."
+                 name="AppendFormatted2File"
+               repeat="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel"
+           rptNdxName="RPT_NDX">
+
+     <arg expr="/tmp/ipsec.conf" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/aggrmode/text() = 'n'"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/aggrmode/text() = 'n'"
+                expr="'nhelpers=0'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/aggrmode/text() = 'n'"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to append to ipsec.conf file." name="AppendFormatted2File">
+
+     <arg expr="/tmp/ipsec.conf" />
+
+     <arg expr="\n" />
+     <arg expr="#Openswan supports a mode called " />
+     <arg expr="quote()" source="config" />
+     <arg expr="opportunistic compression" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+     <arg expr="#in the way of simple static tunnels. If you are just" />
+     <arg expr="\n" />
+     <arg expr="#VPN server using Openswan, add the following to disable OE." />
+     <arg expr="\n" />
+     <arg expr="conn OEself" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="auto=ignore" />
+     <arg expr="\n" />
+     <arg expr="conn clear" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="auto=ignore" />
+     <arg expr="\n" />
+     <arg expr="conn private" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="auto=ignore" />
+     <arg expr="\n" />
+     <arg expr="conn private-or-clear" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="auto=ignore" />
+     <arg expr="\n" />
+     <arg expr="conn clear-or-private" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="auto=ignore" />
+     <arg expr="\n" />
+     <arg expr="conn block" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="auto=ignore" />
+     <arg expr="\n" />
+     <arg expr="conn packetdefault" />
+     <arg expr="\n" />
+     <arg expr="\t" />
+     <arg expr="auto=ignore" />
+     <arg expr="\n" />
+     <arg expr="#end config to disable " />
+     <arg expr="quote()" source="config" />
+     <arg expr="opportunistic encryption" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# Add connections here" />
+     <arg expr="\n" />
+    </astep>
+Moved to prfhandler_ipsec-->
+                                                                                                                              <!--
+
+    Build secrets,conf file preamble:                                                                                         -->
+
+<!--Moved to prfhandler_ipsec
+    <astep abort="y" errmsg="Failed to write secrets.conf file" name="WriteFormattedFile">
+     <arg expr="/tmp/secrets.conf" />
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="# the cipher in the " />
+     <arg expr="quote()" source="config" />
+     <arg expr="quote()" source="config" />
+     <arg expr=" should be the same on both sides" />
+     <arg expr="\n" />
+     <arg expr="#1.2.3.4 5.6.7.8 : PSK " />
+     <arg expr="quote()" source="config" />
+     <arg expr="thisisatest" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+    </astep>
+Moved to prfhandler_ipsec-->
+
+                                                                                                                              <!--
+
+    Add per-tunnel items to ipsec.conf:                                                                                       -->
+
+<!--Moved to prfhandler_ipsec
+    <astep      abort="y"
+               errmsg="Failed to write ipsec.conf file"
+                 name="AppendFormatted2File"
+               repeat="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel"
+           rptNdxName="RPT_NDX">
+     <arg expr="/tmp/ipsec.conf" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/name/text()) > 0)"
+                expr="concat('conn ', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/name/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/name/text()) > 0)"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/name/text()) > 0)"
+                expr="'type=tunnel'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/name/text()) > 0)"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p2satime/text()) > 0)"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p2satime/text()) > 0)"
+                expr="concat('keylife=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p2satime/text(), 'm')"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p2satime/text()) > 0)"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p1satime/text()) > 0)"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p1satime/text()) > 0)"
+                 expr="concat('ikelifetime=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p1satime/text(), 'm')"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p1satime/text()) > 0)"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg expr="\t" />
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/encmethod/text() = 'psk'" 
+        expr="'authby=secret'" 
+          rptNdxName="RPT_NDX"
+        source="config" />
+        
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/encmethod/text() = 'cert'" 
+        expr="'authby=rsasig'" 
+          rptNdxName="RPT_NDX"
+        source="config" />
+     <arg expr="\n" />
+
+     <arg expr="\t" />
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/encmethod/text() = 'cert'" 
+        expr="'leftrsasigkey=%cert'" 
+          rptNdxName="RPT_NDX"
+        source="config" />
+     <arg expr="\n" />
+
+     <arg expr="\t" />
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/encmethod/text() = 'cert'" 
+        expr="'leftsendcert=always'" 
+          rptNdxName="RPT_NDX"
+        source="config" />
+     <arg expr="\n" />
+
+     <arg expr="\t" />
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/encmethod/text() = 'cert'" 
+        expr="concat('leftcert=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/lccert/text())"
+        rptNdxName="RPT_NDX"
+        source="config" />
+     <arg expr="\n" />
+
+     <arg expr="\t" />
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/encmethod/text() = 'cert'" 
+        expr="'rightca=%any'" 
+        rptNdxName="RPT_NDX"
+        source="config" />
+     <arg expr="\n" />
+
+     <arg expr="\t" />
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/encmethod/text() = 'cert'" 
+        expr="concat('rightcert=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rscert/text())"
+        rptNdxName="RPT_NDX"
+        source="config" />
+     <arg expr="\n" />
+
+     <arg expr="\t" />
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p2authtype/text()) > 0)"
+        expr="concat('auth=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p2authtype/text())"
+        rptNdxName="RPT_NDX"
+        source="config" />
+     <arg expr="\n" />
+
+     <arg expr="\t" />
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p2authtype/text() = 'esp'"
+     expr="concat('esp=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p2enc/text(), '-', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p2auth/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg expr="\n" />
+
+
+     <arg expr="\t" />
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p2authtype/text() = 'ah'"
+     expr="concat('ah=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p2ahauthenc/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg expr="\n" />
+
+     <arg expr="\t" />
+     <arg       expr="concat('ike=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p1enc/text(), '-', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p1auth/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p1dhg/text()) > 0 and substring(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p1dhg/text(),1,2) != 'dh')"
+                expr="concat('-', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p1dhg/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p1dhg/text()) > 0 and substring(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p1dhg/text(),1,2) = 'dh')"
+                expr="concat(';', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/p1dhg/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpd/text() != 'disable'"      
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpd/text() != 'disable'"     
+                expr="concat('dpdaction=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpd/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpd/text() != 'disable'"      
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpd/text() != 'disable'"      
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpdintvl/text() > 0 and /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpd/text() != 'disable'"
+                expr="concat('dpddelay=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpdintvl/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpdintvl/text() > 0 and /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpd/text() != 'disable'"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpdtimeout/text() > 0 and /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpd/text() != 'disable'"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpdtimeout/text() > 0 and /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpd/text() != 'disable'"
+                expr="concat('dpdtimeout=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpdtimeout/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpdtimeout/text() > 0 and /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/dpd/text() != 'disable'"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg expr="\t" />
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/enable/text() = 'Yes' and /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/tunneltype/text() = 'client'"
+                expr="'auto=start'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/enable/text() = 'Yes' and /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/tunneltype/text() = 'server'"
+                expr="'auto=add'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/enable/text() = 'Yes' and /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/tunneltype/text() = 'dynamic'"
+                expr="'auto=route'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/enable/text() = 'No'"
+                expr="'auto=ignore'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg expr="\n" />
+
+     <arg expr="\t" />
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/pfs/text() = 'y'"
+                expr="'pfs=yes'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/pfs/text() = 'n'"
+                expr="'pfs=no'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg expr="\n" />
+
+     <arg expr="\t" />
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/aggrmode/text() = 'y'"
+                expr="'aggrmode=yes'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/aggrmode/text() = 'n'"
+                expr="'aggrmode=no'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/name/text()) > 0)"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/name/text()) > 0) and /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/tunneltype/text() = 'client'"
+                expr="'keyingtries=%forever'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/name/text()) > 0)"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg expr="\t" />
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftip/text()) > 0)"
+                expr="concat('left=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftip/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftip/text()) = 0)"
+                expr="'left=%defaultroute'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftsourceip/text()) > 0)"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftsourceip/text()) > 0)"
+                expr="concat('leftsourceip=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftsourceip/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftsourceip/text()) > 0)"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftsubnet/text()) > 0)"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftsubnet/text()) > 0)"
+                 expr="concat('leftsubnet=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftsubnet/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftsubnet/text()) > 0)"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftnexthop/text()) > 0)"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftnexthop/text()) > 0)"
+                 expr="concat('leftnexthop=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftnexthop/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftnexthop/text()) > 0)"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftid/text()) > 0)"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftid/text()) > 0)"
+                 expr="concat('leftid=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftid/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftid/text()) > 0)"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg expr="\t" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightip/text()) > 0)"
+                expr="concat('right=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightip/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightip/text()) = 0)"
+                expr="'right=%any'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightsubnet/text()) > 0)"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightsubnet/text()) > 0)"
+                 expr="concat('rightsubnet=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightsubnet/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightsubnet/text()) > 0)"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightnexthop/text()) > 0)"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightnexthop/text()) > 0)"
+                 expr="concat('rightnexthop=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightnexthop/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightnexthop/text()) > 0)"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightid/text()) > 0)"
+                expr="'\t'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightid/text()) > 0)"
+                 expr="concat('rightid=', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightid/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightid/text()) > 0)"
+                expr="'\n'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+    </astep>
+Moved to prfhandler_ipsec-->
+
+                                                                                                                              <!--
+
+    Add per-tunnel items to secrets.conf:                                                                                     -->
+
+<!--Moved to prfhandler_ipsec
+    <astep      abort="y"
+               errmsg="Failed to append to secrets.conf file"
+                 name="AppendFormatted2File"
+               repeat="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel"
+           rptNdxName="RPT_NDX">
+
+     <arg expr="/tmp/secrets.conf" />
+Moved to prfhandler_ipsec-->
+
+     <!-- If left ID & right ID is present, use them. -->
+
+<!--Moved to prfhandler_ipsec
+     <arg dependency="string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftid/text())  > 0 and
+                      string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightid/text()) > 0"
+                expr="concat(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightid/text(), ' ',
+                             /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftid/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+Moved to prfhandler_ipsec-->
+
+     <!-- If we are using PSK and there is no right IP -->
+<!-- Sec1: This section was commented out before profile handler was implemented
+     <arg dependency="string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/psk/text()) > 0 and
+                      string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightip/text()) = 0"
+                expr="' %any'"
+          rptNdxName="RPT_NDX"
+              source="config" />
+Sec1:-->
+     <!-- If left ID is present, but not right ID and right IP is present, use them. -->
+
+<!--Moved to prfhandler_ipsec
+     <arg dependency="string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftid/text())  > 0 and
+                      string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightid/text()) = 0 and
+                      string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightip/text()) > 0"
+                expr="concat(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftid/text(), ' ',
+                             /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightip/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+Moved to prfhandler_ipsec-->
+
+     <!-- If left ID is not present, but left and right IP are present, use them. -->
+
+<!--Moved to prfhandler_ipsec
+     <arg dependency="string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftid/text()) = 0 and
+                      string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftip/text()) > 0 and
+                      string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightip/text()) > 0"
+                expr="concat(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/leftip/text(), ' ',
+                             /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/rightip/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/psk/text()) > 0"
+                expr="concat(': PSK ')"  
+          rptNdxName="RPT_NDX"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/psk/text()) > 0)"
+        expr="quote()" rptNdxName="RPT_NDX" source="config" />
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/psk/text()) > 0)"
+        expr="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/psk/text()"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/psk/text()) > 0)"
+        expr="quote()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/encmethod/text() = 'cert'" 
+        expr="concat(': RSA ', /GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/lckey/text(), ' ')"
+        rptNdxName="RPT_NDX"
+        source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/lckeyphrase/text()) > 0)"
+        expr="quote()" rptNdxName="RPT_NDX" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/encmethod/text() = 'cert'" 
+        expr="/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/lckeyphrase/text()"
+        rptNdxName="RPT_NDX"
+        source="config" />
+     <arg dependency="(string-length(/GAUCfg/vpn/ipsec/ipsectunnels/ipsectunnel[RPT_NDX]/lckeyphrase/text()) > 0)"
+        expr="quote()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+    </astep>
+Moved to prfhandler_ipsec-->
+                                                                                                                              <!--
+
+    Build ipsec-ppp file:                                                                                                     -->
+
+<!--Moved to prfhandler_ipsec
+    <astep abort="y" errmsg="Failed to write ipsec-ppp file" name="WriteFormattedFile">
+     <arg expr="/tmp/ipsec-ppp" />
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#Setting IPSEC_PPP_UP to " />
+     <arg expr="quote()" source="config" />
+     <arg expr="yes" />
+     <arg expr="quote()" source="config" />
+     <arg expr=" will run the command in" />
+     <arg expr="\n" />
+     <arg expr="#IPSEC_PPP_UP_CMD when PPP gets an IP address" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="#Setting IPSEC_PPP_DOWN to " />
+     <arg expr="quote()" source="config" />
+     <arg expr="yes" />
+     <arg expr="quote()" source="config" />
+     <arg expr=" will run the command in" />
+     <arg expr="\n" />
+     <arg expr="#IPSEC_PPP_DOWN_CMD when PPP goes down" />
+     <arg expr="\n" />
+     <arg expr="#" />
+     <arg expr="\n" />
+     <arg expr="#It might be safer to only use " />
+     <arg expr="quote()" source="config" />
+     <arg expr="service ipsec restart" />
+     <arg expr="quote()" source="config" />
+     <arg expr=" when" />
+     <arg expr="\n" />
+     <arg expr="#ppp comes up, so that it is stopped and restarted." />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'n' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() = '0'"
+          errmsg="Failed to append to ipsec-ppp file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-ppp" />
+     <arg expr="'IPSEC_PPP_UP=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_UP_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'n' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() != '0'"
+          errmsg="Failed to append to ipsec-ppp file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-ppp" />
+     <arg expr="'IPSEC_PPP_UP=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_UP_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'y' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() = '0'"
+          errmsg="Failed to append to ipsec-ppp file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-ppp" />
+     <arg expr="'IPSEC_PPP_UP=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_UP_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'y' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() != '0'"
+          errmsg="Failed to append to ipsec-ppp file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-ppp" />
+     <arg dependency="/GAUCfg/vpn/ipsec/wpppconnect/text() = 'nop'" 
+        expr="'IPSEC_PPP_UP=no'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/wpppconnect/text() = 'restart'" 
+        expr="'IPSEC_PPP_UP=yes'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/wpppconnect/text() = 'stop'" 
+        expr="'IPSEC_PPP_UP=yes'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_UP_CMD=" />
+     <arg expr="quote()" source="config"/>
+     <arg dependency="/GAUCfg/vpn/ipsec/wpppconnect/text() = 'restart'" 
+        expr="'service ipsec restart'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/wpppconnect/text() = 'stop'" 
+        expr="'service ipsec stop'" source="config" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'n' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() = '0'"
+          errmsg="Failed to append to ipsec-ppp file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-ppp" />
+     <arg expr="'IPSEC_PPP_DOWN=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_DOWN_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'n' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() != '0'"
+          errmsg="Failed to append to ipsec-ppp file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-ppp" />
+     <arg expr="'IPSEC_PPP_DOWN=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_DOWN_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'y' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() = '0'"
+          errmsg="Failed to append to ipsec-ppp file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-ppp" />
+     <arg expr="'IPSEC_PPP_DOWN=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_DOWN_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'y' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() != '0'"
+          errmsg="Failed to append to ipsec-ppp file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-ppp" />
+     <arg dependency="/GAUCfg/vpn/ipsec/wpppdisconnect/text() = 'nop'" 
+        expr="'IPSEC_PPP_DOWN=no'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/wpppdisconnect/text() = 'restart'" 
+        expr="'IPSEC_PPP_DOWN=yes'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/wpppdisconnect/text() = 'stop'" 
+        expr="'IPSEC_PPP_DOWN=yes'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_DOWN_CMD=" />
+     <arg expr="quote()" source="config"/>
+     <arg dependency="/GAUCfg/vpn/ipsec/wpppdisconnect/text() = 'restart'" 
+        expr="'service ipsec restart'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/wpppdisconnect/text() = 'stop'" 
+        expr="'service ipsec stop'" source="config" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+    </astep>
+Moved to prfhandler_ipsec-->
+
+                                                                                                                             <!--
+
+    Install files:                                                                                                            -->
+
+<!--Moved to prfhandler_ipsec
+    <astep  abort="y"
+           errmsg="Failed to translate ipsec.conf"
+             name="SystemCommand">
+     <arg expr="/bin/ipsec_reformat.pl -i /tmp/ipsec.conf -o /tmp/ipsectrans.conf" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move ipsec.conf" name="SystemCommand">
+     <arg expr="mv -f /tmp/ipsectrans.conf /etc/ipsec/ipsec.conf" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move ipsec.secrets" name="SystemCommand">
+     <arg expr="mv -f /tmp/secrets.conf /etc/ipsec/ipsec.secrets" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move ipsec-ppp" name="SystemCommand">
+     <arg expr="mv -f /tmp/ipsec-ppp /etc/sysconfig/ipsec-ppp" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to write ipsec-pppoe file" name="WriteFormattedFile">
+      <arg expr="/tmp/ipsec-pppoe" />
+      <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+      <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'n' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() = '0'"
+          errmsg="Failed to append to ipsec-pppoe file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppoe" />
+     <arg expr="'IPSEC_PPP_UP=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_UP_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'n' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() != '0'"
+          errmsg="Failed to append to ipsec-pppoe file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppoe" />
+     <arg expr="'IPSEC_PPP_UP=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_UP_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'y' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() = '0'"
+          errmsg="Failed to append to ipsec-pppoe file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppoe" />
+     <arg expr="'IPSEC_PPP_UP=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_UP_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'y' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() != '0'"
+          errmsg="Failed to append to ipsec-pppoe file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppoe" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppoeconnect/text() = 'nop'" 
+        expr="'IPSEC_PPP_UP=no'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppoeconnect/text() = 'restart'" 
+        expr="'IPSEC_PPP_UP=yes'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppoeconnect/text() = 'stop'" 
+        expr="'IPSEC_PPP_UP=yes'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_UP_CMD=" />
+     <arg expr="quote()" source="config"/>
+     <arg dependency="/GAUCfg/vpn/ipsec/pppoeconnect/text() = 'restart'" 
+        expr="'service ipsec restart'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppoeconnect/text() = 'stop'" 
+        expr="'service ipsec stop'" source="config" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'n' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() = '0'"
+          errmsg="Failed to append to ipsec-pppoe file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppoe" />
+     <arg expr="'IPSEC_PPP_DOWN=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_DOWN_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'n' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() != '0'"
+          errmsg="Failed to append to ipsec-pppoe file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppoe" />
+     <arg expr="'IPSEC_PPP_DOWN=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_DOWN_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'y' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() = '0'"
+          errmsg="Failed to append to ipsec-pppoe file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppoe" />
+     <arg expr="'IPSEC_PPP_DOWN=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_DOWN_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'y' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() != '0'"
+          errmsg="Failed to append to ipsec-pppoe file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppoe" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppoedisconnect/text() = 'nop'" 
+        expr="'IPSEC_PPP_DOWN=no'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppoedisconnect/text() = 'restart'" 
+        expr="'IPSEC_PPP_DOWN=yes'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppoedisconnect/text() = 'stop'" 
+        expr="'IPSEC_PPP_DOWN=yes'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_DOWN_CMD=" />
+     <arg expr="quote()" source="config"/>
+     <arg dependency="/GAUCfg/vpn/ipsec/pppoedisconnect/text() = 'restart'" 
+        expr="'service ipsec restart'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppoedisconnect/text() = 'stop'" 
+        expr="'service ipsec stop'" source="config" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move ipsec-pppoe" name="SystemCommand">
+     <arg expr="mv -f /tmp/ipsec-pppoe /etc/sysconfig/ipsec-pppoe" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to write ipsec-pppdial file" name="WriteFormattedFile">
+      <arg expr="/tmp/ipsec-pppdial" />
+      <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+      <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'n' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() = '0'"
+          errmsg="Failed to append to ipsec-pppdial file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppdial" />
+     <arg expr="'IPSEC_PPP_UP=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_UP_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'n' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() != '0'"
+          errmsg="Failed to append to ipsec-pppdial file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppdial" />
+     <arg expr="'IPSEC_PPP_UP=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_UP_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'y' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() = '0'"
+          errmsg="Failed to append to ipsec-pppdial file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppdial" />
+     <arg expr="'IPSEC_PPP_UP=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_UP_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'y' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() != '0'"
+          errmsg="Failed to append to ipsec-pppdial file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppdial" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppdialconnect/text() = 'nop'" 
+        expr="'IPSEC_PPP_UP=no'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppdialconnect/text() = 'restart'" 
+        expr="'IPSEC_PPP_UP=yes'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppdialconnect/text() = 'stop'" 
+        expr="'IPSEC_PPP_UP=yes'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_UP_CMD=" />
+     <arg expr="quote()" source="config"/>
+     <arg dependency="/GAUCfg/vpn/ipsec/pppdialconnect/text() = 'restart'" 
+        expr="'service ipsec restart'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppdialconnect/text() = 'stop'" 
+        expr="'service ipsec stop'" source="config" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'n' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() = '0'"
+          errmsg="Failed to append to ipsec-pppdial file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppdial" />
+     <arg expr="'IPSEC_PPP_DOWN=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_DOWN_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'n' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() != '0'"
+          errmsg="Failed to append to ipsec-pppdial file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppdial" />
+     <arg expr="'IPSEC_PPP_DOWN=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_DOWN_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'y' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() = '0'"
+          errmsg="Failed to append to ipsec-pppdial file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppdial" />
+     <arg expr="'IPSEC_PPP_DOWN=no'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_DOWN_CMD=" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'y' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() != '0'"
+          errmsg="Failed to append to ipsec-pppdial file" name="AppendFormatted2File">
+     <arg expr="/tmp/ipsec-pppdial" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppdialdisconnect/text() = 'nop'" 
+        expr="'IPSEC_PPP_DOWN=no'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppdialdisconnect/text() = 'restart'" 
+        expr="'IPSEC_PPP_DOWN=yes'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppdialdisconnect/text() = 'stop'" 
+        expr="'IPSEC_PPP_DOWN=yes'" source="config" />
+     <arg expr="\n" />
+     <arg expr="IPSEC_PPP_DOWN_CMD=" />
+     <arg expr="quote()" source="config"/>
+     <arg dependency="/GAUCfg/vpn/ipsec/pppdialdisconnect/text() = 'restart'" 
+        expr="'service ipsec restart'" source="config" />
+     <arg dependency="/GAUCfg/vpn/ipsec/pppdialdisconnect/text() = 'stop'" 
+        expr="'service ipsec stop'" source="config" />
+     <arg expr="quote()" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move ipsec-pppdial" name="SystemCommand">
+     <arg expr="mv -f /tmp/ipsec-pppdial /etc/sysconfig/ipsec-pppdial" />
+    </astep>
+
+    <astep dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'n' or /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() = '0'" name="SystemCommand">
+     <arg abort="n" expr="chkconfig ipsec off" />
+    </astep>
+
+    <astep dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'y' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() != '0'" errmsg="Failed to enable IPSec."  name="SystemCommand">
+     <arg abort="y" expr="chkconfig ipsec on" />
+    </astep>
+Moved to prfhandler_ipsec-->
+
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+<!--Moved to prfhandler_ipsec
+    <pre subsystem="ipsectunnel" action="Save" />
+Moved to prfhandler_ipsec-->
+
+    <astep abort="n" errmsg="Failed to apply ipsec configuration" name="SystemCommand">
+     <arg expr="'prfhandler_ipsec Apply'" source="config" />
+    </astep>
+
+<!--Moved to prfhandler_ipsec
+    <astep dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'n' or /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() = '0'" name="SystemCommand">
+     <arg abort="n" expr="service ipsec stop" />
+    </astep>
+
+    <astep dependency="/GAUCfg/vpn/ipsec/enableipsec/text() = 'y' and /GAUCfg/vpn/ipsec/ipsectunnels/NumberOfipsectunnels/text() != '0'" errmsg="Failed to start IPSec."   name="SystemCommand">
+     <arg abort="y" expr="service ipsec restart" />
+    </astep>
+Moved to prfhandler_ipsec-->
+
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

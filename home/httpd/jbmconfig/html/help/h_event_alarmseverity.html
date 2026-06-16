@@ -1,0 +1,38 @@
+<h4>Description</h4>
+<p><b>Alarm Severity</b><br>
+The Alarm Severity determines how severe the event is when active.</p>
+<p>There are 6 different levels from None (No Severity) to Critical (Most Severe).</p>
+<p>Out of Range is a special severity level to denote unexpected values that are outside the normal range of values.</p>
+<b>Severity Levels</b>
+<p>The table below shows the Severity level and the decimal value that will be written to the event's corresponding EventX_Status register, where X is the index of the event.<br>
+	<table class="table" border="1">
+		<tr>
+			<th>Severity</th>
+			<th>Status Value</th>
+		</tr>
+		<tr>
+			<td>None</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>Warning</td>
+			<td>257</td>
+		</tr>
+		<tr>
+			<td>Minor</td>
+			<td>513</td>
+		</tr>
+		<tr>
+			<td>Major</td>
+			<td>769</td>
+		</tr>
+		<tr>
+			<td>Critical</td>
+			<td>1025</td>
+		</tr>
+		<tr>
+			<td>Out of Range</td>
+			<td>65281</td>
+		</tr>
+	</table>
+</p>

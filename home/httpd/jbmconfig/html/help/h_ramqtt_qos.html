@@ -1,0 +1,24 @@
+<h4>Description</h4>
+<p>Quality of Service (QoS) levels determine how the MQTT protocol will handle
+communication of data between RAMQTT and the Broker. Each QoS level will
+take different measures to ensure the data gets to the Broker.
+<b>Please note that not all Cloud Providers support QoS 2.</b>
+
+<p><b>QoS 0 - At most once:</b><br>Messages won’t be acknowledged by the Broker
+or stored and redelivered by RAMQTT. This is the "Fire and Forget" mode
+and relies on the underlying TCP protocol for retransmissions.</p><p>This option
+is best used when RAMQTT will send data frequently.</p>
+
+<p><b>QoS 1 - At least once:</b><br>Messages will be sent at least once by RAMQTT
+to the Broker. RAMQTT will store the message until the Broker sends an
+acknowledgement back. RAMQTT will resend the message if the Broker does not
+respond within a certain amount of time.</p><p>This option is best used when the
+network connection is not always reliable. </p>
+
+<p><b>QoS 2 - Exactly once:</b><br>Messages will be sent exactly once by RAMQTT to
+the Broker. The message will be stored by both RAMQTT and the Broker. RAMQTT and
+the Broker will exchange special acknowledgements until both sides confirm the message was
+sent and received. This QoS is the slowest but surest way to ensure data is published by
+RAMQTT and recieved by the Broker.</p><p>This option is best used for when the network
+connection is unreliable and conserving data usage is important. It is also beneficial when
+large infrequent messages are published by RAMQTT.</p>

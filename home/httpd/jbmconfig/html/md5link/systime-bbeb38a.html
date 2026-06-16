@@ -1,0 +1,24 @@
+<!--ko template: {name: 'title-template', data: 'System Time'}--><!--/ko-->
+<!--ko template: {name: 'full-savable-select-template', data: timezone}--><!--/ko-->
+<!--ko template: {name: 'full-savable-bool-template', data: usentp}--><!--/ko-->
+<!--ko ifnot: showNtp-->
+	<!--ko template: {name: 'full-savable-input-template', data: sysdate}--><!-- /ko -->
+	<!--ko template: {name: 'full-savable-input-template', data: systime}--><!-- /ko -->
+	<div style="text-align: center">
+		<button class="btn" data-bind="text: 'Use Browser Time', event: {click: setLocalTime}" name="uselocaltime"></button>
+		<table class="gw-status-table gw-st49 gw-auto-margin" style="width: 370px; margin-top: 10px">
+			<tr>
+				<td>Current Browser Time</td>
+				<td data-bind="text: localtime"></td>
+			</tr>
+			<tr>
+				<td>Current Device Time</td>
+				<td data-bind="text: devicetime"></td>
+			</tr>
+		</table>
+	</div>
+<!--/ko-->
+<!--ko if: showNtp-->
+	<!--ko template: {name: 'full-savable-input-template', data: ntphost}--><!-- /ko -->
+	<!--ko template: {name: 'full-savable-select-template', data: ntpinterval}--><!--/ko-->
+<!--/ko-->

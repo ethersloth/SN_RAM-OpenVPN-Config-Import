@@ -1,0 +1,253 @@
+<!-- ko template: {name: 'title-template', data: 'Data Logger'}--><!-- /ko -->
+<!-- ko if: showConfig -->
+<div class="gw-auto-margin" style="text-align: center">
+	<!-- ko foreach: configList -->
+		<button class="btn" data-bind="
+			click: selector.click,
+			text: selector.text,
+			style: {
+				'border': selector.isActive() ? '3px solid #33f' : undefined
+			},
+			css: {
+				'gw-highlight': changed,
+				'btn-success': datalogenable.value() === 'y'
+			},
+			attr: {
+				name: 'logName' + $index()
+			}
+		"></button>
+	<!-- /ko -->
+	<button class="btn btn-primary" data-bind="click: clickAddConfig, visible: showAdd" name="addConfig">Add</button>
+	<button class="btn btn-danger" data-bind="click: removeConfig, visible: activeConfig" name="removeConfig">Remove</button>
+</div>
+<br />
+<!-- ko with: activeConfig -->
+	<div class="gw-rounded-border" style="position: fixed; background-color: lightblue; z-index: 100; left: 10px; top: 55px" data-bind="draggable: true" title="Disk Space may change based on internal/external filesystem compression">
+		<table class="gw-status-table gw-st40" style="width: 270px">
+			<tr>
+				<td colspan="2" style="text-align: center">Estimated Usage of Current Log</td>
+			</tr>
+			<tr>
+				<td>Disk Space</td>
+				<td data-bind="text: maxUsageDisplay"></td>
+			</tr>
+			<tr>
+				<td>Max History</td>
+				<td data-bind="text: timeEstimate"></td>
+			</tr>
+		</table>
+	</div>
+	<div>
+		<div style="width: 620px; float: left; text-align: center">
+			<!-- ko template: {name: 'full-savable-input-template', data: $.extend({
+				helpLink: 'h_datalog_name.html',
+				label: 'Name', 
+				name: 'logName'
+			}, datalogname)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-bool-template', data: $.extend({
+				helpLink: 'h_datalog_enable.html',
+				label: 'Enable',
+				name: 'enable'
+			}, datalogenable)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-autotag-template', data: $.extend({
+				helpLink: 'h_datalog_iodbenable.html',
+				placeholder: 'IODB Address, e.g. DI2',
+				label: 'Toggle Enable from IODB',
+				name: 'toggleEnableFromIODB'
+			}, iodbDisplay)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-select-template', data: $.extend({
+				helpLink: 'h_datalog_savepath.html',
+				label: 'Save Destination',
+				name: 'saveDestination'
+			}, savepath)}--><!-- /ko -->
+			<div style="color: red; margin-top: -10px; margin-bottom: 10px" data-bind="visible: warnMount">
+				<span>NOTE: No SD Card found. Logs will begin recording after you insert a card</span>
+			</div>
+			<!-- ko template: {name: 'full-savable-input-template', data: $.extend({
+				helpLink: 'h_datalog_writefrequency.html',
+				label: 'Write Period (s)',
+				name: 'writePeriod'
+			}, writePeriod)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-select-template', data: $.extend({
+				helpLink: 'h_datalog_writecondition.html',
+				label: 'When to Write Data Log Record',
+				name: 'writeRecordPeriod'
+			}, writecondition)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-input-template', data: $.extend({
+				placeholder: 'File Size in KB',
+				helpLink: 'h_datalog_logsize.html',
+				label: 'Log File Size (KB)',
+				name: 'logFileSize'
+			}, logsize)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-input-template', data: $.extend({
+				helpLink: 'h_datalog_rolloverlog.html',
+				label: 'Log Rotation Count',
+				name: 'logRotationCount'
+			}, rolloverlog)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-bool-template', data: $.extend({
+				helpLink: 'h_datalog_zipcompfile.html',
+				label: 'Zip Compress Log Files',
+				name: 'compressOption'
+			}, zipcompfile)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-input-template', data: $.extend({
+				helpLink: 'h_datalog_zippassword.html',
+				label: 'Password for Zip Files',
+				name: 'zipPassword'
+			}, zippassword)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-select-template', data: $.extend({
+				helpLink: 'h_datalog_delmethod.html',
+				label: 'Data Logs Delivery Method',
+				name: 'delmethod'
+			}, delmethod)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-select-template', data: $.extend({
+				helpLink: 'h_datalog_ftpmode.html',
+				label: 'FTP Mode',
+				name: 'ftpmode'
+			}, ftpmode)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-select-template', data: $.extend({
+				helpLink: 'h_datalog_secmode.html',
+				label: 'FTP Security Mode',
+				name: 'secmode'
+			}, secmode)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-input-template', data: $.extend({
+				helpLink: 'h_datalog_ftpserver.html',
+				label: 'FTP Server IP or Domain',
+				name: 'ftpserver'
+			}, ftpserver)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-input-template', data: $.extend({
+				helpLink: 'h_datalog_ftpport.html',
+				label: 'FTP Server Port',
+				name: 'ftpport'
+			}, ftpport)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-input-template', data: $.extend({
+				helpLink: 'h_datalog_ftppath.html',
+				label: 'FTP Server Path',
+				name: 'ftppath'
+			}, ftppath)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-input-template', data: $.extend({
+				helpLink: 'h_datalog_uname.html',
+				label: 'User Name',
+				name: 'uname'
+			}, uname)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-password-template', data: $.extend({
+				helpLink: 'h_datalog_pword.html',
+				label: 'Password',
+				name: 'pword'
+			}, pword)}--><!-- /ko -->
+			<!-- ko template: {name: 'full-savable-expanding-template', data: $.extend({
+				helpLink: 'h_datalog_recipient.html',
+				label: 'Email Recipient',
+				name: 'recipient'
+			}, recipient)}--><!-- /ko -->
+		</div>
+		<div style="float: left; text-align: center; width: 400px">
+			<div style="text-align: center">
+				<h4>Points <span class="badge badge-default" data-bind="text: numPoints, visible: pointsDisplay.value().length > 0"></span></h4>
+			</div>
+			<div style="margin-bottom: 10px" data-bind="foreach: pointsDisplay.value">
+				<div style="margin-bottom: 5px">
+					<!-- ko template: {name: 'savable-autotag-template', data: $.extend({
+						title: tagName.value,
+						placeholder: 'Tag Name',
+						name: 'pointTag' + $index(),
+						style: {
+							margin: '0',
+							width: '100px'
+						}
+					}, tagName)}--><!-- /ko -->
+					<!-- ko template: {name: 'savable-select-template', data: $.extend({
+						placeholder: 'Type',
+						name: 'pointType' + $index(),
+						style: {
+							margin: '0',
+							width: '74px'
+						}
+					}, type)}--><!-- /ko -->
+					<!-- ko template: {name: 'savable-input-template', data: $.extend({
+						placeholder: 'Address',
+						name: 'pointAddr' + $index(),
+						style: {
+							margin: '0',
+							width: '60px'
+						}
+					}, displayAddress)}--><!-- /ko -->
+					<button class="btn btn-danger" data-bind="attr: {name: 'removeTag' + $index()}, click: $parent.removePoint">Remove</button>
+				</div>
+			</div>
+			<button class="btn btn-primary" data-bind="attr: {name: 'addPoint'}, click: addPoint">Add Point</button>
+			<button class="btn btn-primary" data-bind="attr: {name: 'addMultiPoint'}, click: addMultiPoint">Add Multiple Points</button>
+		</div>
+	</div>
+<!-- /ko -->
+<!-- /ko -->
+<!-- ko ifnot: showConfig -->
+<!-- ko if: internalFiles().length > 0 -->
+	<h4 style="padding-top: 30px; text-align: center">Logs Saved Internally</h4>
+	<div class="gw-auto-margin gw-border" style="padding: 5px; width: 400px; max-height: 300px; overflow-y: scroll; text-align: justify">
+		<!-- ko foreach: internalFiles -->
+			<span style="display: block" class="gw-selectable" data-bind="text: text, attr: {name: 'internal-' + name}, style: {'background-color': selected() ? 'lightblue' : 'white'}, click: select"></span>
+		<!-- /ko -->
+	</div>
+<!-- /ko -->
+<!-- ko if: sdcardFiles().length > 0 -->
+	<h4 style="padding-top: 30px; text-align: center">Logs Saved to SD Card</h4>
+	<div class="gw-auto-margin gw-border" style="padding: 5px; width: 400px; max-height: 300px; overflow-y: scroll; text-align: justify">
+		<!-- ko foreach: sdcardFiles -->
+			<span style="display: block" class="gw-selectable" data-bind="text: text, attr: {name: 'sdcard-' + name}, style: {'background-color': selected() ? 'lightblue' : 'white'}, click: select"></span>
+		<!-- /ko -->
+	</div>
+<!-- /ko -->
+<!-- ko ifnot: sdcardFiles().length > 0 || internalFiles().length > 0 -->
+<div style="text-align: center">
+	<span style="color: red">No logs found</span>
+</div>
+<!-- /ko -->
+	<div style="text-align: center; margin-top: 15px">
+		<button class="btn" data-bind="click: loadDebugLog">Show Process Log</button>
+	</div>
+<!-- /ko -->
+<div id="datalog-preview-modal" data-backdrop="static" class="modal hide gw-modal-wide" data-bind="with: previewModal">
+	<div class="modal-header">
+		<button class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3 data-bind="text: header"></h3>
+	</div>
+	<div class="gw-modal-body-long">
+		<table class="gw-picker-list" style="width: 100%; text-align: center">
+			<thead>
+				<tr data-bind="foreach: tableHeaders">
+					<th style="border: 1px solid #ccc;" data-bind="text: $data"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- ko foreach: tableRows -->
+				<tr data-bind="foreach: $data">
+					<td style="border: 1px solid #ccc;" data-bind="text: $data"></td>
+				</tr>
+				<!-- /ko -->
+				<!-- ko if: showSplitTable -->
+				<tr><td style="border: 1px solid #ccc;" data-bind="attr: {colspan: tableHeaders().length}">...truncated...</td></tr>
+				<!-- ko foreach: tableTail -->
+				<tr data-bind="foreach: $data">
+					<td style="border: 1px solid #ccc;" data-bind="text: $data"></td>
+				</tr>
+				<!-- /ko -->
+				<!-- /ko -->
+			</tbody>
+		</table>
+		<button class="btn btn-primary" style="margin-top: 10px" data-bind="click: download">Download entire file</button>
+	</div>
+</div>
+<div id="datalog-debug-modal" data-backdrop="static" class="modal hide gw-modal-extra-wide">
+	<div class="modal-header">
+		<button class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Diagnostic Log</h3>
+	</div>
+	<div class="modal-body">
+		<pre style="max-height: 360px; overflow-y: scroll" data-bind="text: debugLog"></pre>
+	</div>
+</div>
+<!-- ko template: {name: 'picker-template', data: $.extend({
+	prefix: pickerPrefix,
+	header: "Select Tags",
+	wide: 1
+}, tagsPicker)}--><!-- /ko -->

@@ -1,0 +1,23 @@
+<h4>Description</h4>
+<p>
+ The value of the <b># Outlier Points to ignore</b> may be entered in this field.
+ <br />
+ <br />
+ When a GeoFence is being established, the GPS engine ignores a certain number of the first few anomalous location fixes
+ before points outside the GeoFence are subject to <font color="#FF0000"><b>Violation</b></font> actions. After that initial
+ 'settling period', each new GPS point must be examined in relation to the established boundary. Even under ideal conditions,
+ intermittant signal reception and/or multipath interference issues can result in points being erroneously reported beyond
+ the GeoFence boundary. This parameter can be used to tune the filtering of this 'jitter' to reduce the likelihood of a false
+ positive GeoFence violation.
+ <br />
+ <br />
+ The allowable range is 0 - 50.
+ <br />
+ <br />
+ <font color="#FF0000">(Required)</font>
+</p>
+<h4>Recommended Setting</h4>
+<p>
+ 5
+</p>
+

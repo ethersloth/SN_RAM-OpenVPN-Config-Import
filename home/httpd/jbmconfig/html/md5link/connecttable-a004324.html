@@ -1,0 +1,68 @@
+<form id="connecttable-form" class="form-horizontal">
+	<!--ko template:{name:'title-template',data:'Connect Table'}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Connect Table Configuration'}--><!--/ko-->
+	<hr />
+	<!--ko template: {name:'select-template',data: generic}--><!--/ko-->
+	<!--ko template: {name:'select-template',data: filemode}--><!--/ko-->
+	<hr />
+	<!--ko template: {name:'h4-template',data:'Connect Table Properties'}--><!--/ko-->
+	<!--ko template: {name:'table-template',data: connecttablesTable}--><!--/ko-->
+	<!-- /ko -->
+	<br/><br/>
+</form>
+
+<div id="connectcfg-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="connectcfg-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Connect Table Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'text-template', data: label}--><!--/ko-->
+					<!--ko template: {name: 'select-template', data: ATcmddescript}--><!--/ko-->
+					<!-- ko if: isUserAtCommand -->
+						<!--ko template: {name: 'text-template', data: ATcommand}--><!--/ko-->
+					<!-- /ko -->
+					<!--ko template: {name: 'select-template', data: answerdialmode}--><!--/ko-->
+					<!-- ko if: isDialEnabled -->
+						<!--ko template: {name: 'text-template', data: secondarydial}--><!--/ko-->
+					<!-- /ko -->
+					<!--ko template: {name: 'select-template', data: msgmode}--><!--/ko-->
+					<!--ko template: {name: 'text-template', data: timer}--><!--/ko-->
+					<!--ko template: {name: 'select-template', data: datamode}--><!--/ko-->
+					<!--ko template: {name: 'select-template', data: spoofenq}--><!--/ko-->
+					<!--ko template: {name: 'select-template', data: norxb4tx}--><!--/ko-->
+					<!--ko template: {name: 'select-template', data: disableack}--><!--/ko-->
+					<!--ko template: {name: 'select-template', data: passthruack}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: connecttablesWizardNextToTwo">Next</a>
+				</div>
+			</div>
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Destination IP/Port Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!-- ko if: !isDialEnabled() -->
+						<!--ko template: {name: 'text-template', data: ipaddr1}--><!--/ko-->
+					<!-- /ko -->
+					<!--ko template: {name: 'text-template', data: port1}--><!--/ko-->
+					<!-- ko if: !isDialEnabled() -->
+						<!--ko template: {name: 'text-template', data: ipaddr2}--><!--/ko-->
+						<!--ko template: {name: 'text-template', data: port2}--><!--/ko-->
+						<!--ko template: {name: 'text-template', data: ipaddr3}--><!--/ko-->
+						<!--ko template: {name: 'text-template', data: port3}--><!--/ko-->
+					<!-- /ko -->
+					<!--ko template: {name: 'select-template', data: hostmsgfmt}--><!--/ko-->
+					<!--ko template: {name: 'select-template', data: tcphdrtype}--><!--/ko-->
+					<!--ko template: {name: 'select-template', data: earlyconnect}--><!--/ko-->
+					<a class="btn pull-left" data-bind="click: wizardPrev">Back</a>
+					<a class="btn btn-primary pull-right" data-bind="click: connecttablesWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

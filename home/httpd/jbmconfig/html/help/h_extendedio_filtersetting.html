@@ -1,0 +1,9 @@
+<h4>Description</h4>
+<p>
+<b><u>Filter Setting:</u></b><br /> 
+Discrete inputs can be configured with a software digital filtering algorithm which can be used to debounce contact closures or even read half-wave AC voltage inputs if a rectifier diode is installed inline with the input.<br />
+Readings less than 1 mS apart are discarded, all others are processed as follows:<br />
+There are 8 storage locations, referred to as 'buckets', which have a programmable time limit. All readings are logical 'Or-ed' into a bucket until the time limit of the bucket expires, and a fresh bucket is started. These buckets form a circular buffer, which loses its oldest element each time a new one is added.
+The bits in the newest bucket are compared to the bits in the older buckets over the period of time specified by the number of buckets chosen, and from this data, consecutive 'on' and 'off' bits are tracked.
+Any bits which are off for the entire period will turn off. Any bits which are on more than once will turn on.
+</p>

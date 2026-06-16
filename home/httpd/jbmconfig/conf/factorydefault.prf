@@ -1,0 +1,19 @@
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/factorydefault.prf" name="factorydefault">
+   <validation>
+   </validation>
+
+   <configuration>
+   </configuration>
+
+   <action name="recover" successmsg="The device will reboot within 10 secoonds.">
+
+    <astep abort="y" errmsg="Failed to initiate reboot: Unable to execute script." name="SystemCommand">
+     <arg expr="system_factoryreset -n" />
+    </astep>
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

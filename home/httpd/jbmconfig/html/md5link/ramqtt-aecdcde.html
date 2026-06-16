@@ -1,0 +1,651 @@
+<!-- ko template: {name: 'title-template', data: 'RAMQTT Client'}--><!-- /ko -->
+<!-- ko ifnot: showStatus -->
+<!--ko template: {name: 'full-savable-bool-template', data: enable}--><!--/ko-->
+<hr />
+<div data-bind="visible: isEnabled">
+	<div style="width: 680px; display: inline-block">
+		<!--ko template: {name: 'h4-template',data: 'General'}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: hostname}--><!--/ko-->
+
+		<!-- ko if: hostname.value() === 'amazonAWS' -->
+			<!--ko template: {name: 'full-savable-input-template', data: hostip}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: clientId}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: project}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: authtype}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: primaryHostID}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: username}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-password-template', data: password}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: usessl}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: autoregister}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: useauth}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: groupName}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: token}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devname}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: masapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: distid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: topic}--><!-- /ko -->
+			<!--ko if: showCerts -->
+				<!--ko template: {name: 'h4-template', data: 'Device Certificates'}--><!-- /ko -->
+				<div style="position: absolute; padding-left: 120px" data-bind="visible: devcert.visible">
+					<!--ko template: {name: 'file-icon-template', data: certFileDrop}--><!--/ko-->
+				</div>
+				<!--ko template: {name: 'full-savable-select-template', data: devcert}--><!-- /ko -->
+				<div class="gw-auto-margin" style="text-align: center" data-bind="visible: fingerprint.visible">
+					<input type="text" style="margin-top: -10px; margin-left: 140px; text-align: center; width: 375px; user-select: all; cursor: pointer" readonly data-bind="value: fingerprint.value, attr: {title: fingerprint.title}"></input>
+				</div>
+				<div style="position: absolute; padding-left: 120px" data-bind="visible: devkey.visible">
+					<!--ko template: {name: 'file-icon-template', data: keyFileDrop}--><!--/ko-->
+				</div>
+				<!--ko template: {name: 'full-savable-select-template', data: devkey}--><!-- /ko -->
+				<div style="position: absolute; padding-left: 120px" data-bind="visible: devca.visible">
+					<!--ko template: {name: 'file-icon-template', data: caFileDrop}--><!--/ko-->
+				</div>
+				<!--ko template: {name: 'full-savable-select-template', data: devca}--><!-- /ko -->
+			<!--/ko-->
+			<div class="gw-row form-horizontal" style="margin-top: 10px; margin-bottom: 10px">
+				<button type="button" class="btn" data-bind="click: toggleAdvanced, text: advancedButton"
+				name="advancedButton" ></button>
+			</div>
+			<!-- ko if: showAdvanced -->
+				<!--ko template: {name: 'full-savable-input-template', data: keepalive}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-input-template', data: hostport}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: qos}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: retain}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackerr}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackAlarms}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: allowSub}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: useMessageHistory}--><!--/ko-->
+			<!-- /ko -->
+		<!-- /ko -->
+
+		<!-- ko if: hostname.value() === 'attM2X' -->
+			<!--ko template: {name: 'full-savable-input-template', data: hostip}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: clientId}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: project}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: authtype}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: primaryHostID}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: username}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-password-template', data: password}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: usessl}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: autoregister}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: useauth}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: groupName}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: token}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devname}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: masapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: distid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: topic}--><!-- /ko -->
+			<div class="gw-row form-horizontal" style="margin-top: 10px; margin-bottom: 10px">
+				<button type="button" class="btn" data-bind="click: toggleAdvanced, text: advancedButton"
+				name="advancedButton" ></button>
+			</div>
+			<!-- ko if: showAdvanced -->
+				<!--ko template: {name: 'full-savable-input-template', data: keepalive}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-input-template', data: hostport}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: qos}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: retain}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackerr}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackAlarms}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: allowSub}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: useMessageHistory}--><!--/ko-->
+			<!-- /ko -->
+		<!-- /ko -->
+
+		<!-- ko if: hostname.value() === 'fusionConnect' -->
+			<!--ko template: {name: 'full-savable-input-template', data: hostip}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: clientId}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: project}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: authtype}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: primaryHostID}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: usessl}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: useauth}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: username}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-password-template', data: password}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: autoregister}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: groupName}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: token}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devname}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: masapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: distid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: topic}--><!-- /ko -->
+			<div class="gw-row form-horizontal" style="margin-top: 10px; margin-bottom: 10px">
+				<button type="button" class="btn" data-bind="click: toggleAdvanced, text: advancedButton"
+				name="advancedButton" ></button>
+			</div>
+			<!-- ko if: showAdvanced -->
+				<!--ko template: {name: 'full-savable-input-template', data: keepalive}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-input-template', data: hostport}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: qos}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: retain}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackerr}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackAlarms}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: allowSub}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: useMessageHistory}--><!--/ko-->
+			<!-- /ko -->
+		<!-- /ko -->
+
+		<!-- ko if: hostname.value() === 'cumulocity' -->
+			<!--ko template: {name: 'full-savable-input-template', data: hostip}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: clientId}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: project}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: authtype}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: primaryHostID}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: username}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-password-template', data: password}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: usessl}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: autoregister}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: useauth}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: groupName}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: token}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devname}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: masapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: distid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: topic}--><!-- /ko -->
+			<!--ko template: {name: 'h4-template', data: 'Device Certificates'}--><!-- /ko -->
+			<div style="position: absolute; padding-left: 120px" data-bind="visible: devca.visible">
+				<!--ko template: {name: 'file-icon-template', data: caFileDrop}--><!--/ko-->
+			</div>
+			<!--ko template: {name: 'full-savable-select-template', data: devca}--><!-- /ko -->
+			<div class="gw-row form-horizontal" style="margin-top: 10px; margin-bottom: 10px">
+				<button type="button" class="btn" data-bind="click: toggleAdvanced, text: advancedButton"
+				name="advancedButton" ></button>
+			</div>
+			<!-- ko if: showAdvanced -->
+				<!--ko template: {name: 'full-savable-input-template', data: keepalive}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-input-template', data: hostport}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: qos}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: retain}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackerr}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackAlarms}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: allowSub}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: useMessageHistory}--><!--/ko-->
+			<!-- /ko -->
+		<!-- /ko -->
+
+		<!-- ko if: hostname.value() === 'ignition' -->
+			<!--ko template: {name: 'full-savable-input-template', data: hostip}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: clientId}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: project}--><!-- /ko -->
+			<!-- ko foreach: brokerDisplay.value -->
+				<div class="form-horizontal" style="margin-top: -15px">
+					<div class="control-group" data-bind="css: {'gw-error': hasOwnProperty('error') ? error : false}">
+						<label class="control-label"></label>
+						<div class="controls">
+							<div class="input-append">
+								<!-- ko template: {name: 'savable-input-template', data: $.extend({
+									placeholder: 'Broker Host Name',
+									name: 'broker' + $index(),
+								}, $data)}--><!-- /ko -->
+								<button class="btn btn-danger" data-bind="attr: {name: 'removeBroker' + $index()}, click: $parent.removeBroker">Remove</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			<!-- /ko -->
+			<div class="gw-row" style="margin-top: -10px; margin-bottom: 15px">
+				<button class="btn btn-primary" data-bind="attr: {name: 'addBroker'}, click: addBroker">Add Redundancy Broker</button>
+			</div>
+			<!--ko template: {name: 'full-savable-select-template', data: authtype}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: primaryHostID}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: username}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-password-template', data: password}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: autoregister}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: useauth}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: groupName}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: usessl}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: token}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devname}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: masapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: distid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: topic}--><!-- /ko -->
+			<!-- ko if: showCerts -->
+				<!--ko template: {name: 'h4-template', data: 'Device Certificates'}--><!-- /ko -->
+				<div style="position: absolute; padding-left: 120px" data-bind="visible: devca.visible">
+					<!--ko template: {name: 'file-icon-template', data: caFileDrop}--><!--/ko-->
+				</div>
+				<!--ko template: {name: 'full-savable-select-template', data: devca}--><!-- /ko -->
+			<!-- /ko -->
+			<div class="gw-row form-horizontal" style="margin-top: 10px; margin-bottom: 10px">
+				<button type="button" class="btn" data-bind="click: toggleAdvanced, text: advancedButton"
+				name="advancedButton" ></button>
+			</div>
+			<!-- ko if: showAdvanced -->
+				<!--ko template: {name: 'full-savable-input-template', data: keepalive}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-input-template', data: hostport}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: qos}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: retain}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackerr}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackAlarms}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: allowSub}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: useMessageHistory}--><!--/ko-->
+			<!-- /ko -->
+		<!-- /ko -->
+
+		<!-- ko if: hostname.value() === 'azure' -->
+			<!--ko template: {name: 'full-savable-select-template', data: authtype}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: hostip}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: clientId}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: project}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: primaryHostID}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: username}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: password}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: deviceConnectionString}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: sasTokenTTL}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: usessl}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: autoregister}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: useauth}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: groupName}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: token}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devname}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: masapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: distid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: topic}--><!-- /ko -->
+			<!-- ko if: showCerts -->
+				<!--ko template: {name: 'h4-template', data: 'Device Certificates'}--><!-- /ko -->
+				<div style="position: absolute; padding-left: 120px" data-bind="visible: devcert.visible">
+					<!--ko template: {name: 'file-icon-template', data: certFileDrop}--><!--/ko-->
+				</div>
+				<!--ko template: {name: 'full-savable-select-template', data: devcert}--><!-- /ko -->
+				<div class="gw-auto-margin" style="text-align: center" data-bind="visible: fingerprint.visible">
+					<input type="text" style="margin-top: -10px; margin-left: 140px; text-align: center; width: 375px; user-select: all; cursor: pointer" readonly data-bind="value: fingerprint.value, attr: {title: fingerprint.title}"></input>
+				</div>
+				<div style="position: absolute; padding-left: 120px" data-bind="visible: devkey.visible">
+					<!--ko template: {name: 'file-icon-template', data: keyFileDrop}--><!--/ko-->
+				</div>
+				<!--ko template: {name: 'full-savable-select-template', data: devkey}--><!-- /ko -->
+				<div style="position: absolute; padding-left: 120px" data-bind="visible: devca.visible">
+					<!--ko template: {name: 'file-icon-template', data: caFileDrop}--><!--/ko-->
+				</div>
+				<!--ko template: {name: 'full-savable-select-template', data: devca}--><!-- /ko -->
+			<!-- /ko -->
+			<div class="gw-row form-horizontal" style="margin-top: 10px; margin-bottom: 10px">
+				<button type="button" class="btn" data-bind="click: toggleAdvanced, text: advancedButton"
+				name="advancedButton" ></button>
+			</div>
+			<!-- ko if: showAdvanced -->
+				<!--ko template: {name: 'full-savable-input-template', data: keepalive}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-input-template', data: hostport}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: qos}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: retain}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackerr}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackAlarms}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: allowSub}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: useMessageHistory}--><!--/ko-->
+			<!-- /ko -->
+		<!-- /ko -->
+
+		<!-- ko if: hostname.value() === 'nokia' -->
+			<!--ko template: {name: 'full-savable-input-template', data: hostip}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: clientId}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: project}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: authtype}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: primaryHostID}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: autoregister}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: username}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-password-template', data: password}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: useauth}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: groupName}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: token}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: usessl}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: devname}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: masapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: distid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: topic}--><!-- /ko -->
+			<!-- ko if: showCerts -->
+				<!--ko template: {name: 'h4-template', data: 'Device Certificates'}--><!-- /ko -->
+				<div style="position: absolute; padding-left: 120px" data-bind="visible: devca.visible">
+					<!--ko template: {name: 'file-icon-template', data: caFileDrop}--><!--/ko-->
+				</div>
+				<!--ko template: {name: 'full-savable-select-template', data: devca}--><!-- /ko -->
+			<!-- /ko -->
+			<div class="gw-row form-horizontal" style="margin-top: 10px; margin-bottom: 10px">
+				<button type="button" class="btn" data-bind="click: toggleAdvanced, text: advancedButton"
+				name="advancedButton" ></button>
+			</div>
+
+			<!-- ko if: showAdvanced -->
+				<!--ko template: {name: 'full-savable-input-template', data: keepalive}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-input-template', data: hostport}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: qos}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: retain}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackerr}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackAlarms}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: allowSub}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: useMessageHistory}--><!--/ko-->
+			<!-- /ko -->
+		<!-- /ko -->
+
+		<!-- ko if: hostname.value() === 'telenor' -->
+			<!--ko template: {name: 'full-savable-input-template', data: hostip}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: clientId}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: project}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: authtype}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: primaryHostID}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: username}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-password-template', data: password}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: usessl}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: autoregister}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: useauth}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: groupName}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: token}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devname}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: masapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: distid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: topic}--><!-- /ko -->
+			<!--ko template: {name: 'h4-template', data: 'Device Certificates'}--><!-- /ko -->
+			<div style="position: absolute; padding-left: 120px" data-bind="visible: devcert.visible">
+				<!--ko template: {name: 'file-icon-template', data: certFileDrop}--><!--/ko-->
+			</div>
+			<!--ko template: {name: 'full-savable-select-template', data: devcert}--><!-- /ko -->
+			<div class="gw-auto-margin" style="text-align: center" data-bind="visible: fingerprint.visible">
+				<input type="text" style="margin-top: -10px; margin-left: 140px; text-align: center; width: 375px; user-select: all; cursor: pointer" readonly data-bind="value: fingerprint.value, attr: {title: fingerprint.title}"></input>
+			</div>
+			<div style="position: absolute; padding-left: 120px" data-bind="visible: devkey.visible">
+				<!--ko template: {name: 'file-icon-template', data: keyFileDrop}--><!--/ko-->
+			</div>
+			<!--ko template: {name: 'full-savable-select-template', data: devkey}--><!-- /ko -->
+			<div style="position: absolute; padding-left: 120px" data-bind="visible: devca.visible">
+				<!--ko template: {name: 'file-icon-template', data: caFileDrop}--><!--/ko-->
+			</div>
+			<!--ko template: {name: 'full-savable-select-template', data: devca}--><!-- /ko -->
+
+			<div class="gw-row form-horizontal" style="margin-top: 10px; margin-bottom: 10px">
+				<button type="button" class="btn" data-bind="click: toggleAdvanced, text: advancedButton"
+				name="advancedButton" ></button>
+			</div>
+			<!-- ko if: showAdvanced -->
+				<!--ko template: {name: 'full-savable-input-template', data: keepalive}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-input-template', data: hostport}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: qos}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: retain}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackerr}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackAlarms}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: allowSub}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: useMessageHistory}--><!--/ko-->
+			<!-- /ko -->
+		<!-- /ko -->
+
+		<!-- ko if: hostname.value() === 'generic' -->
+			<!--ko template: {name: 'full-savable-input-template', data: hostip}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: hostport}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: clientId}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: primaryHostID}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: username}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-password-template', data: password}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-select-template', data: usessl}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: authtype}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: autoregister}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-select-template', data: useauth}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: groupName}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: token}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devname}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: masapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: distid}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devapikey}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devid}--><!-- /ko -->
+			<!-- ko if: showCerts -->
+				<div style="position: absolute; padding-left: 120px" data-bind="visible: devcert.visible">
+					<!--ko template: {name: 'file-icon-template', data: certFileDrop}--><!--/ko-->
+				</div>
+				<!--ko template: {name: 'full-savable-select-template', data: devcert}--><!-- /ko -->
+				<div class="gw-auto-margin" style="text-align: center" data-bind="visible: fingerprint.visible">
+					<input type="text" style="margin-top: -10px; margin-left: 140px; text-align: center; width: 375px; user-select: all; cursor: pointer" readonly data-bind="value: fingerprint.value, attr: {title: fingerprint.title}"></input>
+				</div>
+				<div style="position: absolute; padding-left: 120px" data-bind="visible: devkey.visible">
+					<!--ko template: {name: 'file-icon-template', data: keyFileDrop}--><!--/ko-->
+				</div>
+				<!--ko template: {name: 'full-savable-select-template', data: devkey}--><!-- /ko -->
+				<div style="position: absolute; padding-left: 120px" data-bind="visible: devca.visible">
+					<!--ko template: {name: 'file-icon-template', data: caFileDrop}--><!--/ko-->
+				</div>
+				<!--ko template: {name: 'full-savable-select-template', data: devca}--><!-- /ko -->
+			<!-- /ko -->
+			<div class="gw-row form-horizontal" style="margin-top: 10px; margin-bottom: 10px">
+				<button type="button" class="btn" data-bind="click: toggleAdvanced, text: advancedButton"
+				name="advancedButton" ></button>
+			</div>
+			<!-- ko if: showAdvanced -->
+				<!--ko template: {name: 'full-savable-input-template', data: keepalive}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: qos}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: retain}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackerr}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: trackAlarms}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: allowSub}--><!-- /ko -->
+				<!--ko template: {name: 'full-savable-select-template', data: useMessageHistory}--><!--/ko-->
+			<!-- /ko -->
+			<!--ko template: {name: 'h4-template',data: 'Topics'}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: iodbTopic}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: devInfoTopic}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: locationTopic}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: lwtTopic}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: cmdResponseTopic}--><!-- /ko -->
+			<!--ko template: {name: 'full-savable-input-template', data: cmdTopic}--><!-- /ko -->
+		<!-- /ko -->
+		<!--ko template: {name: 'h4-template',data: 'Messages'}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: pubinterval}--><!-- /ko -->
+		<!--ko template: {name: 'full-savable-select-template', data: publishAllIntervalToggle}--><!-- /ko -->
+		<!--ko template: {name: 'full-savable-input-template', data: publishAllInterval}--><!-- /ko -->
+		<!--ko template: {name: 'full-savable-select-template', data: devinfomsg}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: devinfointv}--><!-- /ko -->
+	</div>
+	<div style="width: 380px; display: inline-block; text-align: center; vertical-align: top">
+		<div style="text-align: center">
+			<h4>Points <span class="badge badge-default" data-bind="text: numPoints, visible: pointsDisplay.value().length > 0"></span></h4>
+		</div>
+		<div style="margin-bottom: 10px" data-bind="foreach: pointsDisplay.value">
+			<div style="margin-bottom: 5px">
+				<!-- ko template: {name: 'savable-autotag-template', data: $.extend({
+					title: tagName.value,
+					placeholder: 'Tag Name',
+					name: 'pointTag' + $index(),
+					style: {
+						margin: '0',
+						width: '100px'
+					}
+				}, tagName)}--><!-- /ko -->
+				<!-- ko template: {name: 'savable-select-template', data: $.extend({
+					placeholder: 'Type',
+					name: 'pointType' + $index(),
+					style: {
+						margin: '0',
+						width: '74px'
+					}
+				}, type)}--><!-- /ko -->
+				<!-- ko template: {name: 'savable-input-template', data: $.extend({
+					placeholder: 'Address',
+					name: 'pointAddr' + $index(),
+					style: {
+						margin: '0',
+						width: '60px'
+					}
+				}, displayAddress)}--><!-- /ko -->
+				<button class="btn btn-danger" data-bind="attr: {name: 'removeTag' + $index()}, click: $parent.removePoint">Remove</button>
+			</div>
+		</div>
+		<button class="btn btn-primary" style="margin-bottom: 5px" data-bind="attr: {name: 'addPoint'}, click: addPoint">Add Point</button>
+		<button class="btn btn-primary" style="margin-bottom: 5px" data-bind="attr: {name: 'addMultiPoint'}, click: addMultiPoint">Add Multiple Points</button>
+		<button class="btn btn-primary" style="margin-bottom: 5px" data-bind="attr: {name: 'addUserTags'}, click: addUserTags">Add User Tags</button>
+		<button class="btn btn-primary" style="margin-bottom: 5px" data-bind="attr: {name: 'addOnBoardIOTags'}, click: addOnBoardIOTags">Add On Board IO</button>
+	</div>
+</div>
+<!-- ko template: {name: 'picker-template', data: $.extend({
+	header: "Select Tags",
+	wide: 1
+}, tagsPicker)}--><!-- /ko -->
+
+
+<!-- /ko -->
+<!-- ko if: showStatus -->
+<!-- divs and stuff to show the status -->
+<div class="gw-row">
+	<div style="display: inline-block" data-bind="with: scanner">
+		<label class="gw-inline" >Page Refresh Rate (s):</label>
+		<input type="text" style="width: 30px" data-bind="value: rate"></input>
+		<span class="gw-inline" style="width: 70px" data-bind="text: status, style: {color: color}"></span>
+		<button class="btn btn-primary gw-inline" data-bind="text: toggleText, attr: {name: toggleText}, click: toggle"></button>
+	</div>
+	<div style="display: inline-block; margin-left: 50px">
+		<div style="inline-block" style="text-align: center">
+			<span>Last Refresh:</span>
+			<span data-bind="text: lastScan"></span><br />
+			<span>Data Used (kB):</span>
+			<span data-bind="text: dataUsed"></span>
+		</div>
+	</div>
+	<div style="display: inline-block; margin-left: 100px">
+		<!-- ko template: {name: 'toggle-template', data: scanner.idleToggle} --><!-- /ko -->
+	</div>
+	<hr style="margin: 5px 0px 10px 0px" />
+</div>
+
+<table class="gw-auto-margin gw-status-table gw-st45" style="width: 600px">
+	<tbody>
+		<tr>
+			<td>Current Host</td>
+			<td name="currentHost" data-bind="html: currentHost"></td>
+		</tr>
+		<tr>
+			<td>Connection Status</td>
+			<td name="connectionstatus" data-bind="html: connectionStatus"></td>
+		</tr>
+		<tr>
+			<td>Total Time Connected</td>
+			<td name="totaltimeconnected" data-bind="html: totalTimeConnected"></td>
+		</tr>
+		<tr>
+			<td>Total Time Running</td>
+			<td name="totaltimerunning" data-bind="html: totalTimeRunning"></td>
+		</tr>
+		<tr>
+			<td>Last Remote Host Error Message</td>
+			<td name="errormessage" data-bind="html: lastServerErrorCodeMessage"></td>
+		</tr>
+		<tr>
+			<td>Last Client Error Message</td>
+			<td name="clientStatus" data-bind="html: lastClientErrorCodeMessage"></td>
+		</tr>
+		<!-- ko if: hostname.value() === 'azure' -->
+			<tr>
+				<td>SAS Token Expiration</td>
+				<td name="sasTokenExpiration" data-bind="html: sasTokenExpiration"></td>
+			</tr>
+		<!-- /ko -->
+	</tbody>
+</table>
+
+<hr/>
+<table class="gw-auto-margin gw-status-table gw-st45" style="width: 600px">
+	<tbody>
+		<tr>
+			<td>Total Data Sent</td>
+			<td name="totaldatasent" data-bind="html: totalDataSent"></td>
+		</tr>
+		<tr>
+			<td>Total Data Received</td>
+			<td name="totaldatareceived" data-bind="html: totalDataReceived"></td>
+		</tr>
+		<tr>
+			<td>Estimated Monthly Usage</td>
+			<td name="estimatedmonthlyusage" data-bind="html: estimatedMonthlyUsage"></td>
+		</tr>
+	</tbody>
+</table>
+
+<hr/>
+<table class="gw-auto-margin gw-status-table gw-st45" style="width: 600px">
+    <tbody>
+    <tr>
+        <td>Total Bytes In Queue</td>
+        <td name="totalbytesinqueue" data-bind="html: totalBytesInQueue"></td>
+    </tr>
+    <tr>
+        <td>Percentage of Queue Full</td>
+        <td name="percentageofqueuefull" data-bind="html: percentageOfQueueFull"></td>
+    </tr>
+    </tbody>
+</table>
+
+<hr />
+<table class="gw-auto-margin gw-status-table gw-st45" style="width: 600px">
+	<tbody>
+		<tr>
+			<td>Minimum Publish Interval (Seconds)</td>
+			<td name="currentPublishInterval" data-bind="html: currentPublishInterval"></td>
+		</tr>
+		<tr>
+			<td>Publish All Points Interval (Minutes)</td>
+			<td name="currentPublishAllInterval" data-bind="html: currentPublishAllInterval"></td>
+		</tr>
+		<tr>
+			<td>Current Scan Rate (Milliseconds)</td>
+			<td name="currentScanRate" data-bind="html: currentScanRate"></td>
+		</tr>
+	</tbody>
+</table>
+<hr/>
+
+
+<!--ko template: {name: 'h4-template',data: 'Last Message Sent'}--><!--/ko-->
+<table class="gw-auto-margin gw-status-table gw-st45" style="width: 600px">
+	<tbody>
+		<tr>
+			<td>Topic</td>
+			<td name="lastMessageSentTopic" data-bind="text: lastMessageSentTopic"></td>
+		</tr>
+		<tr>
+			<td>Date</td>
+			<td name="dateoflastmessagesent" data-bind="text: dateOfLastMessageSent"></td>
+		</tr>
+		<tr>
+			<td>Time</td>
+			<td name="timeoflastmessagesent" data-bind="text: timeOfLastMessageSent"></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<pre id="lastMessageSentRaw" name="lastMessageSentRaw" data-bind="text: lastMessageSent" style="text-align: left; overflow:scroll; height:275px;"></pre>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<hr />
+
+<!--ko template: {name: 'h4-template',data: 'Last Message Received'}--><!--/ko-->
+<table class="gw-auto-margin gw-status-table gw-st45" style="width: 600px">
+	<tbody>
+		<tr>
+			<td>Topic</td>
+			<td data-bind="text: lastMessageReceivedTopic"></td>
+		</tr>
+		<tr>
+			<td>Date</td>
+			<td data-bind="text: dateOfLastMessageReceived"></td>
+		</tr>
+		<tr>
+			<td>Time</td>
+			<td data-bind="text: timeOfLastMessageReceived"></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<pre id="lastMessageReceivedRaw" name="lastMessageReceivedRaw" data-bind="text: lastMessageReceived" style="text-align: left; overflow:scroll; height:275px"></pre>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<!-- /ko -->

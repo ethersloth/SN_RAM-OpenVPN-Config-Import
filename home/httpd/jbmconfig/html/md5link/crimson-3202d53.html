@@ -1,0 +1,532 @@
+<!--ko template: {name:'title-template',data:'Crimson Connect'}--><!--/ko-->
+<p class="gw-auto-margin" style="width: 600px; text-align: center">Crimson Connect provides a consolidated way to streamline multiple configuration options when coordinating with a Red Lion DSP or HMI product. Using this interface, we can provide HTTPS encapsulation, SMS support, Email encryption and Crimson Link access for remote reconfiguration.</p>
+<hr />
+<!-- ko if: isScannerEnabled -->
+<div style="text-align: center" data-bind="ifnot: showCrPrd">
+	<div style="text-align: center; vertical-align: middle;">
+		<span>Crimson Product Scanner couldn't find any potential Crimson enabled devices. Please try again or enter an IP address.</span>
+	</div>
+</div>
+<div data-bind="if: showCrPrd">
+	<!--ko template: {name:'h4-template',data:'Select Local Network Device'}--><!--/ko-->
+	<table border="1" align="center" style="text-align: center">
+		<thead>
+			<tr>
+				<th style="width: 200px;">Product Name</th>
+				<th style="width: 200px;">MAC Address</th>
+				<th style="width: 200px;">IP Address</th>
+				<th style="width: 200px;">Port 80</th>
+				<th style="width: 200px;">Port 789</th>
+			</tr>
+		</thead>
+		<tbody data-bind="foreach: crimsonScanner">
+			<tr style="height: 35px; cursor: pointer" data-bind="click: $parent.SelectCrPrd($index()), style: {'background-color': Selected() ? 'lightblue' : '#eee'}">
+				<td style="text-align: center">
+					<span data-bind="text: Name"></span>
+				</td>
+				<td style="text-align: center">
+					<span data-bind="text: MACAddr"></span>
+				</td>
+				<td style="text-align: center">
+					<span data-bind="text: IPAddr"></span>
+				</td>
+				<td style="text-align: center">
+					<span data-bind="text: Port80"></span>
+				</td>
+				<td style="text-align: center">
+					<span data-bind="text: Port789"></span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br />
+	<div style="text-align: center">
+		<button type="button" class="btn btn-primary" data-bind="click: rescanDevices">Rescan Devices</button>
+	</div>
+</div>
+<br />
+<div style="width: 70%" class="input-append">
+	<div style="width: 50%; float: left; text-align: right">
+		<label style="margin-left: 390px; padding-top: 5px" class="checkbox">
+			<input type="checkbox" name="mc-connectip" data-bind="checked: showConnectIP">Manually Enter Local Device IP</input>
+		</label>
+	</div>
+	<div style="width: 50%; float: left; text-align: left">
+		<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+			name: 'mc-hostip'
+		}, hostip)}--><!-- /ko -->
+	</div>
+</div>
+<!-- /ko -->
+<!-- ko ifnot: isScannerEnabled -->
+	<!--ko template: {name:'h4-template',data:'Local Network Device'}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+		name: 'tb-hostip'
+	}, hostip)}--><!-- /ko -->
+	<!--ko template: {name: 'full-savable-select-template', data: intf}--><!--/ko-->
+<!-- /ko -->
+<hr />
+<div style="width: 100%">
+	<div style="width:50%; float: left">
+		<!--ko template: {name:'h4-template',data:'Crimson Services Setup'}--><!--/ko-->
+		<div style="text-align: center">
+			<button type="button" name="crimsonwalkthrough" class="btn btn-primary" data-bind="click: cfgwalkThrough">Walkthrough</button>
+		</div>
+		<br />
+		<div style="text-align: center">
+			<button type="button" name="crimsonquickconfig" class="btn btn-primary" data-bind="click: crimsonEZConfig">Quick Config</button>
+		</div>
+	</div>
+	<div style="width:50%; float: left">
+		<!--ko template: {name:'h4-template',data:'Services Status'}--><!--/ko-->
+		<div style="text-align: center">
+			<table style="gw-auto-margin">
+				<tr>
+					<td style="width: 300px; text-align: right"><b>Crimson SMS API:</b></td>
+					<td style="width: 375px" data-bind="text: dispsms, css: {'gw-highlight': smsHighlight, '': !smsHighlight()}"></td>
+				</tr>
+				<tr>
+					<td style="text-align: right"><b>SMTP Email Gateway:</b></td>
+					<td data-bind="text: gatewayemail, css: {'gw-highlight': gatewayEmailHighlight, '': !gatewayEmailHighlight()}"></td>
+				</tr>
+				<tr>
+					<td style="text-align: right"><b>SSL SMTP Destination:</b></td>
+					<td data-bind="text: secureemail, css: {'gw-highlight': secEmailHighlight, '': !secEmailHighlight()}"></td>
+				</tr>
+				<tr>
+					<td style="text-align: right"><b>HTTP/HTTPS:</b></td>
+					<td data-bind="text: httpslink, css: {'gw-highlight': httpsHighlight, '': !httpsHighlight()}"></td>
+				</tr>
+				<tr>
+					<td style="text-align: right"><b>Login:</b></td>
+					<td data-bind="html: login, css: {'gw-highlight': loginHighlight, '': !loginHighlight()}"></td>
+				</tr>
+			</table>
+		</div>
+		<!-- ko if: showLink -->
+			<div style="text-align: center">
+				<a class="btn btn-link" data-bind="text: linkaddr, click: directLink"></a>
+			</div>
+		<!-- /ko -->
+		<br />
+	</div>
+</div>
+<hr style="width: 100%;">
+<div style="width: 100%">
+	<div style="width:50%; float: left">
+		<!--ko template: {name:'h4-template',data:'Remote Link Setup'}--><!--/ko-->
+		<div style="text-align: center">
+			<button type="button" name="remotewalkthrough" class="btn btn-primary" data-bind="click: walkThrough">Walkthrough</button>
+		</div>
+		<br />
+		<div style="text-align: center">
+			<button type="button" name="remotequickconfig" class="btn btn-primary" data-bind="click: crimsonEZAccess">Quick Config</button>
+		</div>
+	</div>
+	<div style="width:50%; float: left">
+		<!--ko template: {name:'h4-template',data:'Remote Link Status'}--><!--/ko-->
+		<div style="text-align: center">
+			<table style="gw-auto-margin">
+				<tr>
+					<td style="width: 270px; text-align: right"><b>Cellular IP:</b></td>
+					<td style="width: 100px" data-bind="text: listenip"></td>
+				</tr>
+			</table>
+		</div>
+		<br />
+		<div style="width: 300px; margin-left: 150px">
+			<p>Once the Remote Link is running, enter this unit's cellular IP in the Remote Address field of the Download Tab.
+				<button type="button" class="btn" data-bind="click: cripLink">Crimson Link Example</button>
+			</p>
+		</div>
+		<br />
+		<div class="control-group">
+			<div style="width: 50%; float: left; text-align: right"><h5 data-bind="text: isRunning() ? 'Running:' : 'Not Running:'"></h5></div>
+			<div style="width: 50%; float: left; text-align: left; padding-top: 5px">
+				<button style="margin-left: 10px" class="btn" data-bind="text: isNotRunning() ? 'Start' : 'Stop', css: {'btn-success': isNotRunning, 'btn-danger': isRunning}, click: toggleRun"></button>
+			</div>
+		</div>
+		<div style="width: 100%; float: left" data-bind="if: showTime">
+			<table style="gw-auto-margin">
+				<tr>
+					<td style="width: 500px; text-align: right"><b>Remote Link Remaining Time:</b></td>
+					<td style="width: 175px" data-bind="text: disptime"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+<div id="crimsonconfig-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="crimsonconfig-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: closeConfig">&times;</button>
+					<h3>Crimson Services Quick Config</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'h4-template',data:'Crimson SMS API Configuration'}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: $.extend({
+						name: 'qc-sms'
+					}, sms)}--><!-- /ko -->
+					<!--ko template: {name: 'h4-template',data:'SMTP Email Gateway'}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-bool-template', data: $.extend({
+						name: 'qc-enablessl'
+					}, enablessl)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-select-template', data: $.extend({
+						name: 'qc-server'
+					}, server)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'qc-connectip'
+					}, connectip)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'qc-connectport'
+					}, connectport)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-select-template', data: $.extend({
+						name: 'qc-starttls'
+					}, starttls)}--><!-- /ko -->
+					<!--ko template: {name: 'h4-template',data:'SN Proxy Settings'}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: $.extend({
+						name: 'qc-enable'
+					}, enable)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-select-template', data: $.extend({
+						name: 'qc-https'
+					}, https)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-select-template', data: $.extend({
+						name: 'qc-http'
+					}, http)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'qc-snproxyun'
+					}, snproxyun)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-password-template', data: $.extend({
+						name: 'qc-snproxypw'
+					}, snproxypw)}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'qc-listenport'
+					}, listenport)}--><!--/ko-->
+					<div style="text-align: center; margin-bottom: 20px;" data-bind="visible: showProxy">
+						<input type="checkbox" name="qc-allowconnectport" data-bind="checked: showConnectPort">&nbsp;&nbsp;Allow alternate Crimson Web Server Port</input>
+					</div>
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'qc-hostport'
+					}, hostport)}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: wizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="crimsonaccess-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="crimsonaccess-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: closeLink">&times;</button>
+					<h3>Remote Link Config</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'qc-crip'
+					}, crip)}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'qc-crport'
+					}, crport)}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'qc-craccesstime'
+					}, craccesstime)}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: $.extend({
+						name: 'qc-secfilter'
+					}, secfilter)}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'qc-filter'
+					}, filter)}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: wizardAccessFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="walkthrough-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="walkthrough-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: closeLink">&times;</button>
+					<h3>Welcome to the Crimson Remote Link Walkthrough</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<p>Crimson Remote Link will allow downloading and extracting Crimson databases through this device's cellular connection.<br />
+					 Any Crimson database access supported from the Crimson Link menu can be supported remotely through this feature.
+					</p>
+					<p>Make sure to configure your Crimson database to enable IP Download. <button type="button" class="btn" data-bind="click: crenableLink">IP Download</button>
+					 Please consult your Crimson manual's section <b>Download Settings</b> for more information.
+					</p>
+					<p>Once your Crimson device is setup on the same local Ethernet network as this router, we can access it and
+					 forward requests from the cellular environment. You can check your Crimson Ethernet settings in the
+					 Communications-Network, Ethernet tab. <button type="button" class="btn" data-bind="click: crethLink">Crimson Ethernet</button>
+					</p>
+					<p>
+					 Confirm that this is in the same subnet as this unit's Ethernet settings, <b>Network -> Interfaces -> Eth0 or Eth1</b>, depending on your cabling setup.
+					</p>
+					<br />
+					<a class="btn btn-primary pull-right" data-bind="click: walkNext">Next</a>
+				</div>
+			</div>
+			<!-- ko if: isScannerEnabled -->
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: closeLink">&times;</button>
+					<h3>Device Selection</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<p>Our first step will be to select the Crimson product that our cellular link will target. Click Scan to search for locally
+					 discoverable Crimson-enabled devices. You may manually enter the IP of your Crimson enabled device, if it was not discovered
+					 or is not currently connected.</p>
+					<div data-bind="if: showCrPrd">
+						<!--ko template: {name:'h4-template',data:'Select Local Network Device'}--><!--/ko-->
+						<table border="1" style="text-align: center">
+							<thead>
+								<tr>
+									<th style="width: 150px;">Product Name</th>
+									<th style="width: 150px;">MAC Address</th>
+									<th style="width: 150px;">IP Address</th>
+									<th style="width: 150px;">Port 80</th>
+									<th style="width: 150px;">Port 789</th>
+								</tr>
+							</thead>
+							<tbody data-bind="foreach: crimsonScanner">
+								<tr style="height: 35px; cursor: pointer" data-bind="click: $parent.SelectCrPrd($index()), style: {'background-color': Selected() ? 'lightblue' : '#eee'}">
+									<td style="text-align: center">
+										<span data-bind="text: Name"></span>
+									</td>
+									<td style="text-align: center">
+										<span data-bind="text: MACAddr"></span>
+									</td>
+									<td style="text-align: center">
+										<span data-bind="text: IPAddr"></span>
+									</td>
+									<td style="text-align: center">
+										<span data-bind="text: Port80"></span>
+									</td>
+									<td style="text-align: center">
+										<span data-bind="text: Port789"></span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<br style="width: 100%">
+						<div style="text-align: center">
+							<button type="button" class="btn btn-primary" data-bind="click: rescanDevices">Rescan Devices</button>
+						</div>
+					</div>
+					<br />
+					<div style="width: 100%" class="input-append">
+						<div style="width: 100px; text-align: right">
+							<label style="margin-left: 250px" class="checkbox">
+								<input type="checkbox" name="wt-connectip" data-bind="checked: showConnectIP">Manually Enter Local Device IP</input>
+							</label>
+						</div>
+						<div style="width: 75%; float: left; text-align: left">
+							<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+								name: 'wt-hostip'
+							}, hostip)}--><!-- /ko -->
+						</div>
+					</div>
+					<br style="width: 100%">
+					<a class="btn pull-left" data-bind="click: walkPrev">Back</a>
+					<a class="btn btn-primary pull-right" data-bind="click: walkNextTwo">Next</a>
+				</div>
+			</div>
+			<!-- /ko -->
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: closeLink">&times;</button>
+					<h3>IP Download Port</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<p>Please enter the port number configured for IP Download. This should match the option chosen when
+					 configuring the Crimson database. <button type="button" class="btn" data-bind="click: crportLink">IP Download Port</button>
+					</p>
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'wt-crport'
+					}, crport)}--><!--/ko-->
+					<a class="btn pull-left" data-bind="click: walkPrev">Back</a>
+					<a class="btn btn-primary pull-right" data-bind="click: walkNextThree">Next</a>
+				</div>
+			</div>
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Security</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<p>Since this remote unit could be reconfigured or reloaded remotely, we may want to enable some protection
+					 against this access. Once the Crimson Remote Link is activated, it will only stay open for a few minutes.
+					 New attempts after this timeout will be rejected, but current connections will not be prematurely terminated.
+					</p>
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'wt-craccesstime'
+					}, craccesstime)}--><!--/ko-->
+					<p>Access can also be restricted to a specific IP address that you provide. If you will be accessing the remote link from the
+					 same PC that you are using right now, we can detect the IP address you are using now and provide that as the only allowed IP address.
+					</p>
+					<!--ko template: {name: 'full-savable-select-template', data: $.extend({
+						name: 'wt-secfilter'
+					}, secfilter)}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'wt-filter'
+					}, filter)}--><!--/ko-->
+					<br />
+					<a class="btn pull-left" data-bind="click: walkPrev">Back</a>
+					<a class="btn btn-primary pull-right" data-bind="click: walkNextFour">Next</a>
+				</div>
+			</div>
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: closeLink">&times;</button>
+					<h3>Congratulations</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<p>You have setup the remote Crimson Link. When you are finished, check the status on the previous screen and click Start to open the connection
+					 for the time available.
+					</p>
+					<div class="control-group">
+						<div style="width: 50%; float: left; text-align: right"><h5 data-bind="text: isRunning() ? 'Running:' : 'Not Running:'"></h5></div>
+						<div style="width: 50%; float: left; text-align: left; padding-top: 5px">
+							<button style="margin-left: 10px" class="btn" data-bind="text: isNotRunning() ? 'Start' : 'Stop', css: {'btn-success': isNotRunning, 'btn-danger': isRunning}, click: toggleRun"></button>
+						</div>
+					</div>
+					<div style="text-align: center" data-bind="if: showTime">
+						<table style="gw-auto-margin">
+							<tr>
+								<td style="width: 450px; text-align: right"><b>Remote Link Remaining Time:</b></td>
+								<td style="width: 175px" data-bind="text: disptime"></td>
+							</tr>
+						</table>
+					</div>
+					<br />
+					<p>This unit's Cellular IP is currently <b><span data-bind="text: listenip"></span></b>. Once the Remote Link is running, enter this unit's cellular IP in the Remote Address field of the Download Tab.
+						<button type="button" class="btn" data-bind="click: cripLink">Crimson Link Example IP</button>
+					</p>
+					<p>
+					 Then click Link, Options, and choose TCP/IP. <button type="button" class="btn" data-bind="click: crLink">Crimson Link Setup</button>
+					</p>
+					<p>
+					 All of the Crimson Link functions should now work normally. Please consult your Crimson manual's section <b>Downloading to a Device</b> for more information.
+					</p>
+					<br />
+					<a class="btn pull-left" data-bind="click: walkPrev">Back</a>
+					<a class="btn btn-primary pull-right" data-bind="click: walkFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="cfgwalkthrough-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="cfgwalkthrough-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: closeConfig">&times;</button>
+					<h3>Crimson SMS API Configuration</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<p>When you enable the SMS API, a Crimson application can use this cellular gateway to send and receive
+					SMS messages.  Search for <b>Crimson RAM SMS API</b> in the Red Lion knowledge base.<br /><br />
+					<b>NOTE:</b> If using the "and Serial" option, it will prevent other serial port activity such as Modbus.
+					Choose "TCP Only" if you are also using protocol conversion on the serial port.
+					</p>
+					<!--ko template: {name: 'full-savable-select-template', data: $.extend({
+						name: 'wt-sms'
+					}, sms)}--><!-- /ko -->
+					<br />
+					<a class="btn btn-primary pull-right" data-bind="click: cfgwalkNext">Next</a>
+				</div>
+			</div>
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: closeConfig">&times;</button>
+					<h3>SSL SMTP Email Gateway</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<p>When paired with Crimson's email alerting capability, this SSL gateway will allow Crimson to connect to
+					SSL SMTP Servers such as gmail.com, yahoo.com and others. Simply point Crimson's configured email server to
+					this unit's Ethernet address <b><span data-bind="text: eth0IPAddress"></span></b>, port <b><span data-bind="text: acceptport.value()"></span></b>.<br /><br />
+					<button  type="button" class="btn" data-bind="click: emailSetup">Email Setup</button><br /><br />
+					Enter the public email server information below, and access to
+					SSL SMTP servers is possible. The status screen will also show the IP and Port to enter into the Crimson configuration.
+					The username/password required for the 3rd party SMTP server will still need to be entered into the Crimson configuration.</p>
+					<!--ko template: {name: 'full-savable-bool-template', data: $.extend({
+						name: 'wt-enablessl'
+					}, enablessl)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-select-template', data: $.extend({
+						name: 'wt-server'
+					}, server)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'wt-connectip'
+					}, connectip)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'wt-connectport'
+					}, connectport)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-select-template', data: $.extend({
+						name: 'wt-starttls'
+					}, starttls)}--><!-- /ko -->
+					<br />
+					<a class="btn pull-left" data-bind="click: cfgwalkPrev">Back</a>
+					<a class="btn btn-primary pull-right" data-bind="click: cfgwalkNextTwo">Next</a>
+				</div>
+			</div>
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: closeConfig">&times;</button>
+					<h3>SN Proxy Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<p>When the proxy is enabled, these settings can offer improved performance of cellular access to the web interface of a
+					Crimson product. Screen updates over cellular can be more efficient and additional security can be
+					achived with an HTTPS (Secure SSL) connection and an extra user login step.<br /><br />
+					</p>
+					<!--ko template: {name: 'full-savable-bool-template', data: $.extend({
+						name: 'wt-enable'
+					}, enable)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-bool-template', data: $.extend({
+						name: 'wt-https'
+					}, https)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-bool-template', data: $.extend({
+						name: 'wt-http'
+					}, http)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'wt-snproxyun'
+					}, snproxyun)}--><!-- /ko -->
+					<!--ko template: {name: 'full-savable-password-template', data: $.extend({
+						name: 'wt-snproxypw'
+					}, snproxypw)}--><!--/ko-->
+					<p data-bind="visible: showProxy">Cellular carriers often block port 80, so we recommend an alternate access port for browsers connecting
+					to the cellular IP address. The status screen will show the full browser link to use.
+					</p>
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'wt-listenport'
+					}, listenport)}--><!-- /ko -->
+					<div style="text-align: center; margin-bottom: 20px;" data-bind="visible: showProxy">
+						<input type="checkbox" name="wt-allowconnectport" data-bind="checked: showConnectPort">&nbsp;&nbsp;Allow alternate Crimson Web Server Port</input>
+					</div>
+					<!--ko template: {name: 'full-savable-input-template', data: $.extend({
+						name: 'wt-hostport'
+					}, hostport)}--><!-- /ko -->
+					<br />
+					<a class="btn pull-left" data-bind="click: cfgwalkPrev">Back</a>
+					<a class="btn btn-primary pull-right" data-bind="click: cfgwalkFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="helpphoto-modal" class="modal hide fade gw-modal-wide" style="margin-top: 15px" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3 data-bind="text: titlePhoto"></h3>
+	</div>
+	<div class="gw-modal-body-long">
+		<img data-bind="attr:{src:helpPhoto}" />
+	</div>
+</div>

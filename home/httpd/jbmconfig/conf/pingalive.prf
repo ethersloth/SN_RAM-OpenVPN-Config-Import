@@ -1,0 +1,202 @@
+
+<profile>
+ <subsystems>
+                                                                                                                             <!--
+                Services -> Ping Alive Settings Section
+
+  V2.20 behaviors:
+
+  +==========+========================================================================+============+
+  |  ACTION  |                           STEP                                         | ON FAILURE |
+  +==========+========================================================================+============+
+  |    Apply | Try to read /GAUCfg/pingalive/enable from Master Configuration file    | Abort      |
+  |          +------------------------------------------------------------------------+------------+
+  |          | if ('y' == /GAUCfg/pingalive/enable)                                   |            |
+  |          |   {                                                                    |            |
+  |          |       Try to enable telnetd                                            | Abort      |
+  |          |   }                                                                    |            |
+  |          |  else                                                                  |            |
+  |          |      {                                                                 |            |
+  |          |       Verify 'n' == /GAUCfg/pingalive/enable                           | Abort      |
+  |          |                                                                        |            |
+  |          |          Try to disable telnetd                                        | Abort      |
+  |          |      }                                                                 |            |
+  |          +------------------------------------------------------------------------+------------+
+  |          | Try to execute 'service ping_alive stop'  or                           | Abort      |
+  |          | Try to execute 'service ping_alive start'                              | Abort      |
+  +==========+========================================================================+============+                          -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/pingalive.prf" name="pingalive">
+   <validation>
+    <vstep errmsg="Invalid Enable value. Must be 'y' or 'n'." id="STEP_ENABLE" name="enable" test="isyorn(/input/enable/text())" />
+    <vstep errmsg="" id="STEP_TESTENABLE" name="enable" skipto="STEP_IGNOR_VSTEP" test="/input/enable/text() = 'n'" />
+    <vstep errmsg="Invalid Interval Value. Must be a number." id="STEP_INTERVAL" name="interval"  test="isnumber(/input/interval/text())" />
+    <vstep errmsg="Invalid Test Packets Value. Must be a number between 1 and 10." id="STEP_TESTPACKET" name="testpkts"  test="isnumber(/input/testpkts/text()) and /input/testpkts/text() > 0 and /input/testpkts/text() < 11" />
+    <vstep errmsg="Invalid Packet Loss Value. Must be a number lower than Test Packets value." id="STEP_FAILPACKET" name="failpkts"  test="isnumber(/input/failpkts/text()) and /input/failpkts/text() < /input/testpkts/text()" />
+    <vstep errmsg="Invalid Host Address. Must be a valid IPv4 address." id="STEP_HOSTADDR" name="hostaddr"  test="isipaddr(/input/hostaddr/text())" />
+    <vstep errmsg="Invalid Source IP Address. Must be a valid IPv4 address." id="STEP_BINDADDR" name="bindaddr"  test="string-length(/input/bindaddr/text()) = 0 or isipaddr(/input/bindaddr/text())" />
+    <vstep errmsg="" id="STEP_IGNOR_VSTEP" name="enable" test="string-length(/input/enable/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable Flag to system configuration file."
+             name="enable"
+             path="/GAUCfg/pingalive/enable" />
+    <cstep errmsg="Unable to save Interval Value to system configuration file."
+             name="interval"
+             path="/GAUCfg/pingalive/interval" />
+    <cstep errmsg="Unable to save host address to system configuration file."
+             name="hostaddr"
+             path="/GAUCfg/pingalive/hostaddr" />
+    <cstep errmsg="Unable to save host address #2 to system configuration file."
+             name="hostaddr2"
+             path="/GAUCfg/pingalive/hostaddr2" />
+    <cstep errmsg="Unable to save host fail type to system configuration file."
+             name="hostfailtype"
+             path="/GAUCfg/pingalive/hostfailtype" />
+    <cstep errmsg="Unable to save Failure Command Script name to system configuration file."
+             name="command"
+             path="/GAUCfg/pingalive/command" />
+    <cstep errmsg="Unable to save Source Interface to system configuration file."
+             name="bindintf"
+             path="/GAUCfg/pingalive/bindintf" />
+    <cstep errmsg="Unable to save Source IP Address to system configuration file."
+             name="bindaddr"
+             path="/GAUCfg/pingalive/bindaddr" />
+    <cstep errmsg="Unable to save Test Packets to system configuration file."
+             name="testpkts"
+             path="/GAUCfg/pingalive/testpkts" />
+    <cstep errmsg="Unable to save Packet Loss to system configuration file."
+             name="failpkts"
+             path="/GAUCfg/pingalive/failpkts" />
+    <cstep errmsg="Unable to save Ping Idle option to system configuration file."
+             name="pingidle"
+             path="/GAUCfg/pingalive/pingidle" />
+    <cstep errmsg="Unable to save Grace Period Wait option to system configuration file."
+             name="gpwait"
+             path="/GAUCfg/pingalive/gpwait" />
+    <cstep errmsg="Unable to save Grace Period Wait option to system configuration file."
+             name="gpattempt"
+             path="/GAUCfg/pingalive/gpattempt" />
+   </configuration>
+
+   <action name="Apply" successmsg="Ping Alive settings applied.">
+
+<!--Moved to prfhandler_pingalive
+    <pre subsystem="pingalive" action="Save" />
+
+    <astep abort="n" errmsg="Failed to stop the ping_alive service." name="SystemCommand">
+     <arg dependency="/GAUCfg/pingalive/enable/text() = 'n'"
+                expr="'service ping_alive stop &>/dev/null'"
+              source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to start the ping_alive service." name="SystemCommand">
+     <arg dependency="/GAUCfg/pingalive/enable/text() = 'y'"
+                expr="'service ping_alive restart &>/dev/null'"
+              source="config" />
+    </astep>
+Moved to prfhandler_pingalive-->
+
+    <astep abort="y" errmsg="Failed to apply pingalive configuration" name="SystemCommand">
+     <arg expr="'prfhandler_pingalive Apply'" source="config" />
+    </astep>
+
+   </action>
+
+   <action name="Save" successmsg="Save Operation Succeeded For Ping Alive Configuration.">
+
+<!--Moved to prfhandler_pingalive
+    <!-- Begin writing /etc/jbm/ping_alive.conf file -->
+    <astep errmsg="Failed to write ping_alive.conf file, since the service is disabled." name="WriteFormattedFile" abort="y"
+       dependency="/GAUCfg/pingalive/enable/text() = 'y'">
+
+     <arg expr="'/tmp/ping_alive.conf'" source="config" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg expr="concat('INTERVAL = ',/GAUCfg/pingalive/interval/text())"
+          source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('TESTPKTS = ',/GAUCfg/pingalive/testpkts/text())"
+          source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('FAILPKTS = ',/GAUCfg/pingalive/failpkts/text())"
+          source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('HOST1 = ',/GAUCfg/pingalive/hostaddr/text())"
+          source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('HOST2 = ',/GAUCfg/pingalive/hostaddr2/text())"
+          source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('FAIL_CONDITION = ',/GAUCfg/pingalive/hostfailtype/text())"
+          source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="(string-length(/GAUCfg/pingalive/command/text()) > 0 and /GAUCfg/pingalive/command/text() != 'None')"
+                expr="concat('COMMAND = /etc/common/', /GAUCfg/pingalive/command/text())"
+              source="config" />
+
+     <arg dependency="(string-length(/GAUCfg/pingalive/command/text()) = 0 or /GAUCfg/pingalive/command/text() = 'None')"
+                expr="'COMMAND = '"
+              source="config" />
+     <arg expr="'\n'" source="config" />
+
+     <arg dependency="(/GAUCfg/pingalive/bindintf/text() != 'None' and string-length(/GAUCfg/pingalive/bindintf/text()) != 0)"
+                expr="concat('BINDINTF = ', /GAUCfg/pingalive/bindintf/text())"
+              source="config" />
+
+     <arg dependency="(/GAUCfg/pingalive/bindintf/text() = 'None' or string-length(/GAUCfg/pingalive/bindintf/text()) = 0)"
+                expr="'BINDINTF = '"
+              source="config" />
+     <arg expr="'\n'" source="config" />
+
+     <arg expr="concat('BINDADDR = ',/GAUCfg/pingalive/bindaddr/text())" source="config" />
+     <arg expr="'\n'" source="config" />
+
+     <arg expr="concat('PING_ONLYIDLE = ',/GAUCfg/pingalive/pingidle/text())" source="config" />
+     <arg expr="'\n'" source="config" />
+
+     <arg expr="concat('GRACE_PERIOD_WAIT = ', /GAUCfg/pingalive/gpwait/text())" source="config" />
+     <arg expr="'\n'" source="config" />
+
+     <arg expr="concat('CLUSTER_PING_ATTEMPTS = ',/GAUCfg/pingalive/gpattempt/text())" source="config" />
+     <arg expr="'\n'" source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed To Move /tmp/ping_alive.conf To /etc/jbm/ping_alive.conf, since the Service is disabled." name="SystemCommand">
+     <arg dependency="/GAUCfg/pingalive/enable/text() = 'y'"
+                expr="'mv -f /tmp/ping_alive.conf /etc/jbm/ping_alive.conf'"
+              source="config" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed To Turn off Ping_Alive." name="SystemCommand">
+     <arg dependency="/GAUCfg/pingalive/enable/text() = 'n'"
+                expr="'chkconfig ping_alive off'"
+              source="config" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed To Turn on Ping_Alive." name="SystemCommand">
+     <arg dependency="/GAUCfg/pingalive/enable/text() = 'y'"
+                expr="'chkconfig ping_alive on'"
+              source="config" />
+    </astep>
+Moved to prfhandler_pingalive-->
+
+    <astep abort="y" errmsg="Failed to save pingalive configuration" name="SystemCommand">
+     <arg expr="'prfhandler_pingalive Save'" source="config" />
+    </astep>
+
+   </action>
+
+  </subsystem>
+ </subsystems>
+</profile>

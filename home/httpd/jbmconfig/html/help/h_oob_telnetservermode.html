@@ -1,0 +1,28 @@
+<h4>Description</h4>
+<p>
+ This option controls how some options negotiations will be performed with a TELNET client.
+ <br/><br/>
+ The following options are available:
+ <ul>
+  <li><b>Disabled</b></li>                   - No TELNET options negotiation is performed.
+  <li><b>Basic</b></li>                      - Common TELNET options negotiation is performed.
+  <li><b>Basic + drop LF</b></li>            - Linefeed characters (x'0A) are dropped.
+  <li><b>Basic + drop LF & NUL (Cisco Preferred)</b></li>      - LF and NUL (x'00) characters are dropped.
+  <li><b>Basic + drop LF & NUL/HIGH</b></li> - LF, NUL and any characters > x'7F are dropped.
+  <li><b>Basic + drop CR</b></li>            - Carriage return characters (x'0D) are dropped.
+  <li><b>Basic + drop CR & NUL</b></li>      - CR and NUL (x'00) characters are dropped.
+  <li><b>Basic + drop CR & NUL/HIGH</b></li> - CR, NUL and any characters > x'7F are dropped.
+ </ul>
+ <br/>
+ Selecting the right value for your particular situation may require some experimentation.
+ <br/><br/>
+ The Basic Telnet Server will enable some telnet negotiation options with common Telnet Clients, which may provide a better user experience.
+ If you are having problems with odd echoed characters, or other interactive problems, please enable this option.
+ <br/><br/>
+ If you are having problems with login not accepting your password, or pressing Enter seems to behave as if two Enter keys have been pressed,
+ try one of the "Drop" options.
+</p>
+<h4>Recommended Setting</h4>
+<p>
+ <b>Basic + drop LF/NUL</b> is a commonly utilized setting.
+</p>

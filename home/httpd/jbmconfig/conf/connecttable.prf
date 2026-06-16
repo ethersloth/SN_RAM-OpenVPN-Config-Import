@@ -1,0 +1,162 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                              <!--
+                Advanced -> GWLNX -> Connect Table Configuration
+                                                                                                                                -->
+                
+  <subsystem file="/home/httpd/jbmconfig/conf/connecttable.prf" name="connecttable">
+  
+   <validation> 
+    <vstep errmsg="Invalid Generic value. Must be 'Y' or 'N'."
+             name="generic"
+             test="/input/generic/text() = 'N'  or
+                   /input/generic/text() = 'Y'"   />
+             
+    <vstep errmsg="Invalid File Mode. Must be either 'DNIS' or 'DTMF'."
+             name="filemode"
+             test="/input/filemode/text() = 'DNIS'  or
+                   /input/filemode/text() = 'DTMF'"   />
+   </validation>
+   
+   <configuration>
+    <cstep errmsg="Unable to save Generic value to system configuration file."
+             name="generic"
+             path="/GAUCfg/connecttable/generic" />
+             
+    <cstep errmsg="Unable to save File Mode value to system configuration file."
+             name="filemode"
+             path="/GAUCfg/connecttable/filemode" />
+
+    <cstep errmsg="Unable to save Connection Table configuration to system configuration file."
+             name="connectcfgs"
+             path="/GAUCfg/connecttable/connectcfgs" type="node" />
+             
+   </configuration>
+   
+   <action name="Save" successmsg="Connect Table configuration saved.">
+
+    <astep abort="y" errmsg="(Save)Failed to create connecttable.xml file" name="SystemCommand">
+     <arg expr="/home/httpd/jbmconfig/bin/getcfgsec --infile=/home/httpd/jbmconfig/conf/config.xml --outfile=/home/jbmgatew/connecttable.xml --xpath=/GAUCfg/connecttable"/>
+    </astep>
+
+    <pre subsystem="connecttable" action="Apply" />
+   </action>
+   
+   <action name="Apply" successmsg="Operation Succeeded.">
+
+    <!-- Begin writing connecttable.conf file -->
+    <astep errmsg="Failed to configure Connect Table" name="WriteFormattedFile" abort="y"
+           dependency="/GAUCfg/connecttable/connectcfgs/NumberOfconnectcfgs/text() != '0'">
+     <arg expr="'/tmp/connecttable.conf'" source="config" />
+
+     <arg expr="concat('GENERIC=',/GAUCfg/connecttable/generic/text())"
+          source="config" />
+     <arg expr="\n" />
+     <arg expr="concat('FILEMODE=',/GAUCfg/connecttable/filemode/text())"
+          source="config" />
+     <arg expr="\n" />
+    </astep>
+    
+    <!-- Begin writing records to file -->
+    <astep      abort="y" 
+               errmsg="Failed to write Connect Table Conf file" 
+               repeat="/GAUCfg/connecttable/connectcfgs/connectcfg" 
+           rptNdxName="RPT_NDX"
+                 name="AppendFormatted2File"
+           dependency="/GAUCfg/connecttable/connectcfgs/NumberOfconnectcfgs/text() != '0'">
+                 
+     <arg expr="/tmp/connecttable.conf" />
+     <arg expr="concat('[ENTRY','RPT_NDX',']')" rptNdxName="RPT_NDX" source="config"/>
+     <arg expr="\n" />
+
+     <arg expr="concat('LABEL=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/label/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('ATCMDDESCRIPT=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/ATcmddescript/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('ATINIT=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/ATcommand/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('MODE=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/answerdialmode/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('SECDIAL=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/secondarydial/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('TIMER=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/timer/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('DATAMODE=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/datamode/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('MSGMODE=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/msgmode/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('SPOOFENQ=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/spoofenq/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('NORXB4TX=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/norxb4tx/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('DISABLEACK=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/disableack/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('HOSTMSGFMT=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/hostmsgfmt/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('PASSTHRUACK=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/passthruack/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('IP1=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/ipaddr1/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('PORT1=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/port1/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('IP2=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/ipaddr2/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('PORT2=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/port2/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('IP3=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/ipaddr3/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('PORT3=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/port3/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('TCPHDR=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/tcphdrtype/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('EARLY=',/GAUCfg/connecttable/connectcfgs/connectcfg[RPT_NDX]/earlyconnect/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="[/ENTRY]"/>
+     <arg expr="\n" />
+     <arg expr="\n" />
+    </astep>
+    
+    <astep abort="y" dependency="/GAUCfg/connecttable/connectcfgs/NumberOfconnectcfgs/text() != '0'" errmsg="Failed to copy old format connect table file" name="SystemCommand">
+     <arg expr="mv -f /tmp/connecttable.conf /home/jbmgatew/connecttable.conf" />
+    </astep>
+
+    <astep abort="y" dependency="/GAUCfg/connecttable/connectcfgs/NumberOfconnectcfgs/text() != '0'" errmsg="Failed to create connecttable.xml file" name="SystemCommand">
+     <arg expr="/home/httpd/jbmconfig/bin/getcfgsec --infile=/home/httpd/jbmconfig/conf/config.xml --outfile=/home/jbmgatew/connecttable.xml --xpath=/GAUCfg/connecttable" />
+    </astep>
+    
+    <astep abort="y" dependency="/GAUCfg/connecttable/connectcfgs/NumberOfconnectcfgs/text() != '0'" errmsg="Failed to install connect table" name="SystemCommand">
+     <arg expr="/home/httpd/jbmconfig/bin/dtmfconvert /home/jbmgatew/connecttable.conf" />
+    </astep>
+
+   </action>
+       
+  </subsystem>
+  
+ </subsystems>
+</profile>
+
+  
+

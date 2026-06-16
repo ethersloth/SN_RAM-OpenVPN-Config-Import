@@ -1,0 +1,120 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/snmpagent.prf" name="snmpagent">
+   <validation>
+    <vstep errmsg="Invalid Enable value. Must be 'y' or 'n'." name="enable" test="isyorn(/input/enable/text())" />
+    <vstep errmsg="Invalid Allow Serial value. Must be 'y' or 'n'." name="allowserial" test="isyorn(/input/allowserial/text())" />
+    <vstep errmsg="Invalid SNMP version. Must be 'v1v2' or 'v3'." name="version" test="/input/version/text() = 'v1v2' or /input/version/text() = 'v3'" />
+
+    <vstep errmsg="Invalid Community String value. Must be alpha-numeric and less than 33 characters long." name="community" test="string-length(/input/community/text()) > 0 and string-length(/input/community/text()) < 33 or /input/community/text() = '' and /input/enable/text() = 'n'" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable Flag to system configuration file."
+             name="enable"
+             path="/GAUCfg/snmpagent/enable" />
+
+    <cstep errmsg="Unable to save SNMP version to system configuration file."
+             name="version"
+             path="/GAUCfg/snmpagent/version" />
+
+    <cstep errmsg="Unable to save Community String to system configuration file."
+             name="community"
+             path="/GAUCfg/snmpagent/community" />
+
+    <cstep errmsg="Unable to save Location String to system configuration file."
+             name="location"
+             path="/GAUCfg/snmpagent/location" />
+
+    <cstep errmsg="Unable to save Contact String to system configuration file."
+             name="contact"
+             path="/GAUCfg/snmpagent/contact" />
+
+    <cstep errmsg="Unable to save Allow Serial flag to system configuration file."
+             name="allowserial"
+             path="/GAUCfg/snmpagent/allowserial" />
+
+    <cstep errmsg="Unable to save Firewall/SNMP Flag to system configuration file."
+             name="firewall-snmp" path="/GAUCfg/firewall/snmp" />
+
+    <cstep errmsg="Cannot save SNMPv3 User settings to configuration file"
+             name="snmprules"
+             path="/GAUCfg/serialip/snmprules" type="node" />
+   </configuration>
+
+   <action name="Apply" successmsg="SNMP Agent settings saved and applied.">
+
+<!--Moved to prfhandler_snmp
+    <pre subsystem="snmpagent" action="Save" />
+    <astep      abort="y"
+           dependency="/GAUCfg/snmpagent/enable/text() = 'y'"
+               errmsg="Failed to start SNMP Service."
+                 name="SystemCommand">
+     <arg expr="service snmpd restart" />
+    </astep>
+    <astep      abort="n"
+           dependency="/GAUCfg/snmpagent/enable/text() = 'n'"
+               errmsg="Failed to stop SNMP Service."
+                 name="SystemCommand">
+     <arg expr="service snmpd stop" />
+    </astep>
+Moved to prfhandler_snmp-->
+
+    <astep abort="y" errmsg="Failed to apply the SNMP Agent configuration" name="SystemCommand">
+     <arg expr="'prfhandler_snmpagent Apply'" source="config" />
+    </astep>
+   </action>
+
+   <action name="Save" successmsg="SNMP Agent settings saved.">
+
+<!--Moved to prfhandler_snmp
+    <astep abort="y" errmsg="Failed to write SNMP Agent configuration file." name="WriteFormattedFile" >
+     <arg expr="'/tmp/snmpd.conf'" source="config" />
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="# This is the community string required for communication between the agent and manager." />
+     <arg expr="\n" />
+     <arg expr="concat('rocommunity   ', /GAUCfg/snmpagent/community/text())" source="config" />
+     <arg expr="\n" />
+     <arg dependency="/GAUCfg/snmpagent/location/text() != ''" expr="concat('syslocation   ', /GAUCfg/snmpagent/location/text())" source="config" />
+     <arg dependency="/GAUCfg/snmpagent/location/text() != ''" expr="'\n'" source="config" />
+     <arg dependency="/GAUCfg/snmpagent/contact/text() != ''" expr="concat('syscontact   ', /GAUCfg/snmpagent/contact/text())" source="config" />
+     <arg dependency="/GAUCfg/snmpagent/contact/text() != ''" expr="'\n'" source="config" />
+     <arg expr="# End SNMP Agent Configuration" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to write allow flag file" name="SystemCommand">
+     <arg dependency="/GAUCfg/snmpagent/allowserial/text() = 'n'" source="config" expr="'/bin/touch /etc/snmp/.hideserial'" />
+     <arg dependency="/GAUCfg/snmpagent/allowserial/text() = 'y'" source="config" expr="'/bin/rm -f /etc/snmp/.hideserial'" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move ssh configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/snmpd.conf /etc/snmp/snmpd.conf" />
+    </astep>
+
+    <astep       abort="n"
+            dependency="/GAUCfg/snmpagent/enable/text() = 'n'"
+                  name="SystemCommand">
+     <arg expr="chkconfig snmpd off" />
+    </astep>
+
+    <astep       abort="y"
+            dependency="/GAUCfg/snmpagent/enable/text() = 'y'"
+                errmsg="Failed to enable SNMP Service."
+                  name="SystemCommand">
+     <arg expr="chkconfig snmpd on" />
+    </astep>
+Moved to prfhandler_snmp-->
+
+    <astep abort="y" errmsg="Failed to save the SNMP Agent configuration" name="SystemCommand">
+     <arg expr="'prfhandler_snmpagent Save'" source="config" />
+    </astep>
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>

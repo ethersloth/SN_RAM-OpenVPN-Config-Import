@@ -1,0 +1,303 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                             <!--
+                Services -> Dynamic DNS Settings Section
+
+  V2.20 behaviors (taken from cfg_sec.cpp - ApplyDynDNSSettings() & SaveDynDNSSettings()):
+
+  +==========+========================================================================================+============+
+  |  ACTION  |                           STEP                                                         | ON FAILURE |
+  +==========+========================================================================================+============+
+  |     Save | Try to read /GAUCfg/dyndns/username from Master Configuration file                     | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/dyndns/password from Master Configuration file                     | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/dyndns/password2 from Master Configuration file                    | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/dyndns/intf from Master Configuration file                         | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/dyndns/host from Master Configuration file                         | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/dyndns/svctype from Master Configuration file                      | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/dyndns/server from Master Configuration file                       | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/dyndns/request from Master Configuration file                      | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/dyndns/partner from Master Configuration file                      | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Verify "" != /GAUCfg/dyndns/username                                                   | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Verify "" != /GAUCfg/dyndns/password                                                   | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Verify "" != /GAUCfg/dyndns/password2                                                  | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/dyndns/password == /GAUCfg/dyndns/password2                             | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Verify "" != /GAUCfg/dyndns/intf                                                       | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Verify "" != /GAUCfg/dyndns/host                                                       | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/dyndns/host is a valid host and/or domain name                          | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Verify "" != /GAUCfg/dyndns/svctype                                                    | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Verify "" != /GAUCfg/dyndns/server                                                     | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | if (/GAUCfg/dyndns/server contains ':')                                                |            |
+  |          |   {                                                                                    |            |
+  |          |    Split /GAUCfg/dyndns/server into IP Address and Port # components                   |            |
+  |          |   }                                                                                    |            |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Verify # components <= 2                                                               | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/dyndns/server (IP Address component) is a valid host and/or domain name | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | if ("" != /GAUCfg/dyndns/server (Port # component)                                     |            |
+  |          |   {                                                                                    |            |
+  |          |    Verify /GAUCfg/dyndns/server (Port # component) is a valid Port #                   | Abort      |
+  |          |   }                                                                                    |            |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Verify "" != /GAUCfg/dyndns/request                                                    | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | if ("" == /GAUCCfg/dyndns/partner)                                                     |            |
+  |          |   {                                                                                    |            |
+  |          |    Verify "easydns-partner" != /GAUCfg/dyndns/svctype                                  | Abort      |
+  |          |   }                                                                                    |            |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Try to write the following to '/etc/ez-ipupdate/default.conf':                         | Abort      |
+  |          |                                                                                        |            |
+  |          | [                                                                                      |            |
+  |          |  "host=" + /GAUCfg/dyndns/host + "\n"                                                  |            |
+  |          |  "cache-file=/etc/ez-ipupdate/ez-ipupdate.cache\n"                                     |            |
+  |          |  "max-interval=2073600\n"                                                              |            |
+  |          |  "period=60\n"                                                                         |            |
+  |          |  "service-type=" + /GAUCfg/dyndns/svctype + "\n"                                       |            |
+  |          |  "server=" + /GAUCfg/dyndns/server + "\n"                                              |            |
+  |          |  "request="  + /GAUCfg/dyndns/request +"\n"                                            |            |
+  |          | ]                                                                                      |            |
+  |          |                                                                                        |            |
+  |          | if ("easydns-partner" == /GAUCfg/dyndns/partner)                                       |            |
+  |          |   {                                                                                    |            |
+  |          |    ["..."] += "partner=" + /GAUCfg/dyndns/partner + "\n"                               |            |
+  |          |   }                                                                                    |            |
+  |          |                                                                                        |            |
+  |          | ["..."] += "#\n";                                                                      |            |
+  |          |                                                                                        |            |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | chmod u+rw g+rw /etc/ez-ipupdate/default.conf                                          | Abort      |
+  +----------+----------------------------------------------------------------------------------------+------------+
+  |    Apply | Try to perform all SAVE action operations                                              | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/dyndns/enable from Master Configuration file                       | Abort      |
+  |          +----------------------------------------------------------------------------------------+------------+
+  |          | if ('yes' == /GAUCfg/dysdns/enable)                                                    |            |
+  |          |   {                                                                                    |            |
+  |          |    if ('ez-ipupdate' == enabled)                                                       |            |
+  |          |      {                                                                                 |            |
+  |          |       Stop 'ez-ipupdate'                                                               |            |
+  |          |                                                                                        |            |
+  |          |       Disable 'ez-ipupdate'                                                            |            |
+  |          |      }                                                                                 |            |
+  |          |                                                                                        |            |
+  |          |    Try to enable 'ez-ipupdate                                                          | Abort      |
+  |          |                                                                                        |            |
+  |          |    Try to start 'ez-ipupdate'                                                          | Abort      |
+  |          |   }                                                                                    |            |
+  |          |  else                                                                                  |            |
+  |          |      {                                                                                 |            |
+  |          |       if ('ez-ipdate' == enabled)                                                      |            |
+  |          |         {                                                                              |            |
+  |          |          Try to stop 'ez-ipdate'                                                       | Abort      |
+  |          |                                                                                        |            |
+  |          |          Try to disable 'ez-ipupdate'                                                  | Abort      |
+  |          |         }                                                                              |            |
+  |          |      }                                                                                 |            |
+  +==========+========================================================================================+============+          -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dyndns.prf" name="dyndns">
+   <validation>
+    <vstep  errmsg="Invalid Enable Flag."
+              name="enable"
+              test="isyorn(/input/enable/text())" />
+
+    <vstep errmsg=""
+               id="STEP_TSTENABLE"
+             name="enable"
+           skipto="STEP_TSTENBLN"
+             test="/input/enable/text() = 'n'" />
+
+    <vstep  errmsg="Username cannot be empty."
+               id="STEP_TSTUNAME1"
+              name="username"
+              test="string-length(/input/username/text())>0" />
+
+    <vstep  errmsg=""
+               id="STEP_TSTUNAME2"
+              name="username"
+           skipto="STEP_TSTTOKEN"
+              test="/input/svctype/text() = 'duckdns'" />
+
+    <vstep  errmsg="Password cannot be empty"
+               id="STEP_TSTPSWD1"
+              name="password"
+              test="string-length(/input/password/text())>0" />
+
+    <vstep  errmsg="Confirmation Password cannot be empty."
+               id="STEP_TSTPSWD2"
+              name="password2"
+              test="/input/password/text()=/input/password2/text()" />
+
+    <vstep  errmsg=""
+               id="STEP_TSTPSWD"
+              name="password2"
+           skipto="STEP_TSTINTF"
+              test="/input/svctype/text() != 'duckdns'" />
+
+    <vstep  errmsg="Token cannot be empty."
+               id="STEP_TSTTOKEN"
+              name="token"
+              test="string-length(/input/token/text())>0" />
+
+    <vstep  errmsg="Interface must be selected."
+               id="STEP_TSTINTF"
+              name="intf"
+              test="string-length(/input/intf/text())>0" />
+
+    <vstep  errmsg="Host Name must be a Fully Qualified Domain Name"
+               id="STEP_TSTHNAME"
+              name="host"
+              test="isfqdn(/input/host/text())" />
+
+    <vstep  errmsg="Unrecognized Service Type"
+               id="STEP_TSTSTYPE"
+              name="svctype"
+              test="/input/svctype/text() = 'dhs'             or
+                    /input/svctype/text() = 'dyndns'          or
+                    /input/svctype/text() = 'dyndns-custom'   or
+                    /input/svctype/text() = 'dyndns-static'   or
+                    /input/svctype/text() = 'dyns'            or
+                    /input/svctype/text() = 'duckdns'         or
+                    /input/svctype/text() = 'easydns'         or
+                    /input/svctype/text() = 'easydns-partner' or
+                    /input/svctype/text() = 'ods'             or
+                    /input/svctype/text() = 'zoneedit'" />
+
+    <vstep  errmsg="Server Name/Addr must be supplied"
+               id="STEP_TSTSVRNAME"
+              name="server"
+              test="string-length(/input/server/text())>0" />
+
+    <vstep  errmsg="Request Path must be supplied"
+               id="STEP_RQPATH"
+              name="request"
+              test="string-length(/input/request/text())>0" />
+
+    <vstep  errmsg="Partner must be supplied"
+               id="STEP_TSTPRTNR"
+              name="partner"
+              test="true()" />
+
+    <vstep  errmsg=""
+               id="STEP_TSTENBLN"
+              name="enable"
+              test="string-length(/input/enable/text()) > 0" />
+
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable Flag to system configuration file."
+             name="enable"
+             path="/GAUCfg/dyndns/enable" />
+    <cstep errmsg="Unable to save Username to system configuration file."
+             name="username"
+             path="/GAUCfg/dyndns/username" />
+    <cstep errmsg="Unable to save Password to system configuration file."
+             name="password"
+             path="/GAUCfg/dyndns/password" />
+    <cstep errmsg="Unable to save Password2 to system configuration file."
+             name="password2"
+             path="/GAUCfg/dyndns/password2" />
+    <cstep errmsg="Unable to save Token to system configuration file."
+             name="token"
+             path="/GAUCfg/dyndns/token" />
+    <cstep errmsg="Unable to save Interface Name to system configuration file."
+             name="intf"
+             path="/GAUCfg/dyndns/intf" />
+    <cstep errmsg="Unable to save Host/FQDN to system configuration file."
+             name="host"
+             path="/GAUCfg/dyndns/host" />
+    <cstep errmsg="Unable to save Service Type to system configuration file."
+             name="svctype"
+             path="/GAUCfg/dyndns/svctype" />
+    <cstep errmsg="Unable to save Server to system configuration file."
+             name="server"
+             path="/GAUCfg/dyndns/server" />
+    <cstep errmsg="Unable to save Request to system configuration file."
+             name="request"
+             path="/GAUCfg/dyndns/request" />
+    <cstep errmsg="Unable to save Partner to system configuration file."
+             name="partner"
+             path="/GAUCfg/dyndns/partner" />
+   </configuration>
+
+
+   <action name="Save" successmsg="Dynamic DNS parameters saved." >
+
+<!--Moved to prfhandler_dyndns
+    <astep errmsg="Failed to write DynDNS ez-ipupdate configuration file." name="WriteFile" abort="y">
+     <arg source="config" expr="'/etc/ez-ipupdate/default.conf'" />
+     <arg source="config" dependency="/GAUCfg/dyndns/svctype/text() != 'duckdns'" expr="concat('service-type=',/GAUCfg/dyndns/svctype/text())" />
+     <arg source="config" dependency="/GAUCfg/dyndns/svctype/text() = 'duckdns'" expr="'service-type=dyndns-custom'" />
+     <arg source="config" dependency="/GAUCfg/dyndns/svctype/text() != 'duckdns'" expr="concat('user=',/GAUCfg/dyndns/username/text(),':',/GAUCfg/dyndns/password/text())" />
+     <arg source="config" dependency="/GAUCfg/dyndns/svctype/text() = 'duckdns'" expr="concat('user=',/GAUCfg/dyndns/username/text(),':',/GAUCfg/dyndns/token/text())" />
+     <arg source="config" expr="concat('host=',/GAUCfg/dyndns/host/text())" />
+     <arg source="config" expr="concat('interface=',/GAUCfg/dyndns/intf/text() )" />
+     <arg source="config" dependency="/GAUCfg/dyndns/svctype/text() = 'dyndns-custom' and /GAUCfg/dyndns/server/text() != ''" expr="concat('server=',/GAUCfg/dyndns/server/text() )" />
+     <arg source="config" dependency="/GAUCfg/dyndns/svctype/text() = 'dyndns-custom' and /GAUCfg/dyndns/request/text() != ''" expr="concat('request=',/GAUCfg/dyndns/request/text() )" />
+     <arg source="config" dependency="/GAUCfg/dyndns/svctype/text() = 'duckdns' and /GAUCfg/dyndns/server/text() != ''" expr="concat('server=',/GAUCfg/dyndns/server/text() )" />
+     <arg source="config" dependency="/GAUCfg/dyndns/svctype/text() = 'duckdns' and /GAUCfg/dyndns/request/text() != ''" expr="concat('request=',/GAUCfg/dyndns/request/text() )" />
+     <arg source="config" dependency="/GAUCfg/dyndns/svctype/text() = 'easydns-partner' and /GAUCfg/dyndns/partner/text() != ''" expr="concat('partner=',/GAUCfg/dyndns/partner/text() )" />
+     <arg source="config" expr="'max-interval=2073600'" />
+     <arg source="config" expr="'period=60'" />
+     <arg source="config" expr="'cache-file=/etc/ez-ipupdate/ez-ipupdate.cache'" />
+    </astep>
+Moved to prfhandler_dyndns-->
+
+    <astep abort="y" errmsg="Failed to save DynDNS ez-ipupdate configuration file" name="SystemCommand">
+     <arg expr="'prfhandler_dyndns Save'" source="config" />
+    </astep>
+   </action>
+
+   <action name="Apply" successmsg="Operation Succeeded.">
+
+<!--Moved to prfhandler_dyndns
+    <pre action="Save"  subsystem="dyndns" />
+
+    <astep abort="n" dependency="'n' = /GAUCfg/dyndns/enable/text()" name="SystemCommand" >
+     <arg source="config" expr="'service ez-ipupdate stop'" />
+    </astep>
+
+    <astep abort="n" dependency="'n' = /GAUCfg/dyndns/enable/text()" name="SystemCommand" >
+     <arg source="config" expr="'chkconfig ez-ipupdate off'" />
+    </astep>
+
+    <astep abort="y" dependency="'y' = /GAUCfg/dyndns/enable/text()" errmsg="Failed to Enable ez-ipupdate service at boot time." name="SystemCommand">
+     <arg source="config" expr="'chkconfig ez-ipupdate on'" />
+    </astep>
+
+    <astep abort="y" dependency="'y' = /GAUCfg/dyndns/enable/text()" errmsg="Failed to Start ez-ipupdate service." name="SystemCommand">
+     <arg source="config" expr="'service ez-ipupdate restart'" />
+    </astep>
+Moved to prfhandler_dyndns-->
+
+    <astep abort="y" errmsg="Failed to Apply the DynDNS ez-ipupdate configuration" name="SystemCommand">
+     <arg expr="'prfhandler_dyndns Apply'" source="config" />
+    </astep>
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

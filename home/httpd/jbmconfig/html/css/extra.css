@@ -1,0 +1,474 @@
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
+hr {
+  padding: 0;
+  margin: 0;
+}
+
+.gw-auto-margin {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+button.gw-auto-margin {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.gw-file-drop {
+  border: 3px dashed #ccc;
+  border-radius: 4px;
+  display: inline-block;
+  padding: 10px 5px 10px 5px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.gw-icon-drop {
+  border: 3px dashed #ccc;
+  border-radius: 4px;
+  display: inline-block;
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+button.gw-inline {
+  vertical-align: top;
+}
+
+label.gw-inline {
+  text-align: right;
+}
+
+label.gw-inline, span.gw-inline {
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 5px;
+}
+
+.gw-middle {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+div.gw-row {
+  width: 100%;
+  text-align: center;
+}
+
+div.gw-pair-left {
+  height: 100%;
+  width: 50%;
+  display: block;
+  float: left;
+  text-align: right;
+  padding-right: 5px;
+  /* Negate the impact of padding on 50% width */
+  margin-left:-5px;
+}
+
+div.gw-pair-right {
+  height: 100%;
+  width: 50%;
+  display: block;
+  float: left;
+  text-align: left;
+  padding-left: 5px;
+  /* Negate the impact of padding on 50% width */
+  margin-right:-5px;
+}
+
+.gw-border {
+  border: 1px solid black;
+}
+
+.gw-rounded-border {
+	border: 1px solid #ccc;
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	border-radius: 4px;
+}
+
+a.gw-grayed {
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.2),
+    rgba(0, 0, 0, 0.2)
+  )
+}
+
+.navbar-inner {
+  filter: none
+}
+
+#footer {
+  height: 50px;
+  background-color: #f5f5f5;
+  width: 100%;
+  position: fixed;
+  z-index: 3;
+  bottom: 0
+}
+
+#confirmation-modal {
+  z-index: 1200;
+}
+
+.gw-table {
+  width: 85px;
+  text-align: left;
+  padding-left: 8px;
+}
+
+.ui-autocomplete {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10000;
+  float: left;
+  display: none;
+  min-width: 160px;
+  _width: 160px;
+  padding: 4px 0;
+  margin: 2px 0 0 0;
+  list-style: none;
+  background-color: #ffffff;
+  border-color: #ccc;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-style: solid;
+  border-width: 1px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+  *border-right-width: 2px;
+  *border-bottom-width: 2px;
+
+  .ui-menu-item > a.ui-corner-all {
+    display: block;
+    padding: 3px 15px;
+    clear: both;
+    font-weight: normal;
+    line-height: 18px;
+    color: #555555;
+    white-space: nowrap;
+
+    &.ui-state-hover, &.ui-state-active {
+      color: #ffffff;
+      text-decoration: none;
+      background-color: #0088cc;
+      border-radius: 0px;
+      -webkit-border-radius: 0px;
+      -moz-border-radius: 0px;
+      background-image: none;
+    }
+  }
+}
+
+.ui-helper-hidden-accessible {
+  display: none;
+}
+
+.ui-autocomplete > .ui-menu-item > a.ui-corner-all {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 20px;
+  color: #333333;
+  white-space: nowrap;
+}
+
+.ui-autocomplete > .ui-menu-item > a.ui-corner-all:hover,
+.ui-autocomplete > .ui-menu-item > a.ui-corner-all:focus {
+  color: #ffffff;
+  text-decoration: none;
+  background-color: #0081c2;
+  background-image: -moz-linear-gradient(top, #0088cc, #0077b3);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0077b3));
+  background-image: -webkit-linear-gradient(top, #0088cc, #0077b3);
+  background-image: -o-linear-gradient(top, #0088cc, #0077b3);
+  background-image: linear-gradient(to bottom, #0088cc, #0077b3);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientT     ype=0);
+
+}
+
+button.gw-warning {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 20px #800000;
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 20px #800000;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 20px #800000;
+}
+
+button.gw-highlight {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 20px #ffff00;
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 20px #ffff00;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 20px #ffff00;
+}
+
+td.gw-highlight, input.gw-highlight, select.gw-highlight, textarea.gw-highlight {
+  background-color: #ffffc2;
+}
+
+.input-append textarea {
+  border-right-width: 2px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+input.gw-error, select.gw-error, .gw-error .fileupload-preview, textarea.gw-error {
+  color: #b94a48;
+  border-color: #953b39;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
+}
+
+.gw-error label {
+  color: #b94a48;
+}
+
+.gw-selectable {
+	cursor: pointer;
+}
+
+.gw-selectable:hover {
+	background-color: #ddd;
+}
+
+.gw-picker-list {
+	margin-right: auto;
+	margin-left: auto;
+	text-align: left;
+	overflow-y: auto;
+	overflow-x: hidden;
+	border: 1px solid #ccc;
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	border-radius: 4px;
+}
+
+.gw-picker-item {
+	border: 1px solid #eee;
+	padding-left: 10px;
+	display: block;
+	font-family: "Courier New", Courier, monospace;
+}
+
+.gw-picker-list {
+	width: 200px
+}
+
+.gw-modal-wide .gw-picker-list {
+	width: 300px
+}
+
+.gw-status-table td:first-child {
+	font-weight: bold;
+	text-align: right;
+}
+
+.gw-status-table td:last-child {
+	text-align: center;
+}
+
+.gw-st49 td:first-child {width: 49%} /* mirrors .form-horizontal .control-label */
+.gw-st45 td:first-child {width: 45%}
+.gw-st40 td:first-child {width: 40%}
+
+.container .credit {
+  margin: 15px 0;
+}
+
+.form-horizontal .control-label {
+  width: 49%;
+  margin-right: 10px;
+}
+
+hr {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+textarea:hover {
+  cursor: default;
+}
+
+.ui-dialog {
+  z-index: 2000;
+  background-color: #ffffff;
+  border: 1px solid #999;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  *border: 1px solid #999;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  outline: none;
+  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+     -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding-box;
+          background-clip: padding-box;
+  padding: 10px;
+}
+
+.ui-dialog-titlebar {
+  width: 100%;
+  border-bottom: 1px solid #eee;
+  cursor: move;
+}
+
+.ui-dialog-title {
+  font-size: 17.5px;
+  line-height: 30px;
+  margin: 10px;
+  font-family: inherit;
+  font-weight: bold;
+  color: inherit;
+  text-rendering: optimizelegibility;
+}
+
+.noclose .ui-dialog-titlebar-close {
+  display: none;
+}
+
+.ui-button {
+  float: right;
+  padding: 0;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  border: 0;
+  -webkit-appearance: none;
+  font-weight: bold;
+  line-height: 20px;
+  color: #000000;
+  text-shadow: 0 1px 0 #ffffff;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
+
+.ui-button:hover,
+.ui-button:focus {
+  color: #000000;
+  text-decoration: none;
+  cursor: pointer;
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+}
+
+.ui-slider {
+	background-color: gray;
+	position: relative;
+	text-align: left;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+}
+.ui-slider .ui-slider-handle {
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	background-image: linear-gradient(to bottom, #ffffff, #e6e6e6);
+	border: 1px solid #cccccc;
+	position: absolute;
+	z-index: 2;
+	width: 1.2em;
+	height: 1.2em;
+	cursor: default;
+}
+.ui-slider .ui-slider-range {
+	background-color: black;
+	position: absolute;
+	z-index: 1;
+	font-size: .7em;
+	display: block;
+	border: 0;
+	background-position: 0 0;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+}
+
+/* For IE8 - See #6727 */
+.ui-slider.ui-state-disabled .ui-slider-handle,
+.ui-slider.ui-state-disabled .ui-slider-range {
+	filter: inherit;
+}
+
+.ui-slider-horizontal {
+	height: .8em;
+}
+.ui-slider-horizontal .ui-slider-handle {
+	top: -.3em;
+	margin-left: -.6em;
+}
+.ui-slider-horizontal .ui-slider-range {
+	top: 0;
+	height: 100%;
+}
+.ui-slider-horizontal .ui-slider-range-min {
+	left: 0;
+}
+.ui-slider-horizontal .ui-slider-range-max {
+	right: 0;
+}
+
+/* Override bootstrap modal headers to center text */
+.modal-header {
+	text-align: center;
+}
+
+/* Override bootstrap to move modal closer to top of screen */
+.modal.fade.in {
+	top: 5%;
+}
+
+/* This comfortably holds non-required inputs */
+.gw-modal-wide {
+	width: 700px;
+	margin-left: -350px;
+}
+
+/* Use this if inputs have 'Required' add-on */
+.gw-modal-extra-wide {
+	width: 800px;
+	margin-left: -375px;
+}
+
+/* Use this if inputs have 'Required' add-on (this is used for certificate manager)*/
+.gw-modal-extra-extra-wide {
+	width: 900px;
+	margin-left: -450px;
+}
+
+.gw-modal-body-long {
+	position: relative;
+	max-height: 650px;
+	padding: 15px;
+	overflow-y: auto;
+}
+
+@media screen and (max-height: 800px) {
+	.gw-modal-body-long {
+		max-height: 460px;
+	}
+}
+
+.gw-toggle button:first-child, .gw-toggle span:first-child {
+	border-radius: 4px 0px 0px 4px;
+}
+.gw-toggle button:last-child {
+	border-radius: 0px 4px 4px 0px;
+}

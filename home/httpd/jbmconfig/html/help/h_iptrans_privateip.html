@@ -1,0 +1,10 @@
+<h4>Description</h4>
+<p>
+Select whether the internal IP Transparency Interface will host a <b>dummy</b> gateway IP similar to the IP Transparency IP, or if it uses a calculated 169.254.x.x IP Address.<br /><br />
+Some Cisco routers might not handle ARP properly when this option is turned on.
+</p>
+<h4>Pros:</h4><p>Option turned off may allow some Cisco routers to ARP better. With the option enabled, nearby cellular IPs may become reachable. If you are trying to connect to another cellular device with a very similar IP address, consider testing with this option enabled.</p>
+<h4>Cons:</h4><p>With the option turned off the unit will black hole some IPs, and they will not be reachable from the device behind. Example: IP from ISP is 1.2.3.2. Calculated Mask is 255.255.255.252. Edge device uses dummy IP 1.2.3.2/30. Now IPs 1.2.3.0 and 1.2.3.3 become <u>unroutable</u> beyond the device.
+</p>
+<h4>Recommended Setting</h4>
+<p>Yes. Required for Wide mode.</p>

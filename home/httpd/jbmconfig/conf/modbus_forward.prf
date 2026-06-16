@@ -1,0 +1,34 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/modbus.prf"
+             name="modbus" />
+                                                                                                                                             
+                <!-- Advanced -> Modbus Forwarding Table Settings Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/modbus_forward.prf" name="modbus_forward">
+   <validation>
+    <vstep errmsg="Invalid Modbus Forwarding Table Record Set. Must be a well-formed XML document."
+             name="forwards"
+             test="string-length(/input/forwards/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Modbus Forwarding Table to system configuration file."
+             name="forwards" path="/GAUCfg/modbus/forwards"
+             type="node" />
+   </configuration>
+
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+    <pre subsystem="modbus" action="Save" />
+   </action>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+    <pre subsystem="modbus" action="Apply" />
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

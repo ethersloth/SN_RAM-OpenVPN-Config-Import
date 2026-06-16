@@ -1,0 +1,33 @@
+<!--ko template: {name:'title-template',data:'GRE'}--><!--/ko-->
+<!--ko template: {name:'h4-template',data:'GRE Tunnels'}--><!--/ko-->
+<!--ko template: {name:'table-template',data:greTable}--><!--/ko-->
+
+<div id="gretunnel-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="gre-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Add GRE Tunnel</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: label}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: name}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: enable}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: localip}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: localnet}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: remoteip}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: remotenet}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: ikey}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: okey}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: ttl}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: usemulticast}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: usearp}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-bool-template', data: onboot}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-bool-template', data: checkdns}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: greWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

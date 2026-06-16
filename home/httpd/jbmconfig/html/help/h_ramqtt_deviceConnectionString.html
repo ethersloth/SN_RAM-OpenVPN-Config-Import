@@ -1,0 +1,7 @@
+<h4>Description</h4>
+<p>The Device Connection String is the Connection String for the Azure IoT Device. It is used to
+generated SAS Tokens which allow RAMQTT to authenticate with the Azure IoT Hub. RAMQTT will
+generate an intial SAS Token using the Device Connection String and will continue to generate new
+SAS Tokens as old ones expire. </p>
+<p>If new Device Connection Strings are generated for the Azure IoT Device,
+RAMQTT will not be able to generate a valid SAS Token using the old Device Connection String.</p>

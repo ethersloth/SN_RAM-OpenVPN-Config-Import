@@ -1,0 +1,101 @@
+<form id="csqhistory-form" class="form-horizontal">
+	<!-- ko template: {name: 'title-template', data: 'Cellular Status'}--><!-- /ko -->
+	<div style="text-align: center">
+		<a class="btn" href="#!/cellular">Config</a>
+		<a class="btn gw-grayed" href="#!/dispcsq">Status</a>
+		<a class="btn" href="#!/provisioning">Provisioning</a>
+	</div>
+	<hr />
+<!-- ko ifnot: isEnabled -->
+	<p style="color: red; text-align: center">
+		Cellular modem is disabled / Powered off
+	</p>
+<!-- /ko -->
+<!-- ko if: isEnabled -->
+	<table style="width: 100%;">
+		<tr>
+			<td style="width: 50%; text-align: right"><b>Detected Modem:&#160;</b></td>
+			<td style="width: 50%" data-bind="text: detectedModem"></td>
+		</tr>
+		<tr>
+			<td style="text-align: right"><b>Detected Carrier:&#160;</b></td>
+			<td data-bind="text: detectedCarrier"></td>
+		</tr>
+		<!-- ko if: showMDN -->
+		<tr>
+			<td style="text-align: right"><b>MDN:&#160;</b></td>
+			<td data-bind="text: detectedMDN"></td>
+		</tr>
+		<!-- /ko -->
+		<!-- ko if: showIMEI -->
+		<tr>
+			<td style="text-align: right"><b>IMEI:&#160;</b></td>
+			<td data-bind="text: detectedIMEI"></td>
+		</tr>
+		<!-- /ko -->
+		<!-- ko if: showMEID -->
+		<tr>
+			<td style="text-align: right"><b>MEID:&#160;</b></td>
+			<td data-bind="text: detectedMEID"></td>
+		</tr>
+		<!-- /ko -->
+		<!-- ko if: showESN -->
+		<tr>
+			<td style="text-align: right"><b>ESN:&#160;</b></td>
+			<td data-bind="text: detectedESN"></td>
+		</tr>
+		<!-- /ko -->
+		<!-- ko if: showCCID -->
+		<tr>
+			<td style="text-align: right"><b>CCID:&#160;</b></td>
+			<td data-bind="text: detectedCCID"></td>
+		</tr>
+		<!-- /ko -->
+		<tr>
+			<td style="text-align: right"><b>IP:&#160;</b></td>
+			<td data-bind="text: detectedIP"></td>
+		</tr>
+		<tr>
+			<td style="text-align: right"><b>RSSI:&#160;</b></td>
+			<td data-bind="text: detectedRSSI"></td>
+		</tr>
+		<!-- ko if: showRSRX -->
+		<tr>
+			<td style="text-align: right"><b>RSRP:&#160;</b></td>
+			<td data-bind="text: detectedRSRP"></td>
+		</tr>
+		<tr>
+			<td style="text-align: right"><b>RSRQ:&#160;</b></td>
+			<td data-bind="text: detectedRSRQ"></td>
+		</tr>
+		<!-- /ko -->
+		<tr>
+			<td style="text-align: right"><b>Activation Status:&#160;</b></td>
+			<td data-bind="text: activationStatus"></td>
+		</tr>
+		<tr>
+			<td style="text-align: right"><b>Connection Status:&#160;</b></td>
+			<td data-bind="text: connectionStatus"></td>
+		</tr>
+		<tr>
+			<td style="text-align: right"><b>Cellular Uptime:&#160;</b></td>
+			<td data-bind="text: cellularUptime"></td>
+		</tr>
+	</table>
+	<hr />
+<!-- /ko -->
+	<!-- ko template: {name: 'h4-template', data: 'CSQ History'}--><!-- /ko -->
+	<!--ko template: {name: 'textarea-template-ro', data: csqhistory}--><!--/ko-->
+	<hr />
+	<!-- ko if: isEnabled -->
+		<!-- ko template: {name: 'h4-template', data: 'Card Stats'}--><!-- /ko -->
+		<!--ko template: {name: 'textarea-template-ro', data: cardstat}--><!--/ko-->
+	<!-- /ko -->
+	<!-- ko if: disconnectStatus -->
+		<hr />
+		<!-- ko template: {name: 'h4-template', data: 'Disconnect Status'}--><!-- /ko -->
+		<!--ko template: {name: 'textarea-template-ro', data: celldisc}--><!--/ko-->
+	<!-- /ko -->
+	<br/><br/>
+</form>
+

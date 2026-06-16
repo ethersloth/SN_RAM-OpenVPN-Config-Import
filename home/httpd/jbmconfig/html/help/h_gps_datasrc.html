@@ -1,0 +1,17 @@
+<h4>Description</h4>
+<p>
+ Select the data source from which the GPS data will be gathered. The available choices are:
+ <br />
+ <br />
+ <ul>
+  <li><b>Internal</b></li>
+  <li><b>External</b></li>
+  <li><b>Fixed</b></li>
+ </ul>
+ <br>
+ <br>
+ <b><u>Internal</u></b> GPS location data will be sourced from the GPSd process. This process will automatically poll GPS data from supported devices as they are attached. This includes the onboard GPS chipset in the RAM-9000 series, and cellular GPS from some series (RAM-6900).<br /><br />
+ <b><u>External</u></b> GPS location data will be gathered from an external serial GPS device. The serial port will need to be configured to select the onboard port as well as the serial data rate (defaulted to 4800, found in Advanced). The port may not be used with any other service simultaneously.<br /><br />
+ <b><u>Fixed</u></b> GPS data will not be collected from an actual source, but will be emulated as the fixed values entered by the user. Any Lat/Long point may be specified, in decimal format, with negative meaning S or W.
+</p>
+

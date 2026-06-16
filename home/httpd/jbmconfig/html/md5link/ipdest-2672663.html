@@ -1,0 +1,27 @@
+<form id="ipdest-form">
+	<!--ko template: {name:'title-template',data:'IP Destinations'}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'IP Destinations Table Properties'}--><!--/ko-->
+	<!--ko template: {name: 'table-template', data: ipdestTable}--><!--/ko-->
+	<div id="dest-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h3>IP Destination Settings</h3>
+		</div>
+		<div class="gw-modal-body-long">
+			<form>
+				<!--ko template: {name: 'text-template', data: addr1}--><!--/ko-->
+				<!--ko template: {name: 'text-template', data: port1}--><!--/ko-->
+				<!--ko template: {name: 'text-template', data: connecttimeout1}--><!--/ko-->
+				<!--ko template: {name: 'text-template', data: addr2}--><!--/ko-->
+				<!--ko template: {name: 'text-template', data: port2}--><!--/ko-->
+				<!--ko template: {name: 'text-template', data: connecttimeout2}--><!--/ko-->
+				<!--ko template: {name: 'text-template', data: addr3}--><!--/ko-->
+				<!--ko template: {name: 'text-template', data: port3}--><!--/ko-->
+				<!--ko template: {name: 'text-template', data: connecttimeout3}--><!--/ko-->
+				<!--ko template: {name: 'select-template', data: htype}--><!--/ko-->
+				<a class="btn btn-primary pull-right" data-bind="click: ipdestWizardFinish">Finish</a>
+			</form>
+		</div>
+	</div>
+</form>
+

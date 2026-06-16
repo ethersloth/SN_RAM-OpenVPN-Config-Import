@@ -1,0 +1,12 @@
+<!-- ko template: {name: 'title-template', data: 'Control Logic SmartVPN'}--><!-- /ko -->
+<!-- ko if: showStatus -->
+  <!-- ko template: {name: 'textarea-template-ro', data: modelStatus} --><!-- /ko -->
+  <!-- ko template: {name: 'textarea-template-ro', data: modelIfconfig} --><!-- /ko -->
+  <!-- ko template: {name: 'textarea-template-ro', data: modelRoutes} --><!-- /ko -->
+<!-- /ko -->
+<!-- ko if: showConfig -->
+  <!-- ko template: {name: 'textarea-template', data: modelConfig} --><!-- /ko -->
+  <div class="gw-row">
+    <!--ko template: {name: 'file-input-template', data: modelUpload}--><!--/ko-->
+  </div>
+<!-- /ko -->

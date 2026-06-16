@@ -1,0 +1,6 @@
+<h4>Description</h4>
+<p>This field holds the <b>ending address</b> range being transformed by NAT, the IP's seen by a remote host.  This address may be owned by an interface on this device, or an unowned/fake range with a corresponding route (static or default).</p>
+<p>One-to-one NAT Range will perform a complete forwarding of all ports for the range of starting/ending Original Destination IP's to a range of starting/ending New Destination IP addresses entered in <b>New Destination Address Start</b> and <b>New Destination Address End</b> fields. Both fields can be any valid IP. Neither need to be already present/configured/owned on a local interface of this device. <font color="#FF0000">(Required)</font></p>
+<p><b>Note:</b> Host Redirect and Service Access rules will apply first, and may prevent certain ports from reaching the New Destination.</p>
+<p>Ports 1-19 are excluded.</p>
+

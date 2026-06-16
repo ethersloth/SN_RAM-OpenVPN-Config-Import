@@ -1,0 +1,7 @@
+<h4>Description</h4>
+<p>Primary Host ID of the MQTT Engine Module.</p>
+<p>RAMQTT will subscribe to the STATE/&lt;Primary Host ID&gt; topic and receive
+messages from the MQTT Distributor indicating whether the MQTT Engine Module is
+ONLINE or OFFLINE. If RAMQTT recieves an OFFLINE message, it will queue messages
+until it receives an ONLINE message. This avoids losing data by publishing
+messages to an unresponsive MQTT Engine Module.

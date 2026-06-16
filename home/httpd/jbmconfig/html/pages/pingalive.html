@@ -1,0 +1,19 @@
+<!--ko template: {name: 'title-template', data: 'Ping Alive'}--><!--/ko-->
+<!--ko template: {name: 'full-savable-bool-template', data: enable}--><!--/ko-->
+<!--ko if: enable.value() === 'y'-->
+	<!--ko template: {name: 'full-savable-input-template', data: interval}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: hostaddr}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: hostaddr2}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: hostfailtype}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: command}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: pingidle}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: advanced}--><!--/ko-->
+	<!--ko if: showAdvanced-->
+		<!--ko template: {name: 'full-savable-select-template', data: bindintf}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: bindaddr}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: testpkts}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: failpkts}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: gpattempt}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: gpwait}--><!--/ko-->
+	<!--/ko-->
+<!--/ko-->

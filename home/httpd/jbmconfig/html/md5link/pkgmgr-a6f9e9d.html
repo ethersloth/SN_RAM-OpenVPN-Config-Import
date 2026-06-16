@@ -1,0 +1,51 @@
+<form id="pkgmgr-form" class="form-horizontal" action="/cgi-bin/gau" method="post" enctype="multipart/form-data">
+	<!--ko template:{name:'title-template',data:'Package Installation'}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: method}--><!--/ko-->
+	<hr>
+	<div class="gw-row" data-bind="visible: showLocal">
+		<!--ko template: {name: 'file-input-template', data: pkgdata}--><!--/ko-->
+	</div>
+	<div data-bind="visible: ! showLocal()" style="margin-bottom: 10px">
+		<!--ko template:{name:'h4-template',data: showStandard() ? 'Files in /packages and /configs' : 'Browse Card'}--><!--/ko-->
+		<!-- ko if: filesBrowser.root().length > 0 -->
+			<div class="gw-row" style="margin-bottom: 10px">
+				<button class="btn" data-bind="click: toggleStandard, text: showStandard() ? 'Browse entire card' : 'Show packages from standard location'"></button>
+				<button class="btn btn-primary" data-bind="click: updateSDCardList">Refresh</button>
+			</div>
+			<!-- ko if: showStandard -->
+				<div class="gw-auto-margin gw-border" style="width: 600px; text-align: left;" data-bind="foreach: standardPackages">
+					<!-- ko template: {name: 'browser-entry-template', data: $data} --><!-- /ko -->
+				</div>
+			<!-- /ko -->
+			<!-- ko ifnot: showStandard -->
+				<!-- ko template: {name: 'file-browser-template', data: filesBrowser} --><!-- /ko -->
+			<!-- /ko -->
+		<!-- /ko -->
+		<!-- ko ifnot: filesBrowser.root().length > 0 -->
+			<div style="text-align: center; margin-top: 10px"><button class="btn btn-primary" data-bind="click: updateSDCardList">Refresh</button></div>
+			<!-- ko if: listErrorMessage -->
+				<p style="color: red; text-align: center" data-bind="text: listErrorMessage"></p>
+			<!-- /ko -->
+			<!-- ko ifnot: listErrorMessage -->
+				<p style="color: red; text-align: center">No files found on SD card</p>
+			<!-- /ko -->
+		<!-- /ko -->
+		<div style="margin-bottom: 10px" data-bind="visible: filesBrowser.selectedFiles().length > 0">
+			<!--ko template:{name:'h4-template',data:'Selected Packages'}--><!--/ko-->
+			<div class="gw-auto-margin gw-border" style="width: 600px; text-align: left" data-bind="foreach: filesBrowser.selectedFiles">
+				<div style="padding-left: 5px; cursor: pointer" title="remove" data-bind="click: $parent.getPathRemove($data)">
+					<span data-bind="text: $data"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="gw-row" data-bind="with: installButton">
+		<button class="btn" data-bind="click: click, text: text, css: {'btn-primary': highlight}"></button>
+	</div>
+	<hr />
+	<!--ko template:{name:'h4-template',data:'History'}--><!--/ko-->
+	<div class="gw-row">
+		<br />
+		<textarea readonly rows="10" style="width: 600px; font-family: monospace" data-bind="text: histdsp"></textarea>
+	</div>
+</form>

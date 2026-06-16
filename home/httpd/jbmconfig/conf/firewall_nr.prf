@@ -1,0 +1,47 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall.prf"
+             name="firewall" />
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall_nr.prf" name="firewall_nr">
+   <validation>
+    <vstep errmsg="Invalid Firewall NAT Rules Set. Must be a well-formed XML document."
+             name="natrules"
+             test="string-length(/input/natrules/text()) > 0" />
+
+    <vstep errmsg="Invalid Firewall NAT Subnet Rules Set. Must be a well-formed XML document."
+             name="natrangerules"
+             test="string-length(/input/natrangerules/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Firewall NAT Rule(s) to system configuration file."
+             name="natrules"
+             path="/GAUCfg/firewall/natrules"
+             type="node" />
+
+    <cstep errmsg="Cannot save NAT Subnet Rules Set to configuration file"
+             name="natrangerules"
+             path="/GAUCfg/firewall/natrangerules"
+             type="node" />
+
+   </configuration>
+
+   <action name="Dummy" successmsg="Firewall NAT/NAT Range rules saved.">
+   </action>                                                 
+      
+   <action name="Save" successmsg="Firewall settings saved.">
+    <pre subsystem="firewall" action="Save" />
+
+   </action>
+
+   <action name="Apply" successmsg="Firewall settings applied.">
+    <pre subsystem="firewall" action="Apply" />
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

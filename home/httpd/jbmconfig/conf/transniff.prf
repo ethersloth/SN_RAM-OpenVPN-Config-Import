@@ -1,0 +1,444 @@
+
+<profile>
+ <subsystems>
+
+               <!-- Advanced -> Transniff Filter Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/transniff.prf" name="transnifffilter">
+   <validation>
+    <vstep errmsg="Invalid Enable value. Must be 'Yes' or 'No'."
+             name="enable"
+             test="/input/enable/text() = 'no'  or
+                   /input/enable/text() = 'yes'"   />
+
+    <vstep errmsg="Invalid Transniff Filter. Must be a well-formed XML document."
+               id="step1"
+             name="transniffs"
+             test="string-length(/input/transniffs/text()) > 0" />
+   </validation>
+
+   <configuration>    
+    <cstep errmsg="Unable to save Enable value to system configuration file."
+             name="enable"
+             path="/GAUCfg/transnifffilter/enable" />
+             
+    <cstep errmsg="Unable to save DVR Connection Type Option to system configuration file."
+             name="dvrconnection"
+             path="/GAUCfg/transnifffilter/dvrconnection" />
+             
+    <cstep errmsg="Unable to save Format value to system configuration file."
+             name="format"
+             path="/GAUCfg/transnifffilter/format" />
+             
+    <cstep errmsg="Unable to save Transniff Interface value to system configuration file."
+             name="interface"
+             path="/GAUCfg/transnifffilter/interface" />
+             
+    <cstep errmsg="Unable to save Line Speed value to system configuration file."
+             name="linespeed"
+             path="/GAUCfg/transnifffilter/linespeed" />
+             
+    <cstep errmsg="Unable to save Word Length value to system configuration file."
+             name="wordlength"
+             path="/GAUCfg/transnifffilter/wordlength" />
+             
+    <cstep errmsg="Unable to save Parity value to system configuration file."
+             name="parity"
+             path="/GAUCfg/transnifffilter/parity" />
+             
+    <cstep errmsg="Unable to save Stop Bit value to system configuration file."
+             name="stopbit"
+             path="/GAUCfg/transnifffilter/stopbit" />
+             
+    <cstep errmsg="Unable to save Host IP Address to system configuration file."
+             name="hostip"
+             path="/GAUCfg/transnifffilter/hostip" />
+             
+    <cstep errmsg="Unable to save Host IP Port Address to system configuration file."
+             name="hostport"
+             path="/GAUCfg/transnifffilter/hostport" />
+             
+    <cstep errmsg="Unable to save Host Names to system configuration file."
+             name="transniffs"
+             path="/GAUCfg/transnifffilter/transniffs" type="node" />
+   </configuration>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+
+       <astep abort="n" name="SystemCommand">
+          <arg expr="killall jbmcontrol" />
+       </astep>
+
+       <pre action="Save" subsystem="transnifffilter" />
+    
+       <astep name="SystemCommand" abort="n">
+             <arg dependency="cat /home/jbmgatew/jbmcontrol.conf | grep -q 'unit.xml'; [ $? -ne 0 ]"
+               expr="sed 's/unit.cfg/unit.xml/g' /home/jbmgatew/jbmcontrol.conf > /tmp/jbmcontrol.conf; mv -f /tmp/jbmcontrol.conf /home/jbmgatew/jbmcontrol.conf" />
+       </astep>
+       
+       <astep abort="n" errmsg="Failed to Install the GWLNX Configuration" name="SystemCommand">
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'tcpip'" expr="'installcfg /tmp/trans-ipatm-tcpc.xml'" source="config" />
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'serial'" expr="'installcfg /tmp/trans-ipatm-comp.xml'" source="config" />
+       </astep>
+       
+       <astep abort="n" errmsg="jbmcontrol is not running and couldn't start it." name="SystemCommand"
+                 sysdependency="pidof /bin/jbmcontrol &amp;> /dev/null; [ $? -ne 0 ]"> 
+           <arg dependency="/GAUCfg/transnifffilter/enable/text() = 'yes'"
+                      expr="'(sleep 10; /bin/jbmcontrol &amp;> /dev/null) &amp;'" source="config" />
+       </astep>
+   </action>
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+
+
+       <astep errmsg="Failed to write the gwlnx configuration file." name="WriteFormattedFile" abort="y">
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'tcpip'" expr="'/tmp/trans-ipatm-tcpc.xml'" source="config" />
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'serial'" expr="'/tmp/trans-ipatm-comp.xml'" source="config" />
+       </astep>
+
+       <astep abort="y" errmsg="Failed to write the XML headers for configuration file." name="AppendFormatted2File">
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'tcpip'" expr="'/tmp/trans-ipatm-tcpc.xml'" source="config" />
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'serial'" expr="'/tmp/trans-ipatm-comp.xml'" source="config" />
+           <arg expr="concat('<?xml version=', tick(), '1.0', tick(), ' encoding=', tick(), 'UTF-8', tick(), '?>')"  source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('<!DOCTYPE UnitCfg SYSTEM ', tick(), 'jbmcfg.dtd', tick(), '>')" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<!-- XML representation of binary config file -->'" source="config" />
+           <arg expr="\n" />
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'tcpip'" expr="concat('<UnitCfg unitdescr = ', tick(), 'Trans-C++ IP ATM To DVR Via TCP Client', tick(), '>')" source="config" />
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'serial'" expr="concat('<UnitCfg unitdescr = ', tick(), 'Trans-C++ IP ATM To DVR Via Com Port', tick(), '>')" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<!-- Transfer (Remote Access) Information Section -->'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<TransferInfo></TransferInfo>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<!-- Port Configuration Section -->'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<PortCfg>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<!-- Total number of ports defined in config file -->'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<MaxPorts>2</MaxPorts>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="\n" />
+       </astep>
+
+       <astep abort="y" errmsg="Failed to write the Comm Port Manager configuration file." name="AppendFormatted2File">
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'tcpip'" expr="'/tmp/trans-ipatm-tcpc.xml'" source="config" />
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'serial'" expr="'/tmp/trans-ipatm-comp.xml'" source="config" />
+           <arg expr="'<!-- Transniff Config -->'" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('<TransniffIntf:TransniffInterfaceCfg portdescr=', tick(), 'Transniff ', /GAUCfg/transnifffilter/interface/text(), ' Port', tick(), ' portnumber=', tick(), '1', tick(), ' protoID=', tick(), 'D004', tick(), ' xmlns:TransniffIntf=', tick(), 'TransniffIntf', tick(), '>')" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('<InterfaceName>', /GAUCfg/transnifffilter/interface/text(), '</InterfaceName>')" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<IndActivation>no</IndActivation>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'</TransniffIntf:TransniffInterfaceCfg>'" source="config"/>
+           <arg expr="\n" />
+       </astep>
+
+       <astep abort="n" errmsg="Failed to write the Comm Port Manager configuration file."
+         dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'serial'" name="AppendFormatted2File">
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'tcpip'" expr="'/tmp/trans-ipatm-tcpc.xml'" source="config" />
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'serial'" expr="'/tmp/trans-ipatm-comp.xml'" source="config" />
+           <arg expr="'<!-- Comm Port Manager Config -->'" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('<CommPortMngr:CommPortManagerCfg portdescr=', tick(), 'OUTPUT (COM Port-ttys1-', /GAUCfg/transnifffilter/linespeed/text(), ')', tick(), ' portnumber=', tick(), '2', tick(), ' protoID=', tick(), '8091', tick(), ' xmlns:CommPortMngr=', tick(), 'Commmanger', tick(), '>')" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<UseCycladesRAS>no</UseCycladesRAS>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="concat('<UseDNISRouting DNIStablefilename=', tick(), tick(), '>no</UseDNISRouting>')" source="config"/>
+           <arg expr="\n" />
+           <arg expr="concat('<DoCallReporting callreportfilename=', tick(), tick(), '>no</DoCallReporting>')" source="config"/>
+           <arg expr="\n" />
+           <arg expr="concat('<DoCallerIDFilter calleridfilterfilename=', tick(), tick(), '>no</DoCallerIDFilter>')" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<MaxSubaddrs>1</MaxSubaddrs>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="concat('<CommPortMngr:Subaddr subaddress=', tick(), '1', tick(), '>')" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<CommPortID>2</CommPortID>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="concat('<LineSpeed>', /GAUCfg/transnifffilter/linespeed/text(), '</LineSpeed>')" source="config"/>
+           <arg expr="\n" />
+           <arg expr="concat('<Parity>', /GAUCfg/transnifffilter/parity/text(), '</Parity>')" source="config"/>
+           <arg expr="\n" />
+           <arg expr="concat('<WordLength>', /GAUCfg/transnifffilter/wordlength/text(), '</WordLength>')" source="config"/>
+           <arg expr="\n" />
+           <arg expr="concat('<StopBit>', /GAUCfg/transnifffilter/stopbit/text(), '</StopBit>')" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<IndActivate>yes</IndActivate>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<DialString></DialString>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<MaxConnectAttempts>0</MaxConnectAttempts>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<ConnectionType>modem emulator</ConnectionType>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<APHCfg>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="concat('<DVRAPHCfg:APHConfig aphID=', tick(), 'ff7e', tick(), ' xmlns:DVRAPHCfg=', tick(), 'DVRAPH', tick(), '>')" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<EORString></EORString>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<UseStartDataChar>no</UseStartDataChar>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<StartDataChar>00</StartDataChar>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<InterCharTimeout>100</InterCharTimeout>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<UseTimerOnly>yes</UseTimerOnly>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<MaxBufSize>0</MaxBufSize>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<ATMInterface>ip</ATMInterface>'" source="config"/>
+           <arg expr="\n" />
+           <arg dependency="/GAUCfg/transnifffilter/format/text() = 'xml'" expr="'<XMLFormat>yes</XMLFormat>'" source="config"/>
+           <arg dependency="/GAUCfg/transnifffilter/format/text() = 'raw'" expr="'<XMLFormat>no</XMLFormat>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'</DVRAPHCfg:APHConfig>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'</APHCfg>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<IdleRXTimeout>0</IdleRXTimeout>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<IdleTXTimeout>0</IdleTXTimeout>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<ModemInitStrings>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<List>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<ListCount>0</ListCount>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="concat('<ListEntry listentry=', tick(), '1', tick(), '></ListEntry>')" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'</List>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'</ModemInitStrings>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<UseDTRDial>yes</UseDTRDial>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<UseISDNDial>no</UseISDNDial>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<UseIgnoreDTR>yes</UseIgnoreDTR>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<DCDConnectDly>0</DCDConnectDly>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<SwitchBaudRate>no</SwitchBaudRate>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<AlternateBaudRate>auto</AlternateBaudRate>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<SwitchThreshold>0</SwitchThreshold>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<RingTimer>0</RingTimer>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<CoBypassWhenExtLinePresent>no</CoBypassWhenExtLinePresent>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<CoWaitForUnmatchedPhoneNum>0</CoWaitForUnmatchedPhoneNum>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<EmulConnectMsgDelay>0</EmulConnectMsgDelay>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'</CommPortMngr:Subaddr>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'</CommPortMngr:CommPortManagerCfg>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'</PortCfg>'" source="config" />
+           <arg expr="\n" />
+       </astep>
+
+       <astep abort="n" 
+             errmsg="Failed to write the TCP Client Port Configuration file." 
+         dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'tcpip'" name="AppendFormatted2File">
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'tcpip'" expr="'/tmp/trans-ipatm-tcpc.xml'" source="config" />
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'serial'" expr="'/tmp/trans-ipatm-comp.xml'" source="config" />
+           <arg expr="'<!-- TCP CLient Config -->'" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('<TCPClient:TCPClientCfg portdescr=', tick(), 'Tcp Client With Interface', tick(), ' portnumber=', tick(), '2', tick(), ' protoID=', tick(), '0462', tick(), ' xmlns:TCPClient=', tick(), 'tcpclientWithInterface-IPFB', tick(), '>')" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<MaxSubaddrs>1</MaxSubaddrs>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('<TCPClient:Subaddr subaddress=', tick(), '1', tick(), '>')" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('<TCPIPAddr>', /GAUCfg/transnifffilter/hostip/text(), ' ', /GAUCfg/transnifffilter/hostport/text(), '</TCPIPAddr>')" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<IndActivate>yes</IndActivate>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<DefaultStatus>active</DefaultStatus>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<SourcePort>0</SourcePort>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<HeaderCfg>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('<MsgLenHeaderCfg msghdrtype=', tick(), 'none', tick(), '>')" source="config" />
+           <arg expr="\n" />
+           <arg expr="'</MsgLenHeaderCfg>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'</HeaderCfg>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<FlushDataOpt>allchanges</FlushDataOpt>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<RmtDisconnectOpt>disconnect</RmtDisconnectOpt>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<ReconnectTimer>1</ReconnectTimer>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<ResetToPrimaryTimer>0</ResetToPrimaryTimer>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<WaitForRemoteActivationTimer>0</WaitForRemoteActivationTimer>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<APHCfg>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="concat('<DVRAPHCfg:APHConfig aphID=', tick(), 'ff7e', tick(), ' xmlns:DVRAPHCfg=', tick(), 'DVRAPH', tick(), '>')" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<EORString></EORString>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<UseStartDataChar>no</UseStartDataChar>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<StartDataChar>00</StartDataChar>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<InterCharTimeout>100</InterCharTimeout>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<UseTimerOnly>yes</UseTimerOnly>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<MaxBufSize>0</MaxBufSize>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'<ATMInterface>ip</ATMInterface>'" source="config"/>
+           <arg expr="\n" />
+           <arg dependency="/GAUCfg/transnifffilter/format/text() = 'xml'" expr="'<XMLFormat>yes</XMLFormat>'" source="config"/>
+           <arg dependency="/GAUCfg/transnifffilter/format/text() = 'raw'" expr="'<XMLFormat>no</XMLFormat>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'</DVRAPHCfg:APHConfig>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'</APHCfg>'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="'</TCPClient:Subaddr>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<TCPClient:PortHardwareCfg>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<IPAddr>0.0.0.0</IPAddr>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<DestFileCfg></DestFileCfg>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'</TCPClient:PortHardwareCfg>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'</TCPClient:TCPClientCfg>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'</PortCfg>'" source="config" />
+           <arg expr="\n" />
+       </astep>
+
+       <astep abort="y" errmsg="Failed to write the Routing Table Configuration file." name="AppendFormatted2File">
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'tcpip'" expr="'/tmp/trans-ipatm-tcpc.xml'" source="config" />
+           <arg dependency="/GAUCfg/transnifffilter/dvrconnection/text() = 'serial'" expr="'/tmp/trans-ipatm-comp.xml'" source="config" />
+           <arg expr="'<!-- Routing Table Information Section -->'" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('<Routetble:RouteTable xmlns:Routetble=', tick(), 'routingtable', tick(), '>')" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<MaxPorts>2</MaxPorts>'" source="config" />
+           <arg expr="\n" />
+
+           <arg expr="concat('<RoutingTblePort portnumber=', tick(), '1', tick(), '>')" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<MaxSubaddrs>1</MaxSubaddrs>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('<Routetble:Subaddr subaddress=', tick(), '1', tick(), '>')" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<RtrPrimaryPort>2</RtrPrimaryPort>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<RtrPrimarySubaddr>1</RtrPrimarySubaddr>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'</Routetble:Subaddr>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'</RoutingTblePort>'" source="config" />
+           <arg expr="\n" />
+
+           <arg expr="concat('<RoutingTblePort portnumber=', tick(), '2', tick(), '>')" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<MaxSubaddrs>1</MaxSubaddrs>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="concat('<Routetble:Subaddr subaddress=', tick(), '1', tick(), '>')" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<RtrPrimaryPort>1</RtrPrimaryPort>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'<RtrPrimarySubaddr>1</RtrPrimarySubaddr>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'</Routetble:Subaddr>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'</RoutingTblePort>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'</Routetble:RouteTable>'" source="config" />
+           <arg expr="\n" />
+           <arg expr="'</UnitCfg>'" source="config" />
+           <arg expr="\n" />
+       </astep>
+       
+
+       <astep abort="y" errmsg="Failed to write transniff.filter file" name="WriteFile">
+        <arg expr="/tmp/transniff.filter" />
+       </astep>
+   
+       <astep abort="y" errmsg="Failed to write transniff.filter file" rptNdxName="RPT_NDX" name="AppendFormatted2File">
+        <arg expr="/tmp/transniff.filter" />     
+        <arg dependency="((/GAUCfg/transnifffilter/transniffs/NumberOftransniffs/text() >1))"
+             expr="concat('(')"
+             rptNdxName="RPT_NDX"
+                 source="config" />
+       </astep>
+   
+       <astep abort="y" errmsg="Failed to write transniff.filter file" repeat="/GAUCfg/transnifffilter/transniffs/transniff" rptNdxName="RPT_NDX" name="AppendFormatted2File">
+        <arg expr="/tmp/transniff.filter" />     
+        <arg dependency="((string-length(/GAUCfg/transnifffilter/transniffs/transniff[RPT_NDX]/tcpport/text()) > 0) and 
+                          (string-length(/GAUCfg/transnifffilter/transniffs/transniff[RPT_NDX]/ipaddr/text()) = 0))"
+             expr="concat('(port ', /GAUCfg/transnifffilter/transniffs/transniff[RPT_NDX]/tcpport/text(), ')')"
+             rptNdxName="RPT_NDX"
+                 source="config" />
+        <arg dependency="((string-length(/GAUCfg/transnifffilter/transniffs/transniff[RPT_NDX]/ipaddr/text()) > 0) and 
+                          (string-length(/GAUCfg/transnifffilter/transniffs/transniff[RPT_NDX]/tcpport/text()) = 0))"
+             expr="concat('(host ', /GAUCfg/transnifffilter/transniffs/transniff[RPT_NDX]/ipaddr/text(), ')')"
+             rptNdxName="RPT_NDX"
+                 source="config" />
+        <arg dependency="((string-length(/GAUCfg/transnifffilter/transniffs/transniff[RPT_NDX]/ipaddr/text()) > 0) and 
+                          (string-length(/GAUCfg/transnifffilter/transniffs/transniff[RPT_NDX]/tcpport/text()) > 0))"
+             expr="concat('(port ' , /GAUCfg/transnifffilter/transniffs/transniff[RPT_NDX]/tcpport/text(), ' and host ',
+                           /GAUCfg/transnifffilter/transniffs/transniff[RPT_NDX]/ipaddr/text(), ')')"
+             rptNdxName="RPT_NDX"
+                 source="config" />
+        <arg dependency="((/GAUCfg/transnifffilter/transniffs/NumberOftransniffs/text()) > (/GAUCfg/transnifffilter/transniffs/transniff[RPT_NDX]/@record))"
+             expr="concat(' or ')"
+             rptNdxName="RPT_NDX"
+                 source="config" />
+       </astep>
+   
+       <astep abort="y" errmsg="Failed to write transniff.filter file" rptNdxName="RPT_NDX" name="AppendFormatted2File">
+        <arg expr="/tmp/transniff.filter" />     
+        <arg dependency="((/GAUCfg/transnifffilter/transniffs/NumberOftransniffs/text()) >1)"
+             expr="concat(')')"
+             rptNdxName="RPT_NDX"
+                 source="config" />
+       </astep>
+   
+       <astep abort="y" errmsg="Failed to install transniff.filter file in /etc/jbm/ Directory." name="SystemCommand">
+        <arg expr="mv -f /tmp/transniff.filter /etc/jbm/transniff.filter" />
+       </astep>
+
+       <astep abort="y" errmsg="Failed to write the eth_promisc file" name="WriteFile">
+        <arg expr="/tmp/eth_promisc" />
+       </astep>
+   
+       <astep abort="y" errmsg="Failed to append to eth_promisc file" name="AppendFormatted2File">
+        <arg expr="/tmp/eth_promisc" />
+        <arg expr="'#!/bin/bash'" source="config" />
+        <arg expr="\n" />
+        <arg dependency="/GAUCfg/transnifffilter/interface/text() = 'eth0'" expr="'ifconfig eth0 promisc &amp;> /dev/null'" source="config" />
+        <arg dependency="/GAUCfg/transnifffilter/interface/text() = 'eth1'" expr="'ifconfig eth1 promisc &amp;> /dev/null'" source="config" />
+        <arg expr="\n" />
+       </astep>
+   
+       <astep abort="y" errmsg="Failed to install eth_promisc file in /etc/cron.5min/ Directory." name="SystemCommand">
+        <arg expr="mv -f /tmp/eth_promisc /etc/cron.5min/eth_promisc" />
+       </astep>
+   </action>
+
+  </subsystem>
+ </subsystems>
+</profile>

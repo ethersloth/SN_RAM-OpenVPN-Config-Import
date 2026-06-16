@@ -1,0 +1,27 @@
+<!--ko template: {name:'title-template',data:'VRRP'}--><!--/ko-->
+<!--ko template: {name:'h4-template',data:'Configuration Table'}--><!--/ko-->
+<!--ko template: {name:'table-template',data: vrrpTable}--><!--/ko-->
+<div id="vrrp-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="vrrp-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Add VRRP Table</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-select-template', data: enable}--><!--/ko-->
+					<!-- ko if: enable.value() === 'Yes'-->
+						<!--ko template: {name: 'full-savable-select-template', data: intf}--><!--/ko-->
+						<!--ko template: {name: 'full-savable-select-template', data: mac}--><!--/ko-->
+						<!--ko template: {name: 'full-savable-input-template', data: ipaddr}--><!--/ko-->
+						<!--ko template: {name: 'full-savable-input-template', data: gid}--><!--/ko-->
+						<!--ko template: {name: 'full-savable-input-template', data: priority}--><!--/ko-->
+						<!--ko template: {name: 'full-savable-input-template', data: ninterval}--><!--/ko-->
+					<!-- /ko -->
+					<a class="btn btn-primary pull-right" data-bind="click: accessWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

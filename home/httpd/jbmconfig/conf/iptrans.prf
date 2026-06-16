@@ -1,0 +1,513 @@
+
+<profile>
+ <subsystems>
+  <subsystem file="/home/httpd/jbmconfig/conf/iptrans.prf" name="iptrans">
+   <validation>
+    <vstep errmsg="Invalid Enable value. Must be 'y' or 'n'."
+               id="STEP1"
+             name="enable"
+             test="isyorn(/input/enable/text())" />
+
+    <vstep errmsg="Invalid Interface. Must be either 'eth0' or 'eth1'."
+               id="STEP2"
+             name="internalintf"
+             test="/input/internalintf/text() = 'eth0' or /input/internalintf/text() = 'eth1'" />
+
+    <vstep errmsg="Invalid Speed and Duplex. Must be either 'auto', '10h', '100h' or '100f'"
+               id="STEP2A"
+             name="spddplx"
+             test="/input/spddplx/text() = 'auto'  or
+                   /input/spddplx/text() = '10h'   or
+                   /input/spddplx/text() = '100h'  or
+                   /input/spddplx/text() = '100f'"   />
+
+    <vstep errmsg="Invalid Private IP enable. Must be 'y' or 'n'."
+               id="STEP3"
+             name="privateip"
+             test="isyorn(/input/privateip/text())" />
+
+    <vstep errmsg="Invalid TELNET enable value. Must be 'y' or 'n'."
+               id="STEP3A"
+             name="telnet"
+             test="isyorn(/input/telnet/text())" />
+
+    <vstep     id="STEP4"
+             name="enable"
+           skipto="STEP6"
+             test="/input/telnet/text() = 'n'" />
+
+    <vstep errmsg="Invalid TELNET Port. Must be an integer between 1 and 65535."
+               id="STEP5"
+             name="telnetport"
+             test="isnumber(/input/telnetport/text()) and /input/telnetport/text() < 65536 and /input/telnetport/text() > 1" />
+
+    <vstep errmsg="Invalid SSH enable value. Must be 'y' or 'n'."
+               id="STEP6"
+             name="ssh"
+             test="isyorn(/input/ssh/text())" />
+
+    <vstep     id="STEP7"
+             name="enable"
+           skipto="STEP9"
+             test="/input/ssh/text() = 'n'" />
+
+    <vstep errmsg="Invalid SSH Port. Must be an integer between 1 and 65535."
+               id="STEP8"
+             name="sshport"
+             test="isnumber(/input/sshport/text()) and /input/sshport/text() < 65536 and /input/sshport/text() > 1" />
+
+    <vstep errmsg="Invalid SNMP enable value. Must be 'y' or 'n'."
+               id="STEP_SNMP"
+             name="snmp"
+             test="isyorn(/input/snmp/text())" />
+
+    <vstep errmsg="Invalid SNMP Port. Must be an integer between 1 and 65535."
+               id="STEP_SNMPPORT"
+             name="snmpport"
+             test="isnumber(/input/snmpport/text()) and /input/snmpport/text() < 65536 and /input/snmpport/text() > 1" />
+
+    <vstep errmsg="Invalid GAU value. Must be 'y' or 'n'."
+               id="STEP9"
+             name="gau"
+             test="isyorn(/input/gau/text())" />
+
+    <vstep errmsg="Invalid GAU Port. Must be an integer between 1 and 65535."
+               id="STEP_GAUPORT"
+             name="gauport"
+             test="isnumber(/input/gauport/text()) and /input/gauport/text() < 65536 and /input/gauport/text() > 1" />
+
+    <vstep errmsg="Invalid SVM value. Must be 'y' or 'n'."
+               id="STEP10"
+             name="gmu"
+             test="isyorn(/input/gmu/text())" />
+
+    <vstep errmsg="Invalid OOB value. Must be 'y' or 'n'."
+               id="STEP11"
+             name="oobenable"
+             test="isyorn(/input/oobenable/text())" />
+
+    <vstep     id="STEP12"
+             name="enable"
+           skipto="STEP14"
+             test="/input/oobenable/text() = 'n'" />
+<!--
+    <vstep errmsg="Invalid OOB Port value. Must an integer between 1 and 65535."
+               id="STEP13"
+             name="oobport"
+             test="isnumber(/input/oobport/text()) and /input/oobport/text() < 65536 and /input/oobport/text() > 1" />
+-->
+    <vstep errmsg="Invalid Re-direct Enable value. Must be 'y' or 'n'."
+               id="STEP14"
+             name="prenable"
+             test="isyorn(/input/prenable/text())" />
+
+    <vstep errmsg="Invalid Subnet Restrict Enable value. Must be 'y' or 'n'."
+               id="STEP15"
+             name="rtenable"
+             test="isyorn(/input/rtenable/text())" />
+
+    <vstep errmsg="Invalid Restrict mode. Must be either 'none', 'only', 'in' or 'out'"
+               id="STEP16"
+             name="rtmode"
+             test="/input/rtmode/text() = 'in'   or
+                   /input/rtmode/text() = 'none' or
+                   /input/rtmode/text() = 'only' or
+                   /input/rtmode/text() = 'out'"   />
+
+    <vstep errmsg="Invalid Re-direct table Record Set. Must be a well-formed XML document."
+               id="STEP17"
+             name="prs"
+             test="string-length(/input/prs/text()) > 0" />
+
+    <vstep errmsg="Invalid Subnet restrict table Record Set. Must be a well-formed XML document."
+               id="STEP18"
+             name="rts"
+             test="string-length(/input/rts/text()) > 0" />
+
+    <vstep errmsg="Invalid DHCP Server Enable value. Must be 'y' or 'n'."
+               id="STEP19"
+             name="dhcpsenable"
+             test="isyorn(/input/dhcpsenable/text())" />
+
+    <vstep errmsg="Invalid MAC filter. Must be a properly formatted MAC address."
+               id="STEP20"
+             name="macfilter"
+             test="string-length(/input/macfilter/text()) < 18" />
+
+    <vstep errmsg="Invalid Router Mode Enable option. Must be either 'n' or 'y'."
+               id="STEP21"
+             name="routermode"
+             test="isyorn(/input/routermode/text())" />
+
+    <vstep errmsg="Invalid DHCP Subnet type. Must be either 'y', 'n' or 'wide'"
+               id="STEP22"
+             name="dhcpsubnet"
+             test="/input/dhcpsubnet/text() = 'y'   or
+                   /input/dhcpsubnet/text() = 'n' or
+                   /input/dhcpsubnet/text() = 'wide'"   />
+
+   </validation>
+
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable Flag to system configuration file."
+             name="enable"
+             path="/GAUCfg/iptrans/enable" />
+
+    <cstep errmsg="Unable to save Interface to system configuration file."
+             name="internalintf"
+             path="/GAUCfg/iptrans/internalintf" />
+
+    <cstep errmsg="Unable to save Speed/Duplex to system configuration file."
+             name="spddplx"
+             path="/GAUCfg/iptrans/spddplx" />
+
+    <cstep errmsg="Unable to save DHCP Server Enable Flag to system configuration file."
+             name="dhcpsenable"
+             path="/GAUCfg/iptrans/dhcpsenable" />
+
+    <cstep errmsg="Unable to save PRIVATEIP to system configuration file."
+             name="privateip"
+             path="/GAUCfg/iptrans/privateip" />
+
+    <cstep errmsg="Unable to save TELNET to system configuration file."
+             name="telnet"
+             path="/GAUCfg/iptrans/telnet" />
+
+    <cstep errmsg="Unable to save TELNET port to system configuration file."
+             name="telnetport"
+             path="/GAUCfg/iptrans/telnetport" />
+
+    <cstep errmsg="Unable to save DHCP Subnet type port to system configuration file."
+             name="dhcpsubnet"
+             path="/GAUCfg/iptrans/dhcpsubnet" />
+
+    <cstep errmsg="Unable to save DHCP Lease time to system configuration file."
+             name="dhcpleasetime"
+             path="/GAUCfg/iptrans/dhcpleasetime" />
+
+    <cstep errmsg="Unable to save SSH to system configuration file."
+             name="ssh"
+             path="/GAUCfg/iptrans/ssh" />
+
+    <cstep errmsg="Unable to save SSH port to system configuration file."
+             name="sshport"
+             path="/GAUCfg/iptrans/sshport" />
+
+    <cstep errmsg="Unable to save SNMP to system configuration file."
+             name="snmp"
+             path="/GAUCfg/iptrans/snmp" />
+
+    <cstep errmsg="Unable to save SNMP port to system configuration file."
+             name="snmpport"
+             path="/GAUCfg/iptrans/snmpport" />
+
+    <cstep errmsg="Unable to save MAC filter to system configuration file."
+             name="macfilter"
+             path="/GAUCfg/iptrans/macfilter" />
+
+    <cstep errmsg="Unable to save Router Mode to system configuration file."
+             name="routermode"
+             path="/GAUCfg/iptrans/routermode" />
+
+    <cstep errmsg="Unable to save GAU to system configuration file."
+             name="gau"
+             path="/GAUCfg/iptrans/gau" />
+
+    <cstep errmsg="Unable to save GAU port to system configuration file."
+             name="gauport"
+             path="/GAUCfg/iptrans/gauport" />
+
+    <cstep errmsg="Unable to save SVM to system configuration file."
+             name="gmu"
+             path="/GAUCfg/iptrans/gmu" />
+
+    <cstep errmsg="Unable to save OOB Enable to system configuration file."
+             name="oobenable"
+             path="/GAUCfg/iptrans/oobenable" />
+
+    <cstep errmsg="Unable to save Re-direct enable to system configuration file."
+             name="prenable"
+             path="/GAUCfg/iptrans/prenable" />
+
+    <cstep errmsg="Unable to save Restrict enable to system configuration file."
+             name="rtenable"
+             path="/GAUCfg/iptrans/rtenable" />
+
+    <cstep errmsg="Unable to save Re-direct mode to system configuration file."
+             name="rtmode"
+             path="/GAUCfg/iptrans/rtmode" />
+
+    <cstep errmsg="Unable to save DHCP Subnet type to system configuration file."
+             name="dhcpsubnet"
+             path="/GAUCfg/iptrans/dhcpsubnet" />
+
+    <cstep errmsg="Unable to save Re-direct table to system configuration file."
+             name="prs"
+             path="/GAUCfg/iptrans/prs" type="node" />
+
+    <cstep errmsg="Unable to save Restrict table to system configuration file."
+             name="rts"
+             path="/GAUCfg/iptrans/rts" type="node" />
+
+   </configuration>
+
+
+   <action name="Save" successmsg="IP Transparency settings saved.">
+
+<!--Moved to prfhandler_iptrans
+    <astep abort="y" errmsg="Failed to write IP Transparency configuration file." name="WriteFormattedFile" >
+     <arg expr="'/tmp/iptrans.conf'" source="config" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg expr="IPTRANS_EXTERNAL_INT = ppp0" />
+     <arg expr="\n" />
+
+     <arg   expr="concat('IPTRANS_INTERNAL_INT = ', /GAUCfg/iptrans/internalintf/text())" source="config" />
+
+     <arg expr="\n" />
+
+
+     <arg dependency="string-length(/GAUCfg/iptrans/spddplx/text()) = 0"
+                expr="'IPTRANS_INTERNAL_INT_SPEED = auto'"
+              source="config" />
+
+     <arg dependency="string-length(/GAUCfg/iptrans/spddplx/text()) > 0"
+                expr="concat('IPTRANS_INTERNAL_INT_SPEED = ', /GAUCfg/iptrans/spddplx/text())"
+              source="config" />
+
+     <arg expr="\n" />
+
+
+     <arg dependency="/GAUCfg/iptrans/dhcpsenable/text() = 'n'"
+                expr="'IPTRANS_DHCP_SERVER_ENABLE = no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/iptrans/dhcpsenable/text() = 'y'"
+                expr="'IPTRANS_DHCP_SERVER_ENABLE = yes'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/iptrans/routermode/text() = 'n'"
+                expr="'IPTRANS_ROUTER_MODE = no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/iptrans/routermode/text() = 'y'"
+                expr="'IPTRANS_ROUTER_MODE = yes'"
+              source="config" />
+
+     <arg expr="\n" />
+
+
+     <arg dependency="/GAUCfg/iptrans/dhcpsubnet/text() = 'n'"
+                expr="'IPTRANS_USE_CALCULATED_SUBNET = no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/iptrans/dhcpsubnet/text() = 'y'"
+                expr="'IPTRANS_USE_CALCULATED_SUBNET = yes'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/iptrans/dhcpsubnet/text() = 'wide'"
+                expr="'IPTRANS_USE_CALCULATED_SUBNET = wide'"
+              source="config" />
+
+     <arg expr="\n" />
+
+
+     <arg expr="concat('IPTRANS_DHCP_LEASE_TIME = ', /GAUCfg/iptrans/dhcpleasetime/text())" source="config" />
+     <arg expr="\n" />
+
+
+     <arg dependency="string-length(/GAUCfg/iptrans/macfilter/text()) > 0"
+                expr="concat('IPTRANS_MAC_ADDRESS_FILTER = ', /GAUCfg/iptrans/macfilter/text())"
+              source="config" />
+
+     <arg dependency="string-length(/GAUCfg/iptrans/macfilter/text()) > 0"
+                expr="'\n'"
+              source="config" />
+
+
+     <arg dependency="/GAUCfg/iptrans/ssh/text() = 'n'"
+                expr="'IPTRANS_EXTERNAL_SSH_ENABLE = no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/iptrans/ssh/text() = 'y'"
+                expr="'IPTRANS_EXTERNAL_SSH_ENABLE = yes'"
+              source="config" />
+
+     <arg expr="\n" />
+
+
+     <arg expr="concat('IPTRANS_SSH_PORT = ', /GAUCfg/iptrans/sshport/text())" source="config" />
+     <arg expr="\n" />
+
+
+     <arg dependency="string-length(/GAUCfg/iptrans/privateip/text()) = 0"
+                expr="'IPTRANS_USE_169_ADDR = no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/iptrans/privateip/text() = 'n'"
+                expr="'IPTRANS_USE_169_ADDR = no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/iptrans/privateip/text() = 'y'"
+                expr="'IPTRANS_USE_169_ADDR = yes'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg dependency="string-length(/GAUCfg/iptrans/telnet/text()) = 0"
+                expr="'IPTRANS_EXTERNAL_TELNET_ENABLE = no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/iptrans/telnet/text() = 'n'"
+                expr="'IPTRANS_EXTERNAL_TELNET_ENABLE = no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/iptrans/telnet/text() = 'y'"
+                expr="'IPTRANS_EXTERNAL_TELNET_ENABLE = yes'"
+              source="config" />
+
+     <arg expr="\n" />
+
+
+     <arg expr="concat('IPTRANS_TELNET_PORT = ', /GAUCfg/iptrans/telnetport/text())" source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/iptrans/gau/text() = 'n'"
+                expr="'IPTRANS_EXTERNAL_GAU_ENABLE = no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/iptrans/gau/text() = 'y'"
+                expr="'IPTRANS_EXTERNAL_GAU_ENABLE = yes'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg expr="concat('IPTRANS_GAU_PORT = ', /GAUCfg/iptrans/gauport/text())" source="config" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/iptrans/snmp/text() = 'n'"
+                expr="'IPTRANS_EXTERNAL_SNMP_ENABLE = no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/iptrans/snmp/text() = 'y'"
+                expr="'IPTRANS_EXTERNAL_SNMP_ENABLE = yes'"
+              source="config" />
+
+     <arg expr="\n" />
+
+     <arg expr="concat('IPTRANS_SNMP_PORT = ', /GAUCfg/iptrans/snmpport/text())" source="config" />
+     <arg expr="\n" />
+
+
+     <arg dependency="/GAUCfg/iptrans/gmu/text() = 'n'"
+                expr="'IPTRANS_EXTERNAL_GMU_LISTENER_ENABLE = no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/iptrans/gmu/text() = 'y'"
+                expr="'IPTRANS_EXTERNAL_GMU_LISTENER_ENABLE = yes'"
+              source="config" />
+
+     <arg expr="\n" />
+
+
+     <arg dependency="/GAUCfg/iptrans/oobenable/text() = 'n'"
+                expr="'IPTRANS_USE_OOB_PORTS = no'"
+              source="config" />
+
+     <arg dependency="/GAUCfg/iptrans/oobenable/text() = 'y'"
+                expr="'IPTRANS_USE_OOB_PORTS = yes'"
+              source="config" />
+
+     <arg expr="\n" />
+
+
+    </astep>
+
+    <astep      abort="y"
+           dependency="/GAUCfg/iptrans/prenable/text() = 'y'"
+               errmsg="Failed to append to IP Transparency configuration file"
+                 name="AppendFormatted2File"
+               repeat="/GAUCfg/iptrans/prs/pr"
+           rptNdxName="RPT_NDX">
+
+     <arg expr="/tmp/iptrans.conf" />
+
+     <arg expr="concat('IPTRANS_PORT_REDIRECT', RPT_NDX, ' = ')" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/iptrans/prs/pr[RPT_NDX]/proto/text()"    rptNdxName="RPT_NDX" source="config" />
+     <arg expr="' '"                                             rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/iptrans/prs/pr[RPT_NDX]/extport/text()"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="' '"                                             rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/iptrans/prs/pr[RPT_NDX]/intport/text()"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep  abort="y"
+           errmsg="Failed to append to IP Transparency configuration file"
+             name="AppendFormatted2File" >
+
+     <arg expr="/tmp/iptrans.conf" />
+
+     <arg expr="concat('RESTRICT_TRAFFIC = ', /GAUCfg/iptrans/rtmode/text())" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep      abort="y"
+           dependency="/GAUCfg/iptrans/rtenable/text() = 'y'"
+               errmsg="Failed to append to IP Transparency configuration file"
+                 name="AppendFormatted2File"
+               repeat="/GAUCfg/iptrans/rts/rt"
+           rptNdxName="RPT_NDX">
+
+     <arg expr="/tmp/iptrans.conf" />
+
+     <arg expr="concat('RESTRICT_BLOCK', RPT_NDX, ' = ')"      rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/iptrans/rts/rt[RPT_NDX]/subnet/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move IP Transparency configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/iptrans.conf /etc/sysconfig/iptrans.conf" />
+    </astep>
+
+    <astep abort="n" name="SystemCommand">
+     <arg dependency="/GAUCfg/iptrans/enable/text() = 'n'" expr="'chkconfig iptrans off'" source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to enable IP Transparency Service." name="SystemCommand">
+     <arg dependency="/GAUCfg/iptrans/enable/text() = 'y'" expr="'chkconfig iptrans on'" source="config" />
+    </astep>
+Moved to prfhandler_iptrans-->
+
+    <astep abort="y" errmsg="Failed to save the IP transparency configuration" name="SystemCommand">
+     <arg expr="'prfhandler_iptrans Save'" source="config" />
+    </astep>
+   </action>
+
+   <action name="Apply" successmsg="IP Transparency settings applied.">
+
+<!--Moved to prfhandler_iptrans
+    <pre subsystem="iptrans" action="Save" />
+
+    <astep abort="n" name="SystemCommand">
+     <arg dependency="/GAUCfg/iptrans/enable/text() = 'n'" expr="'service iptrans stop'" source="config" />
+    </astep>
+
+    <astep abort="n" errmsg="Failed to start IP Transparency Service." name="SystemCommand">
+     <arg dependency="/GAUCfg/iptrans/enable/text() = 'y'" expr="'service iptrans restart'" source="config" />
+    </astep>
+Moved to prfhandler_iptrans-->
+
+    <astep abort="y" errmsg="Failed to Apply the IP transparency configuration" name="SystemCommand">
+     <arg expr="'prfhandler_iptrans Apply'" source="config" />
+    </astep>
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

@@ -1,0 +1,3 @@
+Manufacturer=Red Lion
+Contactemail=customer.service@redlion.net
+Contactphone=877-432-9908

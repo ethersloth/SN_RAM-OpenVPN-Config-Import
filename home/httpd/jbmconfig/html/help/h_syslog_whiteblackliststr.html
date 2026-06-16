@@ -1,0 +1,8 @@
+<h4>Description</h4>
+<p>When configuring Remote Syslog, there are many cases where the entire contents of the onboard syslog are not of interest. In order to reduce the amount of data used to transmit message, these lists allow configurable strings to match on messages that are of interest. When creating a blacklist, any of the search terms added are matched against each syslog message. If any terms are found, the message is discarded and not sent to the remote syslog server. The whitelist operates similarly, but all messages sent must have at least one search term listed in the whitelist.</p>
+<p>All search terms for whitelist and blacklist are case sensitive. All search terms must be between 5 and 80 characters long.</p
+<p>
+<b>Example:</b><br />
+Configured whitelist members are <b>error</b> and <b>warning</b>. The blacklist members are <b>ipsec</b> and <b>pluto</b>.<br /><br />
+Only messages that contain the word <b>error</b> or <b>warning</b> will be allowed to be transmitted, however if the message also has the word <b>ipsec</b> or <b>pluto</b>, then it will be discarded. A message with just <b>Error</b> in it would be discarded.
+</p>

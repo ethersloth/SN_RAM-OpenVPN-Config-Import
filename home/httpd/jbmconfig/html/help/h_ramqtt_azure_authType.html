@@ -1,0 +1,12 @@
+<h4>Description</h4>
+<p>The Authentication Type determines how RAMQTT will authenticate with the Azure IoT Hub.</p>
+<p><b>SAS Token</b><br>
+RAMQTT will used an already existing/generated SAS Token to authenticate with the Azure IoT Hub.
+</p>
+<p><b>Device Connection String</b><br>
+RAMQTT will use a Device Connection String to generate a SAS Token to authenticate with the Azure IoT Hub.
+Each time the SAS Token expires, RAMQTT will use the Device Connection String to generate a new SAS Token.
+</p>
+<p><b>Self Signed Certificates</b><br>
+RAMQTT will use the selected Device Certificate file, Device Certificate Key file, and a Root Certificate Authority file to
+authenticate the Broker.</p>

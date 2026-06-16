@@ -1,0 +1,37 @@
+
+<profile>
+ <subsystems>
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall.prf"
+             name="firewall" />
+
+  <subsystem file="/home/httpd/jbmconfig/conf/firewall_dhr.prf" name="firewall_dhr" >
+   <validation>
+    <vstep errmsg="Invalid Firewall DMZ Rules Set. Must be a well-formed XML document."
+             name="dmzrules"
+             test="string-length(/input/dmzrules/text()) > 0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Firewall DMZ Rule(s) to system configuration file."
+             name="dmzrules"
+             path="/GAUCfg/firewall/dmzrules"
+             type="node" />
+   </configuration>
+
+   <action name="Dummy" successmsg="Firewall DMZ rules saved.">
+   </action>
+
+   <action name="Save" successmsg="Firewall settings saved.">
+    <pre subsystem="firewall" action="Save" />
+
+   </action>
+
+   <action name="Apply" successmsg="Firewall settings applied.">
+    <pre subsystem="firewall" action="Apply" />
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

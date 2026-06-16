@@ -1,0 +1,98 @@
+
+<profile>
+ <subsystems>
+
+                <!-- Advanced -> I/O CTRL Interface Section -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/ioctrl.prf" name="ioctrl">
+
+   <validation>
+    <vstep errmsg="Invalid Enable value. Must be 'yes' or 'no'."
+             name="enable"
+             test="/input/enable/text() = 'no'  or
+                   /input/enable/text() = 'yes'"   />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save enable value to system configuration file."
+             name="enable"
+             path="/GAUCfg/ioctrl/enable" />
+
+    <cstep errmsg="Unable to save Digital Input address value to system configuration file."
+             name="diaddr"
+             path="/GAUCfg/ioctrl/diaddr" />
+
+    <cstep errmsg="Unable to save Digital Input Counter address value to system configuration file."
+             name="dicaddr"
+             path="/GAUCfg/ioctrl/dicaddr" />
+                              
+    <cstep errmsg="Unable to save Digital Output address value to system configuration file."
+             name="doaddr"
+             path="/GAUCfg/ioctrl/doaddr" />
+
+    <cstep errmsg="Unable to save Analog Input address value to system configuration file."
+             name="aiaddr"
+             path="/GAUCfg/ioctrl/aiaddr" />
+
+    <cstep errmsg="Unable to save Time Interval value to system configuration file."
+             name="interval"
+             path="/GAUCfg/ioctrl/interval" />
+
+   </configuration>
+   
+   <action name="Apply" successmsg="Operation Succeeded.">
+    <pre subsystem="ioctrl" action="Save" />
+
+    <astep abort="y" errmsg="could not start the snhwioctrl program." name="SystemCommand">
+     <arg dependency="/GAUCfg/ioctrl/enable/text() = 'yes'"
+                expr="'service snhwioctrl restart'"
+              source="config"/>
+    </astep>
+
+    <astep abort="y" errmsg="could not start the snhwioctrl program." name="SystemCommand">
+     <arg dependency="/GAUCfg/ioctrl/enable/text() = 'no'"
+                expr="'service snhwioctrl stop'"
+              source="config"/>
+    </astep>
+
+   </action>
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+       <!-- Start writing the I/O CTRL configuration file. -->
+
+       <astep errmsg="Failed to write the I/O CTRL configuration file." name="WriteFormattedFile" abort="y">
+           <arg expr="'/tmp/snhwioctrl.conf'" source="config" />
+       </astep>
+
+       <astep abort="y" errmsg="Failed to write the I/O CTRL parameters for configuration file." name="AppendFormatted2File">
+           <arg expr="'/tmp/snhwioctrl.conf'"  source="config" />
+           <arg expr="'# snhw I/O CTRL options'" source="config"/>
+           <arg expr="\n" />
+           <arg expr="concat('SNIOCTRLOPTIONS=', tick(), '-d4 ')" source="config" />
+           <arg dependency="string-length(/GAUCfg/ioctrl/diaddr/text()) > 0" expr="concat('-a', /GAUCfg/ioctrl/diaddr/text())" source="config" />
+           <arg dependency="string-length(/GAUCfg/ioctrl/doaddr/text()) > 0" expr="concat(' -b', /GAUCfg/ioctrl/doaddr/text())" source="config" />
+           <arg dependency="string-length(/GAUCfg/ioctrl/aiaddr/text()) > 0" expr="concat(' -c', /GAUCfg/ioctrl/aiaddr/text())" source="config" />
+           <arg dependency="string-length(/GAUCfg/ioctrl/dicaddr/text()) > 0" expr="concat(' -e', /GAUCfg/ioctrl/dicaddr/text())" source="config" />
+           <arg dependency="string-length(/GAUCfg/ioctrl/interval/text()) > 0" expr="concat(' -t', /GAUCfg/ioctrl/interval/text(), tick())" source="config" />
+           <arg expr="\n" />
+           <arg expr="\n" />
+       </astep>
+
+       <astep abort="y" errmsg="Failed to move the snhwioctrl.conf file to /etc/jbm/ directory." name="SystemCommand">
+          <arg expr="concat('mv -f /tmp/snhwioctrl.conf /etc/jbm/snhwioctrl.conf')" source="config" />
+       </astep>
+
+       <astep abort="y" errmsg="Failed to turn off snhwioctrl in chkconfig list." name="SystemCommand">
+          <arg dependency="/GAUCfg/ioctrl/enable/text() = 'no'" expr="'chkconfig snhwioctrl off'" source="config" />
+       </astep>
+
+       <astep abort="y" errmsg="Failed to turn on snhwioctrl in chkconfig list." name="SystemCommand">
+          <arg dependency="/GAUCfg/ioctrl/enable/text() = 'yes'" expr="'chkconfig snhwioctrl on'" source="config" />
+       </astep>
+
+   </action>
+
+
+  </subsystem>
+ </subsystems>
+</profile>

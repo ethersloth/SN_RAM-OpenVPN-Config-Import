@@ -1,0 +1,38 @@
+<p>
+Value at which the alarm will trigger.<br /><br />
+If the <b>Event Type</b> is a <b>Data Match</b> or <b>Data Mismatch</b> type, the alarm will trigger on this exact value. In all other cases, the data source must <b>exceed</b> this value (above or below depending)<br /><br />
+This must be within the limits of the data source.<br /><br />
+                       <!-- "more" link cutoff -->                              
+For IODB, these limits are:
+</p>
+<table style="text-align:center; font-size:10px"><tr>
+<th></th>
+<th>Min Unsigned</th>
+<th>Max Unsigned</th>
+<th>Min Signed</th>
+<th>Max Signed</th>
+</tr><tr>
+<th>Digital</th>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr><tr>
+<th>16 Bit</th>
+<td>0</td>
+<td>65535</td>
+<td>-32768</td>
+<td>32768</td>
+</tr><tr>
+<th>32 Bit</th>
+<td>0</td>
+<td>2<sup>32</sup>-1</td>
+<td>-2<sup>31</sup></td>
+<td>2<sup>31</sup>-1</td>
+</tr><tr>
+<th>64 Bit</th>
+<td>0</td>
+<td>2<sup>64</sup>-1</td>
+<td>-2<sup>63</sup></td>
+<td>2<sup>63</sup>-1</td>
+</tr></table>

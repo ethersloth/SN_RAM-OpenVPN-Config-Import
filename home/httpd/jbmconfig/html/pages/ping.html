@@ -1,0 +1,19 @@
+<form id="ping-form" class="form-horizontal">
+	<table style="width: 100%">
+		<tr>
+			 <td style="text-align: center; vertical-align: middle">
+				<h3>Ping</h3>
+			 </td>
+		</tr>
+	</table>
+
+	<span><hr /></span>
+
+	<div data-bind="template: {name: 'text-template', data: hostip}"></div>
+	<div data-bind="template: {name: 'select-template', data: sintfs}"></div>
+
+	<div style="text-align: center">
+		<textarea readonly style="width: 550px; font-family: monospace" rows="18" data-bind="value: result" name="result" wrap="off"></textarea>
+	</div>
+
+</form>

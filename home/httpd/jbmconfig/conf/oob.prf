@@ -1,0 +1,120 @@
+
+<profile>
+ <subsystems>
+                                                                                                                              <!--
+                Advanced -> OOB Settings Section                                                                              -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/oob.prf" name="oob">
+   <validation>
+    <vstep errmsg="Invalid OOB parameters set. Must be a well-formed XML document."
+             name="oobs"
+             test="string-length(/input/oobs/text()) > 0" />
+   </validation>
+
+
+   <configuration>
+    <cstep errmsg="Cannot save OOB parameters set to configuration file"
+             name="oobs"
+             path="/GAUCfg/oobm/oobs"
+             type="node" />
+   </configuration>
+
+
+   <action name="Apply" successmsg="OOB settings saved and applied.">
+    <pre subsystem="oob" action="Save" />
+
+    <astep      abort="n"
+           dependency="/GAUCfg/iptrans/enable/text() = 'y' and /GAUCfg/iptrans/oobenable/text() = 'y'"
+                 errmsg="Failed to restart IP Transparency.  Retry or Reboot."
+                 name="SystemCommand">
+     <arg expr="/home/httpd/jbmconfig/bin/restart_iptrans_delay.sh" />
+    </astep>
+
+    <astep      abort="n"
+           dependency="/GAUCfg/oobm/oobs/NumberOfoobs/text() = '0'"
+                 name="SystemCommand">
+     <arg expr="/bin/jbm_oob disable" />
+    </astep>
+
+    <astep      abort="y"
+           dependency="/GAUCfg/oobm/oobs/NumberOfoobs/text() != '0'"
+               errmsg="Failed to enable OOB"
+                 name="SystemCommand">
+     <arg expr="/bin/jbm_oob enable" />
+    </astep>
+   </action>
+
+   <action name="Save" successmsg="OOB settings saved.">
+    <astep abort="y" errmsg="Failed to write OOB configuration file" name="WriteFormattedFile">
+     <arg expr="/tmp/jbm_oob.conf" />
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep      abort="n"
+           dependency="/GAUCfg/oobm/oobs/NumberOfoobs/text() != '0'"
+               errmsg="Failed to append to OOB configuration file"
+                 name="AppendFormatted2File"
+               repeat="/GAUCfg/oobm/oobs/oob"
+           rptNdxName="RPT_NDX">
+
+     <arg expr="/tmp/jbm_oob.conf" />
+
+     <arg expr="concat('ENTRY', 'RPT_NDX', '={tty=>')" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/oobm/oobs/oob[RPT_NDX]/intf/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+
+     <arg expr="', port=>'"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/oobm/oobs/oob[RPT_NDX]/port/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+
+     <arg expr="', speed=>'"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/oobm/oobs/oob[RPT_NDX]/speed/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+
+     <arg expr="', data=>'"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/oobm/oobs/oob[RPT_NDX]/bits/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+
+     <arg expr="', stop=>'"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/oobm/oobs/oob[RPT_NDX]/stopbits/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+
+     <arg expr="', parity=>'"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/oobm/oobs/oob[RPT_NDX]/parity/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+
+     <arg expr="', ciscoaph=>'"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/oobm/oobs/oob[RPT_NDX]/useciscoaph/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+
+     <arg expr="', localbind=>'"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/oobm/oobs/oob[RPT_NDX]/localbind/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+
+     <arg expr="', telnserv=>'"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+     <arg expr="/GAUCfg/oobm/oobs/oob[RPT_NDX]/telnetservermode/text()" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="tick()"  rptNdxName="RPT_NDX" source="config" />
+
+     <arg expr="}" />
+     <arg expr="\n"/>
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move OOB configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/jbm_oob.conf /etc/jbm/jbm_oob.conf" />
+    </astep>
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

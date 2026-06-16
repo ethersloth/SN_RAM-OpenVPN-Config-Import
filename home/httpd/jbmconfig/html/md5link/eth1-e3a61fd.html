@@ -1,0 +1,115 @@
+<!--ko template: {name:'title-template', data: 'Ethernet Interface eth1 (LAN)'}--><!--/ko-->
+<div data-bind="visible: !showEth1()">
+	<!--ko template: {name:'h4-template', data: 'The Wi-Fi Interface has authority of the eth1 interface, since it is enabled and is in bridge mode.'}--><!--/ko-->
+	<div style="text-align: center">
+		<a class="btn btn-primary" href="#!/wifi">Configure Wi-Fi</a>
+	</div>
+</div>
+<div data-bind="visible: showEth1">
+	<!--ko template: {name: 'full-savable-bool-template', data: enable}--><!--/ko-->
+	<!-- ko if: enable.value() === 'y'-->
+		<!--ko template: {name: 'full-savable-select-template', data: spddplx}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-bool-template', data: usedhcp}--><!--/ko-->
+		<div data-bind="visible: isDHCPDisabled">
+			<!--ko template: {name: 'full-savable-input-template', data: address}--><!--/ko-->
+			<!--ko template: {name: 'full-savable-input-template', data: netmask}--><!--/ko-->
+		</div>
+		<!--ko template: {name: 'full-savable-bool-template', data: defaultgw}--><!--/ko-->
+		<div data-bind="visible: isDHCPDisabled">
+			<!--ko template: {name: 'full-savable-input-template', data: gateway}--><!--/ko-->
+		</div>
+		<div data-bind="visible: isDHCPEnabled">
+			<!--ko template: {name: 'full-savable-bool-template', data: peerdns}--><!--/ko-->
+		</div>
+		<!--ko template: {name: 'full-savable-input-template', data: mtu}--><!--/ko-->
+		<!-- ko if: showDhcpEth1 -->
+		<hr />
+		<!--ko template: {name: 'h4-template', data: 'DHCP Server Settings'}--><!--/ko-->
+		<table style="width: 100%;"><tr>
+			<td style="width: 50%; text-align: right; vertical-align: middle;">
+				<h4 style="margin-right: 20px">eth1</h4>
+			</td>
+			<td style="width: 50%; text-align: left; vertical-align: middle;">
+				<span data-bind="text: eth1desc"></span>
+			</td>
+		</tr></table>
+		<!--ko template: {name: 'full-savable-select-template', data: eth1endhcp}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-select-template', data: eth1dftgw}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: eth1saddr}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: eth1eaddr}--><!--/ko-->
+		<!-- /ko -->
+		<hr/>
+		<!--ko template: {name:'h4-template',data:'Interface Aliases'}--><!--/ko-->
+		<!--ko template: {name:'table-template',data:interfaceAliassTable}--><!--/ko-->
+		<hr/>
+		<!--ko template: {name:'h4-template',data:'Interface VLANs'}--><!--/ko-->
+		<!-- ko ifnot: showVlans -->
+			<p style="color: red; text-align: center">VLAN Configuration not available when in Split LAN mode</p>
+		<!-- /ko -->
+		<!-- ko if: showVlans -->
+			<!--ko template: {name:'table-template',data:interfaceVlansTable}--><!--/ko-->
+		<!-- /ko -->
+	<!-- /ko -->
+</div>
+<div id="eth1confirm" data-backdrop="static" data-keyboard="false" class="modal hide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-bind="click: exit">&times;</button>
+					<h3>Apply Recommendation</h3>
+				</div>
+				<div class="modal-body">
+					<table style="width: 100%;">
+						<tr>
+							<td><span data-bind="text: applyresult"></span></td>
+						</tr>
+						<tr>
+							<td><span data-bind="html: choices"></span></td>
+						</tr>
+					</table>
+					<a class="btn btn-primary pull-right" data-bind="click: Continue">Continue</a>
+					<a class="btn pull-right" data-bind="click: ApplySave">Save</a>
+					<a class="btn pull-right" data-bind="click: Cancel">Revert</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="eth1alias-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="eth1alias-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Interface Aliases Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: subintnum}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: ipaddr}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: aliasnetmask}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: interfaceAliassWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="eth1vlan-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="eth1vlan-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Interface VLANs Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name: 'full-savable-input-template', data: vlanidnum}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: vlanipaddr}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-input-template', data: vlannetmask}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: interfaceVlansWizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

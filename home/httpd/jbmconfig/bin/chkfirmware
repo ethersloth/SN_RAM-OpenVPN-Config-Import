@@ -1,0 +1,379 @@
+#!/usr/bin/perl -w
+# (c)2017 Red Lion Controls, Inc. All rights reserved. Red Lion, the Red Lion logo
+# and Sixnet are registered trademarks of Red Lion Controls, Inc. All other company
+# and product names are trademarks of their respective owners.
+
+###############################################################################################################################
+#                                                                                                                             #
+# chkfirmware - Check validity of firmware file.                                                                              #
+#                                                                                                                             #
+# Ensure that the file identified by the name supplied by the caller meets the following critera:                             #
+#                                                                                                                             #
+# File exists & readable                                                                                                      #
+# File has 'bootfs' or 'rootfs' in the file name                                                                              #
+# File is not larger than it's target partition                                                                               #
+# File size evenly divisible by 128K.                                                                                         #
+# 1st three bytes of file = x'198520 ("B" series) BlueTree.                                                                   #
+# 1st three bytes of file = x'198520 ("G" series) BlueTree G25.                                                               #
+#                                                                                                                             #
+# This program was written by Art Surgant.                                                                                    #
+#                                                                                                                             #
+###############################################################################################################################
+
+
+my $version = "2.14";
+
+my $g_progname = `basename $0 2>/dev/null`;
+chomp($g_progname);
+
+# Get command line argument(s), if any:
+my $argCnt = $#ARGV;
+if ($argCnt == -1)
+{
+    Usage($0,$version);
+
+    exit(1);
+}
+
+my $fileName = "";
+my $argList = @ARGV;
+if ($argList)
+{
+    chomp(@ARGV);
+
+    my $argCnt = $#ARGV;
+
+    $fileName = $ARGV[0];
+
+    if ("-h" eq fileName)
+    {
+    Usage($0, $version);
+    }
+}
+else
+{
+    Usage($0, $version);
+}
+
+# Ensure bin file exists:
+if (!(-e $fileName))
+{
+    &syslog("$fileName does not exist.");
+    exit(1);
+}
+
+# Ensure bin file can be read:
+if (!(-r $fileName))
+{
+    &syslog("$fileName cannot be opened for reading.");
+    exit(1);
+}
+
+#featurecode vars
+my $fc_file = "/var/log/bt_printenv";
+my $fc_tech_mode_var = "fc_cell_tech_mode=";
+
+
+# Determine platform (CPU):
+# Open and read /proc/cpuinfo.
+
+my $platform = "G";
+my $proc_cpuinfo = "/proc/cpuinfo";
+if (!-e "$proc_cpuinfo")
+{
+    &syslog("Unable to identify platform, missing info file $proc_cpuinfo");
+    exit(1)
+}
+
+if (!-r "$proc_cpuinfo")
+{
+    &syslog("Unable to identify platform, cannot read info file $proc_cpuinfo");
+    exit(1);
+}
+
+if (!open(CPUINFO, "$proc_cpuinfo"))
+{
+    &syslog("Unable to identify platform, cannot open info file $proc_cpuinfo");
+    exit(1);
+}
+
+
+while (<CPUINFO>)
+{
+    my $line = $_;
+    if ($line =~ /ARM926/i)
+    {
+        $platform = "B";
+        #last; #don't last here incase it is a "G" type, which has both
+    }
+
+    if ($line =~ /AT91SAM9X5/i)
+    {
+        $platform = "G"; #G25 / Sentry
+        last;
+    }
+}
+
+close(CPUINFO);
+
+&syslog("PLATFORM: $platform");
+
+my $maxBootFileSize = 0;
+my $maxRootFileSize = 0;
+my $minFileSize = 0;
+my @signature = ();
+my $file_match = "";
+
+
+my $block_size = 128;
+my $byte_multiplier  = 1024;
+
+
+#bootfs/rootfs get the line with /dev/ but not specific incase a new FS type
+#is used instead of jffs/mtd
+#/dev/mtdblock4            3072      2712       360  88% /boot
+$maxBootFileSize = `df /boot/ | grep "/dev/" | awk '{ print \$2 }'`;
+chomp($maxBootFileSize);
+$maxBootFileSize = $maxBootFileSize * $byte_multiplier ;
+#/dev/root               122880     33804     89076  28% /
+$maxRootFileSize = `df / | grep "/dev/" | awk '{ print \$2 }'`;
+chomp($maxRootFileSize);
+$maxRootFileSize = $maxRootFileSize * $byte_multiplier ;
+
+
+#At least 2 128k blocks
+$minFileSize = 2 * $block_size * $byte_multiplier ;
+if ("B" eq $platform)
+{
+    @signature = (0x85, 0x19, 0x01);
+}
+
+if ("G" eq $platform)
+{
+    @signature = (0x85, 0x19, 0x01);
+    $file_match = "sng25";
+}
+
+
+# Ensure bin file size is within specified limits
+my $fileSize = -s $fileName;
+
+if ( $fileName =~ m/bootfs/i )
+{
+    if ($fileSize < $minFileSize)
+    {
+        &syslog("$fileName appears to be truncated");
+        exit(1);
+    }
+
+    if ($fileSize > $maxBootFileSize)
+    {
+        &syslog("$fileName appears to be too large. Size $fileSize, max size $maxBootFileSize");
+        exit(1);
+    }
+}
+elsif ( $fileName =~ m/rootfs/i )
+{
+    if ($fileSize < $minFileSize)
+    {
+        &syslog("$fileName appears to be truncated");
+        exit(1);
+    }
+
+    if ($fileSize > $maxRootFileSize)
+    {
+        &syslog("$fileName appears to be too large. Size $fileSize, max size $maxBootFileSize");
+        exit(1);
+    }
+}
+else
+{
+    &syslog("$fileName is not named properly and cannot be checked");
+    exit(1);
+}
+
+
+# Ensure bin file size is integral number of 128K blocks:
+
+if ("B" ne "$platform" && "G" ne "$platform")
+{
+    if (0 != ($fileSize % ($block_size * $byte_multiplier )))
+    {
+        &syslog("$fileName has boundary error (($fileSize % ($block_size * $byte_multiplier )) != 0)");
+        exit(1);
+    }
+}
+
+#Make sure G25 builds go on G25
+if ("G" eq "$platform")
+{
+    if ( $file_match !~ /^\s*$/ && $fileName !~ m/$file_match/i )
+    {
+        &syslog("$fileName does not contain '$file_match'");
+        exit(1);
+    }
+
+}
+
+#Verify the new firmware isn't too old for this hardware platform (rootfs only)
+if ( &validateFirmwareCompat($fileName) )
+{
+   exit 1;
+}
+
+# Verify file signature (1st 3 bytes = x'B8C007 for "C" series, x'198520 for "D" series, x'851901 for "B" series):
+
+if (!open(BINFILE, "$fileName"))
+{
+    &syslog("Can't open $fileName");
+    exit(1);
+}
+
+binmode(BINFILE, ':raw');
+my $buffer;
+read(BINFILE, $buffer, 3, 0);
+close(BINFILE);
+
+my $sigNdx = 0;
+foreach (split(//, $buffer))
+{
+    my $ch = ord($_);
+
+    if ($ch ne $signature[$sigNdx])
+    {
+        &syslog("$signature[$sigNdx], Bad signature");
+        exit(1);
+    }
+
+    $sigNdx++;
+}
+
+&syslog("$fileName appears valid");
+
+# And we're done.
+exit(0);
+
+
+#Determine if the rootfs file has a build date that is too old.
+#We don't want to put older firmware on that doesn't support the hardware
+#4.19 2014.10.22-23:59:45
+#4.20 2015.02.16-23:59:33
+#4.21 2015.07.18-00:04:25 #MC73xx support
+#4.22 2015.10.14-00:15:53
+#4.23 2016.03.14-15:38:55
+#4.24 2016.08.17-06:14:54
+#4.25 2017.01.09-06:53:22
+#4.26D 2017.04.08-06:18:33
+#4.27 TBD
+sub validateFirmwareCompat()
+{
+   my $filename = shift;
+   my $min_month = 0;
+   my $min_year = 0;
+   my $modelno = `modelno 2>&1`;
+   my $fc_tech_mode = "";
+
+   if ( ! -e "$filename" )
+   {
+      &syslog("File '$filename' is missing, cannot determine build date");
+      return 1;
+   }
+
+   if ( $fileName =~ m/rootfs/i )
+   {
+      chomp($modelno);
+      &syslog("Checking modelno '$modelno'");
+      if ( $modelno =~ /^(BT|SN|RAM)\-?[1-9]9[0-9][0-9].*$/i )
+      {
+         #Model with MC73xx
+         $min_month = 7;
+         $min_year = 2015;
+      }
+
+      $fc_tech_mode = `grep "^$fc_tech_mode_var" $fc_file 2>&1`;
+      if ( $fc_tech_mode =~ m/$fc_tech_mode_var(.*)$/i)
+      {
+          &syslog("$fc_tech_mode_var=$1");
+          if ( $1 =~ /2g/i || $1 =~ /3g/i )
+          {
+              #4.26 and later
+              $min_month = 4;
+              $min_year = 2017;
+          }
+      }
+
+      if ( 0 == $min_month || 0 == $min_year )
+      {
+         #nothing to check
+         &syslog("Model $modelno has no minimum build date requirement");
+         return 0;
+      }
+
+      #now find the date in the image
+      #sometimes it has characters at the front
+      #wtf1969.03.13-15:38:55
+      #Sometimes a ." is in the front, assume it could be any garbage chars at the beginning
+      #."2017.02.28-07:54:30
+      my $build_year;
+      my $build_month;
+      my $strings_grep_cmd = "strings $filename | grep -E '^.*[0-9]{4,}\\.[0-9]{2,}\\.[0-9]{2,}-[0-9]{2,}:[0-9]{2,}:[0-9]{2,}\$'";
+      print "$strings_grep_cmd\n";
+      my $build_date = `$strings_grep_cmd 2>&1`;
+      chomp($build_date);
+      if ( $build_date =~ /^\s*$/ )
+      {
+         &syslog("Error: Cannot determine build date for file $filename");
+         return 1;
+      }
+
+      if ( $build_date =~ /^.*([0-9]{4})\.([0-9]{2})\.[0-9]{2}-.*$/ )
+      {
+         ($build_year =  $1) =~ s/[^0-9]//g;
+         ($build_month = $2) =~ s/[^0-9]//g;
+      }
+
+      &syslog("Got file build month/year $build_month/$build_year");
+      if ( ($build_year < $min_year) || ($build_year eq $min_year && $build_month < $min_month) )
+      {
+         &syslog("Error: Target update build with date '$build_date' is too old for device $modelno");
+         &syslog(" - Min date must be $min_month/$min_year");
+         return 1;
+      }
+
+      &syslog("Build date $build_date appears valid");
+   }
+
+   return 0;
+}
+
+#takes a passed message, and use "logger"
+#to send the message to the syslog
+sub syslog()
+{
+   my $mess = $_[0];
+   my $pid = $$;
+   $mess =~ s/\"/\\\"/g;
+   $mess =~ s/\`/\\\`/g;
+   system("logger -s -t \"$g_progname\[$pid\]\" \"$mess\" 2>&1");
+}
+
+sub Usage
+{
+    my $cmd     = $_[0],
+    my $version = $_[1];
+
+    print $cmd . " v" . $version . "\n\n"                       .
+
+    "Usage:\n\n"                                          .
+
+    $cmd . " -h\n\n"                                      .
+
+    " Displays that which you are currently reading.\n\n" .
+
+    "OR\n\n"                                              .
+
+    $cmd . " <path/name of file to check>\n\n";
+}
+
+
+

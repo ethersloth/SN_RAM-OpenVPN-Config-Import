@@ -1,0 +1,61 @@
+
+<profile>
+ <subsystems>
+
+                                                                                                                              <!--
+               Admin -> Package Installation Section
+
+  V2.20 behaviors (taken from cfg_sys.cpp - InstallPackage() & UploadPackage()):
+
+  +==========+======================================================+============+
+  |  ACTION  |                           STEP                       | ON FAILURE |
+  +==========+======================================================+============+
+  |   Upload | Verify file name exists in Master Configuration file | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Verify length of file name > 0                       | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Verify file exists & readable                        | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Verify file is valid ZIP file:                       | Abort      |
+  |          |                                                      |            |
+  |          | unzip -t {package name} &> /dev/null                 |            |
+  |          |                                                      |            |
+  |          | if (!valid zip file)                                 |            |
+  |          |   {                                                  |            |
+  |          |    delete file                                       |            |
+  |          |   }                                                  |            |
+  +----------+------------------------------------------------------+------------+
+  |  Install | Verify file name exists in Master Configuration file | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Verify length of file name > 0                       | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | Remove filename from Master Configuration file       | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | snupdate {packagefile} &> /dev/null                  | Abort      |
+  |          +------------------------------------------------------+------------+
+  |          | if (packagefile exists)                              |            |
+  |          |   {                                                  |            |
+  |          |    Attempt to delete packagefile                     |            |
+  |          |   }                                                  |            |
+  +==========+======================================================+============+                                            -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/package.prf" name="package">
+   <validation>
+    <vstep name="file" errmsg="Invalid Package File. Must be non-empty." test="string-length(/input/file/text())>0" />
+   </validation>
+
+   <configuration>
+    <cstep errmsg="Unable to save Package File to system configuration file." name="file" path="/GAUCfg/package/file" />
+   </configuration>
+
+   <action name="Install" successmsg="Operation Succeeded.">
+    <astep errmsg="Failed to install package file" name="SystemCommand" abort="y">
+     <arg source="config" expr="concat('snupdate ', quote(), /GAUCfg/package/file/text(), quote())" />
+    </astep>
+   </action>
+  </subsystem>
+
+
+
+ </subsystems>
+</profile>

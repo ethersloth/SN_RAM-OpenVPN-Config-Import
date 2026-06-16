@@ -1,0 +1,81 @@
+
+<profile>
+ <subsystems>
+
+               <!--                                                                                                                              <!--
+                Advanced -> IP Destinations Section
+               -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/ipdest.prf" name="ipdest">
+   <validation>
+    <vstep errmsg="Invalid Dest Record Set. Must be a well-formed XML document."
+               id="step1"
+             name="dests"
+             test="string-length(/input/dests/text()) > 0" />
+   </validation>
+
+   <configuration>    
+    <cstep errmsg="Unable to save Host Names to system configuration file."
+             name="dests"
+             path="/GAUCfg/ipdest/dests" type="node" />
+   </configuration>
+
+   <action name="Apply" successmsg="Apply Operation Succeeded.">
+    
+    <pre action="Save" subsystem="ipdest" />
+    
+    <astep abort="y" errmsg="Failed to stop the gwlnx" name="SystemCommand">
+     <arg expr="service jbmcontrol stop" />
+    </astep>
+
+    <astep abort="n" errmsg="jbmcontrol is not running and couldn't start it." name="SystemCommand"
+              sysdependency="pidof /bin/jbmcontrol &amp;>/dev/null; [ $? -ne 0 ]"> 
+                       <arg expr="/bin/jbmcontrol" />
+    </astep>
+       
+   </action>
+
+   <action name="Save" successmsg="Save Operation Succeeded.">
+    
+    <astep abort="y" errmsg="Failed to write ipdest.conf file" name="WriteFile">
+     <arg expr="/tmp/ipdest.conf" />
+     <arg expr="" />
+    </astep>
+    <astep abort="y" errmsg="Failed to Append to ipdest.conf file" repeat="/GAUCfg/ipdest/dests/dest" rptNdxName="RPT_NDX" name="Append2File">
+     <arg expr="/tmp/ipdest.conf" />     
+     <arg expr="concat('RPT_NDX', '^', /GAUCfg/ipdest/dests/dest[RPT_NDX]/addr1/text(), ' ', /GAUCfg/ipdest/dests/dest[RPT_NDX]/port1/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="(string-length(/GAUCfg/ipdest/dests/dest[RPT_NDX]/addr2/text()) > 0) and (string-length(/GAUCfg/ipdest/dests/dest[RPT_NDX]/port2/text()) > 0)"
+          expr="concat(';', /GAUCfg/ipdest/dests/dest[RPT_NDX]/addr2/text(), ' ', /GAUCfg/ipdest/dests/dest[RPT_NDX]/port2/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="(string-length(/GAUCfg/ipdest/dests/dest[RPT_NDX]/addr3/text()) > 0) and (string-length(/GAUCfg/ipdest/dests/dest[RPT_NDX]/port3/text()) > 0)"
+          expr="concat(';', /GAUCfg/ipdest/dests/dest[RPT_NDX]/addr3/text(), ' ', /GAUCfg/ipdest/dests/dest[RPT_NDX]/port3/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />
+     <arg dependency="(string-length(/GAUCfg/ipdest/dests/dest[RPT_NDX]/htype/text()) > 0)"
+          expr="concat('^NO^', /GAUCfg/ipdest/dests/dest[RPT_NDX]/htype/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />      
+     <arg dependency="(string-length(/GAUCfg/ipdest/dests/dest[RPT_NDX]/connecttimeout1/text()) > 0)"
+          expr="concat('^', /GAUCfg/ipdest/dests/dest[RPT_NDX]/connecttimeout1/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />      
+     <arg dependency="(string-length(/GAUCfg/ipdest/dests/dest[RPT_NDX]/connecttimeout2/text()) > 0)"
+          expr="concat(';', /GAUCfg/ipdest/dests/dest[RPT_NDX]/connecttimeout2/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />      
+     <arg dependency="(string-length(/GAUCfg/ipdest/dests/dest[RPT_NDX]/connecttimeout3/text()) > 0)"
+          expr="concat(';', /GAUCfg/ipdest/dests/dest[RPT_NDX]/connecttimeout3/text())"
+          rptNdxName="RPT_NDX"
+              source="config" />      
+    </astep>
+    <astep abort="y" errmsg="Failed to install ipdest.conf file in /home/jbmgatew/ Directory." name="SystemCommand">
+     <arg expr="mv -f /tmp/ipdest.conf /home/jbmgatew/ipdest.conf" />
+    </astep>
+   </action>
+
+ </subsystem>
+ </subsystems>
+</profile>

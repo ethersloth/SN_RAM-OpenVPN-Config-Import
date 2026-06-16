@@ -1,0 +1,86 @@
+<h4>Description</h4>
+<p>Modbus command type options used for the I/O transfers</p>
+<p><b>Read - </b>Used for reading Modbus registers from the remote station.</p>
+<p><b>Write - </b>Used for writing Modbus registers to the remote station.</p>
+<p><b>Write Single - </b>Used for writing a single Modbus register to the remote station.</p>
+<p><b>Read / Write - </b>Used for reading Modbus registers from the remote station, unless a local IODB change to the same register has been detected. In that case, the local IODB change takes priority and is written to the remote station</p>
+<p><b>Valid Type Combinations for READ I/O Xfers</b><br />
+<table border="1">
+	<tr>
+		<th>Local Type</th>
+		<th>Valid Remote Type</th>
+	</tr>
+	<tr>
+		<td>DI</td>
+		<td>DI | DO</td>
+	</tr>
+	<tr>
+		<td>DO</td>
+		<td>DI | DO</td>
+	</tr>
+	<tr>
+		<td>AI</td>
+		<td>AI | AO</td>
+	</tr>
+	<tr>
+		<td>AO</td>
+		<td>AI | AO</td>
+	</tr>
+	<tr>
+		<td>FI</td>
+		<td>FI | FO</td>
+	</tr>
+	<tr>
+		<td>FO</td>
+		<td>FI | FO</td>
+	</tr>
+	<tr>
+		<td>LI</td>
+		<td>LI | LO</td>
+	</tr>
+	<tr>
+		<td>LO</td>
+		<td>LI | LO</td>
+	</tr>
+</table>
+</p>
+<p><br /><b>Valid Type Combinations for WRITE I/O Xfers</b><br />
+<table border="1">
+	<tr>
+		<th>Local Type</th>
+		<th>Valid Remote Type</th>
+	</tr>
+	<tr>
+		<td>DI</td>
+		<td>DO</td>
+	</tr>
+	<tr>
+		<td>DO</td>
+		<td>DO</td>
+	</tr>
+	<tr>
+		<td>AI</td>
+		<td>AO</td>
+	</tr>
+	<tr>
+		<td>AO</td>
+		<td>AO</td>
+	</tr>
+	<tr>
+		<td>FI</td>
+		<td>FO</td>
+	</tr>
+	<tr>
+		<td>FO</td>
+		<td>FO</td>
+	</tr>
+	<tr>
+		<td>LI</td>
+		<td>LO</td>
+	</tr>
+	<tr>
+		<td>LO</td>
+		<td>LO</td>
+	</tr>
+</table>
+</p>

@@ -1,0 +1,46 @@
+<form id="datalink-form" class="form-horizontal">
+<!-- ko ifnot: isram -->
+    <!--ko template: {name:'title-template',data:'Upgrade to RAM is required in order to load this page'}--><!--/ko-->
+    <div style="text-align: center">
+        <a class="btn btn-primary" href="#!/ram_unlock">Upgrade to RAM</a>
+    </div>
+    <br />
+    <h5><p class="gw-auto-margin" style="width: 600px; text-align: center">Please contact <span data-bind="text: manufacturer"></span> support at <span><font color="red" data-bind="text: contactemail"></font></span> or <span><font color="red" data-bind="text: contactphone"></font></span></h5>
+<!-- /ko -->
+<!-- ko if: isram -->
+    <!--ko template: {name:'title-template',data:'DNP3 Data Link and Application Layer Configuration'}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Define Data Link Layer Properties'}--><!--/ko-->
+    <hr />
+	<!--ko template: {name:'h4-template',data:'Data Link Layer'}--><!--/ko-->
+    <!--ko template: {name:'select-template-bool',data: samestationnum}--><!--/ko-->
+    <!-- ko if: isSameAsLocalStation -->
+        <!--ko template: {name:'text-template',data: stationdnpaddr}--><!--/ko-->
+	<!-- /ko -->
+    <!--ko template: {name:'text-template',data: responsedelay}--><!--/ko-->
+    <!--ko template: {name:'select-template-bool',data: selfaddr}--><!--/ko-->
+    <!--ko template: {name:'select-template-bool',data: enabledataconf}--><!--/ko-->
+    <!-- ko if: isDataLinkConfEnabled -->
+        <!--ko template: {name:'text-template',data: datalinkretries}--><!--/ko-->
+        <!--ko template: {name:'text-template',data: retrytimeout}--><!--/ko-->
+	<!-- /ko -->
+    <hr />
+	<!--ko template: {name:'h4-template',data:'Define Application Layer Properties'}--><!--/ko-->
+	<!--ko template: {name:'h4-template',data:'Application Layer'}--><!--/ko-->
+    <!--ko template: {name:'select-template-bool',data: appconf}--><!--/ko-->
+    <!-- ko if: isAppLayerConfEnabled -->
+        <!--ko template: {name:'text-template',data: applinkretries}--><!--/ko-->
+        <!--ko template: {name:'text-template',data: appretrytimeout}--><!--/ko-->
+        <!--ko template: {name:'select-template-bool',data: seqnumconf}--><!--/ko-->
+	<!-- /ko -->
+    <hr />
+    <div style="text-align: center">
+        <a class="btn btn-small" data-bind="click: switchPage('#!/localstation')">Local Station</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/serial')">Serial Ports</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_general')">General</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_physicallink')">Physical Link Layer</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_object')">Object Mapping</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_default')">Default Variation</a>
+        <a class="btn btn-small" data-bind="click: switchPage('#!/dnp3_config')">Display Config File</a>
+    </div>
+<!-- /ko -->
+</form>

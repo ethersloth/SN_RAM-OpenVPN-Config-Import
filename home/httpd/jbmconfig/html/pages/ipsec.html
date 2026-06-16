@@ -1,0 +1,161 @@
+<!--ko template: {name:'title-template',data:'IPSec'}--><!--/ko-->
+<div style="text-align: center" data-bind="if: showTunnels">
+	<!--ko template: {name:'h4-template',data:'Tunnel Status'}--><!--/ko-->
+	<p>Click on a tunnel name below to see more information</p>
+	<table class="gw-auto-margin" data-bind="foreach: activetunnels">
+		<tr>
+			<td style="text-align: right">
+				<a style="cursor: pointer" data-bind="text: tunnelname, event: {click: tclick}"></a>
+			</td>
+			<td style="width: 100px" data-bind="style: {color: tunnelstatus === 'UP' ? 'green' : tunnelstatus === 'DOWN-UP' ? 'orange' :'red'}, text: tunnelstatus"></td>
+			<td style="width: 300px">
+				<pre data-bind="text: tunnelips"></pre>
+			</td>
+		</tr>
+	</table>
+	<div class="gw-row" style="margin-top: 10px">
+		<button class="btn btn-primary" data-bind="click: tunnelRefresh">Refresh</button>
+	</div>
+	<hr />
+</div>
+<div style="text-align: center" data-bind="if: showDetail">
+	<!--ko template: {name:'h4-template',data:'Tunnel Details'}--><!--/ko-->
+	<textarea readonly style="width: 900px; margin-bottom: 10px" rows="20" data-bind="text: tunneldetails"></textarea>
+	<br />
+	<button class="btn" data-bind="text: 'Hide', event: {click: clearDetail}"></button>
+	<hr />
+</div>
+<!--ko template: {name:'h4-template',data:'IPSec Configuration'}--><!--/ko-->
+<!--ko template: {name:'full-savable-bool-template',data:enableipsec}--><!--/ko-->
+<!--ko if: enableipsec.value() === 'y'-->
+	<!--ko template: {name:'full-savable-bool-template',data:natt}--><!--/ko-->
+	<!--ko if: hasWppp-->
+	<hr />
+	<!--ko template: {name:'h4-template',data:'Coordination Table'}--><!--/ko-->
+	<table border="1" align="center" style="text-align: center; vertical-align: middle">
+		<thead>
+			<tr>
+				<th>&nbsp;Coordinate with ...&nbsp;&nbsp;<a tabindex="-1" data-bind="help: {'title': 'Coordinate', 'link': '/h_ipsec_wppp.html'}" class="btn"><i class="icon-question-sign"></i></a></th>
+				<th>&nbsp;On Connect&nbsp;&nbsp;</th>
+				<th>&nbsp;On Disconnect&nbsp;&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>&nbsp;Wireless Connection&nbsp;</td>
+				<td>
+					<!--ko template: {name: 'savable-select-template', data: wpppconnect}--><!--/ko-->
+				</td>
+				<td>
+					<!--ko template: {name: 'savable-select-template', data: wpppdisconnect}--><!--/ko-->
+				</td>
+			</tr>
+			<tr>
+				<td>&nbsp;PPPoE&nbsp;</td>
+				<td>
+					<!--ko template: {name: 'savable-select-template', data: pppoeconnect}--><!--/ko-->
+				</td>
+				<td>
+					<!--ko template: {name: 'savable-select-template', data: pppoedisconnect}--><!--/ko-->
+				</td>
+			</tr>
+			<tr>
+				<td>&nbsp;Dial-up PPP&nbsp;</td>
+				<td>
+					<!--ko template: {name: 'savable-select-template', data: pppdialconnect}--><!--/ko-->
+				</td>
+				<td>
+					<!--ko template: {name: 'savable-select-template', data: pppdialdisconnect}--><!--/ko-->
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<hr />
+	<!--/ko-->
+	<!--ko template: {name:'h4-template',data:'IPSec Tunnels'}--><!--/ko-->
+	<!--ko template: {name: 'table-template', data: tunnelTable}--><!--/ko-->
+<!--/ko-->
+<div id="ipsectunnel-modal" data-backdrop="static" data-keyboard="false" class="modal hide fade form-horizontal gw-modal-extra-wide" tabindex="-1" role="dialog" aria-hidden="true">
+	<div id="ipsectunnel-carousel" class="carousel slide" data-interval="false" data-pause="false">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>General Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name:'full-savable-input-template', data: name}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: enable}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: tunneltype}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: aggrmode}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: dpd}--><!--/ko-->
+					<!-- ko if: dpd.value() !== 'disable' -->
+					<!--ko template: {name:'full-savable-input-template', data:dpdintvl}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data:dpdtimeout}--><!--/ko-->
+					<!-- /ko -->
+					<!--ko template: {name:'full-savable-bool-template', data:pfs}--><!--/ko-->
+					<a class="btn btn-primary pull-right" data-bind="click: wizardNextToTwo">Next</a>
+				</div>
+			</div>
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Encryption Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name:'full-savable-select-template', data: p1enc}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: p1auth}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: p1dhg}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: p1satime}--><!--/ko-->
+					<!--ko template: {name:'full-savable-select-template', data: encmethod}--><!--/ko-->
+					<!-- ko if: encmethod.value() === 'psk' -->
+						<!--ko template: {name:'full-savable-input-template', data: psk}--><!--/ko-->
+					<!-- /ko -->
+					<!-- ko if: encmethod.value() === 'cert' -->
+						<div style="position: absolute; padding-left: 120px">
+							<!--ko template: {name: 'file-icon-template', data: certFileDrop}--><!--/ko-->
+						</div>
+						<!--ko template: {name:'full-savable-select-template', data: lccert}--><!--/ko-->
+						<hr />
+						<div style="position: absolute; padding-left: 120px">
+							<!--ko template: {name: 'file-icon-template', data: keyFileDrop}--><!--/ko-->
+						</div>
+						<!--ko template: {name:'full-savable-select-template', data: lckey}--><!--/ko-->
+						<!--ko template: {name:'full-savable-input-template', data: lckeyphrase}--><!--/ko-->
+						<!--ko template: {name:'full-savable-select-template', data: rscert}--><!--/ko-->
+					<!-- /ko -->
+					<!--ko template: {name:'full-savable-input-template', data: leftid}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: rightid}--><!--/ko-->
+					<!--ko template: {name: 'full-savable-select-template', data: p2authtype}--><!--/ko-->
+					<!--ko if: p2authtype.value() === 'ah'-->
+						<!--ko template: {name: 'full-savable-select-template', data: p2ahauthenc}--><!--/ko-->
+					<!--/ko-->
+					<!--ko if: p2authtype.value() === 'esp'-->
+						<!--ko template: {name: 'full-savable-select-template', data: p2enc}--><!--/ko-->
+						<!--ko template: {name: 'full-savable-select-template', data: p2auth}--><!--/ko-->
+						<!--ko template: {name:'full-savable-input-template', data: p2satime}--><!--/ko-->
+					<!--/ko-->
+					<a class="btn pull-left" data-bind="click: wizardPrev">Back</a>
+					<a class="btn btn-primary pull-right" data-bind="click: wizardNextToThree">Next</a>
+				</div>
+			</div>
+			<div class="item">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Termination Settings</h3>
+				</div>
+				<div class="gw-modal-body-long">
+					<!--ko template: {name:'full-savable-input-template', data: leftip}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: leftsourceip}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: leftnexthop}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: leftsubnet}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: rightip}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: rightnexthop}--><!--/ko-->
+					<!--ko template: {name:'full-savable-input-template', data: rightsubnet}--><!--/ko-->
+					<a class="btn pull-left" data-bind="click: wizardPrev">Back</a>
+					<a class="btn btn-primary pull-right" data-bind="click: wizardFinish">Finish</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

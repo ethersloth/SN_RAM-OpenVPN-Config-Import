@@ -1,0 +1,25 @@
+<!-- ko template: {name: 'title-template', data: 'Email Client'}--><!-- /ko -->
+<!--ko template: {name: 'full-savable-bool-template', data: enable}--><!--/ko-->
+<hr />
+<!-- ko if: isEnabled -->
+	<!-- ko template: {name: 'h4-template', data: 'Email Settings'}--><!-- /ko -->
+	<!--ko template: {name: 'full-savable-input-template', data: server}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: port}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: sender}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-input-template', data: username}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-password-template', data: password}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-bool-template', data: starttls}--><!--/ko-->
+	<!--ko template: {name: 'full-savable-select-template', data: auth}--><!--/ko-->
+	<hr />
+	<!-- ko template: {name: 'h4-template', data: 'Email Settings Test'}--><!-- /ko -->
+	<!--ko template: {name:'full-savable-expanding-template', data: recipient}--><!--/ko-->
+	<div style="text-align: center">
+		<button type="button" class="btn btn-primary" name="testemail" data-bind="click: testemail">Test Email</button>
+	</div>
+	<!-- ko if: showLog -->
+		<!--ko template: {name:'h4-template',data:'Email Debug Result'}--><!--/ko-->
+		<!--ko template: {name: 'textarea-template-ro', data: emaillog}--><!--/ko-->
+	<!-- /ko -->
+<!-- /ko -->
+
+

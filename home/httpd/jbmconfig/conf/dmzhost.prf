@@ -1,0 +1,366 @@
+
+<profile>
+ <subsystems>
+                                                                                                                              <!--
+
+                Advanced -> DMZ Host Settings Section
+
+  V2.20 behaviors (taken from cfg_adv.cpp - ApplyIPTransparencySettings() & SaveIPTrasparencySettings()):
+
+  +==========+==========================================================================+============+
+  |  ACTION  |                           STEP                                           | ON FAILURE |
+  +==========+==========================================================================+============+
+  |     Save | Try to read /GAUCfg/iptrans/internalintf from Master Configuration file  | Abort      |
+  |          +--------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/iptrans/telnet       from Master Configuration file  | Abort      |
+  |          +--------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/iptrans/telnetport   from Master Configuration file  | Abort      |
+  |          +--------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/iptrans/ssh          from Master Configuration file  | Abort      |
+  |          +--------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/iptrans/sshport      from Master Configuration file  | Abort      |
+  |          +--------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/iptrans/gau          from Master Configuration file  | Abort      |
+  |          +--------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/iptrans/gmu          from Master Configuration file  | Abort      |
+  |          +--------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/iptrans/telnetport != "" if "yes" = GAUCfg/iptrans/telnet | Abort      |
+  |          +--------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/iptrans/telnetport is numeric if not ""                   | Abort      |
+  |          +--------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/iptrans/sshport != "" if "yes" = GAUCfg/iptrans/ssh       | Abort      |
+  |          +--------------------------------------------------------------------------+------------+
+  |          | Verify /GAUCfg/iptrans/sshort is numeric if not ""                       | Abort      |
+  |          +--------------------------------------------------------------------------+------------+
+  |          | Try to set the following values in file '/etc/sysconfig/iptrans.conf'    | Abort      |
+  |          |                                                                          |            |
+  |          | [                                                                        |            |
+  |          |  IPTRANS_EXTERNAL_INT                 = "ppp"                            |            |
+  |          |  IPTRANS_INTERNAL_INT                 = /GAUCfg/iptrans/internalinft     |            |
+  |          |  IPTRANS_EXTERNAL_TELNET_ENABLE       = /GAUCfg/iptrans/telnetAccess     |            |
+  |          |  IPTRANS_TELNET_PORT                  = /GAUCfg/iptrans/telnetport       |            |
+  |          |  IPTRANS_EXTERNAL_SSH_ENABLE          = /GAUCfg/iptrans/ssh              |            |
+  |          |  IPTRANS_SSH_PORT                     = /GAUCfg/iptrans/sshport          |            |
+  |          |  IPTRANS_EXTERNAL_GAU_ENABLE          = /GAUCfg/iptrans/gau              |            |
+  |          |  IPTRANS_EXTERNAL_GMU_LISTENER_ENABLE = /GAUCfg/iptrans/gmu              |            |
+  |          |  IPTRANS_EXTERNAL_SERIAL_OOB_PORT     = "0"                              |            |
+  |          | ]                                                                        |            |
+  |          |                                                                          |            |
+  |          | Append "#\n" to file                                                     |            |
+  +----------+--------------------------------------------------------------------------+------------+
+  |    Apply | Try to perform all SAVE action operations                                | Abort      |
+  |          +--------------------------------------------------------------------------+------------+
+  |          | Try to read /GAUCfg/iptrans/enable from Master Configuration file        | Abort      |
+  |          +--------------------------------------------------------------------------+------------+
+  |          | if ("yes" == /GAUCfg/iptrans/enable)                                     |            |
+  |          |   {                                                                      |            |
+  |          |    Try to read /GAUCfg/dhcpserver/enable from Master Configuration file  | Abort      |
+  |          |                                                                          |            |
+  |          |    if ("no" != /GAUCfg/dhcpserver/enable)                                |            |
+  |          |      {                                                                   |            |
+  |          |       Try to change /GAUCfg/dhcpserver/enable to "no"                    | Abort      |
+  |          |                                                                          |            |
+  |          |       Try to save Master Configuration file                              | Abort      |
+  |          |      }                                                                   |            |
+  |          |                                                                          |            |
+  |          |    if (ip_transparency == running)                                       |            |
+  |          |      {                                                                   |            |
+  |          |       Try to stop ip_transparency                                        | Abort      |
+  |          |      }                                                                   |            |
+  |          |                                                                          |            |
+  |          |    Try to start ip_transparency                                          | Abort      |
+  |          |                                                                          |            |
+  |          |    Try to enable ip_transparency                                         | Abort      |
+  |          |   }                                                                      |            |
+  |          |  else                                                                    |            |
+  |          |      {                                                                   |            |
+  |          |       Verify "no" == /GAUCfg/iptrans/enable                              | Abort      |
+  |          |                                                                          |            |
+  |          |       if (ip_transparency == running)                                    |            |
+  |          |         {                                                                |            |
+  |          |          Try to stop ip_transparency                                     | Abort      |
+  |          |         }                                                                |            |
+  |          |                                                                          |            |
+  |          |       Try to disable ip_transparency                                     | Abort      |
+  |          |      }                                                                   |            |
+  +==========+==========================================================================+============+                        -->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/dmzhost.prf" name="dmzhost">
+   <validation>
+    <vstep errmsg="Invalid Enable value. Must be 'y' or 'n'." name="enable" test="isyorn(/input/enable/text())" />
+
+    <vstep errmsg="Invalid Interface. Must be either 'eth0' or 'eth1'."
+             name="internalintf"
+             test="/input/internalintf/text() = 'eth0' or /input/internalintf/text() = 'eth1'" />
+
+    <vstep errmsg="Invalid Advanced value. Must be 'y' or 'n'." name="advanced" test="isyorn(/input/advanced/text())" />
+
+    <vstep errmsg="Invalid IPSec value. Must be 'y' or 'n'." name="ipsec" test="isyorn(/input/ipsec/text())" />
+
+    <vstep errmsg="Invalid ICMP value. Must be 'y' or 'n'." name="icmp" test="isyorn(/input/icmp/text())" />
+
+    <vstep errmsg="Invalid TELNET enable value. Must be 'y' or 'n'." name="telnet" test="isyorn(/input/telnet/text())" />
+
+    <vstep errmsg="Invalid TELNET Port. Must be an integer between 1 and 65535."
+             name="telnetport"
+             test="isnumber(/input/telnetport/text()) and /input/telnetport/text() < 65536 and /input/telnetport/text() > 1" />
+
+    <vstep errmsg="Invalid SSH enable value. Must be 'y' or 'n'." name="ssh" test="isyorn(/input/ssh/text())" />
+
+    <vstep errmsg="Invalid SSH Port. Must be an integer between 1 and 65535."
+             name="sshport"
+             test="isnumber(/input/sshport/text()) and /input/sshport/text() < 65536 and /input/sshport/text() > 1" />
+
+    <vstep errmsg="Invalid GAU value. Must be 'y' or 'n'." name="gau" test="isyorn(/input/gau/text())" />
+
+    <vstep errmsg="Invalid SVM value. Must be 'y' or 'n'." name="gmu" test="isyorn(/input/gmu/text())" />
+   </validation>
+
+
+   <configuration>
+    <cstep errmsg="Unable to save Enable Flag to system configuration file."
+             name="enable"
+             path="/GAUCfg/dmzhost/enable" />
+
+    <cstep errmsg="Unable to save Interface to system configuration file."
+             name="internalintf"
+             path="/GAUCfg/dmzhost/internalintf" />
+
+    <cstep errmsg="Unable to save Host Address Flag to system configuration file."
+             name="hostaddr"
+             path="/GAUCfg/dmzhost/hostaddr" />
+
+    <cstep errmsg="Unable to save IPSec to system configuration file."
+             name="ipsec"
+             path="/GAUCfg/dmzhost/ipsec" />
+
+    <cstep errmsg="Unable to save ICMP to system configuration file."
+             name="icmp"
+             path="/GAUCfg/dmzhost/icmp" />
+
+    <cstep errmsg="Unable to save TELNET to system configuration file."
+             name="telnet"
+             path="/GAUCfg/dmzhost/telnet" />
+
+    <cstep errmsg="Unable to save TELNET port to system configuration file."
+             name="telnetport"
+             path="/GAUCfg/dmzhost/telnetport" />
+
+    <cstep errmsg="Unable to save SSH to system configuration file."
+             name="ssh"
+             path="/GAUCfg/dmzhost/ssh" />
+
+    <cstep errmsg="Unable to save SSH port to system configuration file."
+             name="sshport"
+             path="/GAUCfg/dmzhost/sshport" />
+
+    <cstep errmsg="Unable to save GAU to system configuration file."
+             name="gau"
+             path="/GAUCfg/dmzhost/gau" />
+
+    <cstep errmsg="Unable to save SVM to system configuration file."
+             name="gmu"
+             path="/GAUCfg/dmzhost/gmu" />
+   </configuration>
+
+
+   <action name="Save" successmsg="DMZ Host settings saved.">
+    <astep abort="y" errmsg="Failed to write DMZ Host configuration file." name="WriteFormattedFile" >
+     <arg expr="'/tmp/dmzhost.conf'" source="config" />
+
+     <arg expr="# This is a GAU generated file, subsequent edits are not guaranteed to be retained." />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg expr="#The interface to forward packets from.  this is the External interface" />
+     <arg expr="\n" />
+     <arg expr="#example : DMZHOST_EXTERNAL_INT = ppp0" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="DMZHOST_EXTERNAL_INT = ppp0" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#The interface which the DMZ host is connected to which will have packets" />
+     <arg expr="\n" />
+     <arg expr="#forwarded to it." />
+     <arg expr="\n" />
+     <arg expr="#example : DMZHOST_INTERNAL_INT = eth0" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg expr="concat('DMZHOST_INTERNAL_INT = ', /GAUCfg/dmzhost/internalintf/text())" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#The IP address of the DMZ host which will get packets forwarded to it." />
+     <arg expr="\n" />
+     <arg expr="#example : DMZHOST_IP = 192.168.0.2" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg expr="concat('DMZHOST_IP = ', /GAUCfg/dmzhost/hostaddr/text())" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#setting this option to yes will enable forwarding ESP and GRE data" />
+     <arg expr="\n" />
+     <arg expr="#packets to the DMZ host." />
+     <arg expr="\n" />
+     <arg expr="#example : DMZHOST_IPSEC_PASSTHRU_ENABLE = no" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/dmzhost/ipsec/text() = 'n'" expr="'DMZHOST_IPSEC_PASSTHRU_ENABLE = no'"  source="config" />
+
+     <arg dependency="/GAUCfg/dmzhost/ipsec/text() = 'y'" expr="'DMZHOST_IPSEC_PASSTHRU_ENABLE = yes'" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#setting this option to yes will enable forwarding ICMP packets" />
+     <arg expr="\n" />
+     <arg expr="#packets to the DMZ host.  You will not be able to ping the JBM unit" />
+     <arg expr="\n" />
+     <arg expr="#with this option set. If your ISP blocks ICMP, you won't see packets." />
+     <arg expr="\n" />
+     <arg expr="#example : DMZHOST_ICMP_PASSTHRU_ENABLE = yes" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/dmzhost/icmp/text() = 'n'" expr="'DMZHOST_ICMP_PASSTHRU_ENABLE = no'"  source="config" />
+
+     <arg dependency="/GAUCfg/dmzhost/icmp/text() = 'y'" expr="'DMZHOST_ICMP_PASSTHRU_ENABLE = yes'" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#set this to yes if you want to allow TELNET into the" />
+     <arg expr="\n" />
+     <arg expr="#DMZHOST_EXTERNAL_INT interface" />
+     <arg expr="\n" />
+     <arg expr="#example : DMZHOST_EXTERNAL_TELNET_ENABLE = no" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/dmzhost/telnet/text() = 'n'" expr="'DMZHOST_EXTERNAL_TELNET_ENABLE = no'"  source="config" />
+
+     <arg dependency="/GAUCfg/dmzhost/telnet/text() = 'y'" expr="'DMZHOST_EXTERNAL_TELNET_ENABLE = yes'" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#The Telnet port to forward to port 23 on the interface defined in" />
+     <arg expr="\n" />
+     <arg expr="#DMZHOST_INTERNAL_INT for access to this unit. If not defined or commented" />
+     <arg expr="\n" />
+     <arg expr="#then it won't be forwarded. Allowed ranges 20 - 65535" />
+     <arg expr="\n" />
+     <arg expr="#example : DMZHOST_TELNET_PORT = 2023" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg expr="concat('DMZHOST_TELNET_PORT = ', /GAUCfg/dmzhost/telnetport/text())" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#set this to yes if you want to allow SSH into the" />
+     <arg expr="\n" />
+     <arg expr="#DMZHOST_INTERNAL_INT interface" />
+     <arg expr="\n" />
+     <arg expr="#example : DMZHOST_EXTERNAL_SSH_ENABLE = yes" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/dmzhost/ssh/text() = 'n'" expr="'DMZHOST_EXTERNAL_SSH_ENABLE = no'"  source="config" />
+
+     <arg dependency="/GAUCfg/dmzhost/ssh/text() = 'y'" expr="'DMZHOST_EXTERNAL_SSH_ENABLE = yes'" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#The SSH port to forward to port 22 on the interface defined in" />
+     <arg expr="\n" />
+     <arg expr="#DMZHOST_INTERNAL_INT for access to this unit. If not defined or commented" />
+     <arg expr="\n" />
+     <arg expr="#then it won't be forwarded. Allowed ranges 20 - 65535" />
+     <arg expr="\n" />
+     <arg expr="#example : DMZHOST_SSH_PORT = 2022" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg expr="concat('DMZHOST_SSH_PORT = ', /GAUCfg/dmzhost/sshport/text())" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#set this to yes if you want to allow access into the" />
+     <arg expr="\n" />
+     <arg expr="#JBM GAU ( web interface ) from the DMZHOST_INTERNAL_INT interface" />
+     <arg expr="\n" />
+     <arg expr="#example : DMZHOST_EXTERNAL_GAU_ENABLE = no" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/dmzhost/gau/text() = 'n'" expr="'DMZHOST_EXTERNAL_GAU_ENABLE = no'"  source="config" />
+
+     <arg dependency="/GAUCfg/dmzhost/gau/text() = 'y'" expr="'DMZHOST_EXTERNAL_GAU_ENABLE = yes'" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#set this to yes to allow the SVM client to connect to the SVM management" />
+     <arg expr="\n" />
+     <arg expr="#TCP port 7785.  Recommended to set to yes if using SVM management system" />
+     <arg expr="\n" />
+     <arg expr="#example : DMZHOST_EXTERNAL_GMU_LISTENER_ENABLE = yes" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+
+     <arg dependency="/GAUCfg/dmzhost/gmu/text() = 'n'" expr="'DMZHOST_EXTERNAL_GMU_ENABLE = no'"  source="config" />
+
+     <arg dependency="/GAUCfg/dmzhost/gmu/text() = 'y'" expr="'DMZHOST_EXTERNAL_GMU_ENABLE = yes'" source="config" />
+
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#set this to a TCP port number for OOB ( out of band ) TCP->serial access" />
+     <arg expr="\n" />
+     <arg expr="#if running a gwlnx application. Leaving it blank or set to 0 will disable this." />
+     <arg expr="\n" />
+     <arg expr="#example : DMZHOST_EXTERNAL_SERIAL_OOB_PORT = 5555" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="DMZHOST_EXTERNAL_SERIAL_OOB_PORT = 0" />
+     <arg expr="\n" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed to move DMZ configuration file" name="SystemCommand">
+     <arg expr="mv -f /tmp/dmzhost.conf /etc/sysconfig/dmzhost.conf" />
+    </astep>
+   </action>
+
+   <action name="Apply" successmsg="DMZ Host settings applied.">
+    <pre subsystem="dmzhost" action="Save" />
+
+    <astep abort="y" errmsg="Failed stop DMZ Hosting service" name="SystemCommand">
+     <arg dependency="/GAUCfg/dmzhost/enable/text() = 'n'"
+                expr="'unlink /etc/jmzhost.info'"
+              source="config" />
+    </astep>
+
+    <astep abort="y" errmsg="Failed start DMZ Hosting service" name="SystemCommand">
+     <arg dependency="/GAUCfg/dmzhost/enable/text() = 'n'"
+                expr="'unlink /bin/set_dmzhost.info'"
+              source="config" />
+    </astep>
+
+   </action>
+  </subsystem>
+
+ </subsystems>
+</profile>

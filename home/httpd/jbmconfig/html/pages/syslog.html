@@ -1,0 +1,104 @@
+<form id="systemlog-form" class="form-horizontal">
+	<!-- ko template: {name: 'title-template', data: 'System Log'}--><!-- /ko -->
+	<div class="control-group" style="margin-bottom: 10px">
+		<div data-bind="with: filterstr">
+			<label class="control-label">Filter String</label>
+			<div class="controls">
+				<div class="input-append">
+					<input type="text" name="filterstr" data-bind="value: value, valueUpdate: 'afterkeydown'"></input>
+					<!-- ko template: {name: 'help-template'} --><!-- /ko -->
+				</div>
+			</div>
+		</div>
+		<div>
+			<label class="control-label">Match Case</label>
+			<div class="controls">
+				<input type="checkbox" name="matchCase" data-bind="checked: matchCase"></input>
+			</div>
+		</div>
+	</div>
+	<div data-bind="template: {name: 'select-template', data: numlines}"></div>
+	<!--ko template:{name:'textarea-template-ro',data:syslog}--><!--/ko-->
+	<div class="control-group" style="margin-bottom:5px"><div class="controls"><label class="checkbox">
+		<input type="checkbox" data-bind="checked: scrolltoend">Always scroll to end</input>
+		<!-- ko if: streamIsOpen -->
+		<span style="margin-left: 160px">
+			<b style="color: green">Real Time Updates</b>
+		</span>
+		<!-- /ko -->
+		<!-- ko ifnot: streamIsOpen -->
+		<span style="margin-left: 140px">
+			<b style="color: red">Real Time Updates Stopped</b>
+		</span>
+		<!-- /ko -->
+	</label></div></div>
+	<!-- ko ifnot: streamIsOpen -->
+	<div class="gw-auto-margin" style="text-align: center">
+		<button style="btn" data-bind="click: refresh">Refresh</button>
+	</div>
+	<!-- /ko -->
+	<hr>
+	<!--ko template: {name: 'h4-template', data: 'Remote System Logging'}--><!--/ko-->
+	<!--ko template: {name: 'select-template-bool', data: rmtlog}--><!--/ko-->
+	<!--ko if: isFwdRmt-->
+		<!--ko template: {name: 'text-template', data: rmthost}--><!--/ko-->
+		<hr />
+		<!--ko template: {name:'h4-template',data:'Remote Syslog - Whitelist Entries'}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: whiteliststr}--><!-- /ko -->
+		<div style="text-align: center">
+			<button class="btn btn-primary" data-bind="event: {click: addWhitelist}">Add Whitelist</button>
+		</div>
+		<br />
+		<div data-bind="if: showWhitelist">
+			<table border="1" align="center" style="text-align: center">
+				<thead>
+					<tr>
+						<th style="width: 200px;">List</th>
+						<th style="width: 200px;">Whitelist String</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: whitelistTable">
+					<tr style="height: 35px" data-bind="style: {'background-color': '#eee'}">
+						<td data-bind="text: ($index() + 1)"></td>
+						<td style="text-align: center">
+							<span data-bind="text: whitelist"></span>
+						</td>
+						<td style="text-align: center">
+							<button type="button" class="btn btn-danger" data-bind="click: $parent.removeWhitelist($index())">Remove Whitelist</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<hr />
+		<!--ko template: {name:'h4-template',data:'Remote Syslog - Blacklist Entries'}--><!--/ko-->
+		<!--ko template: {name: 'full-savable-input-template', data: blackliststr}--><!-- /ko -->
+		<div style="text-align: center">
+			<button class="btn btn-primary" data-bind="event: {click: addBlacklist}">Add Blacklist</button>
+		</div>
+		<br />
+		<div data-bind="if: showBlacklist">
+			<table border="1" align="center" style="text-align: center">
+				<thead>
+					<tr>
+						<th style="width: 200px;">List</th>
+						<th style="width: 200px;">Blacklist String</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: blacklistTable">
+					<tr style="height: 35px" data-bind="style: {'background-color': '#eee'}">
+						<td data-bind="text: ($index() + 1)"></td>
+						<td style="text-align: center">
+							<span data-bind="text: blacklist"></span>
+						</td>
+						<td style="text-align: center">
+							<button type="button" class="btn btn-danger" data-bind="click: $parent.removeBlacklist($index())">Remove Blacklist</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	<!--/ko-->
+</form>

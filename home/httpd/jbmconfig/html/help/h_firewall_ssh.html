@@ -1,0 +1,16 @@
+<h4>Description</h4>
+<p>
+To allow external devices to connect to the SSH Server, via port 22, through untrusted interfaces on this unit, select <u>Yes</u>, otherwise select <u>No</u>.<br /><br />
+To restrict access via a configured Whitelist, select a Whitelist name from the list of names available in the drop-down list box provided.<br /><br />
+Whitelists may be viewed/defined via the <b>Network->Firewall->ACL Rules->Subnet Whitelist Rules</b> screen.<br /><br />
+<font color="#FF0000">
+<b>Note:</b><br /><br />
+Setting this option to <u>Yes</u> does <b>not</b> enable the SSH server, it just allows it to be accessible via 
+the firewall when it is enabled. The SSH Server may be enabled via the <b>Services&#8594;SSH/TELNET Server</b> screen.<br /><br />
+If the SSH Server is configured to use a port other than 22, a rule specifically for the alternate port will 
+need to be added via the <b>Network->Firewall->Port Allow/Forwarding Rules->Service Access Rules</b> screen.
+</font>
+</p>
+<p><b>Note:</b> This setting will <b>NOT</b> overide any firewall rules defined on other pages, such as service access or redirect rules.</p>
+<h4>Recommended Setting</h4>
+<p>Yes</p>

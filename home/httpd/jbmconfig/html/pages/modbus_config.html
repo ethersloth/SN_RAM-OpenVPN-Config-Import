@@ -1,0 +1,40 @@
+<form id="modbus-config-form" class="form-horizontal">
+<!-- ko ifnot: isram -->
+    <!--ko template: {name:'title-template',data:'Upgrade to RAM is required in order to load this page'}--><!--/ko-->
+    <div style="text-align: center">
+        <a class="btn btn-primary" href="#!/ram_unlock">Upgrade to RAM</a>
+    </div>
+    <br />
+    <h5><p class="gw-auto-margin" style="width: 600px; text-align: center">Please contact <span data-bind="text: manufacturer"></span> support at <span><font color="red" data-bind="text: contactemail"></font></span> or <span><font color="red" data-bind="text: contactphone"></font></span></h5>
+<!-- /ko -->
+<!-- ko if: isram -->
+	<!--ko template: {name:'title-template',data:'Modbus Configuration File'}--><!--/ko-->
+	<!--ko template: {name: 'h4-template', data: 'Import Configuration'}--><!--/ko-->
+	<div style="width: 100%; text-align: center; padding: 5px">
+		<!--ko template: {name: 'file-input-template', data: cfgfile}--><!--/ko-->
+	</div>
+	<div style="text-align: center">
+		<button type="button" class="btn btn-primary" data-bind="click: importf">Import</button>
+	</div>
+	<hr />
+	<!--ko template: {name: 'h4-template', data: 'Edit Configuration'}--><!--/ko-->
+	<!--ko template: {name: 'textarea-template', data: modbuscfg}--><!--/ko-->
+	<br />
+	<div style="text-align: center">
+		<a class="btn btn-small" data-bind="click: save">Save</a>
+		<a class="btn btn-small" data-bind="click: download">Download</a>
+		<a class="btn btn-small" data-bind="click: stop">Stop</a>
+		<a class="btn btn-small" data-bind="click: start">Start</a>
+		<a class="btn btn-small" data-bind="click: refresh">Refresh</a>
+	</div>
+
+	<hr />
+	<div style="text-align: center">
+		<a class="btn" href="#!/localstation">Local Station</a>
+		<a class="btn" href="#!/serial">Serial Ports</a>
+		<a class="btn" href="#!/modbus_remotestations">Remote Stations</a>
+		<a class="btn" href="#!/modbus_transfers">I/O Transfers</a>
+		<a class="btn" href="#!/modbus_forwards">Forwards</a>
+	</div>
+<!-- /ko -->
+</form>

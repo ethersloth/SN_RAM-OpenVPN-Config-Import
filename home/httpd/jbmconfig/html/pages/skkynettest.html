@@ -1,0 +1,26 @@
+<form id="skkynet-form" class="form-horizontal">
+	<!-- ko template: {name: 'title-template', data: 'Skkynet Control'}--><!-- /ko -->
+	<!--ko template: {name: 'full-savable-bool-template', data: enable}--><!--/ko-->
+	<hr />
+	<!-- ko if: isEnabled -->
+		<table style="width: 100%;">
+			<tr>
+				<td style="text-align: center; vertical-align: middle;"><strong>Current Status: </strong><span data-bind="text: scriptstatus">&nbsp;</span></td>
+			</tr>
+		</table>   
+		<hr />
+		<!-- ko template: {name: 'h4-template', data: 'Gamma Script'}--><!-- /ko -->
+		<!-- ko template: {name: 'textarea-template', data: gamma} --><!-- /ko -->
+		<br />
+		<div style="text-align: center">
+			<a class="btn btn-primary" data-bind="click: saveGama">Save</a>
+		</div>
+		<hr />
+		<!-- ko template: {name: 'h4-template', data: 'SCADAlisp Config'}--><!-- /ko -->
+		<!-- ko template: {name: 'textarea-template', data: scada} --><!-- /ko -->
+		<br />
+		<div style="text-align: center">
+			<a class="btn btn-primary" data-bind="click: saveScada">Save</a>
+		</div>
+	<!-- /ko -->
+</form>

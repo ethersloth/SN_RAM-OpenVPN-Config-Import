@@ -1,0 +1,339 @@
+
+<profile>
+ <subsystems>
+
+<!--
+                Networking -> Ethernet Interfaces -> Wi-Fi Settings Section
+
+  V2.20 behaviors:
+
+  +==========+=====================================================+============+
+  |  ACTION  |                           STEP                      | ON FAILURE |
+  +==========+=====================================================+============+
+  |     Save | Try to get value of /GAUCfg/wifi/options            | Abort      |
+  +----------+-----------------------------------------------------+------------+
+  |    Apply | Try to perform SAVE action operations               | Abort      |
+  +==========+=====================================================+============+ 
+
+-->
+
+  <subsystem file="/home/httpd/jbmconfig/conf/wifi.prf" name="wifi">
+
+   <validation>
+    <vstep errmsg="Invalid Enable Flag value. Must be 'y' or 'n'."
+             name="enable"
+             test="isyorn(/input/enable/text())" />
+
+    <vstep errmsg="Invalid Band. Must be either 'bonly', 'gonly', 'bandg', or 'mixed'"
+             name="band"
+             test="/input/band/text() = 'bonly' or
+                   /input/band/text() = 'gonly' or
+                   /input/band/text() = 'bandg' or
+                   /input/band/text() = 'mixed'" />
+
+
+    <vstep errmsg="Invalid Mode. Must be either 'ap' or 'client' or 'wds' or 'apwds'"
+             name="mode"
+             test="/input/mode/text() = 'ap'  or
+                   /input/mode/text() = 'client' or
+                   /input/mode/text() = 'wds' or
+                   /input/mode/text() = 'apwds'" />
+
+    <vstep errmsg="Invalid Network Type. Must be either 'infrastructure' or 'adhoc'"
+             name="networktype"
+             test="/input/networktype/text() = 'infrastructure'  or
+                   /input/networktype/text() = 'adhoc'" />
+
+    <vstep errmsg="Invalid SSID value."
+             name="ssid"
+             test="string-length(/input/ssid/text()) > 0" />
+
+    <vstep errmsg="Invalid Channel Number. Must be either 'auto' or a number from 1 to 14 (if available in your region)"
+           name="channel"
+             test="/input/channel/text() = 'auto'  or
+                   /input/channel/text() = '1'  or
+                   /input/channel/text() = '2'  or
+                   /input/channel/text() = '3'  or
+                   /input/channel/text() = '4'  or
+                   /input/channel/text() = '5'  or
+                   /input/channel/text() = '6'  or
+                   /input/channel/text() = '7'  or
+                   /input/channel/text() = '8'  or
+                   /input/channel/text() = '9'  or
+                   /input/channel/text() = '10'  or
+                   /input/channel/text() = '11'  or
+                   /input/channel/text() = '12'  or
+                   /input/channel/text() = '13'  or
+                   /input/channel/text() = '14'" />
+
+    <vstep errmsg="Invalid ssid Broadcast Option. Must be either 'enable' or 'disable'"
+             name="ssidbroadcast"
+             test="/input/ssidbroadcast/text() = 'enable'  or
+                   /input/ssidbroadcast/text() = 'disable'" />
+
+    <vstep errmsg="Invalid Security Mode. Must be either 'none', 'wpa', 'wpa2', or 'wpawpa2'"
+          name="encryption"
+             test="/input/encryption/text() = 'none'  or
+                   /input/encryption/text() = 'wpa'   or
+                   /input/encryption/text() = 'wpa2'  or
+                   /input/encryption/text() = 'wpawpa2'" />
+
+    <vstep errmsg="Invalid WPA Pre-Shared Key value.  Must be at least 8 chars"
+             name="presharedkey"
+             test="string-length(/input/presharedkey/text()) > 7" />
+
+    <vstep errmsg="Invalid WPA Pre-Shared Key value.  Maximum of 63 chars"
+             name="presharedkey"
+             test="string-length(/input/presharedkey/text()) < 76" />
+
+    <vstep errmsg="Invalid Bridge Mode. Must be either 'enable' or 'disable'"
+             name="bridgemode"
+             test="/input/bridgemode/text() = 'enable'  or
+                   /input/bridgemode/text() = 'disable'" />
+
+    <vstep errmsg="Invalid Wi-Fi Access Control Mode. Must be either 'enable' or 'disable'"
+             name="controlmode"
+             test="/input/controlmode/text() = 'disable'  or
+                   /input/controlmode/text() = 'allowlisted'" />
+
+    <vstep errmsg="Unable to save MAC Address Filter List to system configuration file."
+             name="macss"
+             test="string-length(/input/macss/text()) > 0" />
+
+   </validation>
+
+   <configuration>
+
+    <cstep errmsg="Unable to save Enable Flag to system configuration file."
+             name="enable"
+             path="/GAUCfg/wifi/enable" />
+
+    <cstep errmsg="Unable to save Wi-Fi band to system configuration file."
+             name="band"
+             path="/GAUCfg/wifi/band" />
+
+    <cstep errmsg="Unable to save Wi-Fi mode to system configuration file."
+             name="mode"
+             path="/GAUCfg/wifi/mode" />
+
+    <cstep errmsg="Unable to save Wi-Fi IP Address to system configuration file."
+             name="address"
+             path="/GAUCfg/wifi/address" />
+
+    <cstep errmsg="Unable to save Wi-Fi netmask to system configuration file."
+             name="netmask"
+             path="/GAUCfg/wifi/netmask" />
+
+    <cstep errmsg="Unable to save network type to system configuration file."
+             name="networktype"
+             path="/GAUCfg/wifi/networktype" />
+
+    <cstep errmsg="Unable to save ssid to system configuration file."
+             name="ssid"
+             path="/GAUCfg/wifi/ssid" />
+
+    <cstep errmsg="Unable to save channel number to system configuration file."
+             name="channel"
+             path="/GAUCfg/wifi/channel" />
+
+    <cstep errmsg="Unable to save SSID Broadcast to system configuration file."
+             name="ssidbroadcast"
+             path="/GAUCfg/wifi/ssidbroadcast" />
+
+    <cstep errmsg="Unable to save security mode to system configuration file."
+             name="encryption"
+             path="/GAUCfg/wifi/encryption" />
+
+    <cstep errmsg="Unable to save WPA Pre-Shared Key to system configuration file."
+             name="presharedkey"
+             path="/GAUCfg/wifi/presharedkey" />
+
+    <cstep errmsg="Unable to save bridge mode to system configuration file."
+             name="bridgemode"
+             path="/GAUCfg/wifi/bridgemode" />
+
+    <cstep errmsg="Unable to save control mode to system configuration file."
+             name="controlmode"
+             path="/GAUCfg/wifi/controlmode" />
+
+    <cstep errmsg="Unable to save Wi-Fi DHCP Server enable to system configuration file."
+             name="wifi_enable"
+             path="/GAUCfg/dhcp/dhcpservers/wifi/enable" />
+
+    <cstep errmsg="Unable to save Wi-Fi default gateway to system configuration file."
+             name="wifi_defaultgateway"
+             path="/GAUCfg/dhcp/dhcpservers/wifi/wifidefaultgateway" />
+
+    <cstep errmsg="Unable to save Wi-Fi DHCP begin address to system configuration file."
+             name="wifi_saddr"
+             path="/GAUCfg/dhcp/dhcpservers/wifi/saddr" />
+
+    <cstep errmsg="Unable to save Wi-Fi DHCP end address to system configuration file."
+             name="wifi_eaddr"
+             path="/GAUCfg/dhcp/dhcpservers/wifi/eaddr" />
+
+    <cstep errmsg="Unable to save Wi-Fi Broadcast to system configuration file."
+             name="wifi_broadcast"
+             path="/GAUCfg/dhcp/dhcpservers/wifi/broadcast" />
+
+    <cstep errmsg="Unable to save Wi-Fi Subnet address to system configuration file."
+             name="wifi_subnet"
+             path="/GAUCfg/dhcp/dhcpservers/wifi/subnet" />
+
+    <cstep errmsg="Unable to save MAC Address filter List to system configuration file."
+             name="macss"
+             path="/GAUCfg/wifi/macss"
+             type="node" />
+
+   </configuration>
+
+
+   <action name="Apply" successmsg="Wi-Fi Configuration Saved And Applied.">
+
+    <pre subsystem="wifi" action="Save" />
+
+    <astep abort="n" name="SystemCommand">
+     <!-- HACK - service binary strips environment, but we need to pass GAUWEB_SYSTEM through -->
+     <arg dependency="/GAUCfg/wifi/enable/text() = 'n'" expr="'/etc/init.d/wifi stop'" source="config" />
+    </astep>
+
+    <astep abort="n" name="SystemCommand">
+     <arg dependency="/GAUCfg/wifi/enable/text() = 'y'" expr="'ifdown eth1'" source="config" />
+    </astep>
+
+    <astep abort="n" name="SystemCommand">
+     <arg dependency="/GAUCfg/wifi/enable/text() = 'n' and /GAUCfg/eth1/enable/text() = 'n'" expr="'ifdown eth1'" source="config" />
+    </astep>
+
+    <astep abort="y" name="SystemCommand">
+     <!-- HACK - service binary strips environment, but we need to pass GAUWEB_SYSTEM through -->
+     <arg dependency="/GAUCfg/wifi/enable/text() = 'y'" expr="'/etc/init.d/wifi restart'" source="config" />
+    </astep>
+
+   </action>
+
+   <action name="Save" successmsg="Wi-Fi Configuration Saved.">
+
+    <!-- Begin writing wifi.conf file -->
+    <astep errmsg="Failed to write wifi.conf file." name="WriteFormattedFile" abort="y" >
+
+     <arg expr="'/tmp/wifi.conf'" source="config" />
+
+     <arg expr="#ENABLE Wifi y/n" />
+     <arg expr="\n" />
+     <arg expr="concat('ENABLE=',/GAUCfg/wifi/enable/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#BAND= Ignored for now, currently always all" />
+     <arg expr="\n" />
+     <arg expr="concat('BAND=',/GAUCfg/wifi/band/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#MODE= Ignored for now, currently always AP" />
+     <arg expr="\n" />
+     <arg expr="concat('MODE=',/GAUCfg/wifi/mode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#ADDRESS= Ignored for now, later will be for non bridge mode" />
+     <arg expr="\n" />
+     <arg expr="concat('ADDRESS=',/GAUCfg/wifi/address/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#NETMASK= Ignored for now, later will be for non bridge mode" />
+     <arg expr="\n" />
+     <arg expr="concat('NETMASK=',/GAUCfg/wifi/netmask/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#TYPE=  Ignored for now" />
+     <arg expr="\n" />
+     <arg expr="concat('TYPE=',/GAUCfg/wifi/networktype/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#SSID= Default leave blank so it is populated with the MAC info" />
+     <arg expr="\n" />
+     <arg expr="#IF it is set, then use that SSID" />
+     <arg expr="\n" />
+     <arg expr="concat('SSID=',/GAUCfg/wifi/ssid/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#CHANNEL= 1 - 11" />
+     <arg expr="\n" />
+     <arg expr="concat('CHANNEL=',/GAUCfg/wifi/channel/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#SSIDBROADCAST= y/n enable/disable 1/0" />
+     <arg expr="\n" />
+     <arg expr="concat('SSIDBROADCAST=',/GAUCfg/wifi/ssidbroadcast/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#ENCRYPTION= wpa/wpa2/wpawpa2 Use one or both, or any other value for off (including empty)" />
+     <arg expr="\n" />
+     <arg expr="concat('ENCRYPTION=',/GAUCfg/wifi/encryption/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#PRESHAREDKEY= the PSK to use if encryption is on" />
+     <arg expr="\n" />
+     <arg expr="concat('PRESHAREDKEY=',/GAUCfg/wifi/presharedkey/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#BRIDGEMODE=  Ignored for now, currently always in bridge mode" />
+     <arg expr="\n" />
+     <arg expr="concat('BRIDGEMODE=',/GAUCfg/wifi/bridgemode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+     <arg expr="#CONTROLMODE= Ignored for now" />
+     <arg expr="\n" />
+     <arg expr="concat('CONTROLMODE=',/GAUCfg/wifi/controlmode/text())" source="config" />
+     <arg expr="\n" />
+     <arg expr="\n" />
+    </astep>
+
+    <!-- Begin appending records to file -->
+    <astep      abort="y"
+               errmsg="Failed to append the MAC filters to wifi.conf file, since there are no entries." 
+               repeat="/GAUCfg/wifi/macss/macs"
+           rptNdxName="RPT_NDX"
+                 name="AppendFormatted2File"
+           dependency="/GAUCfg/wifi/macss/NumberOfmacss/text() != '0' and /GAUCfg/wifi/controlmode/text() = 'allowlisted'">
+
+     <arg expr="/tmp/wifi.conf" />
+     <arg expr="concat('[MACFILTER','RPT_NDX',']')" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('MACADDRESS=',/GAUCfg/wifi/macss/macs[RPT_NDX]/macaddress/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="concat('COMMENT=',/GAUCfg/wifi/macss/macs[RPT_NDX]/cominfo/text())" rptNdxName="RPT_NDX" source="config" />
+     <arg expr="\n" />
+
+     <arg expr="[/MACFILTER]"/>
+     <arg expr="\n" />
+     <arg expr="\n" />
+    </astep>
+<!--
+    <astep abort="y" errmsg="Failed To Create wifi.xml File" name="SystemCommand">
+     <arg expr="/home/httpd/jbmconfig/bin/getcfgsec --infile=/home/httpd/jbmconfig/conf/config.xml --outfile=/tmp/wifi.xml --xpath=/GAUCfg/wifi"/>
+    </astep>
+-->
+    <astep abort="y" errmsg="Failed To Copy wifi.conf File To Destination Directory." name="SystemCommand">
+     <arg expr="mv -f /tmp/wifi.conf /etc/jbm/wifi.conf" />
+    </astep>
+<!--
+    <astep abort="y" errmsg="Failed To Copy wifi.xml File To Destination Directory." name="SystemCommand">
+     <arg expr="mv -f /tmp/wifi.xml /etc/jbm/wifi.xml" />
+    </astep>
+-->
+    <astep abort="n" name="SystemCommand">
+     <arg dependency="/GAUCfg/wifi/enable/text() = 'n'" expr="'chkconfig wifi off'" source="config" />
+    </astep>
+
+    <astep abort="y" name="SystemCommand">
+     <arg dependency="/GAUCfg/wifi/enable/text() = 'y'" expr="'chkconfig wifi on'" source="config" />
+    </astep>
+
+   </action>
+
+  </subsystem>
+
+ </subsystems>
+</profile>
