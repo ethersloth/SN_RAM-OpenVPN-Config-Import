@@ -3,6 +3,7 @@
 
 # Keep the repo metadata itself.
 !/.gitignore
+!/README.md
 
 # Keep only the OpenVPN import source tree under home/.
 !/home/
