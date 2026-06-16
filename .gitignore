@@ -4,13 +4,18 @@
 # Keep the repo metadata itself.
 !/.gitignore
 
-# Keep the OpenVPN import source tree.
+# Keep only the OpenVPN import source tree under home/.
 !/home/
+/home/*
 !/home/httpd/
+/home/httpd/*
 !/home/httpd/jbmconfig/
+/home/httpd/jbmconfig/*
 !/home/httpd/jbmconfig/**
 
 # Keep the distributable package tree.
 !/SN_RAM_Packages/
+/SN_RAM_Packages/*
 !/SN_RAM_Packages/OpenVPN_Import/
+/SN_RAM_Packages/OpenVPN_Import/*
 !/SN_RAM_Packages/OpenVPN_Import/**
